@@ -1,0 +1,63 @@
+// Gate worker: consumes Artifacts repo events, runs decide→merge→record.
+// Production deps: CloudflareAdapter + D1 stores + IsomorphicMerger/memfs.
+import { memfs } from "memfs";
+import { cloudflarePort } from "@foundry/artifacts-port";
+import { KGClient, KgOverlapOracle, touchTriples, verdictTriples } from "@foundry/lkg-client";
+import { IsomorphicMerger } from "./merge.js";
+import { handlePush, type PipelineDeps } from "./pipeline.js";
+import { D1DecisionStore, D1TicketStore } from "@foundry/stores";
+
+// Env comes from worker-configuration.d.ts (run `wrangler types`).
+
+function depsFromEnv(env: Env): PipelineDeps {
+  const { fs } = memfs();
+  const deps: PipelineDeps = {
+    port: cloudflarePort(env),
+    tickets: new D1TicketStore(env.DB),
+    store: new D1DecisionStore(env.DB),
+    merger: new IsomorphicMerger(fs),
+  };
+  if (env.LKG_URL) {
+    deps.overlap = new KgOverlapOracle(new KGClient(env.LKG_URL, env.LKG_TOKEN));
+  }
+  return deps;
+}
+
+export default {
+  async fetch(): Promise<Response> {
+    return new Response("foundry/gate: queue consumer", { status: 200 });
+  },
+
+  async queue(batch: any, env: Env): Promise<void> {
+    const deps = depsFromEnv(env);
+    for (const msg of batch.messages) {
+      try {
+        const res = await handlePush(deps, "foundry-dev", msg.body);
+        console.log(
+          "foundry/gate",
+          msg.body?.type,
+          msg.body?.source?.repoName,
+          res.handled ? "handled" : "ignored",
+        );
+        // Best-effort verdict triples; the D1 record stands without them.
+        if (res.handled && env.LKG_URL) {
+          try {
+            const kg = new KGClient(env.LKG_URL, env.LKG_TOKEN);
+            for (const t of verdictTriples(res.record)) {
+              await kg.addTriple(t);
+            }
+            for (const t of touchTriples(res.record.after_sha, res.record.files ?? [])) {
+              await kg.addTriple(t);
+            }
+          } catch (e) {
+            console.warn("lkg verdict notify failed", e);
+          }
+        }
+        msg.ack();
+      } catch (e) {
+        console.error("foundry/gate message failed", e);
+        msg.retry();
+      }
+    }
+  },
+};

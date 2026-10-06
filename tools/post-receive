@@ -1,0 +1,20 @@
+#!/bin/sh
+# Foundry post-receive hook: turn a push into a gate decision + graph edges.
+# The quoted values below are filled in by tools/graphvc-demo.ts or by hand.
+ROOT="__ROOT__"
+NS="__NS__"
+LKG="__LKG__"
+REPO="__REPO__"
+RUNNER="__RUNNER__"
+unset GIT_DIR GIT_WORK_TREE
+
+while read -r old new ref; do
+  before="$old"
+  case "$old" in
+    0000000000000000000000000000000000000000) before="$new" ;;
+  esac
+  printf '{"type":"foundry.local.pushed","source":{"namespace":"%s","repoName":"%s"},"payload":{"ref":"%s","before":"%s","after":"%s"}}\n' \
+    "$NS" "$REPO" "$ref" "$before" "$new" \
+    | node "$RUNNER" --root "$ROOT" --namespace "$NS" --lkg "$LKG" --host "file://$ROOT" \
+      >> "$ROOT/hook.log" 2>&1
+done

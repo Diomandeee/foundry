@@ -1,0 +1,19 @@
+name = "foundry-orchestrator"
+main = "src/index.ts"
+compatibility_date = "2026-10-05"
+
+[[artifacts]]
+binding = "ARTIFACTS"
+namespace = "foundry-dev"
+
+# database_id is a placeholder until `wrangler d1 create foundry-decisions`.
+[[d1_databases]]
+binding = "DB"
+database_name = "foundry-decisions"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[vars]
+# K11 Graph Kernel — version-control graph (commits/tasks/forks/verdicts).
+LKG_URL = "http://100.74.32.23:8002"
+# PACT chain validation at intake; empty = stub (advisory pass).
+PACT_URL = ""

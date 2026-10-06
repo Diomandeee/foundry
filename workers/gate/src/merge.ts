@@ -1,0 +1,90 @@
+// Merge execution. IsomorphicMerger works against real git remotes over http
+// (production; logic-tested in Node with real repos; Worker-fs wiring
+// verified at spike). GitMerger (true-history merge over local git) lives in
+// @foundry/artifacts-port alongside the node-only GitAdapter.
+import git from "isomorphic-git";
+import http from "isomorphic-git/http/web";
+import type { MergeRequest, Merger } from "@foundry/artifacts-port";
+
+export type { MergeRequest, Merger };
+
+export function tokenSecret(token: string): string {
+  return token.split("?expires=")[0];
+}
+
+export class IsomorphicMerger implements Merger {
+  /**
+   * fs is injected: memfs in Workers, node:fs in tests.
+   * workdirBase must be writable by fs (memfs root vs a tmp dir).
+   */
+  constructor(
+    private fs: unknown,
+    private workdirBase = "/merge",
+  ) {}
+
+  async merge(req: MergeRequest): Promise<string> {
+    const fs = this.fs as Parameters<typeof git.clone>[0]["fs"];
+    const dir = `${this.workdirBase}-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+    const onAuth = () => ({ username: "x", password: tokenSecret(req.baseToken) });
+    await git.clone({
+      fs,
+      http,
+      dir,
+      url: req.baseRemote,
+      ref: req.baseBranch,
+      singleBranch: true,
+      depth: 50,
+      onAuth,
+    });
+    const sha = await commitForkFiles(
+      this.fs,
+      dir,
+      req.files,
+      req.message,
+      req.author,
+      req.forkHeadSha,
+      req.deletedFiles ?? [],
+    );
+    await git.push({ fs, http, dir, url: req.baseRemote, ref: req.baseBranch, onAuth });
+    return sha;
+  }
+}
+
+/**
+ * Write fork files + squash-commit onto a checked-out base. Split out so the
+ * merge logic is unit-testable; clone/push transport is verified at spike.
+ * Squash-style: fork files as one commit on base. True 2-parent merges are
+ * future work; conflicts route to the resolver regardless.
+ */
+export async function commitForkFiles(
+  fsInput: unknown,
+  dir: string,
+  files: Record<string, string>,
+  message: string,
+  author: string,
+  forkHeadSha: string,
+  deletedFiles: string[] = [],
+): Promise<string> {
+  const fs = fsInput as Parameters<typeof git.clone>[0]["fs"];
+  const promises = (fs as unknown as { promises: {
+    mkdir(p: string, o?: object): Promise<unknown>;
+    writeFile(p: string, c: string): Promise<void>;
+  } }).promises;
+  for (const [name, content] of Object.entries(files)) {
+    const fp = `${dir}/${name}`;
+    const slash = fp.lastIndexOf("/");
+    if (slash > 0) await promises.mkdir(fp.slice(0, slash), { recursive: true });
+    await promises.writeFile(fp, content);
+    await git.add({ fs, dir, filepath: name });
+  }
+  for (const name of deletedFiles) {
+    // Absent on both sides (created-then-deleted on the fork) is a no-op.
+    await git.remove({ fs, dir, filepath: name }).catch(() => {});
+  }
+  return git.commit({
+    fs,
+    dir,
+    message: `${message}\n\nFork-Head: ${forkHeadSha}`,
+    author: { name: author, email: "foundry@local" },
+  });
+}

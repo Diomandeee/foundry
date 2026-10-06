@@ -1,0 +1,5 @@
+name = "foundry-api"
+main = "src/index.ts"
+compatibility_date = "2026-10-05"
+
+# D1 `decisions` binding + R2 trajectory bucket added in Phase 2.
