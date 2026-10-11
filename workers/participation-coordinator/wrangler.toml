@@ -1,0 +1,16 @@
+name = "participation-coordinator"
+main = "src/worker.ts"
+compatibility_date = "2026-10-05"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 (created at the Paid spike: `wrangler d1 create participation`)
+[[d1_databases]]
+binding = "DB"
+database_name = "participation"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[vars]
+PARTICIPATION_ENV = "production"
+# COORD_SERVER_PKCS8 / COORD_SERVER_SPKI are Worker secrets (wrangler secret put).
+# K11 Graph Kernel (participation facts; same graph as foundry gate/orchestrator).
+LKG_URL = "http://100.74.32.23:8002"
