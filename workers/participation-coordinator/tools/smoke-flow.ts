@@ -3,7 +3,7 @@
 //   npx tsx tools/smoke-flow.ts https://<origin> [/participation/v1/native]
 import { canonicalJson } from "../src/canonical.js";
 import { sha256hex } from "../src/ids.js";
-import { deviceKey, sign } from "../test/p256.js";
+import { deviceKey, provePossession } from "../test/p256.js";
 
 const base = (process.argv[2] ?? "http://localhost:8791").replace(/\/$/, "");
 const prefix = process.argv[3] ?? process.env.SMOKE_PATH_PREFIX ?? "";
@@ -42,7 +42,7 @@ async function main() {
     purpose: "account_recovery",
     keyID: dev.keyID,
     algorithm: "p256-sha256",
-    signatureDERBase64URL: await sign(dev._pair, begin.payload.challengeBase64URL),
+    signatureDERBase64URL: await provePossession(dev._pair, begin.payload),
   };
   const done = await call("complete_actor_recovery", { request: { accountHint: hint, deviceKey: dev }, proof }, bearer);
   check("complete_actor_recovery accepts DER P-256 proof", done.ok === true, done.failure);
@@ -51,6 +51,15 @@ async function main() {
   // same proof replayed -> must fail (challenge consumed once)
   const replay = await call("complete_actor_recovery", { request: { accountHint: hint, deviceKey: dev }, proof }, bearer);
   check("replayed proof rejected", replay.ok === false, replay.failure);
+
+  // Second device, same account hint -> same actor, its own device session.
+  const dev2: any = await deviceKey();
+  const b2 = await call("begin_actor_recovery", { accountHint: hint, deviceKey: dev2 }, bearer);
+  const proof2 = { challengeID: b2.payload.challengeID, purpose: "account_recovery", keyID: dev2.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(dev2._pair, b2.payload) };
+  const d2 = await call("complete_actor_recovery", { request: { accountHint: hint, deviceKey: dev2 }, proof: proof2 }, bearer);
+  check("second device recovers", d2.ok === true, d2.failure);
+  check("second device shares the account actor", d2.payload?.actorID === done.payload?.actorID, { a: done.payload?.actorID, b: d2.payload?.actorID });
+  check("second device has its own device session", d2.payload?.deviceSessionID !== done.payload?.deviceSessionID);
 
   console.log(failures === 0 ? "\nFLOW PASS" : `\nFLOW FAIL (${failures})`);
   process.exit(failures === 0 ? 0 : 1);

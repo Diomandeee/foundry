@@ -40,15 +40,14 @@ export function derToP1363(der: Uint8Array<ArrayBuffer>, size = 32): Uint8Array<
 
 export async function verifyDeviceProof(
   publicKeyB64url: string,
-  challenge: string,
+  message: Uint8Array<ArrayBuffer>,
   signatureDerB64url: string,
 ): Promise<boolean> {
   try {
     const raw = b64urlDecode(publicKeyB64url);
     const key = await crypto.subtle.importKey("raw", raw, ALGO, false, ["verify"]);
     const sig = derToP1363(b64urlDecode(signatureDerB64url));
-    const msg = new TextEncoder().encode(challenge);
-    return await crypto.subtle.verify(SIGN, key, sig, msg);
+    return await crypto.subtle.verify(SIGN, key, sig, message);
   } catch {
     return false;
   }

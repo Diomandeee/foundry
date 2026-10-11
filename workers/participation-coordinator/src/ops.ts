@@ -4,7 +4,8 @@
 // never trusts a client-asserted proof/consent-authority flag.
 import { Db } from "./store.js";
 import { ServerKey, verifyDeviceProof } from "./crypto.js";
-import { b64url, sha256hex, uuid } from "./ids.js";
+import { b64url, b64urlDecode, sha256hex, uuid } from "./ids.js";
+import { possessionSubjectSHA256, joinAttemptSubjectSHA256, possessionProofMessage, admissionProofMessage, challengeBytesSHA256 } from "./proof.js";
 import { iso } from "./canonical.js";
 
 export interface Req {
@@ -35,16 +36,18 @@ async function baseNonce(): Promise<string> {
 
 async function issueChallenge(
   db: Db, purpose: string, subjectSha: string, deviceSessionId: string,
-  deviceKeyId: string, now: string,
+  deviceKeyId: string, now: string, joinAttemptId: string | null = null,
 ): Promise<any> {
   const challenge = await baseNonce();
-  const challengeSha = await sha256hex(challenge);
+  // The client verifies sha256(decode(challengeBase64URL)) == challengeSHA256 and
+  // binds that hash into the signed message, so it must hash the raw bytes.
+  const challengeSha = await challengeBytesSHA256(challenge);
   const challengeId = await sha256hex(`${purpose}:${subjectSha}:${challenge}`);
   const expiresAt = iso(new Date(new Date(now).getTime() + TTL_MS));
   await db.run(
-    `INSERT INTO challenges (challenge_id,purpose,subject_ref_sha256,device_session_id,device_key_id,challenge_b64url,challenge_sha256,issued_at,expires_at,consumed_at)
-     VALUES (?,?,?,?,?,?,?,?,?,NULL)`,
-    [challengeId, purpose, subjectSha, deviceSessionId, deviceKeyId, challenge, challengeSha, now, expiresAt],
+    `INSERT INTO challenges (challenge_id,purpose,subject_ref_sha256,device_session_id,device_key_id,challenge_b64url,challenge_sha256,issued_at,expires_at,consumed_at,join_attempt_id)
+     VALUES (?,?,?,?,?,?,?,?,?,NULL,?)`,
+    [challengeId, purpose, subjectSha, deviceSessionId, deviceKeyId, challenge, challengeSha, now, expiresAt, joinAttemptId],
   );
   return {
     challengeID: challengeId,
@@ -82,7 +85,18 @@ async function consumeProof(
     throw new OpError("key_mismatch", "Proof key does not match the challenge key.");
   const dev: any = await db.get(`SELECT * FROM devices WHERE key_id=?`, [ch.device_key_id]);
   if (!dev) throw new OpError("unknown_device", "Device key is not registered.");
-  const ok = await verifyDeviceProof(dev.public_key_b64url, ch.challenge_b64url, proof?.signatureDERBase64URL);
+  // Rebuild the domain-separated, length-prefixed message the iOS client signed.
+  const challengeBytes = b64urlDecode(ch.challenge_b64url);
+  const common = {
+    challengeID: ch.challenge_id,
+    deviceSessionID: ch.device_session_id,
+    deviceKeyID: ch.device_key_id,
+    challengeSHA256: ch.challenge_sha256,
+  };
+  const message = purpose === "admission"
+    ? admissionProofMessage({ ...common, joinAttemptID: ch.join_attempt_id ?? "", joinAttemptReferenceSHA256: ch.subject_ref_sha256 }, challengeBytes)
+    : possessionProofMessage({ ...common, purpose: ch.purpose, subjectReferenceSHA256: ch.subject_ref_sha256 }, challengeBytes);
+  const ok = await verifyDeviceProof(dev.public_key_b64url, message, proof?.signatureDERBase64URL);
   if (!ok) throw new OpError("proof_invalid", "Device possession proof failed.");
   await db.run(`UPDATE challenges SET consumed_at=? WHERE challenge_id=?`, [now, ch.challenge_id]);
 }
@@ -136,17 +150,23 @@ const OPS: Record<string, Handler> = {
 
   async begin_actor_recovery(db, req) {
     const { accountHint, deviceKey } = req.payload;
-    const subject = await sha256hex(`recovery:${accountHint}`);
+    const subject = await possessionSubjectSHA256("account_recovery", accountHint);
     await registerDevice(db, deviceKey, null, req.now);
     return issueChallenge(db, "account_recovery", subject, "pending", deviceKey.keyID, req.now);
   },
 
   async complete_actor_recovery(db, req) {
     const { request, proof } = req.payload;
-    const subject = await sha256hex(`recovery:${request.accountHint}`);
+    const subject = await possessionSubjectSHA256("account_recovery", request.accountHint);
     await consumeProof(db, "account_recovery", subject, proof, req.now);
     const dev: any = await db.get(`SELECT * FROM devices WHERE key_id=?`, [proof.keyID]);
-    const actorId = dev.actor_id ?? uuid();
+    // Resolve the actor this device belongs to: an already-bound device keeps its
+    // actor; otherwise the account hint identifies an existing account actor (so a
+    // second device recovers into the SAME actor); otherwise the authenticated
+    // principal owns the new actor. This is what lets N devices share one account
+    // while each keeps its own device key + device session.
+    const byHint: any = await db.get(`SELECT actor_id FROM actors WHERE display_name=?`, [request.accountHint]);
+    const actorId = dev.actor_id ?? byHint?.actor_id ?? req.principal;
     const dsid = await newDeviceSession(db, actorId, proof.keyID, req.now);
     const roles = sorted(["organizer", "participant", "viewer"]);
     await db.run(
@@ -194,12 +214,12 @@ const OPS: Record<string, Handler> = {
   async begin_admission(db, req) {
     const { invitation, deviceKey } = req.payload;
     await registerDevice(db, deviceKey, null, req.now);
-    const refSha = await sha256hex(invitation.joinAttemptReference);
+    const refSha = await joinAttemptSubjectSHA256(invitation.joinAttemptReference);
     const jaid = uuid();
     await db.run(`INSERT INTO join_attempts (join_attempt_id,sphere_id,reference_sha256,requested_role,created_at,consumed_at) VALUES (?,?,?,?,?,NULL)`,
       [jaid, invitation.sphereID, refSha, invitation.requestedRole, req.now]);
     const dsid = await newDeviceSession(db, null, deviceKey.keyID, req.now);
-    const ch = await issueChallenge(db, "admission", refSha, dsid, deviceKey.keyID, req.now);
+    const ch = await issueChallenge(db, "admission", refSha, dsid, deviceKey.keyID, req.now, jaid);
     return { challengeID: ch.challengeID, joinAttemptID: jaid, joinAttemptReferenceSHA256: refSha, deviceSessionID: dsid, deviceKeyID: deviceKey.keyID, challengeBase64URL: ch.challengeBase64URL, challengeSHA256: ch.challengeSHA256, issuedAt: ch.issuedAt, expiresAt: ch.expiresAt };
   },
 
@@ -290,13 +310,13 @@ const OPS: Record<string, Handler> = {
   async begin_full_app_handoff_preparation(db, req) {
     const dec = req.payload.admission; await requireMembership(db, dec);
     await registerDevice(db, req.payload.deviceKey, dec.actorID, req.now);
-    const subject = await sha256hex(`handoff:${dec.receiptID}`);
+    const subject = await possessionSubjectSHA256("app_clip_handoff_preparation", dec.membershipID);
     return issueChallenge(db, "app_clip_handoff_preparation", subject, dec.deviceSessionID, req.payload.deviceKey.keyID, req.now);
   },
 
   async prepare_full_app_handoff(db, req, key) {
     const dec = req.payload.admission; await requireMembership(db, dec);
-    const subject = await sha256hex(`handoff:${dec.receiptID}`);
+    const subject = await possessionSubjectSHA256("app_clip_handoff_preparation", dec.membershipID);
     await consumeProof(db, "app_clip_handoff_preparation", subject, req.payload.proof, req.now);
     const reference = uuid();
     const expiresAt = iso(new Date(new Date(req.now).getTime() + HANDOFF_TTL_MS));
@@ -308,7 +328,7 @@ const OPS: Record<string, Handler> = {
 
   async begin_full_app_handoff_exchange(db, req) {
     const ref = req.payload.reference;
-    const subject = await sha256hex(`exchange:${ref.reference}`);
+    const subject = await possessionSubjectSHA256("full_app_handoff_exchange", ref.reference);
     await registerDevice(db, req.payload.deviceKey, null, req.now);
     const dsid = await newDeviceSession(db, null, req.payload.deviceKey.keyID, req.now);
     return issueChallenge(db, "full_app_handoff_exchange", subject, dsid, req.payload.deviceKey.keyID, req.now);
@@ -316,7 +336,7 @@ const OPS: Record<string, Handler> = {
 
   async exchange_full_app_handoff(db, req, key) {
     const ref = req.payload.reference;
-    const subject = await sha256hex(`exchange:${ref.reference}`);
+    const subject = await possessionSubjectSHA256("full_app_handoff_exchange", ref.reference);
     await consumeProof(db, "full_app_handoff_exchange", subject, req.payload.proof, req.now);
     const h: any = await db.get(`SELECT * FROM handoffs WHERE reference=?`, [ref.reference]);
     if (!h) throw new OpError("unknown_handoff", "Handoff reference does not resolve.");
@@ -327,7 +347,7 @@ const OPS: Record<string, Handler> = {
   },
 
   async begin_full_app_session_resume(db, req) {
-    const subject = await sha256hex(`resume:${req.payload.recoveryHandle}`);
+    const subject = await possessionSubjectSHA256("full_app_session_resume", req.payload.recoveryHandle);
     await registerDevice(db, req.payload.deviceKey, null, req.now);
     const dsid = await newDeviceSession(db, null, req.payload.deviceKey.keyID, req.now);
     return issueChallenge(db, "full_app_session_resume", subject, dsid, req.payload.deviceKey.keyID, req.now);
@@ -335,7 +355,7 @@ const OPS: Record<string, Handler> = {
 
   async resume_full_app_session(db, req, key) {
     const rh = req.payload.recoveryHandle;
-    const subject = await sha256hex(`resume:${rh}`);
+    const subject = await possessionSubjectSHA256("full_app_session_resume", rh);
     await consumeProof(db, "full_app_session_resume", subject, req.payload.proof, req.now);
     const s: any = await db.get(`SELECT * FROM sessions WHERE session_id=?`, [rh]);
     if (!s) throw new OpError("unknown_session", "Recovery handle does not resolve.");

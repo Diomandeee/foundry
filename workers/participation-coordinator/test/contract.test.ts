@@ -6,7 +6,7 @@ import { loadServerKey, derToP1363, verifyDeviceProof } from "../src/crypto.js";
 import { canonicalJson, iso } from "../src/canonical.js";
 import { b64url, b64urlDecode } from "../src/ids.js";
 import { call } from "./client.js";
-import { deviceKey, sign } from "./p256.js";
+import { deviceKey, proveAdmission, provePossession, sign } from "./p256.js";
 
 const NOW = "2026-10-11T17:30:00Z";
 const ALICE = "alice-actor-0001";
@@ -49,7 +49,7 @@ describe("DER device signatures (the iOS wire format)", () => {
     expect(await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, pub, b64urlDecode(b64url(p1363)), bytes)).toBe(true);
     expect(await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, pub, der, bytes)).toBe(false);
     // verifyDeviceProof accepts the DER the iOS client actually sends.
-    expect(await verifyDeviceProof(dev.publicKeyBase64URL, msg, b64url(der))).toBe(true);
+    expect(await verifyDeviceProof(dev.publicKeyBase64URL, bytes, b64url(der))).toBe(true);
     expect(b64url(new Uint8Array(sig))).not.toBe("");
   });
 
@@ -63,7 +63,7 @@ describe("coordinator invariants", () => {
   it("consumes a device challenge exactly once (no proof replay)", async () => {
     const dev = await deviceKey();
     const begin = await callf("begin_actor_recovery", { accountHint: "replay@example.com", deviceKey: dev });
-    const proof = { challengeID: begin.payload.challengeID, purpose: "account_recovery", keyID: dev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await sign(dev._pair, begin.payload.challengeBase64URL) };
+    const proof = { challengeID: begin.payload.challengeID, purpose: "account_recovery", keyID: dev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(dev._pair, begin.payload) };
     const first = await callf("complete_actor_recovery", { request: { accountHint: "replay@example.com", deviceKey: dev }, proof });
     expect(first.ok).toBe(true);
     const replay = await callf("complete_actor_recovery", { request: { accountHint: "replay@example.com", deviceKey: dev }, proof });
@@ -101,7 +101,7 @@ describe("participation -> knowledge graph emission", () => {
     await run2("begin_admission", { invitation: { sphereID: "sphere-1", joinAttemptReference: "join-xyz", requestedRole: "participant" }, deviceKey: dev });
     await db2.run(`UPDATE devices SET actor_id=? WHERE key_id=?`, [ALICE, dev.keyID]);
     const ch: any = await db2.get(`SELECT * FROM challenges WHERE purpose='admission' ORDER BY issued_at DESC LIMIT 1`);
-    const proof = { challengeID: ch.challenge_id, purpose: "admission", keyID: dev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await sign(dev._pair, ch.challenge_b64url) };
+    const proof = { challengeID: ch.challenge_id, purpose: "admission", keyID: dev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await proveAdmission(dev._pair, { challengeID: ch.challenge_id, joinAttemptID: ch.join_attempt_id, joinAttemptReferenceSHA256: ch.subject_ref_sha256, deviceSessionID: ch.device_session_id, deviceKeyID: ch.device_key_id, challengeSHA256: ch.challenge_sha256, challengeBase64URL: ch.challenge_b64url }) };
     const adm = await run2("complete_admission", proof);
     expect(adm.ok).toBe(true);
 

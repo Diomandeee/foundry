@@ -6,7 +6,7 @@ import { SqliteStore } from "../src/store.js";
 import { buildCoordinator, run as runCtx } from "../src/app.js";
 import { loadServerKey } from "../src/crypto.js";
 import { call } from "./client.js";
-import { deviceKey, sign } from "./p256.js";
+import { deviceKey, proveAdmission, provePossession } from "./p256.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const NOW = "2026-10-11T17:30:00Z";
@@ -54,7 +54,7 @@ describe("full participation flow", () => {
     const dev = await deviceKey();
     const begin = await callf("begin_actor_recovery", { accountHint: "alice@example.com", deviceKey: dev });
     expect(begin.ok).toBe(true);
-    const proof = { challengeID: begin.payload.challengeID, purpose: "account_recovery", keyID: dev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await sign(dev._pair, begin.payload.challengeBase64URL) };
+    const proof = { challengeID: begin.payload.challengeID, purpose: "account_recovery", keyID: dev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(dev._pair, begin.payload) };
     const done = await callf("complete_actor_recovery", { request: { accountHint: "alice@example.com", deviceKey: dev }, proof });
     expect(done.ok).toBe(true);
     expect(done.payload.availableRoles).toEqual(["organizer", "participant", "viewer"]);
@@ -69,7 +69,7 @@ describe("full participation flow", () => {
     const adm = await callf("begin_admission", { invitation: { sphereID: sphere.payload.id, joinAttemptReference: "join-abc", requestedRole: "participant" }, deviceKey: guestDev });
     expect(adm.ok).toBe(true);
     // bind guest device to Alice so admission can resolve an actor
-    const cp = { challengeID: adm.payload.challengeID, purpose: "admission", keyID: guestDev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await sign(guestDev._pair, adm.payload.challengeBase64URL) };
+    const cp = { challengeID: adm.payload.challengeID, purpose: "admission", keyID: guestDev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await proveAdmission(guestDev._pair, adm.payload) };
     await ctx.db.run(`UPDATE devices SET actor_id=? WHERE key_id=?`, [ALICE, guestDev.keyID]);
     const admDone = await callf("complete_admission", cp);
     expect(admDone.ok).toBe(true);
@@ -98,14 +98,14 @@ describe("full participation flow", () => {
     // 6. handoff prepare -> exchange -> full app session
     const hb = await callf("begin_full_app_handoff_preparation", { admission: receipt, deviceKey: guestDev });
     expect(hb.ok).toBe(true);
-    const hp = { challengeID: hb.payload.challengeID, purpose: "app_clip_handoff_preparation", keyID: guestDev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await sign(guestDev._pair, hb.payload.challengeBase64URL) };
+    const hp = { challengeID: hb.payload.challengeID, purpose: "app_clip_handoff_preparation", keyID: guestDev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(guestDev._pair, hb.payload) };
     const handoff = await callf("prepare_full_app_handoff", { admission: receipt, proof: hp });
     expect(handoff.ok).toBe(true);
     expect(handoff.payload.serverKeyID).toBeTruthy();
     const ref = { reference: handoff.payload.reference, expiresAt: handoff.payload.expiresAt, serverKeyID: handoff.payload.serverKeyID, signatureBase64URL: handoff.payload.signatureBase64URL };
 
     const eb = await callf("begin_full_app_handoff_exchange", { reference: ref, deviceKey: guestDev });
-    const ep = { challengeID: eb.payload.challengeID, purpose: "full_app_handoff_exchange", keyID: guestDev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await sign(guestDev._pair, eb.payload.challengeBase64URL) };
+    const ep = { challengeID: eb.payload.challengeID, purpose: "full_app_handoff_exchange", keyID: guestDev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(guestDev._pair, eb.payload) };
     const session = await callf("exchange_full_app_handoff", { reference: ref, proof: ep });
     expect(session.ok).toBe(true);
     expect(session.payload.schema).toBe("motionmix.participation.full_app_session.v1");
@@ -113,7 +113,7 @@ describe("full participation flow", () => {
 
     // 7. session resume with the returned handle
     const rb = await callf("begin_full_app_session_resume", { recoveryHandle: session.payload.recoveryHandle, deviceKey: guestDev });
-    const rp = { challengeID: rb.payload.challengeID, purpose: "full_app_session_resume", keyID: guestDev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await sign(guestDev._pair, rb.payload.challengeBase64URL) };
+    const rp = { challengeID: rb.payload.challengeID, purpose: "full_app_session_resume", keyID: guestDev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(guestDev._pair, rb.payload) };
     const resume = await callf("resume_full_app_session", { recoveryHandle: session.payload.recoveryHandle, proof: rp });
     expect(resume.ok).toBe(true);
     expect(resume.payload.admission.membershipID).toBe(receipt.membershipID);

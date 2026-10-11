@@ -79,7 +79,8 @@ CREATE TABLE IF NOT EXISTS challenges (
   challenge_sha256   TEXT NOT NULL,
   issued_at      TEXT NOT NULL,
   expires_at     TEXT NOT NULL,
-  consumed_at    TEXT
+  consumed_at    TEXT,
+  join_attempt_id TEXT              -- admission challenges only (bound into the signed message)
 );
 
 CREATE TABLE IF NOT EXISTS consents (          -- append-only; a new row per decision
