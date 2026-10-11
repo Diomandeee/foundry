@@ -3,6 +3,10 @@
 Native coordinator for the MotionMix Participation Network. Implements the
 `ParticipationGateway` protocol (20 ops) over D1 (Cloudflare) or local SQLite.
 
+**Deployed:** https://participation-coordinator.motionmix-participation.workers.dev
+(D1 `participation`, region ENAM). See `WIRING.md` §6 for the live verification
+results and the two known gaps (temporary dev bearer; K11 tunnel).
+
 ## Run locally
 ```
 npm run dev          # http://localhost:8791

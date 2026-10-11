@@ -9,6 +9,9 @@ import { sha256hex } from "../src/ids.js";
 
 const base = process.argv[2] ?? "http://localhost:8791";
 const actor = process.argv[3];
+// The iOS transport posts to {baseURL}/participation/v1/native/{operation};
+// set SMOKE_PATH_PREFIX to exercise that exact route.
+const prefix = process.env.SMOKE_PATH_PREFIX ?? "";
 
 let failures = 0;
 const check = (name: string, cond: boolean, detail?: unknown) => {
@@ -25,7 +28,7 @@ async function envelope(operation: string, payload: unknown) {
 
 async function post(operation: string, payload: unknown, bearer?: string) {
   const env = await envelope(operation, payload);
-  const res = await fetch(base, {
+  const res = await fetch(`${base}${prefix}`, {
     method: "POST",
     headers: { "content-type": "application/json", ...(bearer ? { authorization: `Bearer ${bearer}` } : {}) },
     body: JSON.stringify(env),
@@ -41,7 +44,7 @@ async function main() {
   const bad = await post("load_home", {});
   check("missing bearer -> unauthorized", bad.body.ok === false && bad.body.failure.code === "unauthorized", bad.body.failure);
 
-  const badSchema = await fetch(base, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ schema: "nope", operation: "load_home", request_id: "x".repeat(8), request_digest_sha256: "0".repeat(64), payload: {} }) });
+  const badSchema = await fetch(`${base}${prefix}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ schema: "nope", operation: "load_home", request_id: "x".repeat(8), request_digest_sha256: "0".repeat(64), payload: {} }) });
   const badSchemaBody: any = await badSchema.json();
   check("bad schema -> bad_schema", badSchemaBody.failure?.code === "bad_schema", badSchemaBody.failure);
 
@@ -59,6 +62,14 @@ async function main() {
   } else {
     check("unknown actor -> actor null", home.body.payload.actor === null);
   }
+
+  // Durable write + read over the same wire (mutation envelope + canonical digest).
+  const key = `smoke-${crypto.randomUUID()}`;
+  const created = await post("create_sphere", { draft: { seriesID: null, title: "Smoke Room", summary: "", startsAt: null }, idempotencyKey: key }, actor ? `dev:${actor}` : "dev:smoke-writer");
+  check("create_sphere ok", created.body.ok === true, created.body.failure);
+  const after = await post("load_home", {}, actor ? `dev:${actor}` : "dev:smoke-writer");
+  const ids = (after.body.payload?.spheres ?? []).map((s: any) => s.id);
+  check("created sphere visible in load_home", ids.includes(created.body.payload?.id), { want: created.body.payload?.id, ids });
 
   console.log(failures === 0 ? "\nSMOKE PASS" : `\nSMOKE FAIL (${failures})`);
   process.exit(failures === 0 ? 0 : 1);

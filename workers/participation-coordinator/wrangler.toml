@@ -3,11 +3,15 @@ main = "src/worker.ts"
 compatibility_date = "2026-10-05"
 compatibility_flags = ["nodejs_compat"]
 
+# Deployed at https://participation-coordinator.motionmix-participation.workers.dev
+workers_dev = true
+preview_urls = false
+
 # D1 (created at the Paid spike: `wrangler d1 create participation`)
 [[d1_databases]]
 binding = "DB"
 database_name = "participation"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "b34d73d5-d1b1-4eee-8b74-e122355d6e40"
 
 [vars]
 PARTICIPATION_ENV = "production"
