@@ -5,6 +5,7 @@
 // a leaked token goes stale.
 import { describe, expect, it, beforeAll } from "vitest";
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { SqliteStore } from "../src/store.js";
 import { buildCoordinator, run as runCtx } from "../src/app.js";
 import { loadServerKey } from "../src/crypto.js";
@@ -41,7 +42,7 @@ async function tokenRequest(dev: any, opts: { issuedAt?: string; nonce?: string;
 
 beforeAll(async () => {
   db = await SqliteStore.open(":memory:");
-  await db.exec(readFileSync(new URL("../schema.sql", import.meta.url), "utf8"));
+  await db.exec(readFileSync(join(import.meta.dirname, "../schema.sql"), "utf8"));
   ctx = await buildCoordinator(db, {
     key: await loadServerKey(),
     now: () => NOW_ISO,

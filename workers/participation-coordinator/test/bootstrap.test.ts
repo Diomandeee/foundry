@@ -3,6 +3,7 @@
 // lands in that same actor — no client-side naming, no lazy actor creation.
 import { describe, expect, it, beforeAll } from "vitest";
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { SqliteStore } from "../src/store.js";
 import { buildCoordinator, run as runCtx } from "../src/app.js";
 import { loadServerKey } from "../src/crypto.js";
@@ -23,7 +24,7 @@ let ctx: any;
 
 async function freshDb() {
   const d = await SqliteStore.open(":memory:");
-  await d.exec(readFileSync(new URL("../schema.sql", import.meta.url), "utf8"));
+  await d.exec(readFileSync(join(import.meta.dirname, "../schema.sql"), "utf8"));
   return d;
 }
 

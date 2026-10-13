@@ -1,5 +1,6 @@
 import { describe, expect, it, beforeAll } from "vitest";
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { SqliteStore } from "../src/store.js";
 import { buildCoordinator, run as runCtx } from "../src/app.js";
 import { loadServerKey, derToP1363, verifyDeviceProof } from "../src/crypto.js";
@@ -16,7 +17,7 @@ let callf: (op: string, payload: any, bearer?: string) => Promise<any>;
 
 beforeAll(async () => {
   db = await SqliteStore.open(":memory:");
-  await db.exec(readFileSync(new URL("../schema.sql", import.meta.url), "utf8"));
+  await db.exec(readFileSync(join(import.meta.dirname, "../schema.sql"), "utf8"));
   const ctx = await buildCoordinator(db, { key: await loadServerKey(), now: () => NOW });
   await db.run(`INSERT INTO actors (actor_id,account_id,display_name,roles_json,created_at) VALUES (?,?,?,?,?)`,
     [ALICE, "acct-alice", "Alice", JSON.stringify(["organizer", "participant", "viewer"]), NOW]);
@@ -89,7 +90,7 @@ describe("coordinator invariants", () => {
 describe("participation -> knowledge graph emission", () => {
   it("emits joinable triples for admission and is a no-op when unconfigured", async () => {
     const db2 = await SqliteStore.open(":memory:");
-    await db2.exec(readFileSync(new URL("../schema.sql", import.meta.url), "utf8"));
+    await db2.exec(readFileSync(join(import.meta.dirname, "../schema.sql"), "utf8"));
     const { RecordingGraphEmitter, graphTriples } = await import("../src/graph.js");
     const sink = new RecordingGraphEmitter();
     const ctx = await buildCoordinator(db2, { key: await loadServerKey(), now: () => NOW, graph: sink });

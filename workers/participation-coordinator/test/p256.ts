@@ -7,7 +7,8 @@ import { possessionProofMessage, admissionProofMessage } from "../src/proof.js";
 
 export async function deviceKey() {
   const pair = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
-  const raw = new Uint8Array(await crypto.subtle.exportKey("raw", pair.publicKey));
+  if (!("privateKey" in pair)) throw new Error("expected ECDSA keypair");
+  const raw = new Uint8Array((await crypto.subtle.exportKey("raw", pair.publicKey)) as ArrayBuffer);
   const sha = await crypto.subtle.digest("SHA-256", raw);
   const keyID = [...new Uint8Array(sha)].map((b) => b.toString(16).padStart(2, "0")).join("");
   return { keyID, publicKeyBase64URL: b64url(raw), algorithm: "p256-sha256", _pair: pair };

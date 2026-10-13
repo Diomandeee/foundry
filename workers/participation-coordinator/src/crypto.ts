@@ -40,7 +40,7 @@ export function derToP1363(der: Uint8Array<ArrayBuffer>, size = 32): Uint8Array<
 
 export async function verifyDeviceProof(
   publicKeyB64url: string,
-  message: Uint8Array<ArrayBuffer>,
+  message: Uint8Array<ArrayBufferLike>,
   signatureDerB64url: string,
 ): Promise<boolean> {
   try {
@@ -73,10 +73,13 @@ export async function loadServerKey(
     pub = await crypto.subtle.importKey("spki", b64urlDecode(spkiB64url), ALGO, true, ["verify"]);
   } else {
     const pair = await crypto.subtle.generateKey(ALGO, true, ["sign", "verify"]);
+    if (!("privateKey" in pair)) throw new Error("expected ECDSA keypair");
     priv = pair.privateKey;
     pub = pair.publicKey;
   }
-  const rawPub = new Uint8Array(await crypto.subtle.exportKey("raw", pub));
+  const rawPub = new Uint8Array(
+    (await crypto.subtle.exportKey("raw", pub)) as ArrayBuffer,
+  );
   return {
     keyId: (await sha256hex(rawPub)).slice(0, 32),
     publicKeyB64url: b64url(rawPub),

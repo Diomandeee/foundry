@@ -9,23 +9,24 @@
 //
 //   npx tsx tools/rotate-token-secret.ts https://<coordinator-origin>
 import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync, rmSync } from "node:fs";
+import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { verifyToken } from "../src/token.js";
+import { b64url } from "../src/ids.js";
 import { deviceKey } from "../test/p256.js";
 import { issueTokenFor } from "./token-client.js";
 
 const base = (process.argv[2] ?? "").replace(/\/$/, "");
-const workerDir = new URL("../", import.meta.url).pathname;
-const devVars = new URL("../.dev.vars", import.meta.url);
-const backupDir = new URL("../../secrets/", import.meta.url); // -> <foundry>/workers/secrets/
-const backupFile = new URL("coord-token-secret.txt", backupDir);
+const workerDir = join(import.meta.dirname, "..");
+const devVars = join(import.meta.dirname, "../.dev.vars");
+const backupDir = join(import.meta.dirname, "../../secrets/"); // -> <foundry>/workers/secrets/
+const backupFile = join(backupDir, "coord-token-secret.txt");
 
-const b64url = (b: Buffer) => b.toString("base64url");
 const oldRaw = existsSync(devVars) ? readFileSync(devVars, "utf8").trim() : "";
 const oldSecret = oldRaw.includes("=") ? oldRaw.split("=").slice(1).join("=").trim() : oldRaw;
 
-console.log(`durable backup will be written to ${backupFile.pathname}`);
+console.log(`durable backup will be written to ${backupFile}`);
 const prodNew = b64url(randomBytes(32));
 const devNew = b64url(randomBytes(32));
 

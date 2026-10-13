@@ -1,5 +1,5 @@
 // Identifier + digest helpers. All ids are opaque, high-entropy, url-safe.
-export const sha256hex = async (data: Uint8Array<ArrayBuffer> | string): Promise<string> => {
+export const sha256hex = async (data: Uint8Array<ArrayBufferLike> | string): Promise<string> => {
   const bytes = typeof data === "string" ? new TextEncoder().encode(data) : data;
   const d = await crypto.subtle.digest("SHA-256", bytes);
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -7,7 +7,7 @@ export const sha256hex = async (data: Uint8Array<ArrayBuffer> | string): Promise
 
 export const uuid = (): string => crypto.randomUUID();
 
-export const b64url = (bytes: Uint8Array<ArrayBuffer>): string =>
+export const b64url = (bytes: Uint8Array<ArrayBufferLike>): string =>
   btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
 export const b64urlDecode = (s: string): Uint8Array<ArrayBuffer> => {

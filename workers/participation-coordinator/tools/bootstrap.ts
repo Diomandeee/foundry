@@ -7,6 +7,7 @@
 // The SQL mode exists so the same prescription can be applied to the deployed D1
 // without a Node binding to it: wrangler runs the file.
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { SqliteStore } from "../src/store.js";
 import {
   DEFAULT_FIRST_USER, bootstrapFirstUser, bootstrapStatements, resetStatements, firstUserExists,
@@ -39,7 +40,7 @@ async function main() {
   const dbPath = process.env.COORD_DB ?? new URL("../.dev.sqlite", import.meta.url).pathname;
   const existed = await firstUserExists(await SqliteStore.open(":memory:")).catch(() => false);
   const db = await SqliteStore.open(dbPath);
-  await db.exec(readFileSync(new URL("../schema.sql", import.meta.url), "utf8"));
+  await db.exec(readFileSync(join(import.meta.dirname, "../schema.sql"), "utf8"));
   if (reset) for (const s of resetStatements()) await db.run(s.sql, s.params);
   const report = await bootstrapFirstUser(db, user);
   console.log(`bootstrap ok: ${JSON.stringify(report)}  (db=${dbPath}, reset=${reset}, preexisting=${existed})`);

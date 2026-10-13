@@ -38,7 +38,7 @@ async function post(operation: string, payload: unknown, bearer?: string) {
 }
 
 async function main() {
-  const health = await (await fetch(`${base}/health`)).json();
+  const health: any = await (await fetch(`${base}/health`)).json();
   check("health", health.ok === true, health);
 
   const bad = await post("load_home", {});
