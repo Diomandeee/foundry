@@ -14,6 +14,67 @@ import type {
 type Binding = any; // narrowed by worker-configuration.d.ts at deploy time
 type RepoBinding = any;
 
+/** All file paths in a tree, recursive. Bounded for worker CPU safety. */
+async function treeFiles(
+  binding: RepoBinding, treeHash: string, prefix = "",
+  cap = 2000,
+): Promise<Set<string>> {
+  const out = new Set<string>();
+  const entries = (await binding.readTree(treeHash)) ?? [];
+  for (const e of entries) {
+    if (out.size >= cap) break;
+    const p = prefix ? `${prefix}/${e.name}` : e.name;
+    if (e.type === "tree") {
+      for (const sub of await treeFiles(binding, e.hash, p, cap - out.size)) {
+        out.add(sub);
+      }
+    } else {
+      out.add(p);
+    }
+  }
+  return out;
+}
+
+/** Changed paths in one commit: tree diff vs first parent (or all files if root). */
+async function diffFiles(binding: RepoBinding, c: any): Promise<string[]> {
+  const mine = await treeFiles(binding, c.treeHash);
+  if (!c.parents || c.parents.length === 0) return [...mine].sort();
+  const parent = await binding.readCommit(c.parents[0]);
+  const parentTree: string | null = parent ? parent.treeHash : null;
+  const theirs = parentTree
+    ? await treeFiles(binding, parentTree) : new Set<string>();
+  const changed = new Set<string>();
+  for (const p of mine) if (!theirs.has(p)) changed.add(p);
+  for (const p of theirs) if (!mine.has(p)) changed.add(p);
+  // Fast path covers add/delete; same-size trees may still hide content
+  // edits, so compare blob hashes for the intersection when small.
+  if (changed.size === 0 && parentTree && mine.size === theirs.size
+      && mine.size < 500) {
+    const [a, b] = await Promise.all([
+      treeBlobs(binding, c.treeHash), treeBlobs(binding, parentTree),
+    ]);
+    for (const [p, h] of a) if (b.get(p) !== h) changed.add(p);
+  }
+  return [...changed].sort();
+}
+
+/** path -> blob hash for a tree, recursive (for content-edit detection). */
+async function treeBlobs(
+  binding: RepoBinding, treeHash: string, prefix = "",
+): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  const entries = (await binding.readTree(treeHash)) ?? [];
+  for (const e of entries) {
+    const p = prefix ? `${prefix}/${e.name}` : e.name;
+    if (e.type === "tree") {
+      for (const [sp, sh] of await treeBlobs(binding, e.hash, p)) out.set(sp, sh);
+    } else {
+      out.set(p, e.hash);
+    }
+  }
+  return out;
+}
+
 function toHandle(
   binding: RepoBinding,
   meta: CreatedRepo | ForkResult,
@@ -34,18 +95,39 @@ function toHandle(
       return blob ? await blob.text() : null;
     },
     async history(ref: string, limit = 50): Promise<CommitInfo[]> {
-      // Binding surface verified in spike; adapt field names there if needed.
-      const commits = await binding.history({ ref, limit });
-      return (commits ?? []).map((c: any) => ({
-        sha: c.sha ?? c.id ?? "",
-        message: c.message ?? "",
-        author: c.author?.name ?? c.author ?? "",
-        date: c.date ?? c.timestamp ?? "",
-        parents: c.parents ?? [],
-      }));
+      // Real binding: log(), not history(). Commit metadata carries no file
+      // list, so changed paths come from a tree diff against the first
+      // parent (bounded: newest FILES_CAP commits; older entries omit files
+      // and the gate treats unknown paths as conflict — safe default).
+      const FILES_CAP = 25;
+      const commits = await binding.log({ ref, limit });
+      const out: CommitInfo[] = [];
+      for (const c of commits ?? []) {
+        const sha: string = c.hash ?? "";
+        const info: CommitInfo = {
+          sha,
+          message: c.message ?? "",
+          author: c.author?.name ?? "",
+          date: c.authoredAt
+            ? new Date(c.authoredAt * 1000).toISOString() : "",
+          parents: c.parents ?? [],
+        };
+        if (out.length < FILES_CAP && sha) {
+          try {
+            info.files = await diffFiles(binding, c);
+          } catch {
+            info.files = undefined;
+          }
+        }
+        out.push(info);
+      }
+      return out;
     },
     async createToken(scope: "read" | "write", ttlSecs: number) {
-      return binding.createToken(scope, ttlSecs);
+      const r = await binding.createToken(scope, ttlSecs);
+      // Binding returns {id, plaintext, scope, expiresAt}; the merge
+      // transport needs the bare secret. Pass strings through (fake-compat).
+      return typeof r === "string" ? r : (r?.plaintext ?? r?.token ?? "");
     },
     async fork(newName: string): Promise<ForkResult> {
       const f = await binding.fork(newName);
