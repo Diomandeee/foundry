@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS decisions (
   reason TEXT,                    -- JSON RejectReason when reject
   conflict_files TEXT,            -- JSON string[] when conflict
   files TEXT,                     -- JSON string[] touched on merge/conflict
+  merged_sha TEXT,                -- merge commit sha when verdict=merge
   task_id TEXT,
   agent_id TEXT,
   decided_at TEXT NOT NULL

@@ -12,7 +12,7 @@ namespace = "foundry-dev"
 [[d1_databases]]
 binding = "DB"
 database_name = "foundry-decisions"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "12e5a5e8-4e87-4ce6-8074-99e393ff9463"
 
 [vars]
 # K11 Graph Kernel (cross-task overlap oracle + verdict triples).

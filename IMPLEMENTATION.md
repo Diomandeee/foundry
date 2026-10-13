@@ -242,8 +242,8 @@ from-scratch build):
 |---|---|---|
 | Workers | orchestrator / gate / api runtimes | Code complete; `wrangler types` clean for all three |
 | Artifacts binding | `create/get/fork/readFile/history/createToken` | `cloudflarePort` written; live calls await Paid |
-| Event subscriptions | `cf.artifacts.repo.pushed` → gate `queue()` | Consumer written; subscription wiring at spike |
-| D1 | `decisions` + `tickets` tables | Schema + stores written; `d1 create` + execute at spike |
+| Event subscriptions | Artifacts `pushed` → queue → gate `queue()` | LIVE 2026-10-13: scoped sub (foundry-dev/seed) + consumer; push→verdict in D1 |
+| D1 | `decisions` + `tickets` tables | LIVE 2026-10-13: `foundry-decisions` + schema (+merged_sha); reject verdict recorded |
 | Queues | event delivery into `queue()` | Same as subscriptions |
 | Workers Static | board UI hosting | Phase 3 |
 | Free-tier deploy | pipeline proof | Blocked once: needs workers.dev subdomain registration (dashboard onboarding) |
