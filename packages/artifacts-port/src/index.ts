@@ -1,6 +1,5 @@
 export * from "./port.js";
 export * from "./cloudflare.js";
-// NOTE: git.js + testing.js are node-only (git CLI). Worker runtime code
-// must never import them; tests, the runner, and local harnesses only.
-export * from "./git.js";
-export * from "./testing.js";
+// NOTE: git.js + testing.js are node-only (git CLI) and live behind
+// "@foundry/artifacts-port/node". The root barrel is worker-safe by
+// construction: bundling a worker entry must never resolve node:*.

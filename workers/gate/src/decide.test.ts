@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { GitAdapter, GitTestKit } from "@foundry/artifacts-port";
+import { GitAdapter, GitTestKit } from "@foundry/artifacts-port/node";
 import { newScopeToken } from "@foundry/gate-ts";
 import { decidePush } from "./decide.js";
 import {
@@ -270,6 +270,146 @@ describe("decidePush", () => {
     );
     expect(d.verdict).toBe("conflict");
     if (d.verdict === "conflict") expect(d.files).toEqual(["app.ts"]);
+    expect(called).toBe(false);
+  });
+
+  it("rejects unusable chains when enforced", async () => {
+    const { baseSha } = await setup();
+    const ticket = await tickets.getTicketByFork("task-1");
+    ticket!.chains = ["chain:broken"];
+    await tickets.saveTicket(ticket!);
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const planCheck = {
+      check: {
+        check: async () => ({
+          checked: true,
+          ok: false,
+          results: [
+            { name: "chain:broken", found: true, missing: ["ghost-skill"] },
+          ],
+        }),
+      },
+      enforce: true,
+    };
+    const d = await decidePush(
+      port,
+      tickets,
+      {
+        namespace: "test",
+        repo: "task-1",
+        ref: "refs/heads/main",
+        before: baseSha,
+        after,
+      },
+      Date.now(),
+      undefined,
+      planCheck,
+    );
+    expect(d.verdict).toBe("reject");
+    if (d.verdict === "reject") {
+      expect(d.reason.reason).toBe("invalid_args");
+      if (d.reason.reason === "invalid_args")
+        expect(d.reason.message).toContain("chain:broken");
+    }
+  });
+
+  it("merges with advisory attached when not enforced", async () => {
+    const { baseSha } = await setup();
+    const ticket = await tickets.getTicketByFork("task-1");
+    ticket!.chains = ["chain:broken"];
+    await tickets.saveTicket(ticket!);
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const planCheck = {
+      check: {
+        check: async () => ({
+          checked: true,
+          ok: false,
+          results: [
+            { name: "chain:broken", found: true, missing: ["ghost-skill"] },
+          ],
+        }),
+      },
+    };
+    const d = await decidePush(
+      port,
+      tickets,
+      {
+        namespace: "test",
+        repo: "task-1",
+        ref: "refs/heads/main",
+        before: baseSha,
+        after,
+      },
+      Date.now(),
+      undefined,
+      planCheck,
+    );
+    expect(d.verdict).toBe("merge");
+    if (d.verdict === "merge") expect(d.planAdvisory?.ok).toBe(false);
+  });
+
+  it("fails open on outage even when enforced", async () => {
+    const { baseSha } = await setup();
+    const ticket = await tickets.getTicketByFork("task-1");
+    ticket!.chains = ["chain:any"];
+    await tickets.saveTicket(ticket!);
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const planCheck = {
+      check: {
+        check: async () => ({
+          checked: false,
+          ok: true,
+          results: [],
+          error: "pact down",
+        }),
+      },
+      enforce: true,
+    };
+    const d = await decidePush(
+      port,
+      tickets,
+      {
+        namespace: "test",
+        repo: "task-1",
+        ref: "refs/heads/main",
+        before: baseSha,
+        after,
+      },
+      Date.now(),
+      undefined,
+      planCheck,
+    );
+    expect(d.verdict).toBe("merge");
+  });
+
+  it("skips the check when the ticket declares no chains", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    let called = false;
+    const planCheck = {
+      check: {
+        check: async () => {
+          called = true;
+          return { checked: true, ok: true, results: [] };
+        },
+      },
+      enforce: true,
+    };
+    const d = await decidePush(
+      port,
+      tickets,
+      {
+        namespace: "test",
+        repo: "task-1",
+        ref: "refs/heads/main",
+        before: baseSha,
+        after,
+      },
+      Date.now(),
+      undefined,
+      planCheck,
+    );
+    expect(d.verdict).toBe("merge");
     expect(called).toBe(false);
   });
 });

@@ -182,3 +182,9 @@ CREATE TABLE IF NOT EXISTS admission_receipts ( -- server-side truth for issued 
   granted_scopes TEXT NOT NULL,
   accepted_at    TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS token_nonces (     -- single-use device token requests
+  nonce      TEXT PRIMARY KEY,
+  key_id     TEXT NOT NULL,
+  issued_at  TEXT NOT NULL
+);

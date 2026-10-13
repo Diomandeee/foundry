@@ -11,6 +11,7 @@
     "@foundry/artifacts-port": "*",
     "@foundry/gate-ts": "*",
     "@foundry/lkg-client": "*",
+    "@foundry/plan-check": "*",
     "@foundry/stores": "*",
     "isomorphic-git": "^1",
     "memfs": "^4.80.0"

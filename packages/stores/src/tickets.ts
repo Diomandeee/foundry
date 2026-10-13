@@ -8,6 +8,8 @@ export interface TaskTicket {
   forkRepo: string;
   agentId: string;
   scope: ScopeToken;
+  /** Declared PACT chains for the task; the gate checks them when configured. */
+  chains?: string[];
 }
 
 export interface TicketStore {

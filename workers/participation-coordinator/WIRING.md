@@ -26,25 +26,38 @@ Worker currently accepts any `POST` path and routes on the **envelope**, so it
 works with that prefix out of the box. If you later add a router, keep the
 `/participation/v1/native/*` prefix as the mount point.
 
-## 2. Token issuer (the one real gap)
+## 2. Token issuer (real, device-bound)
 
-The client sends a bearer via `ParticipationAccessTokenProviding`; the coordinator
-resolves it to an actor id in `auth`. Today the only issuer is dev:
+`POST /participation/v1/token` (see `src/token.ts`) mints the bearer the client
+sends via `ParticipationAccessTokenProviding`. There is **no** `dev:` prefix and
+no shared secret in the app.
 
-- **Dev:** bearer `dev:<actorId>` (see `src/app.ts` `devAuth`, or
-  `COORD_DEV_BEARER_PREFIX` in the Worker). Used by tests and the smoke script.
-- **Production:** issuer not built yet. Two supported shapes:
-  1. Cloudflare Access JWT verified upstream (principal = the `sub`/actor claim).
-  2. A signed token exchanged at a `/token` route you add.
-  `src/worker.ts` `auth` is the single seam — implement there, nothing else moves.
+- A token is `mmt1.<payload>.<hmac>` — HMAC-SHA256 over the payload with the
+  Worker secret `COORD_TOKEN_SECRET`, carrying `{v,aud,sub,dk,iat,exp}`.
+- It is **short-lived** (1 h) and **device-bound** (`dk` = the P-256 key id that
+  requested it). `verifyToken` rejects any token not signed with the secret, and
+  `auth` (`src/worker.ts`) resolves the live principal from the device row.
+- Issuance is **proof-gated**: the caller signs `token_request.v1 || lp(keyID) ||
+  lp(publicKey) || lp(nonce) || lp(issuedAt)` with its own device key
+  (`src/token.ts tokenRequestMessage`, byte-identical to the app's Swift — see
+  `tools/token-vectors.swift` + `test/token.test.ts`). A caller can only obtain a
+  token for a key it holds; nonce replay and clock skew (>120 s) are rejected.
+- `COORD_DEV_BEARER_PREFIX` is **deleted** from the Worker. `src/app.ts devAuth`
+  survives only as the local/CI default for `npm test` and `npm run dev`; the
+  deployed Worker has no prefix fallback and fails closed with no secret.
 
 ## 3. Knowledge Graph (K11)
 
 Participation state is emitted as graph triples via `src/graph.ts`
 (`actor:` / `sphere:` / `membership:` / `source:` namespaces), using the same
 `NewTriple` shape `@foundry/lkg-client` writes from the gate and orchestrator.
-`LKG_URL` is set in `wrangler.toml` (`http://100.74.32.23:8002`) and the Worker
-emits via `waitUntil`, so a graph outage never fails a request. Unset
+`LKG_URL` is set in `wrangler.toml` to a **Cloudflare Tunnel** hostname on K11
+(a Tailscale address like `http://100.74.32.23:8002` is unreachable from Workers).
+The emitter POSTs each triple as `NewTriple` to `{LKG_URL}/api/knowledge` — the
+route `@foundry/lkg-client`'s `KGClient.addTriple` uses and the one the K11 graph
+kernel serves (the earlier `/triples` path was wrong and silently 404'd).
+
+The Worker emits via `waitUntil`, so a graph outage never fails a request. Unset
 `LKG_URL` -> the coordinator is a pure function of its database (CI default).
 
 ## 4. Deploy (needs Cloudflare: Mohameds)
@@ -54,7 +67,7 @@ wrangler d1 create participation             # copy database_id into wrangler.to
 wrangler d1 execute participation --file schema.sql --remote
 wrangler secret put COORD_SERVER_PKCS8        # P-256 pkcs8, base64url
 wrangler secret put COORD_SERVER_SPKI         # matching SPKI public key
-wrangler secret put COORD_DEV_BEARER_PREFIX   # optional; remove in prod
+wrangler secret put COORD_TOKEN_SECRET        # >=32 random bytes, base64url (signs bearers)
 npm run deploy
 ```
 
@@ -84,8 +97,9 @@ npm run smoke   # boots the dev server, runs the full HTTP contract
 | workers.dev subdomain | `motionmix-participation` (registered on the account) |
 | D1 database | `participation` — id `b34d73d5-d1b1-4eee-8b74-e122355d6e40` (region ENAM) |
 | Schema | applied remotely — 18 tables (`sqlite_master`), 12 consent instruments seeded |
-| Secrets set | `COORD_SERVER_PKCS8`, `COORD_SERVER_SPKI`, `COORD_DEV_BEARER_PREFIX=dev` |
-| Version | `15157a60-2b12-440a-8a36-9a37fcc150fa` |
+| Secrets set | `COORD_SERVER_PKCS8`, `COORD_SERVER_SPKI`, `COORD_TOKEN_SECRET` (no dev prefix) |
+| Token issuer | `POST /participation/v1/token` — signed, 1 h, device-bound |
+| Version | `a7d2a992-1ff7-45c0-a85d-616c63e650d4` |
 
 ### Verified against the live Worker (over the real client route `/participation/v1/native/*`)
 - `smoke-client.ts` → **SMOKE PASS**: health, unauthorized, bad-schema, unknown-op,
@@ -97,43 +111,37 @@ npm run smoke   # boots the dev server, runs the full HTTP contract
 ```
 URL=https://participation-coordinator.motionmix-participation.workers.dev
 SMOKE_PATH_PREFIX=/participation/v1/native npx tsx tools/smoke-client.ts "$URL"
-SMOKE_PATH_PREFIX=/participation/v1/native npx tsx tools/smoke-flow.ts   "$URL"
+SMOKE_PATH_PREFIX=/participation/v1/native \
+  COORD_GRAPH_URL=https://<tunnel>.trycloudflare.com npx tsx tools/smoke-flow.ts "$URL"
 ```
 
-### App-side wiring (the one remaining code step)
+Both now mint a **real** device-bound token from the issuer (no `dev:` bearer) and
+assert that a `dev:<actorId>` bearer is rejected (`SMOKE PASS` + `FLOW PASS`).
+`COORD_GRAPH_URL` additionally asserts the emission landed in K11. Locally, run
+`bash tools/coordinator-smoke.sh` (boots the dev server in real-issuer mode).
 
-`ConfiguredParticipationGateway.make(configuration:)` exists but nothing in the
-app constructs it yet — deliberately, because the production token route was not
-reviewed. To light it up (temporary bridge, until a real issuer exists):
+### App-side wiring (done)
 
-```swift
-// TEMPORARY dev bridge — the deployed Worker accepts `dev:<actorId>` because
-// COORD_DEV_BEARER_PREFIX=dev. Replace with a real short-lived token issuer and
-// delete the Worker secret before any real participant uses this.
-struct DevParticipationTokenProvider: ParticipationAccessTokenProviding {
-    let actorID: String
-    func currentAccessToken() async throws -> String { "dev:\(actorID)" }
-}
+`ParticipationCoordinatorBootstrap.makeGateway()` constructs
+`ConfiguredParticipationGateway` and is built into `ParticipationStore` in
+`MotionMixApp.swift`. `CoordinatorAccessTokenProvider` fetches the real token:
+it signs the token-request frame with this device's P-256 key and POSTs it to
+`{baseURL}/participation/v1/token`. No dev bridge remains.
 
-let configuration = try NativeParticipationCoordinatorConfiguration(
-    baseURL: URL(string: "https://participation-coordinator.motionmix-participation.workers.dev")!,
-    accessTokenProvider: DevParticipationTokenProvider(actorID: "mo-actor-0001")
-)
-let gateway = try ConfiguredParticipationGateway.make(configuration: configuration)
-```
+### Both original gaps are closed (2026-10-11)
+1. **Dev bearer prefix deleted.** The Worker now issues signed, expiring,
+   device-bound tokens at `POST /participation/v1/token`; `wrangler secret list`
+   no longer contains `COORD_DEV_BEARER_PREFIX`, and both smokes assert a
+   `dev:<actorId>` bearer is rejected.
+2. **K11 reached through a Cloudflare Tunnel.** `LKG_URL` is a tunnel hostname
+   and a live flow confirms a triple landed in the K11 graph. Caveat below.
 
-Then `gateway.loadHome()` returns the real home snapshot for that actor id.
-
-### Two known gaps (honest)
-1. **Dev bearer prefix is live.** `COORD_DEV_BEARER_PREFIX=dev` means anyone who
-   knows the URL can act as any actor id. Remove it with
-   `wrangler secret delete COORD_DEV_BEARER_PREFIX` as soon as a real token
-   issuer exists (`auth` in `src/worker.ts` is the single seam).
-2. **K11 is not reachable from Workers.** `LKG_URL=http://100.74.32.23:8002` is a
-   Tailscale address; Cloudflare Workers cannot route to it, so participation→graph
-   emission currently fails silently (it is non-fatal by design). To make facts
-   land in K11, expose the Graph Kernel through a Cloudflare Tunnel hostname and
-   point `LKG_URL` there.
+### One caveat left (honest)
+- The K11 tunnel is a **quick tunnel**, so its hostname rotates on restart
+  (`https://<random>.trycloudflare.com`). The account has **no Cloudflare zone**,
+  so no stable custom hostname is possible yet. After a tunnel restart, update
+  `LKG_URL` in `wrangler.toml` and redeploy (runbook: §10). Register a domain on
+  the account to move to a named tunnel with a fixed hostname.
 
 ---
 
@@ -185,12 +193,17 @@ vectors asserted in `test/proof-vectors.test.ts`.
 - `MotionMixApp/Participation/ParticipationCoordinatorBootstrap.swift` supplies the
   gateway's two inputs (origin + access token) and falls back to
   `UnconfiguredParticipationGateway` if the origin is unusable.
-- `MotionMixApp.swift` now builds `ParticipationStore(gateway: …makeGateway())`.
-- Override the origin at runtime with the `participation.coordinator.baseURL`
-  UserDefaults key (default: the deployed Worker). `participation.dev.actorID`
-  selects the account named by the temporary dev bearer.
-- Each device has its own P-256 key (`ParticipationDeviceKeyStore`, this-device
-  Keychain), so devices register independently and recover into one shared actor.
+- `MotionMixApp.swift` builds `ParticipationStore(gateway: …makeGateway(),
+  defaultAccountHint: …defaultAccountHint())`.
+- `ParticipationDeviceKeyStore.signCoordinatorTokenRequest` signs the token
+  request (shares the length-prefixed framing with the challenge proofs).
+- `CoordinatorAccessTokenProvider` calls the issuer and returns the signed
+  bearer. Each device has its own P-256 key, so devices register independently
+  and recover into one shared actor (actor resolved server-side).
+- Runtime overrides (UserDefaults): `participation.coordinator.baseURL` points the
+  app at another origin; `participation.dev.actorID` seeds the recovery account
+  hint so two devices land in the same actor (the actor id itself is now
+  server-derived from the device key, not client-chosen).
 
 ## 9. Multi-device registration (verified)
 
@@ -198,3 +211,107 @@ vectors asserted in `test/proof-vectors.test.ts`.
 else an existing actor whose `display_name` matches the account hint; else the
 authenticated principal. Verified in `test/app-parity.test.ts`: two devices with
 different keys recover into the same actor with different device sessions.
+
+## 10. K11 Cloudflare Tunnel runbook (quick tunnel)
+
+The account has no zone, so K11's graph kernel is reached through a quick tunnel.
+
+On K11 (Windows, `ssh k11`):
+```
+# cloudflared lives at C:\ai-memory\bin\cloudflared.exe; graph-vc serves :8002
+schtasks /Run   /TN ai-memory-graph-vc            # start the graph kernel (if down)
+schtasks /Run   /TN ai-memory-cloudflared-gvc     # start the tunnel
+powershell -Command "Get-Content C:\ai-memory\logs\cloudflared-gvc.log | \
+  Select-String trycloudflare.com | Select-Object -Last 1"   # read the URL
+```
+Then set `LKG_URL` in `wrangler.toml` to that URL and `npm run deploy`. Verify:
+```
+curl -s https://<tunnel>.trycloudflare.com/health                       # {"status":"healthy"}
+curl -s -X POST https://<tunnel>.trycloudflare.com/api/knowledge \
+  -H 'content-type: application/json' \
+  -d '{"subject":"probe","predicate":"reaches","object":"k11"}'
+```
+The `ai-memory-cloudflared-gvc` task is `ONSTART`, `RU SYSTEM`, so it survives
+reboots — but its hostname changes, so `LKG_URL` must be updated after each start.
+
+## 11. First user (prescribed) + device registration
+
+"Build from the ground up assuming I am the first user" = one prescribed account
+exists in the database before any device appears, and every device that launches
+the app recovers into it.
+
+Prescription (`src/bootstrap.ts`, `DEFAULT_FIRST_USER`):
+
+| object | id | notes |
+|---|---|---|
+| actor | `actor-mo-0001` / `account-mo-0001` | `display_name = mo-motionmix`; roles `[organizer, participant, viewer]` |
+| series | `series-mo-0001` | "Motion Mix Sessions", organized by the actor |
+| sphere | `sphere-mo-studio` | "Studio", under that series |
+| subscription | `sub-actor-mo-0001-series-mo-0001` | actor subscribed to its own series |
+
+`display_name` is load-bearing: `complete_actor_recovery` matches an existing
+actor by `display_name == accountHint`, and the app's default hint is
+`participation.dev.actorID = mo-motionmix`. That is the whole reason N devices
+converge on one actor.
+
+Two ways the prescription lands:
+- **CLI / clean re-apply** — `npx tsx tools/bootstrap.ts --sql --reset | bash tools/d1-apply.sh`
+  (17 `DELETE`s on the derived tables, never the 12 consent instruments, then the
+  4 idempotent upserts). Applied to the live `participation` D1 this session.
+- **Worker boot** — `ensureFirstUser(db)` runs alongside `seedInstruments(db)`:
+  it prescribes only when the actors table has **zero** rows, so it can never
+  overwrite a live account. Same call in `src/dev-server.ts` for local parity.
+
+`tools/d1-apply.sh` is required because `wrangler d1 execute --file` returns
+`{"D1_RESET_DO":true}` on this database; the script runs each rendered statement
+through `--command` in turn.
+
+Device registration is unchanged and already correct: each iPhone keeps its own
+P-256 key (`ParticipationDeviceKeyStore`) and its own device session, resolves
+its actor server-side, and recovers with the shared hint. Verified live against
+the deployed Worker with `tools/recover-first-user.ts` (two fresh device keys →
+both `actor-mo-0001`, distinct `deviceSessionID`s, prescribed series/sphere/sub
+visible in `load_home`).
+
+Post-reset live D1 state: actors 1, devices 0, series 1, spheres 1, subs 1,
+consent_instruments 12 — the iPhones are the first real devices to register.
+
+Watch: Apple Watch is explicitly out of scope for now (its install errors 4000);
+the iPad Pro 12.9 is locked and will be re-attempted by Mo.
+
+## 12. Recovery contract: the challenge carries a real device session
+
+`ParticipationStore.recoverActor()` (iOS) enforces, after `complete_actor_recovery`:
+
+```swift
+guard actor.deviceSessionID == challenge.deviceSessionID else { throw .integrityFailure }
+```
+
+So `begin_actor_recovery` must open the device session up front and challenge
+against it, and `complete_actor_recovery` must **bind that same row**, never mint
+a new one. An earlier revision passed the literal `"pending"` as the challenge's
+`deviceSessionID`; the server completed successfully but the client threw
+`integrityFailure`, which the store reports as the notice **"Participation
+unavailable"** even though the device was already bound server-side.
+
+Correct shape (mirrors `begin_admission` / `complete_admission`):
+
+```
+begin_actor_recovery    -> const dsid = await newDeviceSession(db, null, deviceKey.keyID, now)
+                           issueChallenge(db, "account_recovery", subject, dsid, ...)
+complete_actor_recovery -> const ch = SELECT * FROM challenges WHERE challenge_id = proof.challengeID
+                           const dsid = ch.device_session_id
+                           UPDATE device_sessions SET actor_id=? WHERE device_session_id=?
+```
+
+Regression coverage:
+- `test/bootstrap.test.ts` — "complete_actor_recovery returns the same
+  deviceSessionID the challenge carried (no 'pending' placeholder)".
+- `tools/recover-first-user.ts` — on-wire proof against the deployed Worker
+  ("challenge deviceSessionID is real", "returned deviceSessionID equals the
+  challenge's").
+
+App-side companion fix: `ParticipationStore.protectTransientState()` re-seeds
+`recoveryAccountHint = defaultAccountHint` instead of blanking it, because
+`open(.home)` calls that reset before the Recovery screen is shown — blanking it
+left the pre-filled `mo-motionmix` hint empty on first open.

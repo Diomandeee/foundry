@@ -6,9 +6,9 @@
 //   npx tsx tools/smoke-client.ts http://localhost:8791 <actorId?>
 import { canonicalJson } from "../src/canonical.js";
 import { sha256hex } from "../src/ids.js";
+import { issueToken } from "./token-client.js";
 
 const base = process.argv[2] ?? "http://localhost:8791";
-const actor = process.argv[3];
 // The iOS transport posts to {baseURL}/participation/v1/native/{operation};
 // set SMOKE_PATH_PREFIX to exercise that exact route.
 const prefix = process.env.SMOKE_PATH_PREFIX ?? "";
@@ -48,26 +48,33 @@ async function main() {
   const badSchemaBody: any = await badSchema.json();
   check("bad schema -> bad_schema", badSchemaBody.failure?.code === "bad_schema", badSchemaBody.failure);
 
-  const unknown = await post("do_the_thing", {}, "dev:nobody");
-  check("unknown op -> unknown_operation", unknown.body.failure?.code === "unknown_operation", unknown.body.failure);
+  // The temporary dev bearer is gone: a `dev:<anything>` bearer must NOT
+  // authenticate (this is the bypass COORD_DEV_BEARER_PREFIX used to open).
+  const devBypass = await post("load_home", {}, "dev:anyone-at-all");
+  check("dev: bearer -> unauthorized (bypass closed)", devBypass.body.ok === false && devBypass.body.failure.code === "unauthorized", devBypass.body.failure);
+  const unreachable = await post("do_the_thing", {}, "dev:nobody");
+  check("unauthenticated request -> unauthorized", unreachable.body.failure?.code === "unauthorized", unreachable.body.failure);
 
-  const home = await post("load_home", {}, actor ? `dev:${actor}` : "dev:nobody");
+  // Real, device-bound, signed token from the issuer.
+  const { token } = await issueToken(base);
+  const forged = await (await fetch(`${base}${prefix}/participation/v1/token`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ deviceKey: {}, nonce: "x", issuedAt: "nope" }) })).json() as any;
+  check("malformed token request rejected", forged.ok === false, forged.failure);
+
+  const unknown = await post("do_the_thing", {}, token);
+  check("authenticated unknown op -> unknown_operation", unknown.body.failure?.code === "unknown_operation", unknown.body.failure);
+
+  const home = await post("load_home", {}, token);
   check("load_home ok", home.body.ok === true, home.body.failure);
   check("request_id echoed", home.body.request_id === home.env.request_id);
   check("response schema", home.body.schema === "motionmix.participation.native_response.v1");
   check("payload_sha256 matches re-encode", await sha256hex(new TextEncoder().encode(canonicalJson(home.body.payload))) === home.body.payload_sha256);
-  if (actor) {
-    check("seeded actor resolves", home.body.payload.actor?.actorID === actor, home.body.payload.actor);
-    check("availableRoles sorted asc", JSON.stringify(home.body.payload.actor?.availableRoles) === JSON.stringify([...(home.body.payload.actor?.availableRoles ?? [])].sort()), home.body.payload.actor?.availableRoles);
-  } else {
-    check("unknown actor -> actor null", home.body.payload.actor === null);
-  }
+  check("fresh device -> actor null (no fabrication)", home.body.payload.actor === null, home.body.payload.actor);
 
   // Durable write + read over the same wire (mutation envelope + canonical digest).
   const key = `smoke-${crypto.randomUUID()}`;
-  const created = await post("create_sphere", { draft: { seriesID: null, title: "Smoke Room", summary: "", startsAt: null }, idempotencyKey: key }, actor ? `dev:${actor}` : "dev:smoke-writer");
+  const created = await post("create_sphere", { draft: { seriesID: null, title: "Smoke Room", summary: "", startsAt: null }, idempotencyKey: key }, token);
   check("create_sphere ok", created.body.ok === true, created.body.failure);
-  const after = await post("load_home", {}, actor ? `dev:${actor}` : "dev:smoke-writer");
+  const after = await post("load_home", {}, token);
   const ids = (after.body.payload?.spheres ?? []).map((s: any) => s.id);
   check("created sphere visible in load_home", ids.includes(created.body.payload?.id), { want: created.body.payload?.id, ids });
 

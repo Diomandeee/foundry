@@ -46,7 +46,7 @@ Per-claim evidence boundaries. Match every status report to `safe_claim`.
 ## Cloud deploy (Workers/Artifacts/D1)
 - domain: public deployment
 - status: blocked
-- evidence: none (Paid spike pending; pre-existing)
+- evidence: `wrangler deploy --dry-run` passes for gate (1043KB, ARTIFACTS+D1+LKG bindings resolve), orchestrator, api (2026-10-07); worker-safe barrel split enforced by construction
 - blockers: Workers Paid plan, artifacts access, `workers.dev` onboarding, iso transport unverified
-- safe_claim: "source_only: deploys are unproven"
+- safe_claim: "all three workers bundle for deploy; live calls await Paid spike"
 - forbidden_claims: ["deployed", "demo URL", "judge-ready"]

@@ -3,7 +3,7 @@
 //   printf '{"type":"foundry.local.pushed",...}' | tsx gate-runner.ts --root <repos>
 import { readFile, writeFile, appendFile } from "node:fs/promises";
 import { join } from "node:path";
-import { GitAdapter, GitMerger } from "@foundry/artifacts-port";
+import { GitAdapter, GitMerger } from "@foundry/artifacts-port/node";
 import { KGClient, touchTriples, verdictTriples } from "@foundry/lkg-client";
 import type { TicketStore, TaskTicket, DecisionStore, DecisionRecord } from "@foundry/stores";
 import { serializeScope, reviveScope } from "@foundry/stores";

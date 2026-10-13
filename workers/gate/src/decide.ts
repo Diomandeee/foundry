@@ -23,6 +23,13 @@ import {
 
 import type { TaskTicket, TicketStore } from "@foundry/stores";
 import type { OverlapOracle } from "@foundry/lkg-client";
+import type { PlanCheck, PlanVerdict } from "@foundry/plan-check";
+
+export interface PlanCheckOpts {
+  check: PlanCheck;
+  /** When true, a checked negative verdict rejects. Default: advisory only. */
+  enforce?: boolean;
+}
 
 export type Decision =
   | {
@@ -30,9 +37,15 @@ export type Decision =
       ticket: TaskTicket;
       files: Record<string, string>;
       deletedFiles: string[];
+      planAdvisory?: PlanVerdict;
     }
   | { verdict: "reject"; reason: RejectReason }
-  | { verdict: "conflict"; ticket: TaskTicket; files: string[] };
+  | {
+      verdict: "conflict";
+      ticket: TaskTicket;
+      files: string[];
+      planAdvisory?: PlanVerdict;
+    };
 
 const MERGE_TOOL = "foundry.merge";
 
@@ -108,6 +121,7 @@ export async function decidePush(
   push: PushEvent,
   now: number = Date.now(),
   overlap?: OverlapOracle,
+  planCheck?: PlanCheckOpts,
 ): Promise<Decision> {
   // 0. The fork must belong to a known task.
   const ticket = await tickets.getTicketByFork(push.repo);
@@ -150,6 +164,30 @@ export async function decidePush(
     const gate = checkAdmissibility(mergeSyscall(), call, state, ledger, now);
     if (!gate.ok) return { verdict: "reject", reason: gate.reason };
 
+    // 1b. PACT chain check over the ticket's declared chains. Advisory by
+    // default; only a checked negative verdict can reject, and only when
+    // enforced. Outages fail open (checked=false, ok=true).
+    let planAdvisory: PlanVerdict | undefined;
+    const chains = ticket.chains ?? [];
+    if (planCheck && chains.length > 0) {
+      planAdvisory = await planCheck.check.check(chains);
+      if (planCheck.enforce && planAdvisory.checked && !planAdvisory.ok) {
+        const bad = planAdvisory.results
+          .filter(
+            (r) =>
+              !r.found || (r.missing?.length ?? 0) > 0 || r.typechecks === false,
+          )
+          .map((r) => r.name);
+        return {
+          verdict: "reject",
+          reason: {
+            reason: "invalid_args",
+            message: `pact: unusable chains: ${bad.join(", ") || chains.join(", ")}`,
+          },
+        };
+      }
+    }
+
     // 2. Conflict detection: paths changed on both sides of the fork point.
     const forkOnly = commitsAfter(forkHist, ticket.baseSha);
     const baseOnly = commitsAfter(baseHist, ticket.baseSha);
@@ -157,7 +195,7 @@ export async function decidePush(
     const basePaths = unionFiles(baseOnly);
     if (forkPaths === null || basePaths === null) {
       // Cannot prove disjointness — route to the resolver (safe default).
-      return { verdict: "conflict", ticket, files: ["unknown"] };
+      return { verdict: "conflict", ticket, files: ["unknown"], planAdvisory };
     }
     const overlapping = [...forkPaths].filter((p) => basePaths.has(p));
     const realConflicts: string[] = [];
@@ -169,7 +207,12 @@ export async function decidePush(
       if (a !== b) realConflicts.push(p);
     }
     if (realConflicts.length > 0) {
-      return { verdict: "conflict", ticket, files: realConflicts.sort() };
+      return {
+        verdict: "conflict",
+        ticket,
+        files: realConflicts.sort(),
+        planAdvisory,
+      };
     }
 
     // 2b. Cross-task overlap via the knowledge graph (best-effort).
@@ -184,7 +227,12 @@ export async function decidePush(
         knownCommits: known,
       });
       if (contenders && contenders.length > 0) {
-        return { verdict: "conflict", ticket, files: contenders.sort() };
+        return {
+          verdict: "conflict",
+          ticket,
+          files: contenders.sort(),
+          planAdvisory,
+        };
       }
     }
 
@@ -197,7 +245,7 @@ export async function decidePush(
       if (content !== null) files[p] = content;
       else deletedFiles.push(p);
     }
-    return { verdict: "merge", ticket, files, deletedFiles };
+    return { verdict: "merge", ticket, files, deletedFiles, planAdvisory };
   } finally {
     fork?.dispose();
     base?.dispose();

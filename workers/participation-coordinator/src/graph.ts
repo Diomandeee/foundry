@@ -52,13 +52,14 @@ export function graphTriples(operation: string, payload: any): NewTriple[] {
   }
 }
 
-/** POSTs triples to a Live Knowledge Graph REST API (K11). Same body shape the
- *  foundry gate/orchestrator write via @foundry/lkg-client's KGClient.addTriple. */
+/** POSTs triples to a Live Knowledge Graph REST API (K11). Same route and body
+ *  shape the foundry gate/orchestrator write via @foundry/lkg-client's
+ *  KGClient.addTriple: POST {base}/api/knowledge with a single NewTriple. */
 export class HttpGraphEmitter implements GraphEmitter {
   constructor(private baseURL: string, private token?: string) {}
   async emit(triples: NewTriple[]): Promise<void> {
     for (const t of triples) {
-      const res = await fetch(`${this.baseURL.replace(/\/$/, "")}/triples`, {
+      const res = await fetch(`${this.baseURL.replace(/\/$/, "")}/api/knowledge`, {
         method: "POST",
         headers: { "content-type": "application/json", ...(this.token ? { authorization: `Bearer ${this.token}` } : {}) },
         body: JSON.stringify(t),

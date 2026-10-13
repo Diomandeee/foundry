@@ -10,7 +10,10 @@
     "test": "vitest run",
     "smoke": "bash tools/coordinator-smoke.sh",
     "typecheck": "tsc --noEmit",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "bootstrap": "tsx tools/bootstrap.ts",
+    "bootstrap:remote": "tsx tools/bootstrap.ts --sql --reset | bash tools/d1-apply.sh",
+    "proof:recover": "tsx tools/recover-first-user.ts"
   },
   "dependencies": {
     "hono": "^4.6.0"
@@ -20,5 +23,9 @@
     "typescript": "^7.0.2",
     "vitest": "^5.0.3",
     "wrangler": "^4.147.0"
-  }
+  },
+  "bootstrap": "tsx tools/bootstrap.ts",
+  "bootstrap:remote": "tsx tools/bootstrap.ts --sql --reset | bash tools/d1-apply.sh",
+  "proof:recover": "tsx tools/recover-first-user.ts"
 }
+

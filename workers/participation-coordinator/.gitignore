@@ -1,2 +1,4 @@
 .dev.sqlite
 .dev.sqlite-*
+.token_secret
+.dev.vars

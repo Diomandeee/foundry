@@ -6,7 +6,7 @@ import { KGClient, intakeTriples } from "@foundry/lkg-client";
 import { promisify } from "node:util";
 import { mkdir, writeFile, chmod, rm, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { GitAdapter } from "@foundry/artifacts-port";
+import { GitAdapter } from "@foundry/artifacts-port/node";
 import { newScopeToken } from "@foundry/gate-ts";
 
 const run = promisify(execFile);

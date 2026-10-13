@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { ArtifactsPort } from "@foundry/artifacts-port";
-import { GitAdapter, GitTestKit } from "@foundry/artifacts-port";
+import { GitAdapter, GitTestKit } from "@foundry/artifacts-port/node";
 import { InMemoryTicketStore, type TicketStore } from "@foundry/stores";
 import { createTask } from "./tasks.js";
 

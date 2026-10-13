@@ -152,12 +152,19 @@ const OPS: Record<string, Handler> = {
     const { accountHint, deviceKey } = req.payload;
     const subject = await possessionSubjectSHA256("account_recovery", accountHint);
     await registerDevice(db, deviceKey, null, req.now);
-    return issueChallenge(db, "account_recovery", subject, "pending", deviceKey.keyID, req.now);
+    // Open the device session now and challenge against it. The iOS client
+    // requires complete_actor_recovery to return the SAME deviceSessionID it was
+    // challenged with (ParticipationStore.recoverActor), so this must never be a
+    // placeholder like "pending".
+    const dsid = await newDeviceSession(db, null, deviceKey.keyID, req.now);
+    return issueChallenge(db, "account_recovery", subject, dsid, deviceKey.keyID, req.now);
   },
 
   async complete_actor_recovery(db, req) {
     const { request, proof } = req.payload;
     const subject = await possessionSubjectSHA256("account_recovery", request.accountHint);
+    const ch: any = await db.get(`SELECT * FROM challenges WHERE challenge_id=?`, [proof.challengeID]);
+    if (!ch) throw new OpError("no_challenge", "Unknown account recovery challenge.");
     await consumeProof(db, "account_recovery", subject, proof, req.now);
     const dev: any = await db.get(`SELECT * FROM devices WHERE key_id=?`, [proof.keyID]);
     // Resolve the actor this device belongs to: an already-bound device keeps its
@@ -167,7 +174,11 @@ const OPS: Record<string, Handler> = {
     // while each keeps its own device key + device session.
     const byHint: any = await db.get(`SELECT actor_id FROM actors WHERE display_name=?`, [request.accountHint]);
     const actorId = dev.actor_id ?? byHint?.actor_id ?? req.principal;
-    const dsid = await newDeviceSession(db, actorId, proof.keyID, req.now);
+    // Bind the device session opened at begin. Never mint a new one: the client
+    // checks that the returned deviceSessionID equals the one it was challenged
+    // with, so a fresh id here is reported as an integrity failure.
+    const dsid = ch.device_session_id;
+    await db.run(`UPDATE device_sessions SET actor_id=? WHERE device_session_id=?`, [actorId, dsid]);
     const roles = sorted(["organizer", "participant", "viewer"]);
     await db.run(
       `INSERT INTO actors (actor_id,account_id,display_name,roles_json,created_at) VALUES (?,?,?,?,?)

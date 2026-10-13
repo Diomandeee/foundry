@@ -6,7 +6,7 @@ import {
   GitAdapter,
   GitMerger,
   GitTestKit,
-} from "@foundry/artifacts-port";
+} from "@foundry/artifacts-port/node";
 import { newScopeToken } from "@foundry/gate-ts";
 import { InMemoryTicketStore } from "@foundry/stores";
 import { handlePush, type PipelineDeps } from "./pipeline.js";

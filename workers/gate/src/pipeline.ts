@@ -8,6 +8,7 @@ import {
 import { decidePush } from "./decide.js";
 import type { Merger } from "./merge.js";
 import type { OverlapOracle } from "@foundry/lkg-client";
+import type { PlanCheck } from "@foundry/plan-check";
 import type {
   DecisionRecord,
   DecisionStore,
@@ -20,6 +21,8 @@ export interface PipelineDeps {
   store: DecisionStore;
   merger: Merger;
   overlap?: OverlapOracle;
+  planCheck?: PlanCheck;
+  planCheckEnforce?: boolean;
 }
 
 export type PipelineResult =
@@ -36,7 +39,16 @@ export async function handlePush(
   if (!push) return { handled: false };
 
   try {
-    const decision = await decidePush(deps.port, deps.tickets, push, now, deps.overlap);
+    const decision = await decidePush(
+      deps.port,
+      deps.tickets,
+      push,
+      now,
+      deps.overlap,
+      deps.planCheck
+        ? { check: deps.planCheck, enforce: deps.planCheckEnforce }
+        : undefined,
+    );
 
     if (decision.verdict === "merge") {
       const forkHandle = await deps.port.get(decision.ticket.forkRepo);
