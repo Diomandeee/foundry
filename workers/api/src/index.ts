@@ -117,7 +117,7 @@ export function createApi(store: DecisionStore) {
     const cursor = parseInt(c.req.query("cursor") ?? "", 10);
     const rows = await store.list(repo, 200);
     const page = rows
-      .filter((r) => !(cursor > 0) || r.id < cursor)
+      .filter((r) => !(cursor > 0) || (r.id ?? -1) < cursor)
       .slice(0, limit);
     return c.json({
       commits: page.map((r) => ({
@@ -127,7 +127,8 @@ export function createApi(store: DecisionStore) {
         files: r.files ?? [],
         decided_at: r.decided_at,
       })),
-      nextCursor: page.length === limit ? page[page.length - 1].id : null,
+      nextCursor:
+        page.length === limit ? (page[page.length - 1].id ?? null) : null,
     });
   });
 
