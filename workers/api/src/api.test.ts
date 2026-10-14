@@ -47,4 +47,25 @@ describe("api", () => {
     const body = (await res.json()) as { commits: { sha: string }[] };
     expect(body.commits[0].sha).toBe("d".repeat(40));
   });
+
+  it("pages the spatial feed with limit+cursor", async () => {
+    const app = await seeded();
+    const p1 = (await (
+      await app.request("/history.json?limit=1")
+    ).json()) as { commits: { sha: string }[]; nextCursor: number | null };
+    expect(p1.commits.length).toBe(1);
+    expect(p1.commits[0].sha).toBe("d".repeat(40));
+    expect(p1.nextCursor).toBe(2);
+    const p2 = (await (
+      await app.request(`/history.json?limit=1&cursor=${p1.nextCursor}`)
+    ).json()) as { commits: { sha: string }[]; nextCursor: number | null };
+    expect(p2.commits.length).toBe(1);
+    expect(p2.commits[0].sha).toBe("c".repeat(40));
+    expect(p2.nextCursor).toBe(1);
+    const p3 = (await (
+      await app.request(`/history.json?limit=1&cursor=${p2.nextCursor}`)
+    ).json()) as { commits: { sha: string }[]; nextCursor: number | null };
+    expect(p3.commits.length).toBe(0);
+    expect(p3.nextCursor).toBe(null);
+  });
 });

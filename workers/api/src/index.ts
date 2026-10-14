@@ -106,16 +106,28 @@ export function createApi(store: DecisionStore) {
   });
 
   // Machine feed for the Spatial Git view (substrate/spatial-git).
+  // Supports repo filter + id-cursor paging: nextCursor is the id to pass
+  // as cursor for the following page (null when the feed is exhausted).
   app.get("/history.json", async (c) => {
-    const rows = await store.list(undefined, 200);
+    const repo = c.req.query("repo") || undefined;
+    const limit = Math.min(
+      Math.max(parseInt(c.req.query("limit") ?? "50", 10) || 50, 1),
+      200,
+    );
+    const cursor = parseInt(c.req.query("cursor") ?? "", 10);
+    const rows = await store.list(repo, 200);
+    const page = rows
+      .filter((r) => !(cursor > 0) || r.id < cursor)
+      .slice(0, limit);
     return c.json({
-      commits: rows.map((r) => ({
+      commits: page.map((r) => ({
         sha: r.merged_sha ?? r.after_sha,
         verdict: r.verdict,
         repo: r.repo,
         files: r.files ?? [],
         decided_at: r.decided_at,
       })),
+      nextCursor: page.length === limit ? page[page.length - 1].id : null,
     });
   });
 
