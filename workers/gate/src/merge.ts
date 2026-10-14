@@ -29,17 +29,49 @@ export class IsomorphicMerger implements Merger {
   async merge(req: MergeRequest): Promise<string> {
     const fs = this.fs as Parameters<typeof git.clone>[0]["fs"];
     const dir = `${this.workdirBase}-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+    let workDir = dir;
     const onAuth = () => ({ username: "x", password: tokenSecret(req.baseToken) });
-    await git.clone({
-      fs,
-      http,
-      dir,
-      url: req.baseRemote,
-      ref: req.baseBranch,
-      singleBranch: true,
-      depth: 50,
-      onAuth,
-    });
+    try {
+      await git.clone({
+        fs,
+        http,
+        dir,
+        url: req.baseRemote,
+        ref: req.baseBranch,
+        singleBranch: true,
+        depth: 50,
+        onAuth,
+      });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (req.expectedBaseSha || !/could not find/i.test(msg)) {
+        throw new Error(`merge:clone: ${msg}`);
+      }
+      // Else: possibly an empty base — verified below via listBranches.
+    }
+    // A clone of an empty repo can "succeed" with HEAD pointing at a
+    // branch that was never created (commits would land on the wrong
+    // branch and the push would fail). When the expected branch is
+    // absent and no base was expected, start from a fresh checkout in
+    // a sibling dir; the push below creates the branch remotely.
+    const branches = await git
+      .listBranches({ fs, dir })
+      .catch(() => [] as string[]);
+    if (!branches.includes(req.baseBranch)) {
+      if (req.expectedBaseSha) {
+        throw new StaleBaseError(
+          `base has no ${req.baseBranch} (expected ${req.expectedBaseSha.slice(0, 8)})`,
+        );
+      }
+      workDir = `${dir}-emptybase`;
+      await git.init({ fs, dir: workDir, defaultBranch: req.baseBranch });
+      await git.addRemote({
+        fs,
+        dir: workDir,
+        remote: "origin",
+        url: req.baseRemote,
+      });
+    }
     // Refuse to land a decision made against a base that has since moved;
     // the caller re-decides against the new head.
     if (req.expectedBaseSha) {
@@ -50,16 +82,37 @@ export class IsomorphicMerger implements Merger {
         );
       }
     }
-    const sha = await commitForkFiles(
-      this.fs,
-      dir,
-      req.files,
-      req.message,
-      req.author,
-      req.forkHeadSha,
-      req.deletedFiles ?? [],
-    );
-    await git.push({ fs, http, dir, url: req.baseRemote, ref: req.baseBranch, onAuth });
+    let sha: string;
+    try {
+      sha = await commitForkFiles(
+        this.fs,
+        workDir,
+        req.files,
+        req.message,
+        req.author,
+        req.forkHeadSha,
+        req.deletedFiles ?? [],
+      );
+    } catch (e) {
+      throw new Error(
+        `merge:commit: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    }
+    try {
+      await git.push({
+        fs,
+        http,
+        dir: workDir,
+        url: req.baseRemote,
+        ref: req.baseBranch,
+        remoteRef: `refs/heads/${req.baseBranch}`,
+        onAuth,
+      });
+    } catch (e) {
+      throw new Error(
+        `merge:push: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    }
     return sha;
   }
 }

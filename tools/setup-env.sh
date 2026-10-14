@@ -29,12 +29,22 @@ npx wrangler deploy -c workers/api/wrangler.toml -e "$ENVN" 2>&1 | grep -E "Uplo
 say "queue consumer: $QUEUE -> foundry-gate-$ENVN"
 npx wrangler queues consumer add "$QUEUE" "foundry-gate-$ENVN" 2>&1 | tail -1
 
-say "event subscription: $NS/$SEED pushed -> $QUEUE"
+say "event subscriptions: every repo in $NS -> $QUEUE"
+# The API requires repo_name (namespace-wide subs are rejected), so each
+# repo — seed, base, and every task fork — gets its own subscription.
+# A repo without one silently drops its push events at the gate.
 ACCT="$(npx wrangler whoami 2>/dev/null | grep -oE '[0-9a-f]{32}' | head -1)"
 TOK="$(grep -i oauth_token ~/Library/Preferences/.wrangler/config/default.toml | head -1 | sed 's/.*= *//;s/"//g')"
 QID="$(npx wrangler queues info "$QUEUE" 2>/dev/null | grep -i 'queue id' | grep -oE '[0-9a-f]{32}' | head -1)"
-curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/$ACCT/event_subscriptions/subscriptions" \
-  -H "Authorization: Bearer $TOK" -H 'content-type: application/json' \
-  -d "{\"name\":\"$QUEUE pushed\",\"destination\":{\"type\":\"queues.queue\",\"queue_id\":\"$QID\"},\"source\":{\"type\":\"artifacts.repo\",\"namespace\":\"$NS\",\"repo_name\":\"$SEED\"},\"events\":[\"pushed\"],\"enabled\":true}" | head -c 200
+EXISTING="$(curl -s "https://api.cloudflare.com/client/v4/accounts/$ACCT/event_subscriptions/subscriptions" \
+  -H "Authorization: Bearer $TOK" | python3 -c "import sys,json; print('\n'.join(s['id']+chr(9)+s.get('name','') for s in json.load(sys.stdin).get('result',[])))")"
+# Remove the legacy seed-only sub (bare "$QUEUE pushed" name).
+while IFS=$'\t' read -r SUBID SUBNAME; do
+  [ "$SUBNAME" = "$QUEUE pushed" ] || continue
+  curl -s -X DELETE "https://api.cloudflare.com/client/v4/accounts/$ACCT/event_subscriptions/subscriptions/$SUBID" \
+    -H "Authorization: Bearer $TOK" >/dev/null && say "   removed legacy seed-only sub $SUBID"
+done <<< "$EXISTING"
+REPOS="$(npx wrangler artifacts repos list --namespace "$NS" 2>/dev/null | grep -oE '│ [A-Za-z0-9._-]+ ' | awk '{print $2}' | sort -u)"
+for REPO in $REPOS; do bash tools/subscribe-repo.sh "$ENVN" "$REPO" 2>&1 | sed 's/^/   /'; done
 echo
 say "done. Smoke: push to $NS/$SEED, expect reject verdict in $D1."

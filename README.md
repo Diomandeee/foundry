@@ -26,7 +26,7 @@ diagram and [IMPLEMENTATION.md](IMPLEMENTATION.md) for the full build account.
 ```bash
 npm ci
 npm run typecheck            # 0 errors
-npx vitest run               # 127 passed, 18 files
+npx vitest run               # 128 passed, 18 files
 npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo
 # -> fork, ticket, agent push, gate verdict, base log. All local.
 ```
@@ -58,8 +58,18 @@ npx wrangler d1 execute foundry-decisions --remote \
 ```
 
 The ticketed merge path (fork + D1 ticket + push → `merge` + `merged_sha`
-on base) is scripted in `tools/paid-spike.sh` and was exercised live:
-merge `06841fc` landed on `base` with all fork files, verdict row in D1.
+on base) was exercised live: merge `06841fc` landed on `base` with all
+fork files, verdict row in D1. Two wiring notes for your own tasks:
+
+```bash
+# Task intake (creates the fork + D1 ticket; needs the secret from Deploy):
+curl -X POST https://<orchestrator>/tasks \
+  -H "Authorization: Bearer $TASK_TOKEN" -H 'Content-Type: application/json' \
+  -d '{"baseRepo":"base","taskId":"t1","agents":["a1"]}'
+# The subscription API is per-repo: subscribe each new fork or its
+# pushes never reach the gate:
+bash tools/subscribe-repo.sh staging 't1--a1'
+```
 
 ## Deploy your own
 

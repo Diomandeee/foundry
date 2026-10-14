@@ -145,8 +145,23 @@ export async function decidePush(
   try {
     fork = await port.get(push.repo);
     base = await port.get(ticket.baseRepo);
-    const forkHist = await fork.history("main", 200);
-    const baseHist = await base.history("main", 200);
+    // The base's own default branch, not an assumed "main".
+    let branch = "main";
+    try {
+      branch = (await base.info()).defaultBranch ?? "main";
+    } catch {
+      // Empty/unreadable base metadata: fall through with "main".
+    }
+    const forkHist = await fork.history(branch, 200);
+    let baseHist: CommitInfo[];
+    try {
+      baseHist = await base.history(branch, 200);
+    } catch (e) {
+      // Empty base (first-ever task): no branch to read yet.
+      const msg = e instanceof Error ? e.message : String(e);
+      if (/could not find|not found|no such|empty/i.test(msg)) baseHist = [];
+      else throw e;
+    }
     if (!forkHist.some((c) => c.sha === push.after)) {
       return {
         verdict: "reject",
@@ -226,8 +241,8 @@ export async function decidePush(
     const realConflicts: string[] = [];
     for (const p of overlapping) {
       const [a, b] = await Promise.all([
-        fork.readFile("main", p),
-        base.readFile("main", p),
+        fork.readFile(branch, p),
+        base.readFile(branch, p),
       ]);
       if (a !== b) realConflicts.push(p);
     }
@@ -266,7 +281,7 @@ export async function decidePush(
     const files: Record<string, string> = {};
     const deletedFiles: string[] = [];
     for (const p of forkPaths) {
-      const content = await fork.readFile("main", p);
+      const content = await fork.readFile(branch, p);
       if (content !== null) files[p] = content;
       else deletedFiles.push(p);
     }

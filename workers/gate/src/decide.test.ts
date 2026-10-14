@@ -451,3 +451,37 @@ describe("decidePush guards", () => {
     }
   });
 });
+
+describe("decidePush empty base", () => {
+  it("merges the first task onto a base with no commits", async () => {
+    await port.create("base");
+    const base = await port.get("base");
+    await base.fork("task-1");
+    base.dispose();
+    kit.cloneTo("task-1", forkWork);
+    const scope = newScopeToken();
+    scope.allowed_tools = ["foundry.merge"];
+    scope.can_mutate = true;
+    await tickets.saveTicket({
+      taskId: "t1",
+      baseRepo: "base",
+      baseSha: "",
+      forkRepo: "task-1",
+      agentId: "agent-a",
+      scope,
+    });
+    const after = kit.commitAll(forkWork, "first", { "app.ts": "v1\n" });
+    const d = await decidePush(port, tickets, {
+      namespace: "test",
+      repo: "task-1",
+      ref: "refs/heads/main",
+      before: "0".repeat(40),
+      after,
+    });
+    expect(d.verdict).toBe("merge");
+    if (d.verdict === "merge") {
+      expect(d.files).toEqual({ "app.ts": "v1\n" });
+      expect(d.baseHead).toBeNull();
+    }
+  });
+});

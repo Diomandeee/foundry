@@ -10,7 +10,7 @@ Target: a judge who has never seen the repo. Every claim on screen.
 
 ## 0:45–2:00 — Local proof (terminal)
 - `npm ci && npm run typecheck` → 0 errors.
-- `npx vitest run` → 127 passed, 18 files. Linger 3s on the summary.
+- `npx vitest run` → 128 passed, 18 files. Linger 3s on the summary.
 - `npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo` → narrate:
   fork, ticket, agent push, verdict printed, base log advanced. All local.
 

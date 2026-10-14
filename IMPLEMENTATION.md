@@ -1,7 +1,7 @@
 # Foundry — Implementation
 
 Full account of what Foundry is, what it is built from, and what is proven.
-Status as of 2026-10-14: **127/127 tests green, `tsc` clean**, all logic running
+Status as of 2026-10-14: **128/128 tests green, `tsc` clean**, all logic running
 against **real git** (bare repos + clones on disk). There is no fake backend:
 the port has two real implementations — `GitAdapter` (local git, now) and
 `cloudflarePort` (Artifacts, spike-verified live 2026-10-13: push → gate →
@@ -259,7 +259,7 @@ landed on `base`.
 ## 9. Verification
 
 ```bash
-npm test            # vitest: 127/127 across gate-ts, artifacts-port, stores, gate, orchestrator
+npm test            # vitest: 128/128 across gate-ts, artifacts-port, stores, gate, orchestrator
 npm run typecheck   # tsc --noEmit, strict, zero errors
 npm run demo:graphvc  # push → hook → gate → 2-parent merge + K11 triples
 npm run smoke:lkg     # live write/read/traverse against K11
@@ -310,7 +310,7 @@ foundry/
 
 All three systems share one knowledge graph (K11, via `LKG_URL`; the graph
 is an optional integration — the gate is local-only without it).
-Suite: 127/127 vitest + `tsc` clean; `demo:graphvc` merges end to end.
+Suite: 128/128 vitest + `tsc` clean; `demo:graphvc` merges end to end.
 
 ### Triple shapes (single authority: `packages/lkg-client/src/triples.ts`)
 - Intake: `task:<id> —has_fork→ repo:<fork>`, `task:<id> —on_base→ repo:<base>`
