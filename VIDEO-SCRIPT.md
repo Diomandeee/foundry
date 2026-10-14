@@ -17,7 +17,9 @@ npm ci && npm run typecheck && npx vitest run
 npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo   # fork → ticket → push → verdict, locally
 ```
 
-To rebuild the video: `cd ../foundry-video && npx remotion render src/index.ts FoundryDemo out/foundry-demo.mp4`.
+To rebuild the video: `cd ../foundry-video && ./build.sh` — it renders the visuals,
+generates the narration per scene, fits each clip to its scene's window, and muxes
+the two into `out/foundry-demo-narrated.mp4`.
 
 ## Narration, beat by beat
 
