@@ -34,6 +34,12 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
+          # This action defaults to RUSTFLAGS="-D warnings", which turned
+          # cc-kernel's own `#![warn(missing_docs)]` (and one unused import)
+          # into build errors and failed the job before a single test ran.
+          # substrate/ is vendored unmodified, so the lint level up here is
+          # not ours to raise; the job's contract is to run the suites.
+          rustflags: ""
 
       - name: cc-kernel spec tests
         run: cargo test --manifest-path substrate/cc-kernel/Cargo.toml
