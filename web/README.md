@@ -1,4 +1,5 @@
-# web/ — board UI (Phase 3)
+# web/ — board UI notes
 
-Workers Static + API: Working / Needs-you / In-review / Ready-to-merge,
-plus the embedded Spatial Git 3D view (fed by `GET /history.json`).
+The decision board is served by `workers/api` (`GET /`, live on staging and
+production). There is no separate frontend build; this directory holds no
+code. The machine history feed behind external views is `GET /history.json`.

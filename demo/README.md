@@ -1,4 +1,8 @@
-# demo/ — seed repo + rehearsal script (Phase 2.2 / 3.3)
+# demo/ — local rehearsal notes
 
-Seed TypeScript project with deliberately conflicting tasks for the
-3-agent concurrent demo, plus the 5–10 min video arc.
+The old plan (seed project with conflicting tasks for a 3-agent video) was
+superseded: the video now shows the real local demo
+(`npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo`) plus live
+staging verdicts, and a real three-agent project
+(https://github.com/Diomandeee/fleet-dispatch) was built through the gate.
+This directory holds no code; see VIDEO-SCRIPT.md for the shot plan.

@@ -2,6 +2,11 @@
 
 Per-claim evidence boundaries. Match every status report to `safe_claim`.
 
+> Status note 2026-10-14: the "Cloud deploy" row below is superseded —
+> staging and production are live (namespaces, D1, queues, per-repo
+> subscriptions, ticketed merges recorded). The body is preserved as the
+> dated record; current proof status lives in IMPLEMENTATION.md §8.
+
 ## Local pipeline (decide/merge/record)
 - domain: local pipeline
 - status: ready

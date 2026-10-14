@@ -1,8 +1,9 @@
 # substrate/ — vendored upstream sources
 
-Foundry stands on four existing systems. They are vendored here (not
-submodules) so a clean clone builds and judges offline. All four are the
-same author's work; each keeps its own README and license.
+Foundry stands on five existing systems. They are vendored here (not
+submodules) so a clean clone builds and judges offline. Each keeps its own
+README and license; nothing under `substrate/` is edited except by
+re-vendoring from its source.
 
 Vendored 2026-10-14. File lists verified identical to sources (diff -r).
 
