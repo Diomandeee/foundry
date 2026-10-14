@@ -182,3 +182,28 @@ describe("handlePush idempotency and races", () => {
     }
   });
 });
+
+describe("handlePush debug flag", () => {
+  it("attaches the stack to pipeline errors when debug is on", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    deps.debug = true;
+    const exploding = {
+      merge: async (_req: MergeRequest) => {
+        throw new Error("boom");
+      },
+    };
+    deps.merger = exploding as Merger;
+    try {
+      const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+      expect(res.handled).toBe(true);
+      if (!res.handled) return;
+      expect(res.record.verdict).toBe("reject");
+      const reason = res.record.reason;
+      expect(reason && reason.reason === "invalid_args" && reason.message).toContain("boom");
+      expect(reason && reason.reason === "invalid_args" && reason.message).toContain("at ");
+    } finally {
+      deps.debug = false;
+    }
+  });
+});

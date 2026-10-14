@@ -50,6 +50,10 @@ describe("createTask", () => {
       expect(t?.scope.can_mutate).toBe(true);
     }
     expect(await port.list()).toEqual(["base", "t1--a", "t1--b"]);
+    expect(res.subscribeCommands).toEqual([
+      "bash tools/subscribe-repo.sh <env> 't1--a'",
+      "bash tools/subscribe-repo.sh <env> 't1--b'",
+    ]);
   });
 
   it("prefers explicit instructions and auto-creates missing base", async () => {

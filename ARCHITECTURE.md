@@ -24,8 +24,10 @@ agents (N concurrent) ──push──▶ Artifacts (repo-per-task forks)
                                       R2 scoring is future work
                                       │
                                       ▼
-                              experience: board + Spatial Git 3D
-                                          (Phase 3, unbuilt)
+                              experience: board (`GET /`, live) +
+                                          Spatial Git 3D (substrate vendored,
+                                          renders `GET /history.json`;
+                                          hosted view is future work)
 ```
 
 ## Decisions

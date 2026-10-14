@@ -24,6 +24,8 @@ export interface PipelineDeps {
   overlap?: OverlapOracle;
   planCheck?: PlanCheck;
   planCheckEnforce?: boolean;
+  /** When true, pipeline-error reasons carry the stack (DEBUG=1). */
+  debug?: boolean;
 }
 
 export type PipelineResult =
@@ -149,6 +151,10 @@ export async function handlePush(
     return { handled: true, record };
     }
   } catch (e) {
+    const stack =
+      deps.debug && e instanceof Error && e.stack
+        ? ` :: ${e.stack.split("\n").slice(0, 6).join(" | ")}`
+        : "";
     const record = await deps.store.record({
       namespace: push.namespace,
       repo: push.repo,
@@ -158,7 +164,7 @@ export async function handlePush(
       verdict: "reject",
       reason: {
         reason: "invalid_args",
-        message: `pipeline error: ${e instanceof Error ? e.message : String(e)}`,
+        message: `pipeline error: ${e instanceof Error ? e.message : String(e)}${stack}`,
       },
     });
     return { handled: true, record };

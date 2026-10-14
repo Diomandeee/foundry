@@ -32,6 +32,12 @@ export interface CreateTaskResult {
   baseSha: string;
   dispatches: AgentDispatch[];
   planCheck: PlanVerdict;
+  /**
+   * Operator follow-ups: the event API is per-repo, so each fork must be
+   * subscribed before its pushes reach the gate. Run with the env name
+   * filled in (`staging` or `production`).
+   */
+  subscribeCommands: string[];
 }
 
 const NAME = /^[A-Za-z0-9._-]{1,64}$/;
@@ -131,7 +137,17 @@ export async function createTask(
         baseSha,
       });
     }
-    return { taskId: input.taskId, baseRepo: input.baseRepo, baseSha, dispatches, planCheck: verdict };
+    const subscribeCommands = dispatches.map(
+      (d) => `bash tools/subscribe-repo.sh <env> '${d.forkRepo}'`,
+    );
+    return {
+      taskId: input.taskId,
+      baseRepo: input.baseRepo,
+      baseSha,
+      dispatches,
+      planCheck: verdict,
+      subscribeCommands,
+    };
   } finally {
     base.dispose();
   }

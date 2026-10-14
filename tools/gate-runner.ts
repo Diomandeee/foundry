@@ -61,6 +61,15 @@ class JsonlDecisionStore implements DecisionStore {
       ) ?? null
     );
   }
+  async findBySha(sha: string) {
+    const rows = (await this.list(undefined, Number.MAX_SAFE_INTEGER)) as DecisionRecord[];
+    return (
+      rows.find(
+        (r) =>
+          r.after_sha === sha || r.before_sha === sha || r.merged_sha === sha,
+      ) ?? null
+    );
+  }
   async record(d: Omit<DecisionRecord, "id" | "decided_at">) {
     // Idempotent: a redelivered event returns its first decision.
     const prior = await this.findByEvent(

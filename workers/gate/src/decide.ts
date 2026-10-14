@@ -99,6 +99,30 @@ function toProposedCall(
   return call;
 }
 
+/** History caps: a fork point past the cap used to false-conflict. */
+const HIST_FIRST = 200;
+const HIST_DEEP = 2000;
+
+/**
+ * Newest-first history guaranteed to include `forkPoint` when it exists
+ * within the deep cap. Returns the history plus whether the fork point
+ * was found (empty forkPoint = genesis: everything is fork-side).
+ */
+async function historyBackTo(
+  handle: RepoHandle,
+  branch: string,
+  forkPoint: string,
+): Promise<{ hist: CommitInfo[]; found: boolean }> {
+  if (forkPoint === "") {
+    return { hist: await handle.history(branch, HIST_FIRST), found: true };
+  }
+  let hist = await handle.history(branch, HIST_FIRST);
+  if (hist.some((c) => c.sha === forkPoint)) return { hist, found: true };
+  if (hist.length < HIST_FIRST) return { hist, found: false };
+  hist = await handle.history(branch, HIST_DEEP);
+  return { hist, found: hist.some((c) => c.sha === forkPoint) };
+}
+
 /** Commits in `hist` (newest-first) strictly after `forkPoint` (exclusive). */
 function commitsAfter(hist: CommitInfo[], forkPoint: string): CommitInfo[] {
   const out: CommitInfo[] = [];
@@ -152,15 +176,35 @@ export async function decidePush(
     } catch {
       // Empty/unreadable base metadata: fall through with "main".
     }
-    const forkHist = await fork.history(branch, 200);
+    const forkBack = await historyBackTo(fork, branch, ticket.baseSha);
+    const forkHist = forkBack.hist;
     let baseHist: CommitInfo[];
     try {
-      baseHist = await base.history(branch, 200);
+      const baseBack = await historyBackTo(base, branch, ticket.baseSha);
+      baseHist = baseBack.hist;
+      if (ticket.baseSha !== "" && !baseBack.found) {
+        return {
+          verdict: "reject",
+          reason: {
+            reason: "invalid_args",
+            message: `fork point ${ticket.baseSha.slice(0, 8)} not in base history (base moved on; rebase the fork)`,
+          },
+        };
+      }
     } catch (e) {
       // Empty base (first-ever task): no branch to read yet.
       const msg = e instanceof Error ? e.message : String(e);
       if (/could not find|not found|no such|empty/i.test(msg)) baseHist = [];
       else throw e;
+    }
+    if (ticket.baseSha !== "" && !forkBack.found) {
+      return {
+        verdict: "reject",
+        reason: {
+          reason: "invalid_args",
+          message: `fork point ${ticket.baseSha.slice(0, 8)} not in fork history (too old or unknown)`,
+        },
+      };
     }
     if (!forkHist.some((c) => c.sha === push.after)) {
       return {

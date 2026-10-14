@@ -485,3 +485,26 @@ describe("decidePush empty base", () => {
     }
   });
 });
+
+describe("decidePush fork-point honesty", () => {
+  it("rejects when the fork point is not in history", async () => {
+    const { baseSha } = await setup();
+    const ticket = await tickets.getTicketByFork("task-1");
+    ticket!.baseSha = "f".repeat(40);
+    await tickets.saveTicket(ticket!);
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const d = await decidePush(port, tickets, {
+      namespace: "test",
+      repo: "task-1",
+      ref: "refs/heads/main",
+      before: baseSha,
+      after,
+    });
+    expect(d.verdict).toBe("reject");
+    if (d.verdict === "reject" && d.reason.reason === "invalid_args") {
+      expect(d.reason.message).toContain("fork point");
+    } else {
+      expect.unreachable("expected invalid_args reject");
+    }
+  });
+});

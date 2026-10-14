@@ -39,3 +39,14 @@ describe("MemoryDecisionStore idempotency", () => {
     expect((await store.list()).length).toBe(2);
   });
 });
+
+describe("MemoryDecisionStore findBySha", () => {
+  it("finds the latest decision touching a sha", async () => {
+    const store = new MemoryDecisionStore();
+    const m = await store.record({ ...event, verdict: "merge", merged_sha: "c".repeat(40) });
+    await store.record({ ...event, after_sha: "d".repeat(40), verdict: "reject" });
+    expect(await store.findBySha("c".repeat(40))).toMatchObject({ id: m.id });
+    expect(await store.findBySha("d".repeat(40))).toMatchObject({ verdict: "reject" });
+    expect(await store.findBySha("0".repeat(40))).toBeNull();
+  });
+});

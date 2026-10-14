@@ -28,6 +28,8 @@ export interface DecisionStore {
     beforeSha: string,
     afterSha: string,
   ): Promise<DecisionRecord | null>;
+  /** The latest decision touching a commit (push head or merge sha). */
+  findBySha(sha: string): Promise<DecisionRecord | null>;
 }
 
 export class MemoryDecisionStore implements DecisionStore {
@@ -50,6 +52,18 @@ export class MemoryDecisionStore implements DecisionStore {
           r.after_sha === afterSha,
       ) ?? null
     );
+  }
+
+  async findBySha(sha: string): Promise<DecisionRecord | null> {
+    const hit = [...this.rows]
+      .reverse()
+      .find(
+        (r) =>
+          r.after_sha === sha ||
+          r.before_sha === sha ||
+          r.merged_sha === sha,
+      );
+    return hit ?? null;
   }
 
   async record(
@@ -161,6 +175,18 @@ export class D1DecisionStore implements DecisionStore {
       d.after_sha,
     );
     return row ?? { ...d, decided_at };
+  }
+
+  async findBySha(sha: string): Promise<DecisionRecord | null> {
+    const row = await this.db
+      .prepare(
+        `SELECT * FROM decisions
+         WHERE after_sha = ? OR before_sha = ? OR merged_sha = ?
+         ORDER BY id DESC LIMIT 1`,
+      )
+      .bind(sha, sha, sha)
+      .first<Record<string, unknown>>();
+    return row ? mapRow(row) : null;
   }
 
   async list(repo?: string, limit = 50): Promise<DecisionRecord[]> {

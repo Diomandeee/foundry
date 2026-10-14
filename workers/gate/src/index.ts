@@ -26,6 +26,7 @@ function depsFromEnv(env: Env): PipelineDeps {
   if (env.PACT_URL) {
     deps.planCheck = new PactServerPlanCheck(env.PACT_URL);
   }
+  if (env.DEBUG === "1") deps.debug = true;
   return deps;
 }
 

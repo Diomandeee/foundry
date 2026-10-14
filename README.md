@@ -29,7 +29,7 @@ clean clone is complete — see `substrate/README.md` for provenance.
 ```bash
 npm ci
 npm run typecheck            # 0 errors
-npx vitest run               # 128 passed, 18 files
+npx vitest run               # 135 passed, 19 files
 npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo
 # -> fork, ticket, agent push, gate verdict, base log. All local.
 ```
@@ -95,7 +95,7 @@ step-by-step account); `setup-env.sh` is the idempotent env provisioner.
 
 - `workers/orchestrator` — task intake: fork-per-task, token minting, agent dispatch
 - `workers/gate` — queue consumer on `cf.artifacts.repo.pushed`: gate + merge
-- `workers/api` — board + why-trail HTTP API (Phase 2/3 stub: health + 501s)
+- `workers/api` — board UI (`GET /`) + `GET /decisions` + `GET /why/:sha` + `GET /history.json`, all D1-backed
 - `packages/evidence` — standalone why-trail library (tested; not wired into workers yet)
 - `packages/gate-ts` — Worker-native admissibility gate (TS port)
 - `packages/lkg-client` — Live Knowledge Graph fetch client
