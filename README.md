@@ -50,7 +50,7 @@ is recorded next to the decision.
 | D1 `decisions` table | One row per push: who, what commit, approve or refuse, reason, files, merge hash. Push the same commit twice and the second is a recorded no-op. |
 | D1 `tickets` table | Which task owns which fork, forked from what commit, what paths the agent may touch. |
 | `packages/gate-ts` | The checks themselves, as a plain library with unit tests. |
-| `substrate/` | Vendored upstream sources this project builds on (merge-spec, graph, ledger, history-view, daemon pattern). Provenance in `substrate/README.md`. |
+| `substrate/` | Vendored upstream sources this project builds on (merge-spec, graph, ledger, history-view). Provenance in `substrate/README.md`. |
 
 Words used above, defined once: a **fork** is an agent's private copy; **base**
 is the shared code; a **ticket** is the task record linking the two; a

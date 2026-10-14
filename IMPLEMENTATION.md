@@ -183,8 +183,9 @@ complete — provenance in `substrate/README.md`):
 - `cc-kernel` (Rust) — the rule-check spec `gate-ts` ports; tests mirrored.
 - `live-knowledge-graphs` — the optional graph server behind `lkg-client`.
 - `trajectory-memory-ledger` — the history format the decision rows follow.
-- `orchestratord` — the dispatch pattern the orchestrator follows
-  (note: no declared upstream license — confirm before release).
+- `orchestratord` — the dispatch pattern `workers/orchestrator` follows.
+  Not vendored: upstream declares no license, so its code is not
+  redistributed here (the pattern is described in prose).
 - `spatial-git` — history-view tooling behind the machine feed.
 
 **Open source** (pinned in `package-lock.json`): `hono@4` (HTTP routing),
