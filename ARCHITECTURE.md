@@ -1,53 +1,82 @@
 # Foundry architecture
 
+How a push becomes a decision. Same vocabulary as the README: a **fork** is
+an agent's private copy, **base** is the shared code, a **ticket** links one
+task to one fork, a **verdict** is one recorded approve/refuse row.
+
 ```
-agents (N concurrent) ──push──▶ Artifacts (repo-per-task forks)
-                                          │ repo.pushed (queue)
-                                          ▼
-                              ┌─ gate Worker ─────────────┐
-                              │ 1. admissibility (gate-ts)│
-                              │ 2. conflict check + KG    │
-                              │    overlap (lkg-client)   │
-                              │ 3. PACT chain check       │
-                              └───────┬───────────┬───────┘
-                                   MERGE         REJECT + reason
-                                      │               └─▶ agent retries
-                                      ▼
-                              main (isomorphic-git merge in-Worker;
-                                    conflicts recorded in D1 with both
-                                    sides listed; resolver agent is
-                                    future work)
-                                      │
-                                      ▼
-                              memory: LKG verdict triples (live when
-                                      LKG_URL is set); TML schema-v2 →
-                                      R2 scoring is future work
-                                      │
-                                      ▼
-                              experience: board (`GET /`, live) +
-                                          Spatial Git 3D (substrate vendored,
-                                          renders `GET /history.json`;
-                                          hosted view is future work)
+agents push freely          Cloudflare receives         gate decides
+                   │                    │                        │
+                   ▼                    ▼                        ▼
+          ┌─ fork per agent ──┐  ┌─ push event ──┐   ┌─ gate worker ─────────┐
+          │ stock git over    │  │ one queue per │   │ 1. ticket exists?     │
+          │ HTTPS, per-repo   │─▶│ repo, each    │──▶│ 2. diff non-empty?    │
+          │ tokens            │  │ subscribed to │   │ 3. fork point fresh?  │
+          └───────────────────┘  │ the gate      │   │ 4. no shared edits?   │
+                                 └───────────────┘   │ 5. paths in scope?    │
+                                                     └───┬───────────┬───────┘
+                                                     APPROVE        REFUSE
+                                                         │              │
+                                                         ▼              ▼
+                                              merge into base,   write refusal
+                                              record approval   + reason.
+                                              + merge hash.      nothing lands.
+                                                         │              │
+                                                         └──────┬───────┘
+                                                                ▼
+                                                     D1 decisions table:
+                                                     one row per push,
+                                                     newest last.
 ```
 
-## Decisions
+## Path of one push, end to end
 
-- Agents use stock git-over-HTTPS with repo-scoped tokens
-  (`art_v1_<secret>?expires=`, minted by `packages/artifacts-port` via the
-  Artifacts token API).
-- Gate is 100% in-Worker (TS port of Rust `check_admissibility`); LKG/TML stay
-  hosted off-Workers and are called via fetch.
-- Events via account-level `artifacts` event subscription into the gate's `queue()`.
-- Recovery, not hidden fallbacks: queue redelivery replays
-  decide→merge→record idempotently (UNIQUE event index + first-decision-wins);
-  a base that moved between decide and merge re-decides once, then records
-  conflict. LKG is optional: overlap verdict notifications run only when
-  `LKG_URL` is set — otherwise the gate is local-only.
+1. **Task intake** (`workers/orchestrator`, `POST /tasks` with a secret
+   token): creates the fork from base's current head, writes the ticket row
+   (task, base repo, fork repo, fork-point commit, allowed paths, agent),
+   returns the clone URL plus a short-lived token and the exact subscribe
+   command for the new fork.
+2. **Agent works**: plain `git clone`, `commit`, `push`. No custom client.
+3. **Event delivery**: the push fires a per-repo event subscription into a
+   queue the gate reads. A repo nobody subscribed is silently ignored —
+   this bit us, so subscribing is part of intake, not a separate chore.
+4. **Decide** (`packages/gate-ts`, runs inside the gate worker): load the
+   ticket; diff fork against base in memory; run the five checks in order;
+   first failure is the verdict. Pushing the same commit twice hits a
+   uniqueness rule and is recorded once — redelivery is safe.
+5. **Merge or refuse**: a pass is merged into base with an ordinary merge
+   commit and its hash is stored on the verdict row. A refusal stores the
+   reason; the fork is untouched so the agent can fix and re-push.
+6. **Read**: `workers/api` serves the board, the JSON list, per-commit
+   explanations, and the machine feed — all straight from the same table.
 
-## Data
+## What's inside the worker, and what stays outside
 
-- Decisions: D1 `decisions` table (created in spike, Phase 0.5).
-- Trajectories: LKG verdict triples (live when `LKG_URL` is set);
-  schema-v2 JSONL → R2 scoring is future work.
-- Task tickets: D1 `tickets` table, plus LKG intake triples
-  (task → fork → agents) when `LKG_URL` is set.
+- The five checks run **inside the gate worker** as a plain library, so a
+  verdict never depends on a network call. Two optional integrations live
+  outside and are off unless configured: an overlap check against a
+  knowledge-graph server, and a plan-file check. Both are advisory unless
+  a deployment explicitly enforces them.
+- The merge itself runs in-worker with an in-memory filesystem: clone base
+  at its head, apply the fork's diff, commit. If base moved between the
+  check and the merge, the gate re-checks once against the new head;
+  if that fails it records a conflict instead of forcing anything.
+
+## Data, in words
+
+- `decisions`: one row per push — namespace, repo, branch, before/after
+  commit, approve/refuse, machine-readable reason, files touched, merge
+  commit when approved, task and agent ids, timestamp.
+- `tickets`: one row per fork — task, base repo, fork-point commit, fork
+  repo, agent, allowed paths plus expiry as JSON.
+- Everything the board, the API, and the video show comes from these two
+  tables. There is no second source of truth.
+
+## Optional and future, labeled as such
+
+- Overlap verdicts and task-intake records can also be mirrored to a
+  knowledge-graph server when configured; the D1 rows stand without it.
+- A 3D history view (`substrate/spatial-git`) renders the machine feed;
+  hosting it is future work.
+- A standalone evidence companion (`packages/evidence`) is tested but not
+  wired into the workers yet.
