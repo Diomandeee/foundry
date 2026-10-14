@@ -8,7 +8,8 @@ import { IsomorphicMerger } from "./merge.js";
 import { handlePush, type PipelineDeps } from "./pipeline.js";
 import { D1DecisionStore, D1TicketStore } from "@foundry/stores";
 
-// Env comes from worker-configuration.d.ts (run `wrangler types`).
+// Env comes from ./env.d.ts (bindings mirror wrangler.toml; committed so
+// a clean clone typechecks without `wrangler types`).
 
 function depsFromEnv(env: Env): PipelineDeps {
   const { fs } = memfs();

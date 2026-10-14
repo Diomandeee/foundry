@@ -5,7 +5,8 @@ import { PactServerPlanCheck, StubPlanCheck } from "@foundry/plan-check";
 import { D1TicketStore } from "@foundry/stores";
 import { createTask } from "./tasks.js";
 
-// Env comes from worker-configuration.d.ts (run `wrangler types`).
+// Env comes from ./env.d.ts (bindings mirror wrangler.toml; committed so
+// a clean clone typechecks without `wrangler types`).
 
 const app = new Hono<{ Bindings: Env }>();
 

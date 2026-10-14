@@ -2,6 +2,8 @@ node_modules/
 dist/
 tools/dist/
 .wrangler/
+# `wrangler types` output. Redundant with @cloudflare/workers-types; the
+# committed workers/*/env.d.ts files carry the binding interfaces.
 worker-configuration.d.ts
 *.log
 .DS_Store
