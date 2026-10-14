@@ -218,12 +218,17 @@ the live staging/production verdicts above, not by mocks.
 
 ## 10. What is left
 
-1. **Video narration + submission** — silent cut rendered
-   (`../foundry-video/out/foundry-demo.mp4`); record voiceover per
-   `../foundry-video/CUES.md`; submit by Oct 14, 11:59 PM PDT.
-2. **`orchestratord` license** — confirm releasability before publishing.
-3. **After the contest** — hosted history view, evidence wiring, resolver
+1. **Submission** — the demo is rendered and narrated
+   (`../foundry-video/out/foundry-demo-narrated.mp4`, 5:13). The entry form at
+   cloudflare.com/git-competition/submit needs the video hosted somewhere the
+   form accepts, plus team details and the terms checkboxes. Deadline:
+   Oct 14, 11:59 PM PDT.
+2. **After the contest** — hosted history view, evidence wiring, resolver
    agent for conflicts.
+
+`orchestratord` used to be listed here: it is no longer vendored, because
+upstream declares no license and this repository is MIT. See
+`substrate/README.md`.
 
 ## 11. Repo map
 

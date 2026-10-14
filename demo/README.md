@@ -1,8 +1,19 @@
-# demo/ — local rehearsal notes
+# demo/ — rehearsal notes
 
-The old plan (seed project with conflicting tasks for a 3-agent video) was
-superseded: the video now shows the real local demo
-(`npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo`) plus live
-staging verdicts, and a real three-agent project
-(https://github.com/Diomandeee/fleet-dispatch) was built through the gate.
-This directory holds no code; see VIDEO-SCRIPT.md for the shot plan.
+The video plan that lived here (a seeded 3-agent project with conflicting tasks)
+was superseded. The delivered demo shows the real system instead: the local
+fork-to-verdict loop, then live refusals and merges on staging, then the three
+agents that really built a dispatcher in three forks.
+
+Rebuild the rehearsal and watch it yourself first:
+
+```bash
+npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo
+```
+
+That creates base + fork + ticket locally, pushes a file, prints the verdict,
+and shows base advance. Nothing leaves the machine, and no Cloudflare account is
+needed.
+
+This directory holds no code. See `VIDEO-SCRIPT.md` for the delivered demo's
+beat-by-beat narration.
