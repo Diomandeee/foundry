@@ -1,76 +1,110 @@
-# Foundry — an agent-native Git platform on Cloudflare
+# Foundry — every push is reviewed before it lands
 
-Every push is a proposal. Merges are earned, not assumed.
+Foundry is a merge gate for teams of AI agents sharing one codebase. Agents
+work in their own copies (forks) and push freely. Nothing reaches the shared
+code (base) unless a deterministic checker approves it — and every approval
+or refusal is written down with the reason, so you can always ask why.
 
-Foundry is built for a world where hundreds of agents work on the same codebase:
-each agent gets an isolated fork, every push passes through a deterministic
-admissibility gate, conflicts are recorded in D1 with both sides listed,
-and every merge carries a why-trail (decision + trajectory + provenance).
+Built for the [Cloudflare next-Git-platform competition](http://cloudflare.com/git-competition).
+It runs on Workers (the checkers), Artifacts (git hosting), Queues (event
+delivery), and D1 (the decision database).
 
-Built for the [Cloudflare next-Git-platform competition](http://cloudflare.com/git-competition)
-on Workers + Artifacts. See [ARCHITECTURE.md](ARCHITECTURE.md) for the
-diagram and [IMPLEMENTATION.md](IMPLEMENTATION.md) for the full build account.
+## What happens when an agent pushes
 
-## Substrate (existing, integrated)
+```
+agent ──git push──▶ fork repo ──push event──▶ queue ──▶ gate worker
+                                                              │
+                              ┌───────────────────────────────┘
+                              ▼
+                     1. find the ticket (which task owns this fork?)
+                     2. compare fork against base (what changed?)
+                     3. run the checks (empty? stale? conflicts? in scope?)
+                              │
+                 ┌─────────────┴──────────────┐
+                 ▼                            ▼
+              APPROVE                      REFUSE
+                 │                            │
+                 ▼                            ▼
+      merge into base,              write the refusal + reason
+      write the approval            into the database.
+      + what landed                 nothing lands.
+      into the database.
+```
 
-| Layer | Source |
+Concretely, the gate worker wakes up on each push event, loads the task
+ticket for that fork from D1, diffs the fork against base in memory, and
+applies the checks in a fixed order: ticket must exist, diff must be
+non-empty, fork point must be fresh (under 5 minutes old), no file both
+sides changed, every file inside the task's allowed paths. First failure
+wins and is recorded. A pass is merged into base and the merge commit hash
+is recorded next to the decision.
+
+## The pieces and how they connect
+
+| Piece | What it does, plainly |
 |---|---|
-| Merge gate | `substrate/cc-kernel` (Rust spec, `cargo test` in CI) + `packages/gate-ts` (TS port, 13 tests) |
-| Shared knowledge + overlap | `substrate/live-knowledge-graphs` (KG server + eval) + `packages/lkg-client` (triple shapes) |
-| Why-trail | `substrate/trajectory-memory-ledger` (schema-v2 + daemon) + `packages/evidence` (TS companion) |
-| Orchestration pattern | `substrate/orchestratord` (heartbeat + dispatch daemon) + `workers/orchestrator` (fork-per-task) |
-| 3D history view | `substrate/spatial-git` (git → 3D) fed by `GET /history.json` |
+| `workers/orchestrator` | Takes a task ("agent A, do X on base"), creates a fork, writes a ticket into D1, hands the agent a clone URL + token. Needs a secret token to accept tasks. |
+| `workers/gate` | Wakes on every push, runs the checks above, merges or refuses, records the decision in D1. Has no web page — it only eats queue events. |
+| `workers/api` | Read-only web front: the decision board (`/`), JSON list (`/decisions`), per-commit explanation (`/why/:sha`), machine feed (`/history.json`). |
+| Cloudflare Queue | Carries each push event from its repo to the gate. Every repo is subscribed individually — an unsubscribed repo's pushes are silently ignored. |
+| D1 `decisions` table | One row per push: who, what commit, approve or refuse, reason, files, merge hash. Push the same commit twice and the second is a recorded no-op. |
+| D1 `tickets` table | Which task owns which fork, forked from what commit, what paths the agent may touch. |
+| `packages/gate-ts` | The checks themselves, as a plain library with unit tests. |
+| `substrate/` | Vendored upstream sources this project builds on (merge-spec, graph, ledger, history-view, daemon pattern). Provenance in `substrate/README.md`. |
 
-Upstream sources are vendored under `substrate/` (not submodules) so a
-clean clone is complete — see `substrate/README.md` for provenance.
+Words used above, defined once: a **fork** is an agent's private copy; **base**
+is the shared code; a **ticket** is the task record linking the two; a
+**verdict** is one recorded approve/refuse row; the **why-trail** is just the
+verdict row plus the merge hash — enough to replay why any commit exists.
 
 ## Verify locally (no Cloudflare account needed)
 
 ```bash
 npm ci
 npm run typecheck            # 0 errors
-npx vitest run               # 135 passed, 19 files
+npx vitest run               # 136 passed, 19 files
 npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo
-# -> fork, ticket, agent push, gate verdict, base log. All local.
+# -> creates base + fork + ticket locally, pushes a file, prints the
+#    verdict (merge), shows base advanced. Nothing leaves your machine.
 ```
 
-## Live deployment (this entry, verified 2026-10-13)
+## Watch it live (staging)
+
+Deployed and working now:
 
 | Piece | Where |
 |---|---|
-| Gate | https://foundry-gate.motionmix-participation.workers.dev |
-| Orchestrator | https://foundry-orchestrator.motionmix-participation.workers.dev |
-| Artifacts | namespace `foundry-dev`, repos `seed`, `base`, `fork-1` |
-| D1 | `foundry-decisions` (`decisions` + `tickets`) |
-| Events | `pushed` subscription (scoped per repo) → `foundry-push-events` → gate `queue()` |
-| Task auth | `POST /tasks` requires `Authorization: Bearer <TASK_TOKEN>`; without the `TASK_TOKEN` secret the route fails closed (503) |
+| Board | https://foundry-api-staging.motionmix-participation.workers.dev |
+| Orchestrator | https://foundry-orchestrator-staging.motionmix-participation.workers.dev |
+| Gate | `foundry-gate-staging` (queue consumer, no web page) |
+| Repos | Artifacts namespace `foundry-staging` (`dispatch`, `seed`, `base`, …) |
+| Database | D1 `foundry-decisions-staging` |
 
-## Reproduce push → verdict (judge path)
+Try the refusal path yourself — push anything to `seed` (no ticket exists for
+it, so the gate refuses on purpose, and that refusal is the feature):
 
 ```bash
-npx wrangler login           # Workers Paid (Artifacts open beta)
-# 1. Mint a token and clone the seed repo
-npx wrangler artifacts repos issue-token seed --namespace foundry-dev
-git clone 'https://x:<TOKEN>@<host>/git/foundry-dev/seed.git' seed
-# 2. Push anything. No ticket exists for seed, so the gate rejects on purpose:
-echo hi >> README.md && git -C seed commit -am ping && git -C seed push origin main
-# 3. Read the verdict the gate recorded:
-npx wrangler d1 execute foundry-decisions --remote \
+npx wrangler login           # Workers Paid (Artifacts is in open beta)
+npx wrangler artifacts repos issue-token seed --namespace foundry-staging
+git clone 'https://x:<TOKEN>@c1c0329d34dfd27ac727c8a4ff18611f.artifacts.cloudflare.net/git/foundry-staging/seed.git' seed
+git -C seed commit --allow-empty -m ping && git -C seed push origin main
+npx wrangler d1 execute foundry-decisions-staging --remote \
   --command "SELECT repo, verdict, reason FROM decisions ORDER BY id DESC LIMIT 1;"
 # -> seed | reject | no task ticket for fork seed
 ```
 
-The ticketed merge path (fork + D1 ticket + push → `merge` + `merged_sha`
-on base) was exercised live: merge `06841fc` landed on `base` with all
-fork files, verdict row in D1. Two wiring notes for your own tasks:
+The approval path ran live three times tonight: three agents built three
+slices of a real project in three forks, and all three merged into `base`
+with files and merge hashes recorded (see
+https://github.com/Diomandeee/fleet-dispatch for what they built).
+
+Task intake (creates a fork + ticket; needs the secret):
 
 ```bash
-# Task intake (creates the fork + D1 ticket; needs the secret from Deploy):
-curl -X POST https://<orchestrator>/tasks \
+curl -X POST https://foundry-orchestrator-staging.motionmix-participation.workers.dev/tasks \
   -H "Authorization: Bearer $TASK_TOKEN" -H 'Content-Type: application/json' \
   -d '{"baseRepo":"base","taskId":"t1","agents":["a1"]}'
-# The subscription API is per-repo: subscribe each new fork or its
-# pushes never reach the gate:
+# Then subscribe the new fork, or its pushes never reach the gate:
 bash tools/subscribe-repo.sh staging 't1--a1'
 ```
 
@@ -79,28 +113,14 @@ bash tools/subscribe-repo.sh staging 't1--a1'
 ```bash
 npm ci
 npx wrangler login
-bash tools/setup-env.sh staging       # namespace, D1, queue, deploys, subscription
+bash tools/setup-env.sh staging       # namespace, D1, queue, deploys, subscriptions
 bash tools/setup-env.sh production
-# Task intake needs a secret per environment (Bearer for POST /tasks):
 printf '%s' "$(openssl rand -hex 32)" | npx wrangler secret put TASK_TOKEN -e staging
-# Optional integrations (KG overlap, verdict triples, PACT checks):
-npx wrangler secret put LKG_URL -e staging
-npx wrangler secret put LKG_TOKEN -e staging
-npx wrangler secret put PACT_URL -e staging
 ```
-`tools/paid-spike.sh` is the original spike harness (kept for the
-step-by-step account); `setup-env.sh` is the idempotent env provisioner.
 
-## Layout
-
-- `workers/orchestrator` — task intake: fork-per-task, token minting, agent dispatch
-- `workers/gate` — queue consumer on `cf.artifacts.repo.pushed`: gate + merge
-- `workers/api` — board UI (`GET /`) + `GET /decisions` + `GET /why/:sha` + `GET /history.json`, all D1-backed
-- `packages/evidence` — standalone why-trail library (tested; not wired into workers yet)
-- `packages/gate-ts` — Worker-native admissibility gate (TS port)
-- `packages/lkg-client` — Live Knowledge Graph fetch client
-- `web/` — board UI (Phase 3)
-- `demo/` — seed repo + rehearsal script (Phase 2/3)
+`tools/paid-spike.sh` is the original spike harness; `setup-env.sh` is the
+idempotent provisioner. `ARCHITECTURE.md` and `IMPLEMENTATION.md` hold the
+deeper design account and build log.
 
 ## License
 
