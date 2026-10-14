@@ -195,7 +195,8 @@ impl FunctionGemmaRuntime {
 
     /// Mock generation for testing.
     fn mock_generate(&self, prompt: &str) -> Result<String> {
-        // Simple heuristic-based mock generation
+        // Simple heuristic-based mock generation (case-insensitive).
+        let prompt = prompt.to_lowercase();
         if prompt.contains("scan") || prompt.contains("list") || prompt.contains("directory") {
             Ok(r#"<start_function_call>
 {"name": "fs.scan", "args": {"path": "/tmp"}}

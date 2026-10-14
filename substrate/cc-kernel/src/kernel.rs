@@ -3,7 +3,7 @@
 use crate::admissibility::{check_admissibility, RejectReason};
 use crate::ledger::Ledger;
 use crate::services::KernelServices;
-use crate::syscalls::{Syscall, SyscallContext, SyscallRegistry};
+use crate::syscalls::{SyscallContext, SyscallRegistry};
 use crate::types::{KernelState, ProposedCall, SnapshotId, ToolReceipt};
 use chrono::Utc;
 use parking_lot::RwLock;

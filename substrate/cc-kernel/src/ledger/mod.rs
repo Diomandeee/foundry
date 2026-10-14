@@ -7,7 +7,7 @@ pub use entry::LedgerEntry;
 pub use storage::LedgerStorage;
 
 use crate::syscalls::Syscall;
-use crate::types::{ArtifactRef, Layer, ProposedCall, SnapshotId, ToolOutput};
+use crate::types::{ProposedCall, SnapshotId, ToolOutput};
 use chrono::{DateTime, Utc};
 use parking_lot::RwLock;
 use std::collections::HashMap;
@@ -158,7 +158,7 @@ impl Ledger {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::types::{CostModel, Mutability, ScopeToken};
+    use crate::types::{ArtifactRef, CostModel, Layer, Mutability, ScopeToken};
     use uuid::Uuid;
 
     struct MockSyscall;
