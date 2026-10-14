@@ -1,0 +1,11 @@
+{
+  "skill_id": "python_stdlib_security_trajectory_delta",
+  "status": "quarantined",
+  "regression_task_ids": [
+    "py_v1_validate_relative_path"
+  ],
+  "shared_failure_task_ids": [],
+  "avoid_when": [
+    "do not activate until regressions are repaired: py_v1_validate_relative_path"
+  ]
+}

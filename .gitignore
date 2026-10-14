@@ -6,3 +6,9 @@ worker-configuration.d.ts
 *.log
 .DS_Store
 secrets/
+
+# Rust substrate builds
+target/
+**/*.rs.bk
+__pycache__/
+*.pyc

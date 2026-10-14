@@ -1,0 +1,17 @@
+[package]
+name = "trajectory-ledgerd"
+version = "0.1.0"
+edition = "2021"
+description = "Rust daemon for the Trajectory Memory Ledger ingestion and scoring path"
+
+[dependencies]
+anyhow = "1"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4", features = ["derive"] }
+fs2 = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+sha1 = "0.10"
+
+[dev-dependencies]
+tempfile = "3"

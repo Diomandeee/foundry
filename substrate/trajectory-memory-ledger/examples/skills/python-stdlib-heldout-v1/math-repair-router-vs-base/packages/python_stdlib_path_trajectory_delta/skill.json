@@ -1,0 +1,101 @@
+{
+  "id": "python_stdlib_path_trajectory_delta",
+  "title": "Python stdlib path trajectory delta skill",
+  "status": "diagnostic",
+  "family": "path",
+  "candidate_paths": [
+    "src/path_tools.py"
+  ],
+  "applies_when": [
+    "task family is path",
+    "candidate path is one of src/path_tools.py",
+    "starter function matches one of common_prefix_path, extension_counts, is_subpath, normalize_segments, split_filename_version"
+  ],
+  "avoid_when": [
+    "diagnostic only for shared failures: py_v1_common_prefix_path, py_v1_normalize_segments, py_v1_split_filename_version"
+  ],
+  "repairs_task_ids": [],
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [
+    "py_v1_common_prefix_path",
+    "py_v1_normalize_segments",
+    "py_v1_split_filename_version"
+  ],
+  "preserved_pass_task_ids": [
+    "py_v1_extension_counts",
+    "py_v1_is_subpath"
+  ],
+  "evidence": [
+    {
+      "task_id": "py_v1_common_prefix_path",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "path",
+      "candidate_path": "src/path_tools.py",
+      "function_name": "common_prefix_path",
+      "public_prompt": "Implement src/path_tools.py with common_prefix_path(paths). Return the common path prefix using POSIX path semantics. Return an empty string for no paths. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": false,
+      "comparison_passed": false,
+      "relation": "shared_fail",
+      "timed_out": false,
+      "stderr_preview": "F\n======================================================================\nFAIL: test_behavior (test_py_v1_common_prefix_path.CommonPrefixPathTest)\n----------------------------------------------------------------------\nTraceback (most recent "
+    },
+    {
+      "task_id": "py_v1_extension_counts",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "path",
+      "candidate_path": "src/path_tools.py",
+      "function_name": "extension_counts",
+      "public_prompt": "Implement src/path_tools.py with extension_counts(paths). Return a dict counting lowercase file extensions from paths. Use an empty string for paths with no suffix. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_is_subpath",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "path",
+      "candidate_path": "src/path_tools.py",
+      "function_name": "is_subpath",
+      "public_prompt": "Implement src/path_tools.py with is_subpath(parent, child). Return True if child is inside parent or equal to parent after POSIX path normalization. Treat paths as absolute or relative strings. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_normalize_segments",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "path",
+      "candidate_path": "src/path_tools.py",
+      "function_name": "normalize_segments",
+      "public_prompt": "Implement src/path_tools.py with normalize_segments(path). Normalize dot and double-slash segments in a POSIX-style path without allowing the result to escape above root for relative paths. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": false,
+      "comparison_passed": false,
+      "relation": "shared_fail",
+      "timed_out": false,
+      "stderr_preview": "F\n======================================================================\nFAIL: test_behavior (test_py_v1_normalize_segments.NormalizeSegmentsTest)\n----------------------------------------------------------------------\nTraceback (most recent"
+    },
+    {
+      "task_id": "py_v1_split_filename_version",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "path",
+      "candidate_path": "src/path_tools.py",
+      "function_name": "split_filename_version",
+      "public_prompt": "Implement src/path_tools.py with split_filename_version(name). Split names like report-v12.txt into ('report', 12, '.txt'). If no -v<number> suffix appears before the extension, return (stem, None, suffix). Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": false,
+      "comparison_passed": false,
+      "relation": "shared_fail",
+      "timed_out": false,
+      "stderr_preview": "E\n======================================================================\nERROR: test_py_v1_split_filename_version (unittest.loader._FailedTest)\n----------------------------------------------------------------------\nImportError: Failed to im"
+    }
+  ],
+  "package_dir": "packages/python_stdlib_path_trajectory_delta"
+}

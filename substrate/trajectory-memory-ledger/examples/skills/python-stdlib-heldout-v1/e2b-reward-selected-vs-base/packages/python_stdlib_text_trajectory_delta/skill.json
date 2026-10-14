@@ -1,0 +1,101 @@
+{
+  "id": "python_stdlib_text_trajectory_delta",
+  "title": "Python stdlib text trajectory delta skill",
+  "status": "quarantined",
+  "family": "text",
+  "candidate_paths": [
+    "src/text_tools.py"
+  ],
+  "applies_when": [
+    "task family is text",
+    "candidate path is one of src/text_tools.py",
+    "starter function matches one of count_word_frequencies, extract_hashtags, normalize_whitespace, slugify_text, strip_markdown_links"
+  ],
+  "avoid_when": [
+    "do not activate until regressions are repaired: py_v1_extract_hashtags"
+  ],
+  "repairs_task_ids": [],
+  "regression_task_ids": [
+    "py_v1_extract_hashtags"
+  ],
+  "shared_failure_task_ids": [],
+  "preserved_pass_task_ids": [
+    "py_v1_count_word_frequencies",
+    "py_v1_normalize_whitespace",
+    "py_v1_slugify_text",
+    "py_v1_strip_markdown_links"
+  ],
+  "evidence": [
+    {
+      "task_id": "py_v1_count_word_frequencies",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "text",
+      "candidate_path": "src/text_tools.py",
+      "function_name": "count_word_frequencies",
+      "public_prompt": "Implement src/text_tools.py with count_word_frequencies(text). Return a dict mapping lowercase words to counts. Words are contiguous letters or digits. Ignore punctuation. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_extract_hashtags",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "text",
+      "candidate_path": "src/text_tools.py",
+      "function_name": "extract_hashtags",
+      "public_prompt": "Implement src/text_tools.py with extract_hashtags(text). Return lowercase hashtag names from text in first-seen order. A hashtag starts with # and then has one or more letters, digits, or underscores. Do not include the # symbol. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": false,
+      "relation": "regressed",
+      "timed_out": false,
+      "stderr_preview": "F\n======================================================================\nFAIL: test_behavior (test_py_v1_extract_hashtags.ExtractHashtagsTest)\n----------------------------------------------------------------------\nTraceback (most recent cal"
+    },
+    {
+      "task_id": "py_v1_normalize_whitespace",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "text",
+      "candidate_path": "src/text_tools.py",
+      "function_name": "normalize_whitespace",
+      "public_prompt": "Implement src/text_tools.py with normalize_whitespace(text). Collapse all whitespace runs in text to single spaces, trim leading/trailing whitespace, and return the normalized string. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_slugify_text",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "text",
+      "candidate_path": "src/text_tools.py",
+      "function_name": "slugify_text",
+      "public_prompt": "Implement src/text_tools.py with slugify_text(text). Convert text to a URL slug: lowercase ASCII alphanumeric words, separated by single hyphens. Treat any non-alphanumeric run as a separator and strip separators at the ends. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_strip_markdown_links",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "text",
+      "candidate_path": "src/text_tools.py",
+      "function_name": "strip_markdown_links",
+      "public_prompt": "Implement src/text_tools.py with strip_markdown_links(text). Replace Markdown inline links like [label](url) with just label. Leave other text unchanged. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    }
+  ],
+  "package_dir": "packages/python_stdlib_text_trajectory_delta"
+}

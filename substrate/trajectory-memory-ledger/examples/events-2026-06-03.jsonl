@@ -1,0 +1,5 @@
+{"seq":1,"ts":"2026-06-03T00:00:00Z","type":"flow:start","flow_id":"demo_flow","payload":{"trigger_kind":"demo"}}
+{"seq":2,"ts":"2026-06-03T00:00:01Z","type":"step:start","flow_id":"demo_flow","step_idx":0,"payload":{"step_kind":"captain_ask","prompt":"summarize ledger health"}}
+{"seq":3,"ts":"2026-06-03T00:00:02Z","type":"step:complete","flow_id":"demo_flow","step_idx":0,"payload":{"step_kind":"captain_ask","ok":true,"duration_ms":120}}
+{"seq":4,"ts":"2026-06-03T00:00:03Z","type":"flow:complete","flow_id":"demo_flow","payload":{"duration_ms":3000,"first_error":null}}
+

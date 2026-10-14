@@ -15,11 +15,14 @@ diagram and [IMPLEMENTATION.md](IMPLEMENTATION.md) for the full build account.
 
 | Layer | Source |
 |---|---|
-| Merge gate | `admissibility-kernel` (TS port in `packages/gate-ts`, spec: Rust `cc-kernel`) |
-| Shared knowledge + overlap | `live-knowledge-graphs` (client: `packages/lkg-client`) |
-| Why-trail | `trajectory-memory-ledger` (schema-v2 emitters) |
-| Orchestration pattern | Agent Orchestrator (workers, worktrees, Kanban) |
-| 3D history view | `spatial-git` |
+| Merge gate | `substrate/cc-kernel` (Rust spec, `cargo test` in CI) + `packages/gate-ts` (TS port, 13 tests) |
+| Shared knowledge + overlap | `substrate/live-knowledge-graphs` (KG server + eval) + `packages/lkg-client` (triple shapes) |
+| Why-trail | `substrate/trajectory-memory-ledger` (schema-v2 + daemon) + `packages/evidence` (TS companion) |
+| Orchestration pattern | `substrate/orchestratord` (heartbeat + dispatch daemon) + `workers/orchestrator` (fork-per-task) |
+| 3D history view | `substrate/spatial-git` (git → 3D) fed by `GET /history.json` |
+
+Upstream sources are vendored under `substrate/` (not submodules) so a
+clean clone is complete — see `substrate/README.md` for provenance.
 
 ## Verify locally (no Cloudflare account needed)
 

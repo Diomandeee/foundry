@@ -1,0 +1,11 @@
+{
+  "skill_id": "python_stdlib_parse_trajectory_delta",
+  "status": "promoted",
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [
+    "py_v1_parse_size_bytes"
+  ],
+  "avoid_when": [
+    "diagnostic only for shared failures: py_v1_parse_size_bytes"
+  ]
+}

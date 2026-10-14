@@ -1,0 +1,15 @@
+/target/
+**/target/
+.DS_Store
+*.log
+*.tmp
+*.bak
+
+# Private/local ledger artifacts. Keep public examples small and synthetic.
+trajectories.jsonl
+output/private-*/
+*.jsonl.pre-schema-v2-*.bak
+karl-sft.jsonl
+train.jsonl
+valid.jsonl
+eval-holdout.jsonl

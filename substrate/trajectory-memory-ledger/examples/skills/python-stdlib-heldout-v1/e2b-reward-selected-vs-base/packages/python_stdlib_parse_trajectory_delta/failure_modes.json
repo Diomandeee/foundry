@@ -1,0 +1,15 @@
+{
+  "skill_id": "python_stdlib_parse_trajectory_delta",
+  "status": "quarantined",
+  "regression_task_ids": [
+    "py_v1_parse_env_lines",
+    "py_v1_parse_semver"
+  ],
+  "shared_failure_task_ids": [
+    "py_v1_parse_size_bytes"
+  ],
+  "avoid_when": [
+    "do not activate until regressions are repaired: py_v1_parse_env_lines, py_v1_parse_semver",
+    "diagnostic only for shared failures: py_v1_parse_size_bytes"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "skill_id": "python_stdlib_collection_trajectory_delta",
+  "status": "diagnostic",
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [
+    "py_v1_chunked_list"
+  ],
+  "avoid_when": [
+    "diagnostic only for shared failures: py_v1_chunked_list"
+  ]
+}

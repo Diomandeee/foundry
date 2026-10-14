@@ -1,0 +1,101 @@
+{
+  "id": "python_stdlib_data_trajectory_delta",
+  "title": "Python stdlib data trajectory delta skill",
+  "status": "quarantined",
+  "family": "data",
+  "candidate_paths": [
+    "src/data_tools.py"
+  ],
+  "applies_when": [
+    "task family is data",
+    "candidate path is one of src/data_tools.py",
+    "starter function matches one of csv_to_dicts, dicts_to_csv, flatten_dict, json_get_path, json_set_path"
+  ],
+  "avoid_when": [
+    "do not activate until regressions are repaired: py_v1_dicts_to_csv, py_v1_json_set_path"
+  ],
+  "repairs_task_ids": [],
+  "regression_task_ids": [
+    "py_v1_dicts_to_csv",
+    "py_v1_json_set_path"
+  ],
+  "shared_failure_task_ids": [],
+  "preserved_pass_task_ids": [
+    "py_v1_csv_to_dicts",
+    "py_v1_flatten_dict",
+    "py_v1_json_get_path"
+  ],
+  "evidence": [
+    {
+      "task_id": "py_v1_csv_to_dicts",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "data",
+      "candidate_path": "src/data_tools.py",
+      "function_name": "csv_to_dicts",
+      "public_prompt": "Implement src/data_tools.py with csv_to_dicts(text). Parse CSV text with a header row into a list of dicts using Python's csv module. Preserve values as strings. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_dicts_to_csv",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "data",
+      "candidate_path": "src/data_tools.py",
+      "function_name": "dicts_to_csv",
+      "public_prompt": "Implement src/data_tools.py with dicts_to_csv(rows, fieldnames). Serialize rows to CSV text using the given fieldnames and lineterminator '\\n'. Include the header row. Missing values should serialize as empty strings. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": false,
+      "relation": "regressed",
+      "timed_out": false,
+      "stderr_preview": "E\n======================================================================\nERROR: test_behavior (test_py_v1_dicts_to_csv.DictsToCsvTest)\n----------------------------------------------------------------------\nTraceback (most recent call last):"
+    },
+    {
+      "task_id": "py_v1_flatten_dict",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "data",
+      "candidate_path": "src/data_tools.py",
+      "function_name": "flatten_dict",
+      "public_prompt": "Implement src/data_tools.py with flatten_dict(data, sep='.'). Flatten nested dictionaries into a single dict with joined keys. Non-dict values are leaves. Preserve insertion traversal order. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_json_get_path",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "data",
+      "candidate_path": "src/data_tools.py",
+      "function_name": "json_get_path",
+      "public_prompt": "Implement src/data_tools.py with json_get_path(data, path, default=None). Return a nested value from dict/list data using a dot-separated path. Numeric path parts index lists. Return default if any part is missing or invalid. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_json_set_path",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "data",
+      "candidate_path": "src/data_tools.py",
+      "function_name": "json_set_path",
+      "public_prompt": "Implement src/data_tools.py with json_set_path(data, path, value). Return a deep-copied dict with value assigned at a dot-separated object path. Create missing dicts as needed. Do not mutate the input. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": false,
+      "relation": "regressed",
+      "timed_out": false,
+      "stderr_preview": "F\n======================================================================\nFAIL: test_behavior (test_py_v1_json_set_path.JsonSetPathTest)\n----------------------------------------------------------------------\nTraceback (most recent call last)"
+    }
+  ],
+  "package_dir": "packages/python_stdlib_data_trajectory_delta"
+}

@@ -1,0 +1,9 @@
+{"condition":"random","task_id":"task_read_edit_test","generated_tools":["Read","Read","Edit"],"task_passed":false,"tests_included":false,"build_included":false,"reward_score":0.52}
+{"condition":"reward_selected","task_id":"task_read_edit_test","generated_tools":["Read","Edit","Bash"],"task_passed":true,"tests_included":true,"build_included":false,"reward_score":0.74}
+{"condition":"full_ledger","task_id":"task_read_edit_test","generated_tools":["Read","Edit","Bash"],"task_passed":true,"tests_included":true,"build_included":true,"reward_score":0.78}
+{"condition":"random","task_id":"task_debug_loop","generated_tools":["Bash","Bash","Bash"],"task_passed":false,"tests_included":false,"build_included":false,"reward_score":0.41}
+{"condition":"reward_selected","task_id":"task_debug_loop","generated_tools":["Read","Bash","Edit","Bash"],"task_passed":true,"tests_included":true,"build_included":false,"reward_score":0.71}
+{"condition":"full_ledger","task_id":"task_debug_loop","generated_tools":["Read","Grep","Edit","Bash"],"task_passed":true,"tests_included":true,"build_included":false,"reward_score":0.75}
+{"condition":"random","task_id":"task_build_gate","generated_tools":["Edit","Bash"],"task_passed":false,"tests_included":false,"build_included":true,"reward_score":0.49}
+{"condition":"reward_selected","task_id":"task_build_gate","generated_tools":["Read","Edit","Bash"],"task_passed":true,"tests_included":false,"build_included":true,"reward_score":0.72}
+{"condition":"full_ledger","task_id":"task_build_gate","generated_tools":["Read","Edit","Bash","Bash"],"task_passed":true,"tests_included":true,"build_included":true,"reward_score":0.8}

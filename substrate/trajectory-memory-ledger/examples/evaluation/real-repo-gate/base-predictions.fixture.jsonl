@@ -1,0 +1,2 @@
+{"instance_id":"fixture__repo-1","model_name_or_path":"same-agent-model","model_patch":"diff --git a/pkg/example.py b/pkg/example.py\n--- a/pkg/example.py\n+++ b/pkg/example.py\n@@ -1 +1 @@\n-pass\n+return 1\n","synthetic_fixture":true}
+{"instance_id":"fixture__repo-2","model_name_or_path":"same-agent-model","model_patch":"diff --git a/pkg/example.py b/pkg/example.py\n--- a/pkg/example.py\n+++ b/pkg/example.py\n@@ -1 +1 @@\n-pass\n+return 0\n","synthetic_fixture":true}

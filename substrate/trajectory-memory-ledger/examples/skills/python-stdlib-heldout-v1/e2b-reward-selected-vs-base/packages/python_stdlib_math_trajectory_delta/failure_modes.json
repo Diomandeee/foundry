@@ -1,0 +1,7 @@
+{
+  "skill_id": "python_stdlib_math_trajectory_delta",
+  "status": "proposed",
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [],
+  "avoid_when": []
+}

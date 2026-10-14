@@ -1,0 +1,16 @@
+{
+  "skill_id": "python_stdlib_path_trajectory_delta",
+  "status": "quarantined",
+  "regression_task_ids": [
+    "py_v1_extension_counts"
+  ],
+  "shared_failure_task_ids": [
+    "py_v1_common_prefix_path",
+    "py_v1_normalize_segments",
+    "py_v1_split_filename_version"
+  ],
+  "avoid_when": [
+    "do not activate until regressions are repaired: py_v1_extension_counts",
+    "diagnostic only for shared failures: py_v1_common_prefix_path, py_v1_normalize_segments, py_v1_split_filename_version"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "spatial-git",
+  "version": "22.0.0",
+  "description": "Navigate code history through 3D space. Branches as roads, commits as landmarks.",
+  "bin": {
+    "spatial-git": "./cli.js"
+  },
+  "files": [
+    "cli.js",
+    "index.html",
+    "git-to-json.sh",
+    "README.md"
+  ],
+  "keywords": [
+    "git",
+    "3d",
+    "visualization",
+    "three.js",
+    "webgl",
+    "vr",
+    "developer-tools",
+    "version-control"
+  ],
+  "author": "Mohamed Diomande",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mohameddiomande/spatial-git"
+  }
+}

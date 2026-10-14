@@ -1,0 +1,23 @@
+{
+  "router_schema": "trajectory-skill-router-v1",
+  "active_skill_ids": [
+    "python_stdlib_collection_trajectory_delta",
+    "python_stdlib_parse_trajectory_delta",
+    "python_stdlib_path_trajectory_delta"
+  ],
+  "proposed_skill_ids": [],
+  "quarantined_skill_ids": [],
+  "diagnostic_skill_ids": [],
+  "by_family": {
+    "collection": [
+      "python_stdlib_collection_trajectory_delta"
+    ],
+    "parse": [
+      "python_stdlib_parse_trajectory_delta"
+    ],
+    "path": [
+      "python_stdlib_path_trajectory_delta"
+    ]
+  },
+  "rule": "Only promoted skills may be auto-injected. Proposed skills need a clean regression gate; quarantined skills are evidence for repair, not activation."
+}

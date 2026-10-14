@@ -1,0 +1,52 @@
+[package]
+name = "cc-kernel"
+version = "0.1.0"
+edition = "2021"
+description = "SMART Kernel - Stratified Monotone Action Runtime for TrajectoryOS"
+license = "MIT"
+repository = "https://github.com/comp-core/cc-kernel"
+authors = ["Comp-Core Team"]
+
+[features]
+default = []
+sqlite = ["sqlx"]
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+async-trait = "0.1"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# UUIDs
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Hashing
+blake3 = "1.5"
+hex = "0.4"
+
+# Concurrency
+parking_lot = "0.12"
+
+# Tracing
+tracing = "0.1"
+
+# Metrics
+metrics = "0.22"
+
+# Optional SQLite for ledger
+sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite"], optional = true }
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3"
+

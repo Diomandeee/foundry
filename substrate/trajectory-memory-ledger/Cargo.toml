@@ -1,0 +1,4 @@
+[workspace]
+members = ["crates/trajectory-ledgerd"]
+resolver = "2"
+

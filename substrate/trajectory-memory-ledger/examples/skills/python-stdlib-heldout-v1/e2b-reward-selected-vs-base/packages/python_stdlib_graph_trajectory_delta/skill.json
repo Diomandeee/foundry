@@ -1,0 +1,101 @@
+{
+  "id": "python_stdlib_graph_trajectory_delta",
+  "title": "Python stdlib graph trajectory delta skill",
+  "status": "quarantined",
+  "family": "graph",
+  "candidate_paths": [
+    "src/graph_tools.py"
+  ],
+  "applies_when": [
+    "task family is graph",
+    "candidate path is one of src/graph_tools.py",
+    "starter function matches one of dependency_order, has_cycle_directed, reachable_nodes, reverse_adjacency, shortest_path_unweighted"
+  ],
+  "avoid_when": [
+    "do not activate until regressions are repaired: py_v1_dependency_order"
+  ],
+  "repairs_task_ids": [],
+  "regression_task_ids": [
+    "py_v1_dependency_order"
+  ],
+  "shared_failure_task_ids": [],
+  "preserved_pass_task_ids": [
+    "py_v1_has_cycle_directed",
+    "py_v1_reachable_nodes",
+    "py_v1_reverse_adjacency",
+    "py_v1_shortest_path_unweighted"
+  ],
+  "evidence": [
+    {
+      "task_id": "py_v1_dependency_order",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "graph",
+      "candidate_path": "src/graph_tools.py",
+      "function_name": "dependency_order",
+      "public_prompt": "Implement src/graph_tools.py with dependency_order(dependencies). dependencies maps an item to the items it depends on. Return a deterministic list where dependencies appear before dependents. Choose lexicographically smallest available item first. Raise ValueError on cycles. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": false,
+      "relation": "regressed",
+      "timed_out": false,
+      "stderr_preview": "F\n======================================================================\nFAIL: test_behavior (test_py_v1_dependency_order.DependencyOrderTest)\n----------------------------------------------------------------------\nTraceback (most recent cal"
+    },
+    {
+      "task_id": "py_v1_has_cycle_directed",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "graph",
+      "candidate_path": "src/graph_tools.py",
+      "function_name": "has_cycle_directed",
+      "public_prompt": "Implement src/graph_tools.py with has_cycle_directed(graph). Return True if a directed graph mapping nodes to neighbors has a cycle. Include neighbor-only nodes. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_reachable_nodes",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "graph",
+      "candidate_path": "src/graph_tools.py",
+      "function_name": "reachable_nodes",
+      "public_prompt": "Implement src/graph_tools.py with reachable_nodes(graph, start). graph maps nodes to iterable neighbors. Return a sorted list of all nodes reachable from start, including start. Missing start has no outgoing neighbors. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_reverse_adjacency",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "graph",
+      "candidate_path": "src/graph_tools.py",
+      "function_name": "reverse_adjacency",
+      "public_prompt": "Implement src/graph_tools.py with reverse_adjacency(graph). Return a dict where each node maps to the sorted list of incoming neighbors from the input adjacency mapping. Include nodes that only appear as neighbors. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_shortest_path_unweighted",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "graph",
+      "candidate_path": "src/graph_tools.py",
+      "function_name": "shortest_path_unweighted",
+      "public_prompt": "Implement src/graph_tools.py with shortest_path_unweighted(graph, start, goal). Return the shortest path as a list from start to goal in an unweighted directed graph mapping nodes to neighbor lists. Return None if goal is unreachable. Preserve neighbor order when ties exist. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    }
+  ],
+  "package_dir": "packages/python_stdlib_graph_trajectory_delta"
+}

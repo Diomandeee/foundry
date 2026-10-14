@@ -1,0 +1,12 @@
+{
+  "skill_id": "python_stdlib_date_trajectory_delta",
+  "status": "diagnostic",
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [
+    "py_v1_business_days_between",
+    "py_v1_format_iso_date"
+  ],
+  "avoid_when": [
+    "diagnostic only for shared failures: py_v1_business_days_between, py_v1_format_iso_date"
+  ]
+}

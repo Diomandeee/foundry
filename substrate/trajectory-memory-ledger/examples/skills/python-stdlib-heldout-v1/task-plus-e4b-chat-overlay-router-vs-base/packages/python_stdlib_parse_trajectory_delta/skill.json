@@ -1,0 +1,102 @@
+{
+  "id": "python_stdlib_parse_trajectory_delta",
+  "title": "Python stdlib parse trajectory delta skill",
+  "status": "promoted",
+  "family": "parse",
+  "candidate_paths": [
+    "src/parse_tools.py"
+  ],
+  "applies_when": [
+    "task family is parse",
+    "candidate path is one of src/parse_tools.py",
+    "starter function matches one of parse_bool, parse_env_lines, parse_query_string, parse_semver, parse_size_bytes"
+  ],
+  "avoid_when": [
+    "diagnostic only for shared failures: py_v1_parse_size_bytes"
+  ],
+  "repairs_task_ids": [
+    "py_v1_parse_query_string"
+  ],
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [
+    "py_v1_parse_size_bytes"
+  ],
+  "preserved_pass_task_ids": [
+    "py_v1_parse_bool",
+    "py_v1_parse_env_lines",
+    "py_v1_parse_semver"
+  ],
+  "evidence": [
+    {
+      "task_id": "py_v1_parse_bool",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "parse",
+      "candidate_path": "src/parse_tools.py",
+      "function_name": "parse_bool",
+      "public_prompt": "Implement src/parse_tools.py with parse_bool(value). Parse common boolean strings. Return True for true, yes, y, 1, on. Return False for false, no, n, 0, off. Matching is case-insensitive after stripping. Raise ValueError otherwise. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_parse_env_lines",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "parse",
+      "candidate_path": "src/parse_tools.py",
+      "function_name": "parse_env_lines",
+      "public_prompt": "Implement src/parse_tools.py with parse_env_lines(text). Parse .env-style lines into a dict. Ignore blank lines and lines starting with #. Split on the first equals sign. Strip surrounding whitespace from keys and values. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_parse_query_string",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "parse",
+      "candidate_path": "src/parse_tools.py",
+      "function_name": "parse_query_string",
+      "public_prompt": "Implement src/parse_tools.py with parse_query_string(query). Parse a URL query string into a dict mapping each key to a list of decoded values. Ignore a leading ?. Use urllib.parse semantics for percent decoding and blank values. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": false,
+      "comparison_passed": true,
+      "relation": "fixed",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.001s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_parse_semver",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "parse",
+      "candidate_path": "src/parse_tools.py",
+      "function_name": "parse_semver",
+      "public_prompt": "Implement src/parse_tools.py with parse_semver(value). Parse a semantic version string MAJOR.MINOR.PATCH with an optional leading v. Return a tuple of three integers. Reject missing parts, non-integers, or negative numbers with ValueError. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_parse_size_bytes",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "parse",
+      "candidate_path": "src/parse_tools.py",
+      "function_name": "parse_size_bytes",
+      "public_prompt": "Implement src/parse_tools.py with parse_size_bytes(value). Parse an integer size string with optional binary unit suffix B, KB, MB, or GB. Units are case-insensitive and use powers of 1024. Reject decimals, negative numbers, and unknown units with ValueError. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": false,
+      "comparison_passed": false,
+      "relation": "shared_fail",
+      "timed_out": false,
+      "stderr_preview": "E\n======================================================================\nERROR: test_behavior (test_py_v1_parse_size_bytes.ParseSizeBytesTest)\n----------------------------------------------------------------------\nTraceback (most recent cal"
+    }
+  ],
+  "package_dir": "packages/python_stdlib_parse_trajectory_delta"
+}

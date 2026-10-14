@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "id": "example",
+  "session_id": "2026-06-03T00:00:00Z",
+  "source": "aura-gateway-flow",
+  "channel": "flow",
+  "domain": "mesh-orchestration",
+  "skill": {
+    "name": "flow:demo_flow",
+    "domain": "mesh-orchestration"
+  },
+  "context": {
+    "source": "aura-gateway-flow",
+    "domain": "mesh-orchestration",
+    "prompt_text": "demo:demo_flow"
+  },
+  "trajectory": {
+    "tool_sequence": ["CaptainAsk"],
+    "tool_counts": {"CaptainAsk": 1},
+    "total_tools": 1,
+    "successes": 1,
+    "failures": 0,
+    "bash_errors": 0,
+    "observed_event_count": 1,
+    "placeholder_event_count": 0,
+    "events": [
+      {
+        "tool_name": "CaptainAsk",
+        "key_params": {},
+        "success": true,
+        "exit_code": null,
+        "duration_ms": 120,
+        "ts": ""
+      }
+    ]
+  },
+  "outcome": {
+    "annotation_status": "scored",
+    "reward_score": 0.6683
+  },
+  "timing": {
+    "duration_ms": 3000,
+    "duration_s": 3
+  }
+}
+

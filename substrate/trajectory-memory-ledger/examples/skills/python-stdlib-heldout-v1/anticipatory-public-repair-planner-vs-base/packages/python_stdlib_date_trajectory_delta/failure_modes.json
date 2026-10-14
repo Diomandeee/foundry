@@ -1,0 +1,7 @@
+{
+  "skill_id": "python_stdlib_date_trajectory_delta",
+  "status": "promoted",
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [],
+  "avoid_when": []
+}

@@ -1,0 +1,99 @@
+{
+  "id": "python_stdlib_math_trajectory_delta",
+  "title": "Python stdlib math trajectory delta skill",
+  "status": "promoted",
+  "family": "math",
+  "candidate_paths": [
+    "src/math_tools.py"
+  ],
+  "applies_when": [
+    "task family is math",
+    "candidate path is one of src/math_tools.py",
+    "starter function matches one of clamp_numbers, histogram_bins, median, moving_average, percent_change"
+  ],
+  "avoid_when": [],
+  "repairs_task_ids": [
+    "py_v1_moving_average"
+  ],
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [],
+  "preserved_pass_task_ids": [
+    "py_v1_clamp_numbers",
+    "py_v1_histogram_bins",
+    "py_v1_median",
+    "py_v1_percent_change"
+  ],
+  "evidence": [
+    {
+      "task_id": "py_v1_clamp_numbers",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "math",
+      "candidate_path": "src/math_tools.py",
+      "function_name": "clamp_numbers",
+      "public_prompt": "Implement src/math_tools.py with clamp_numbers(values, low, high). Return a list where each number is clamped into the inclusive range [low, high]. Raise ValueError if low > high. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_histogram_bins",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "math",
+      "candidate_path": "src/math_tools.py",
+      "function_name": "histogram_bins",
+      "public_prompt": "Implement src/math_tools.py with histogram_bins(values, bin_size). Return a dict mapping each floor bin start to a count. For bin_size 10, values 0..9 map to 0 and 10..19 map to 10. Raise ValueError when bin_size <= 0. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_median",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "math",
+      "candidate_path": "src/math_tools.py",
+      "function_name": "median",
+      "public_prompt": "Implement src/math_tools.py with median(values). Return the median of a non-empty numeric iterable. For even counts, return the average of the two middle values. Raise ValueError for empty input. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_moving_average",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "math",
+      "candidate_path": "src/math_tools.py",
+      "function_name": "moving_average",
+      "public_prompt": "Implement src/math_tools.py with moving_average(values, size). Return a list of moving averages over consecutive windows of length size. Raise ValueError when size is not positive. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": false,
+      "comparison_passed": true,
+      "relation": "fixed",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_percent_change",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "math",
+      "candidate_path": "src/math_tools.py",
+      "function_name": "percent_change",
+      "public_prompt": "Implement src/math_tools.py with percent_change(old, new). Return percentage change from old to new as (new - old) / old * 100. Raise ValueError when old is zero. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    }
+  ],
+  "package_dir": "packages/python_stdlib_math_trajectory_delta"
+}

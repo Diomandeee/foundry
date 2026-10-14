@@ -1,0 +1,99 @@
+{
+  "id": "python_stdlib_collection_trajectory_delta",
+  "title": "Python stdlib collection trajectory delta skill",
+  "status": "promoted",
+  "family": "collection",
+  "candidate_paths": [
+    "src/collection_tools.py"
+  ],
+  "applies_when": [
+    "task family is collection",
+    "candidate path is one of src/collection_tools.py",
+    "starter function matches one of chunked_list, dedupe_preserve_order, flatten_one_level, rotate, windowed"
+  ],
+  "avoid_when": [],
+  "repairs_task_ids": [
+    "py_v1_chunked_list"
+  ],
+  "regression_task_ids": [],
+  "shared_failure_task_ids": [],
+  "preserved_pass_task_ids": [
+    "py_v1_dedupe_preserve_order",
+    "py_v1_flatten_one_level",
+    "py_v1_rotate",
+    "py_v1_windowed"
+  ],
+  "evidence": [
+    {
+      "task_id": "py_v1_chunked_list",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "collection",
+      "candidate_path": "src/collection_tools.py",
+      "function_name": "chunked_list",
+      "public_prompt": "Implement src/collection_tools.py with chunked_list(items, size). Return a list of list chunks of length size. Include a final shorter chunk. Raise ValueError when size is not positive. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": false,
+      "comparison_passed": true,
+      "relation": "fixed",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_dedupe_preserve_order",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "collection",
+      "candidate_path": "src/collection_tools.py",
+      "function_name": "dedupe_preserve_order",
+      "public_prompt": "Implement src/collection_tools.py with dedupe_preserve_order(items). Return a list with duplicate items removed while preserving first-seen order. Items are hashable. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_flatten_one_level",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "collection",
+      "candidate_path": "src/collection_tools.py",
+      "function_name": "flatten_one_level",
+      "public_prompt": "Implement src/collection_tools.py with flatten_one_level(items). Flatten one nesting level from an iterable of iterables. Strings should be treated as scalar values, not expanded into characters. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_rotate",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "collection",
+      "candidate_path": "src/collection_tools.py",
+      "function_name": "rotate",
+      "public_prompt": "Implement src/collection_tools.py with rotate(items, amount). Return a new list rotated left by amount positions. Negative amount rotates right. Empty input returns an empty list. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "task_id": "py_v1_windowed",
+      "task_set": "python-stdlib-heldout-v1-60",
+      "family": "collection",
+      "candidate_path": "src/collection_tools.py",
+      "function_name": "windowed",
+      "public_prompt": "Implement src/collection_tools.py with windowed(items, size). Return a list of tuples representing sliding windows of length size. Raise ValueError when size is not positive. If size is larger than the input, return an empty list. Use only the Python standard library. Do not include tests or extra files.",
+      "verifier_command": "python3 -m unittest discover -s tests",
+      "baseline_passed": true,
+      "comparison_passed": true,
+      "relation": "preserved_pass",
+      "timed_out": false,
+      "stderr_preview": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    }
+  ],
+  "package_dir": "packages/python_stdlib_collection_trajectory_delta"
+}

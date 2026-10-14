@@ -1,0 +1,10 @@
+{
+  "completed_instances": 2,
+  "resolved_ids": [
+    "fixture__repo-1"
+  ],
+  "resolved_instances": 1,
+  "submitted_instances": 2,
+  "synthetic_fixture": true,
+  "total_instances": 2
+}

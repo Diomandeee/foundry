@@ -1,0 +1,2 @@
+{"instance_id":"fixture__repo-1","repo":"fixture/repo","base_commit":"0000000000000000000000000000000000000001","problem_statement":"Synthetic fixture row for validating the real-repo gate schema only.","synthetic_fixture":true}
+{"instance_id":"fixture__repo-2","repo":"fixture/repo","base_commit":"0000000000000000000000000000000000000002","problem_statement":"Second synthetic fixture row for validating same-instance coverage.","synthetic_fixture":true}

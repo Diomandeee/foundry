@@ -1,0 +1,12 @@
+{
+  "skill_id": "python_stdlib_data_trajectory_delta",
+  "status": "quarantined",
+  "regression_task_ids": [
+    "py_v1_dicts_to_csv",
+    "py_v1_json_set_path"
+  ],
+  "shared_failure_task_ids": [],
+  "avoid_when": [
+    "do not activate until regressions are repaired: py_v1_dicts_to_csv, py_v1_json_set_path"
+  ]
+}

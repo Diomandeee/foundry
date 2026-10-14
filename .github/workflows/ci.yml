@@ -25,3 +25,20 @@ jobs:
       - name: Tests
         run: npm test
         timeout-minutes: 20
+
+  substrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/rustup@v1
+        with:
+          toolchain: stable
+
+      - name: cc-kernel spec tests
+        run: cargo test --manifest-path substrate/cc-kernel/Cargo.toml
+        timeout-minutes: 20
+
+      - name: graph-kernel tests
+        run: cargo test --manifest-path substrate/live-knowledge-graphs/Cargo.toml
+        timeout-minutes: 20
