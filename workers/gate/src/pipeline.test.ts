@@ -9,6 +9,8 @@ import {
 } from "@foundry/artifacts-port/node";
 import { newScopeToken } from "@foundry/gate-ts";
 import { InMemoryTicketStore } from "@foundry/stores";
+import { StaleBaseError, type MergeRequest } from "@foundry/artifacts-port";
+import type { Merger } from "@foundry/artifacts-port";
 import { handlePush, type PipelineDeps } from "./pipeline.js";
 import { MemoryDecisionStore } from "@foundry/stores";
 
@@ -138,5 +140,45 @@ describe("handlePush pipeline", () => {
     const base = await deps.port.get("base");
     expect(await base.readFile("main", "app.ts")).toBeNull();
     base.dispose();
+  });
+});
+
+describe("handlePush idempotency and races", () => {
+  it("returns the first decision on redelivery", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const body = pushBody("task-1", baseSha, after);
+    const first = await handlePush(deps, "test", body);
+    const second = await handlePush(deps, "test", body);
+    expect(first.handled && second.handled).toBe(true);
+    if (!first.handled || !second.handled) return;
+    expect(first.record.verdict).toBe("merge");
+    expect(second.record.id).toBe(first.record.id);
+    expect((await deps.store.list()).length).toBe(1);
+  });
+
+  it("re-decides once when base moves mid-merge", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const real = deps.merger;
+    let calls = 0;
+    const flaky: Merger = {
+      merge: async (req: MergeRequest) => {
+        calls++;
+        // Simulate a concurrent landing detected between decide and merge.
+        if (calls === 1) throw new StaleBaseError("base moved ab12 -> cd34");
+        return real.merge(req);
+      },
+    };
+    deps.merger = flaky;
+    try {
+      const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+      expect(res.handled).toBe(true);
+      if (!res.handled) return;
+      expect(calls).toBe(2);
+      expect(res.record.verdict).toBe("merge");
+    } finally {
+      deps.merger = real;
+    }
   });
 });

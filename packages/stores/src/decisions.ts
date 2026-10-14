@@ -20,14 +20,50 @@ export interface DecisionRecord {
 export interface DecisionStore {
   record(d: Omit<DecisionRecord, "id" | "decided_at">): Promise<DecisionRecord>;
   list(repo?: string, limit?: number): Promise<DecisionRecord[]>;
+  /** The first decision recorded for this exact push event, if any. */
+  findByEvent(
+    namespace: string,
+    repo: string,
+    ref: string,
+    beforeSha: string,
+    afterSha: string,
+  ): Promise<DecisionRecord | null>;
 }
 
 export class MemoryDecisionStore implements DecisionStore {
   private rows: DecisionRecord[] = [];
 
+  async findByEvent(
+    namespace: string,
+    repo: string,
+    ref: string,
+    beforeSha: string,
+    afterSha: string,
+  ): Promise<DecisionRecord | null> {
+    return (
+      this.rows.find(
+        (r) =>
+          r.namespace === namespace &&
+          r.repo === repo &&
+          r.ref === ref &&
+          r.before_sha === beforeSha &&
+          r.after_sha === afterSha,
+      ) ?? null
+    );
+  }
+
   async record(
     d: Omit<DecisionRecord, "id" | "decided_at">,
   ): Promise<DecisionRecord> {
+    // Idempotent: a redelivered event returns its first decision.
+    const prior = await this.findByEvent(
+      d.namespace,
+      d.repo,
+      d.ref,
+      d.before_sha,
+      d.after_sha,
+    );
+    if (prior) return prior;
     const row: DecisionRecord = {
       ...d,
       id: this.rows.length + 1,
@@ -43,20 +79,63 @@ export class MemoryDecisionStore implements DecisionStore {
   }
 }
 
+function mapRow(r: Record<string, unknown>): DecisionRecord {
+  return {
+    id: r.id as number,
+    namespace: r.namespace as string,
+    repo: r.repo as string,
+    ref: r.ref as string,
+    before_sha: r.before_sha as string,
+    after_sha: r.after_sha as string,
+    verdict: r.verdict as DecisionRecord["verdict"],
+    reason: r.reason
+      ? (JSON.parse(r.reason as string) as RejectReason)
+      : null,
+    conflict_files: r.conflict_files
+      ? (JSON.parse(r.conflict_files as string) as string[])
+      : null,
+    files: r.files ? (JSON.parse(r.files as string) as string[]) : null,
+    merged_sha: (r.merged_sha as string | null) ?? null,
+    task_id: (r.task_id as string | null) ?? null,
+    agent_id: (r.agent_id as string | null) ?? null,
+    decided_at: r.decided_at as string,
+  };
+}
+
 export class D1DecisionStore implements DecisionStore {
   constructor(private db: D1Database) {}
+
+  async findByEvent(
+    namespace: string,
+    repo: string,
+    ref: string,
+    beforeSha: string,
+    afterSha: string,
+  ): Promise<DecisionRecord | null> {
+    const row = await this.db
+      .prepare(
+        `SELECT * FROM decisions
+         WHERE namespace = ? AND repo = ? AND ref = ?
+           AND before_sha = ? AND after_sha = ?
+         ORDER BY id ASC LIMIT 1`,
+      )
+      .bind(namespace, repo, ref, beforeSha, afterSha)
+      .first<Record<string, unknown>>();
+    return row ? mapRow(row) : null;
+  }
 
   async record(
     d: Omit<DecisionRecord, "id" | "decided_at">,
   ): Promise<DecisionRecord> {
     const decided_at = new Date().toISOString();
-    const res = await this.db
+    // Idempotent: the UNIQUE event index (schema.sql) makes redelivery a
+    // no-op; the first decision for the event stands.
+    await this.db
       .prepare(
-        `INSERT INTO decisions
+        `INSERT OR IGNORE INTO decisions
          (namespace, repo, ref, before_sha, after_sha, verdict, reason,
           conflict_files, files, merged_sha, task_id, agent_id, decided_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-         RETURNING id`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         d.namespace,
@@ -73,8 +152,15 @@ export class D1DecisionStore implements DecisionStore {
         d.agent_id ?? null,
         decided_at,
       )
-      .first<{ id: number }>();
-    return { ...d, id: res?.id, decided_at };
+      .run();
+    const row = await this.findByEvent(
+      d.namespace,
+      d.repo,
+      d.ref,
+      d.before_sha,
+      d.after_sha,
+    );
+    return row ?? { ...d, decided_at };
   }
 
   async list(repo?: string, limit = 50): Promise<DecisionRecord[]> {
@@ -88,24 +174,6 @@ export class D1DecisionStore implements DecisionStore {
           .prepare("SELECT * FROM decisions ORDER BY id DESC LIMIT ?")
           .bind(limit);
     const { results } = await query.all<Record<string, unknown>>();
-    return results.map((r) => ({
-      id: r.id as number,
-      namespace: r.namespace as string,
-      repo: r.repo as string,
-      ref: r.ref as string,
-      before_sha: r.before_sha as string,
-      after_sha: r.after_sha as string,
-      verdict: r.verdict as DecisionRecord["verdict"],
-      reason: r.reason
-        ? (JSON.parse(r.reason as string) as RejectReason)
-        : null,
-      conflict_files: r.conflict_files
-        ? (JSON.parse(r.conflict_files as string) as string[])
-        : null,
-      merged_sha: (r.merged_sha as string | null) ?? null,
-      task_id: (r.task_id as string | null) ?? null,
-      agent_id: (r.agent_id as string | null) ?? null,
-      decided_at: r.decided_at as string,
-    }));
+    return results.map(mapRow);
   }
 }

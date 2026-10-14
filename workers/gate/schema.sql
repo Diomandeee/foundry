@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS decisions (
 );
 CREATE INDEX IF NOT EXISTS idx_decisions_repo ON decisions (namespace, repo);
 CREATE INDEX IF NOT EXISTS idx_decisions_verdict ON decisions (verdict);
+-- One decision per push event: redelivery is a no-op (INSERT OR IGNORE).
+CREATE UNIQUE INDEX IF NOT EXISTS idx_decisions_event
+  ON decisions (namespace, repo, ref, before_sha, after_sha);
 
 CREATE TABLE IF NOT EXISTS tickets (
   task_id TEXT NOT NULL,

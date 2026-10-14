@@ -42,7 +42,35 @@ class JsonTicketStore implements TicketStore {
 
 class JsonlDecisionStore implements DecisionStore {
   constructor(private file: string) {}
+  async findByEvent(
+    namespace: string,
+    repo: string,
+    ref: string,
+    beforeSha: string,
+    afterSha: string,
+  ) {
+    const rows = (await this.list(undefined, Number.MAX_SAFE_INTEGER)) as DecisionRecord[];
+    return (
+      rows.find(
+        (r) =>
+          r.namespace === namespace &&
+          r.repo === repo &&
+          r.ref === ref &&
+          r.before_sha === beforeSha &&
+          r.after_sha === afterSha,
+      ) ?? null
+    );
+  }
   async record(d: Omit<DecisionRecord, "id" | "decided_at">) {
+    // Idempotent: a redelivered event returns its first decision.
+    const prior = await this.findByEvent(
+      d.namespace,
+      d.repo,
+      d.ref,
+      d.before_sha,
+      d.after_sha,
+    );
+    if (prior) return prior;
     const rows = await this.list();
     const row = {
       ...d,
@@ -74,7 +102,7 @@ async function readStdin(): Promise<string> {
 async function main() {
   const root = arg("root")!;
   const ns = arg("namespace", "foundry-local")!;
-  const lkg = arg("lkg", process.env.LKG_URL ?? "http://127.0.0.1:8002")!;
+  const lkg = arg("lkg", process.env.LKG_URL ?? "")!;
   const event = JSON.parse(await readStdin());
 
   const deps = {
@@ -90,11 +118,14 @@ async function main() {
   console.log(`verdict=${r.verdict} after=${r.after_sha.slice(0, 9)} merged=${r.merged_sha?.slice(0, 9) ?? "-"}` +
               (r.reason ? ` reason=${JSON.stringify(r.reason)}` : ""));
 
-  const kg = new KGClient(lkg, process.env.LKG_TOKEN);
-  const triples = [...verdictTriples(r), ...touchTriples(r.after_sha, r.files ?? [])];
-  for (const t of triples) {
-    try { await kg.addTriple(t); console.log(`graph += ${t.subject} -${t.predicate}-> ${t.object}`); }
-    catch (e) { console.warn(`graph append failed: ${(e as Error).message}`); }
+  // Graph notify is optional: empty --lkg (judge default) skips writes.
+  if (lkg) {
+    const kg = new KGClient(lkg, process.env.LKG_TOKEN);
+    const triples = [...verdictTriples(r), ...touchTriples(r.after_sha, r.files ?? [])];
+    for (const t of triples) {
+      try { await kg.addTriple(t); console.log(`graph += ${t.subject} -${t.predicate}-> ${t.object}`); }
+      catch (e) { console.warn(`graph append failed: ${(e as Error).message}`); }
+    }
   }
 }
 

@@ -70,3 +70,29 @@ describe("commitForkFiles", () => {
     expect(tokenSecret("plain")).toBe("plain");
   });
 });
+
+describe("commitForkFiles idempotency", () => {
+  it("returns the current head instead of an empty commit", async () => {
+    const head = "f".repeat(40);
+    const first = await commitForkFiles(
+      fs,
+      dir,
+      { "feat.txt": "new\n" },
+      "Merge task-1",
+      "foundry",
+      head,
+    );
+    // Redelivery after the merge already landed: same content, no commit.
+    const second = await commitForkFiles(
+      fs,
+      dir,
+      { "feat.txt": "new\n" },
+      "Merge task-1",
+      "foundry",
+      head,
+    );
+    expect(second).toBe(first);
+    const log = await git.log({ fs, dir, depth: 3 });
+    expect(log.length).toBe(2); // seed + one merge, not two
+  });
+});

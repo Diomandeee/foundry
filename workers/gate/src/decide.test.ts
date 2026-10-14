@@ -413,3 +413,41 @@ describe("decidePush", () => {
     expect(called).toBe(false);
   });
 });
+
+describe("decidePush guards", () => {
+  it("rejects pushes that change no files", async () => {
+    const { baseSha } = await setup();
+    const d = await decidePush(port, tickets, {
+      namespace: "test",
+      repo: "task-1",
+      ref: "refs/heads/main",
+      before: baseSha,
+      after: baseSha,
+    });
+    expect(d.verdict).toBe("reject");
+    if (d.verdict === "reject" && d.reason.reason === "invalid_args") {
+      expect(d.reason.message).toContain("empty diff");
+    } else {
+      expect.unreachable("expected invalid_args reject");
+    }
+  });
+
+  it("rejects paths outside the scope allowlist", async () => {
+    const { baseSha } = await setup();
+    const ticket = await tickets.getTicketByFork("task-1");
+    ticket!.scope.allowed_roots = ["src"];
+    await tickets.saveTicket(ticket!);
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const d = await decidePush(port, tickets, {
+      namespace: "test",
+      repo: "task-1",
+      ref: "refs/heads/main",
+      before: baseSha,
+      after,
+    });
+    expect(d.verdict).toBe("reject");
+    if (d.verdict === "reject") {
+      expect(d.reason.reason).toBe("path_not_allowed");
+    }
+  });
+});

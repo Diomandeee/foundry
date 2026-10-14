@@ -4,7 +4,11 @@
 // @foundry/artifacts-port alongside the node-only GitAdapter.
 import git from "isomorphic-git";
 import http from "isomorphic-git/http/web";
-import type { MergeRequest, Merger } from "@foundry/artifacts-port";
+import {
+  StaleBaseError,
+  type MergeRequest,
+  type Merger,
+} from "@foundry/artifacts-port";
 
 export type { MergeRequest, Merger };
 
@@ -36,6 +40,16 @@ export class IsomorphicMerger implements Merger {
       depth: 50,
       onAuth,
     });
+    // Refuse to land a decision made against a base that has since moved;
+    // the caller re-decides against the new head.
+    if (req.expectedBaseSha) {
+      const head = await git.resolveRef({ fs, dir, ref: "HEAD" });
+      if (head !== req.expectedBaseSha) {
+        throw new StaleBaseError(
+          `base moved ${req.expectedBaseSha.slice(0, 8)} -> ${head.slice(0, 8)}`,
+        );
+      }
+    }
     const sha = await commitForkFiles(
       this.fs,
       dir,
@@ -81,6 +95,13 @@ export async function commitForkFiles(
     // Absent on both sides (created-then-deleted on the fork) is a no-op.
     await git.remove({ fs, dir, filepath: name }).catch(() => {});
   }
+  // Idempotent redelivery: the merge already landed (crash between push
+  // and record) — return the current head instead of an empty commit.
+  const matrix = await git.statusMatrix({ fs, dir });
+  const dirty = matrix.some(
+    ([, head, workdir, stage]) => !(head === 1 && workdir === 1 && stage === 1),
+  );
+  if (!dirty) return git.resolveRef({ fs, dir, ref: "HEAD" });
   return git.commit({
     fs,
     dir,

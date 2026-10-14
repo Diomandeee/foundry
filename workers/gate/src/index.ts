@@ -3,6 +3,7 @@
 import { memfs } from "memfs";
 import { cloudflarePort } from "@foundry/artifacts-port";
 import { KGClient, KgOverlapOracle, touchTriples, verdictTriples } from "@foundry/lkg-client";
+import { PactServerPlanCheck } from "@foundry/plan-check";
 import { IsomorphicMerger } from "./merge.js";
 import { handlePush, type PipelineDeps } from "./pipeline.js";
 import { D1DecisionStore, D1TicketStore } from "@foundry/stores";
@@ -20,6 +21,11 @@ function depsFromEnv(env: Env): PipelineDeps {
   if (env.LKG_URL) {
     deps.overlap = new KgOverlapOracle(new KGClient(env.LKG_URL, env.LKG_TOKEN));
   }
+  // PACT chain check, previously constructible only in tests. Advisory
+  // unless a deployment opts into enforcement out-of-band.
+  if (env.PACT_URL) {
+    deps.planCheck = new PactServerPlanCheck(env.PACT_URL);
+  }
   return deps;
 }
 
@@ -32,7 +38,7 @@ export default {
     const deps = depsFromEnv(env);
     for (const msg of batch.messages) {
       try {
-        const res = await handlePush(deps, "foundry-dev", msg.body);
+        const res = await handlePush(deps, env.ARTIFACTS_NS, msg.body);
         console.log(
           "foundry/gate",
           msg.body?.type,

@@ -11,7 +11,18 @@ const app = new Hono<{ Bindings: Env }>();
 
 app.get("/health", (c) => c.json({ ok: true, worker: "orchestrator" }));
 
+// Task intake mints repo write tokens, so it is authenticated. Fail
+// closed when TASK_TOKEN is unset (same posture as the coordinator).
 app.post("/tasks", async (c) => {
+  if (!c.env.TASK_TOKEN) {
+    return c.json(
+      { error: "task intake disabled: TASK_TOKEN secret not set" },
+      503,
+    );
+  }
+  if (c.req.header("Authorization") !== `Bearer ${c.env.TASK_TOKEN}`) {
+    return c.json({ error: "unauthorized" }, 401);
+  }
   const body = await c.req.json().catch(() => null);
   try {
     const planCheck = c.env.PACT_URL

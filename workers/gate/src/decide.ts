@@ -8,6 +8,7 @@ import type {
   RepoHandle,
 } from "@foundry/artifacts-port";
 import {
+  allowsPath,
   checkAdmissibility,
   InMemoryLedger,
   Layer,
@@ -37,6 +38,8 @@ export type Decision =
       ticket: TaskTicket;
       files: Record<string, string>;
       deletedFiles: string[];
+      /** Base head this decision was made against (null = empty base). */
+      baseHead: string | null;
       planAdvisory?: PlanVerdict;
     }
   | { verdict: "reject"; reason: RejectReason }
@@ -160,7 +163,11 @@ export async function decidePush(
     const ledger = new InMemoryLedger();
     ledger.addProposal(SnapshotId.fromShortHex(push.after).toHex());
     const call = toProposedCall(ticket, push, baseHead, baseHist.length);
-    call.proposed_at = now;
+    // Freshness is measured from the proposal's own commit time, not the
+    // decision time: a push that sat in a queue ages out for real.
+    const headCommit = forkHist.find((c) => c.sha === push.after);
+    const proposedAt = headCommit ? Date.parse(headCommit.date) : NaN;
+    call.proposed_at = Number.isNaN(proposedAt) ? now : proposedAt;
     const gate = checkAdmissibility(mergeSyscall(), call, state, ledger, now);
     if (!gate.ok) return { verdict: "reject", reason: gate.reason };
 
@@ -196,6 +203,24 @@ export async function decidePush(
     if (forkPaths === null || basePaths === null) {
       // Cannot prove disjointness — route to the resolver (safe default).
       return { verdict: "conflict", ticket, files: ["unknown"], planAdvisory };
+    }
+    if (forkPaths.size === 0) {
+      return {
+        verdict: "reject",
+        reason: {
+          reason: "invalid_args",
+          message: `empty diff: push ${push.after.slice(0, 8)} changes no files vs fork point`,
+        },
+      };
+    }
+    // Scope path allowlist, enforced on the real diff (kernel rule 10
+    // cannot run before the diff exists).
+    const badPath = [...forkPaths].find((p) => !allowsPath(ticket.scope, p));
+    if (badPath !== undefined) {
+      return {
+        verdict: "reject",
+        reason: { reason: "path_not_allowed", path: badPath },
+      };
     }
     const overlapping = [...forkPaths].filter((p) => basePaths.has(p));
     const realConflicts: string[] = [];
@@ -245,7 +270,14 @@ export async function decidePush(
       if (content !== null) files[p] = content;
       else deletedFiles.push(p);
     }
-    return { verdict: "merge", ticket, files, deletedFiles, planAdvisory };
+    return {
+      verdict: "merge",
+      ticket,
+      files,
+      deletedFiles,
+      baseHead,
+      planAdvisory,
+    };
   } finally {
     fork?.dispose();
     base?.dispose();

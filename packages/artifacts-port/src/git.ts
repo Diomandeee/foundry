@@ -8,15 +8,16 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs
 import { randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
-import type {
-  ArtifactsPort,
-  CommitInfo,
-  CreatedRepo,
-  CreateOpts,
-  ForkResult,
-  Merger,
-  MergeRequest,
-  RepoHandle,
+import {
+  StaleBaseError,
+  type ArtifactsPort,
+  type CommitInfo,
+  type CreatedRepo,
+  type CreateOpts,
+  type ForkResult,
+  type Merger,
+  type MergeRequest,
+  type RepoHandle,
 } from "./port.js";
 
 export function runGit(args: string[], cwd?: string): string {
@@ -214,6 +215,15 @@ export class GitMerger implements Merger {
   async merge(req: MergeRequest): Promise<string> {
     const dir = mkdtempSync(path.join(this.workRoot, "foundry-merge-"));
     runGit(["clone", "--quiet", req.baseRemote, dir]);
+    // Refuse to land a decision made against a base that has since moved.
+    if (req.expectedBaseSha) {
+      const head = runGit(["rev-parse", "HEAD"], dir);
+      if (head !== req.expectedBaseSha) {
+        throw new StaleBaseError(
+          `base moved ${req.expectedBaseSha.slice(0, 8)} -> ${head.slice(0, 8)}`,
+        );
+      }
+    }
     runGit(["fetch", "--quiet", req.forkRemote], dir);
     runGit(
       [

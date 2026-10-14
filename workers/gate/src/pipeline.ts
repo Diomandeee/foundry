@@ -1,6 +1,7 @@
 // handlePush — full gate pipeline: normalize event → decide → merge → record.
 // Deps-injected so tests use fakes and the Worker uses real bindings + D1.
 import {
+  StaleBaseError,
   toPushEvent,
   type ArtifactsPort,
   type PushEvent,
@@ -38,7 +39,20 @@ export async function handlePush(
   const push: PushEvent | null = toPushEvent(namespace, rawBody);
   if (!push) return { handled: false };
 
+  // Idempotent redelivery: this exact event already has a decision.
+  const prior = await deps.store.findByEvent(
+    push.namespace,
+    push.repo,
+    push.ref,
+    push.before,
+    push.after,
+  );
+  if (prior) return { handled: true, record: prior };
+
   try {
+    // One stale-base retry: re-decide against the moved base, then give up
+    // to a conflict record rather than landing on an unchecked head.
+    for (let attempt = 0; ; attempt++) {
     const decision = await decidePush(
       deps.port,
       deps.tickets,
@@ -68,7 +82,26 @@ export async function handlePush(
           deletedFiles: decision.deletedFiles,
           message: `Merge ${push.repo}@${push.after.slice(0, 8)}`,
           author: "foundry",
+          expectedBaseSha: decision.baseHead ?? undefined,
         });
+      } catch (e) {
+        if (e instanceof StaleBaseError && attempt === 0) continue;
+        if (e instanceof StaleBaseError) {
+          const record = await deps.store.record({
+            namespace: push.namespace,
+            repo: push.repo,
+            ref: push.ref,
+            before_sha: push.before,
+            after_sha: push.after,
+            verdict: "conflict",
+            conflict_files: [],
+            files: Object.keys(decision.files),
+            task_id: decision.ticket.taskId,
+            agent_id: decision.ticket.agentId,
+          });
+          return { handled: true, record };
+        }
+        throw e;
       } finally {
         forkHandle.dispose();
         baseHandle.dispose();
@@ -114,6 +147,7 @@ export async function handlePush(
       reason: decision.reason,
     });
     return { handled: true, record };
+    }
   } catch (e) {
     const record = await deps.store.record({
       namespace: push.namespace,

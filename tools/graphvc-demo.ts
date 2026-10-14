@@ -4,6 +4,7 @@
 import { execFile } from "node:child_process";
 import { KGClient, intakeTriples } from "@foundry/lkg-client";
 import { promisify } from "node:util";
+import { existsSync } from "node:fs";
 import { mkdir, writeFile, chmod, rm, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { GitAdapter } from "@foundry/artifacts-port/node";
@@ -21,12 +22,23 @@ function arg(name: string, def?: string): string | undefined {
 async function main() {
   const root = arg("root")!;
   const work = arg("work", join(root, "work"))!;
-  const lkg = arg("lkg", "http://100.74.32.23:8002")!;
+  // K11 intake is optional: unset (judge default) skips graph writes.
+  const lkg = arg("lkg", process.env.LKG_URL ?? "")!;
   const runner = arg(
     "runner",
     join(process.cwd(), "tools", "dist", "gate-runner.mjs"),
   )!;
   const tmpl = arg("tmpl", join(process.cwd(), "tools", "post-receive"))!;
+
+  // The hook shells out to the bundled gate-runner; build it on first run
+  // instead of silently recording nothing (tools/dist is gitignored).
+  if (!existsSync(runner)) {
+    console.log("building gate-runner bundle (first run)…");
+    await run("npm", ["run", "bundle:runner"]);
+    if (!existsSync(runner)) {
+      throw new Error(`gate-runner bundle missing after build: ${runner}`);
+    }
+  }
 
   await rm(root, { recursive: true, force: true });
   await mkdir(root, { recursive: true });
@@ -58,13 +70,15 @@ async function main() {
   };
   await writeFile(join(root, "tickets.json"), JSON.stringify([ticket], null, 1));
   // intake triples (what POST /tasks would write): task->fork + task->base
-  try {
-    const kg = new KGClient(lkg);
-    for (const t of intakeTriples("task-1", "base", "fork-1")) {
-      await kg.addTriple(t);
+  if (lkg) {
+    try {
+      const kg = new KGClient(lkg);
+      for (const t of intakeTriples("task-1", "base", "fork-1")) {
+        await kg.addTriple(t);
+      }
+    } catch (e) {
+      console.warn("lkg intake notify failed", e);
     }
-  } catch (e) {
-    console.warn("lkg intake notify failed", e);
   }
   console.log(`fork=${fork.name} baseSha=${baseSha.slice(0, 9)}`);
 
@@ -91,6 +105,15 @@ async function main() {
   const decisions = await readFile(join(root, "decisions.jsonl"), "utf8").catch(() => "");
   console.log("--- decisions ---");
   process.stdout.write(decisions);
+  if (!decisions.trim()) {
+    const hookLog = await readFile(join(root, "hook.log"), "utf8").catch(() => "");
+    console.error("--- hook.log (tail) ---");
+    console.error(hookLog.trim().split("\n").slice(-15).join("\n") || "(empty)");
+    throw new Error("gate recorded no decision — the demo did not exercise the gate");
+  }
+  if (!decisions.includes('"merge"')) {
+    throw new Error("gate decision was not a merge — see decisions above");
+  }
   const baseMain = await git(join(root, "base.git"), ["log", "--oneline", "-3"]);
   console.log("--- base main log ---");
   console.log(baseMain);

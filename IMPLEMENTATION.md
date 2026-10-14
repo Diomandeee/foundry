@@ -1,12 +1,13 @@
 # Foundry — Implementation
 
 Full account of what Foundry is, what it is built from, and what is proven.
-Status as of 2026-10-05: **44/44 tests green, `tsc` clean**, all logic running
+Status as of 2026-10-14: **127/127 tests green, `tsc` clean**, all logic running
 against **real git** (bare repos + clones on disk). There is no fake backend:
 the port has two real implementations — `GitAdapter` (local git, now) and
-`cloudflarePort` (Artifacts, spike-verified after the Workers Paid plan
-lands). The local `push → hook → gate → merge → graph` loop is verified
-end-to-end (`npm run demo:graphvc`), including live triple writes to K11.
+`cloudflarePort` (Artifacts, spike-verified live 2026-10-13: push → gate →
+verdict in D1 on dev, staging, and prod). The local `push → hook → gate →
+merge → graph` loop is verified end-to-end (`npm run demo:graphvc`),
+including live triple writes to K11.
 Companion docs: [README](README.md) (pitch + quickstart),
 [ARCHITECTURE](ARCHITECTURE.md) (diagram + decisions).
 
@@ -116,8 +117,8 @@ interfaces here — never on a backend.
 - `src/testing.ts` — `GitTestKit`: seed/clone/commit/push harness shared by
   every suite. Tests push through real git exactly as agents will.
 - `src/cloudflare.ts` — `cloudflarePort(env)`: thin wrapper over the real
-  Artifacts binding. Written against the Workers-binding docs; runtime
-  verification waits for the Paid spike.
+  Artifacts binding. Spike-verified live 2026-10-13 (push → verdict in D1,
+  ticketed merge `06841fc`).
 
 ### stores (`packages/stores`)
 
@@ -130,8 +131,9 @@ interfaces here — never on a backend.
 ### lkg-client (`packages/lkg-client`)
 
 Fetch client for the Live Knowledge Graphs REST API
-(`addTriple/query/traverse`), defaulting to the K11 graph
-(`http://100.74.32.23:8002`). Shapes are grounded in both the repo source
+(`addTriple/query/traverse`), pointed at the K11 graph via `LKG_URL`
+(the author's local default, not a Workers-reachable address).
+Shapes are grounded in both the repo source
 (`knowledge_handlers.rs`) and live probes, and the client tolerates both:
 query accepts a bare array or `{triples,total}`; traverse posts
 `{start,max_hops,direction,max_results}` and normalizes `{predicate,source,
@@ -190,8 +192,8 @@ Nothing in the decision path knows which one it is talking to.
    `["unknown"]` (fail safe, never fail silent).
 
 Verdicts: `merge` (with the file set to apply), `reject` (with a
-machine-readable `RejectReason`), `conflict` (with the sorted file list for
-the merge-resolver agent).
+machine-readable `RejectReason`), `conflict` (with the sorted file list —
+a resolver agent consuming this is future work).
 
 ## 6. Data model
 
@@ -248,15 +250,16 @@ from-scratch build):
 | Workers Static | board UI hosting | Phase 3 |
 | Free-tier deploy | pipeline proof | Blocked once: needs workers.dev subdomain registration (dashboard onboarding) |
 
-Paid-gated spike checklist (runs the hour billing is enabled): create
-`foundry-dev` namespace → create seed repo → deploy gate + orchestrator →
-attach event subscription → push → watch decision land in D1 → verify
-`IsomorphicMerger` clone/push over https → flip demo to live.
+Paid-gated spike checklist — **done 2026-10-13** on dev, staging, and
+production (`tools/setup-env.sh`, idempotent provisioner): namespace →
+seed repo → D1 + queue → deploys → subscription → push → decision in D1 →
+`IsomorphicMerger` clone/push over https → ticketed merge `06841fc`
+landed on `base`.
 
 ## 9. Verification
 
 ```bash
-npm test            # vitest: 44/44 across gate-ts, artifacts-port, stores, gate, orchestrator
+npm test            # vitest: 127/127 across gate-ts, artifacts-port, stores, gate, orchestrator
 npm run typecheck   # tsc --noEmit, strict, zero errors
 npm run demo:graphvc  # push → hook → gate → 2-parent merge + K11 triples
 npm run smoke:lkg     # live write/read/traverse against K11
@@ -265,9 +268,9 @@ npm run smoke:lkg     # live write/read/traverse against K11
 Test seams: `GitAdapter` (real bare repos in tmp dirs) driven through
 `GitTestKit`, `InMemoryTicketStore` / `MemoryDecisionStore`, and
 isomorphic-git `init` in tmp dirs for `commitForkFiles`. No test touches the
-network. The two paths that cannot be proven without Cloudflare are the
-Artifacts binding calls and the clone/push http transport — both are thin,
-doc-patterned, and first in the spike queue.
+network. The Artifacts binding calls and the clone/push http transport —
+unprovable without Cloudflare — were proven live at the 2026-10-13 spike
+(push → reject in D1, ticketed merge `06841fc`).
 
 ## 10. What is left
 
@@ -279,7 +282,8 @@ doc-patterned, and first in the spike queue.
 4. **Board UI + Spatial view** — Workers Static app on the API.
 5. **Demo + video** — seed repo with conflicting tasks, rehearsal, 5–10 min
    recording, public repo + submission by Oct 14.
-6. **Paid spike** — section 8's checklist, whenever billing is enabled.
+6. **Paid spike** — done 2026-10-13 (section 8); re-run via
+   `tools/setup-env.sh` for any fresh environment.
 
 ## 11. Repo map
 
@@ -304,8 +308,9 @@ foundry/
 
 ## Integration (2026-10-06): K11 shared graph + PACT intake + gateway shim
 
-All three systems share one knowledge graph (K11, `http://100.74.32.23:8002`).
-Suite: 70/70 vitest + `tsc` clean; `demo:graphvc` merges end to end.
+All three systems share one knowledge graph (K11, via `LKG_URL`; the graph
+is an optional integration — the gate is local-only without it).
+Suite: 127/127 vitest + `tsc` clean; `demo:graphvc` merges end to end.
 
 ### Triple shapes (single authority: `packages/lkg-client/src/triples.ts`)
 - Intake: `task:<id> —has_fork→ repo:<fork>`, `task:<id> —on_base→ repo:<base>`

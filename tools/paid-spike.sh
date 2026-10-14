@@ -134,7 +134,7 @@ fi
 # ---------- 7. verify decision in D1 ----------
 say "7/8 decision landed in D1?"
 npx wrangler d1 execute "$D1_NAME" --remote \
-  --command "SELECT decision, count(*) FROM decisions GROUP BY decision;" 2>&1 | sed 's/^/   /'
+  --command "SELECT verdict, count(*) FROM decisions GROUP BY verdict;" 2>&1 | sed 's/^/   /'
 
 # ---------- 8. clone/push over https (IsomorphicMerger transport) ----------
 say "8/8 https clone/push transport check"

@@ -72,6 +72,16 @@ export interface MergeRequest {
   deletedFiles: string[];
   message: string;
   author: string;
+  /** Base head the decision was made against; merger must refuse if moved. */
+  expectedBaseSha?: string;
+}
+
+/** Base head moved between decide and merge; the decision is stale. */
+export class StaleBaseError extends Error {
+  constructor(message: string) {
+    super(`stale_base: ${message}`);
+    this.name = "StaleBaseError";
+  }
 }
 
 export interface Merger {
