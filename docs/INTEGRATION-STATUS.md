@@ -10,10 +10,20 @@ How this was established (all re-runnable):
 ```bash
 npm run typecheck                        # 0 errors
 npx vitest run                           # 23 files, 227 tests, all pass
+npm run proof:usability                  # 26 checks, all PASS — the loop, in-process
+npm run demo:graphvc                     # the same loop over a real git push + hook
 cargo test --manifest-path substrate/cc-kernel/Cargo.toml        # 52 + 11 + 2 parity
 cat fixtures/kernel-parity.json          # the shared Rust<->TS case set (§6)
 curl -s <staging board>/decisions?limit=200                      # live ledger
 ```
+
+`npm run proof:usability` is the single command a reviewer should run first: it
+drives intake → an admitted merge → a path refusal → an enforced-verification
+block → the same failure as advisory → every API surface → kernel rule 10, on
+real git repositories in a temp dir, and prints `PASS`/`FAIL` with the observed
+value for each of 26 assertions. `npm run demo:graphvc` runs the same gate over
+an actual `git push` through a post-receive hook. Neither needs an account,
+network access, or `wrangler`, and both exit non-zero on any failure.
 
 Nothing in this document is inferred from a package existing. Where a status is
 not backed by a test or a live read, it says so.
