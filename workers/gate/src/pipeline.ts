@@ -10,6 +10,7 @@ import { decidePush } from "./decide.js";
 import type { Merger } from "./merge.js";
 import type { OverlapOracle } from "@foundry/lkg-client";
 import type { PlanCheck } from "@foundry/plan-check";
+import { blocksMerge, summarize, type Verifier } from "@foundry/verify";
 import type {
   DecisionRecord,
   DecisionStore,
@@ -25,6 +26,10 @@ export interface PipelineDeps {
   overlap?: OverlapOracle;
   planCheck?: PlanCheck;
   planCheckEnforce?: boolean;
+  /** Required checks that must pass before a merge is finalised. */
+  verifier?: Verifier;
+  /** When true, a failed check blocks the merge. Default: advisory. */
+  verifyEnforce?: boolean;
   /** When true, pipeline-error reasons carry the stack (DEBUG=1). */
   debug?: boolean;
 }
@@ -68,6 +73,42 @@ export async function handlePush(
     );
 
     if (decision.verdict === "merge") {
+      // Required verification runs HERE: the proposal has been admitted (every
+      // deterministic rule has passed and the exact `files` above are what
+      // would land), and the merge has not happened yet. Running it after the
+      // merge would only report on a change that already entered the base.
+      //
+      // A verifier that throws is an infrastructure failure, not a refusal: it
+      // falls out of this try block into the catch-all below, which records
+      // `error` and stays retryable. Only a verifier that *ran* and failed,
+      // under explicit enforcement, refuses.
+      // The branch the push moved, resolved as `decidePush` resolves it.
+      const branch = push.ref.startsWith("refs/heads/")
+        ? push.ref.slice("refs/heads/".length)
+        : push.ref;
+      const verify = deps.verifier
+        ? await deps.verifier.run({
+            repo: push.repo,
+            baseBranch: branch,
+            files: Object.keys(decision.files),
+            headSha: push.after,
+          })
+        : { checked: false, ok: true, runs: [] };
+      if (blocksMerge(verify, deps.verifyEnforce ?? false)) {
+        const record = await deps.store.record({
+          namespace: push.namespace,
+          repo: push.repo,
+          ref: push.ref,
+          before_sha: push.before,
+          after_sha: push.after,
+          verdict: "reject",
+          reason: { reason: "verification_failed", message: summarize(verify) },
+          files: Object.keys(decision.files),
+          task_id: decision.ticket.taskId,
+          agent_id: decision.ticket.agentId,
+        });
+        return { handled: true, record };
+      }
       const forkHandle = await deps.port.get(decision.ticket.forkRepo);
       const baseHandle = await deps.port.get(decision.ticket.baseRepo);
       let mergedSha: string;

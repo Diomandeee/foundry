@@ -9,7 +9,7 @@ How this was established (all re-runnable):
 
 ```bash
 npm run typecheck                        # 0 errors
-npx vitest run                           # 22 files, 207 tests, all pass
+npx vitest run                           # 23 files, 226 tests, all pass
 cargo test --manifest-path substrate/cc-kernel/Cargo.toml        # 52 + 11 + 2 parity
 cat fixtures/kernel-parity.json          # the shared Rust<->TS case set (§6)
 curl -s <staging board>/decisions?limit=200                      # live ledger
@@ -29,8 +29,9 @@ Production verified · Advisory · Planned/incomplete.
 |---|---|---|
 | `substrate/cc-kernel` (Rust) | Reference + CI-verified | `cargo test` in `.github/workflows/ci.yml:45`; `substrate/cc-kernel/tests/integration_test.rs` |
 | `packages/gate-ts` (12-rule kernel port) | Ported + locally verified + **Integrated** | `packages/gate-ts/src/gate.ts`; called from the live decision path at `workers/gate/src/decide.ts:230` |
-| `packages/gate-ts` path allowlist | Ported, **not a security boundary** | `allowsPath` in `packages/gate-ts/src/types.ts`; see §6 |
+| `packages/gate-ts` path allowlist | Ported + **canonicalising, parity-checked**; a policy boundary, not a filesystem control | `allowsPath` in `packages/gate-ts/src/types.ts`; mirrored in `substrate/cc-kernel/src/types/scope.rs`; 32-case shared fixture in `fixtures/kernel-parity.json` — see §6 |
 | `packages/gate-ts` scope token | Ported, **unsigned** | `signature?: number[]` (`types.ts:95`) is declared and never set or verified — see §6 |
+| `packages/verify` | Ported + **Integrated, inert until configured** | Runs between admission and the merge in `workers/gate/src/pipeline.ts`; no `VERIFY_URL` means the stub, which cannot block — see §9 |
 | `workers/orchestrator` | Integrated | `workers/orchestrator/src/tasks.ts` + `tasks.test.ts`; `wrangler.toml` binds D1 + Artifacts |
 | `workers/gate` | Integrated, **production verified** | `src/decide.ts` (verdict), `src/merge.ts` (merge), `src/pipeline.ts` (decide→merge→record); live staging ledger holds its rows |
 | `workers/api` | Integrated, production verified | `src/index.ts` board + `/decisions` + `/why/:sha` + `/history.json`; `api.test.ts` |
@@ -65,6 +66,7 @@ does, not what the docs say:
 | 2 | Real content conflicts on paths both sides changed | `conflict` + file list |
 | 2b | Cross-task overlap via the LKG oracle (only if `LKG_URL` is configured) | `conflict` + contenders |
 | 3 | Clean → collect fork-side contents and deletions | `merge` |
+| 4 | **Required verification** (`pipeline.ts`, after admission, before the merge) — only when a `VERIFY_URL` is configured (§9) | `verification_failed`, **only when `VERIFY_ENFORCE` is set** |
 
 **Contract corrections against the docs**
 
@@ -334,9 +336,9 @@ that path or accept the viewer as a read-only overview.
    records. The join key would be the decision id; the gate still writes no
    trajectory events. Graph writes also remain best-effort with no per-decision
    record of whether the write succeeded.
-7. **Verification interface** (typecheck/build/tests before finalising a merge):
-   does not exist. Today the gate admits a change; it does not establish that the
-   result compiles or passes.
+7. ~~Verification interface~~ (typecheck/build/tests before finalising a merge)
+   — **implemented**, see §9. What remains is persistence of a *passing*
+   verdict, which needs a D1 column and therefore credentials (§9).
 8. ~~Reconcile the local demo merger with production~~ — **resolved** (§3):
    documented as an intentional difference of purpose, with the shared
    `Fork-Head:` trailer as the contract both satisfy and an assertion for each.
@@ -350,3 +352,73 @@ that path or accept the viewer as a read-only overview.
    (`trajectory-memory-ledger`) was copied from a working tree with uncommitted
    edits, so its revision alone does not reproduce the vendored bytes. All four
    live outside this repository, so none is verifiable from a clean clone.
+
+## 9. Required verification — implemented 2026-10-15
+
+Admission and correctness are different questions, and the gate previously
+answered only the first: it decided whether a proposal *may* land, never whether
+the result *works*. `packages/verify` adds the second without merging it into
+the first.
+
+**Where it runs.** In `workers/gate/src/pipeline.ts`, after `decidePush` returns
+`verdict: "merge"` and before `merger.merge(...)` is called. That position is
+the whole point: every deterministic rule has passed and `decision.files` is
+exactly what would land, so a failed check prevents the merge rather than
+reporting on one that already entered the base. The base is asserted untouched
+in the refusal test.
+
+**What it is not.** It does not make an inadmissible proposal admissible, and a
+passing check does not override a deterministic refusal. Enforced failure is
+recorded as its own reason — `verification_failed` on `FoundryReason`, beside
+`infra_failure` — so a refusal for correctness can never be read as a refusal
+for scope or staleness. The kernel's `RejectReason` union is untouched, so the
+Rust mirror still holds.
+
+**Posture** (deliberately identical to `@foundry/plan-check`):
+
+| Situation | Verdict | Blocks? |
+|---|---|---|
+| No verifier configured | `checked: false, ok: true` | never |
+| Verifier unreachable / non-2xx / throws | `checked: false, ok: true`, with `error` | never — recorded as `error` by the catch-all, retryable |
+| Server returned no checks | `checked: false`, `error: "no checks ran"` | never, and never recorded as a pass |
+| A check ran and failed, `verifyEnforce` off (default) | `checked: true, ok: false` | no — advisory |
+| A check ran and failed, `verifyEnforce` on | `checked: true, ok: false` | **yes** |
+
+An outage is not a failed test, and no runner is not a passing one. Every
+request carries `headSha`, so a result can never be attached to a different
+revision than the one tested; check output is truncated to 400 chars so one run
+cannot fill the ledger.
+
+**Wiring.** `VERIFY_URL` (optional secret) selects `HttpVerifier`;
+`VERIFY_ENFORCE=1` makes failures blocking. Unset means `StubVerifier` and the
+pipeline behaves exactly as it did before — the capability is connected but
+inert until a deployment opts in, which is why this changes no deployed
+behaviour.
+
+**Server contract** (`POST <VERIFY_URL>/api/verify`):
+
+```
+{ repo, baseBranch, files: string[], headSha }
+  -> { runs: [{ name, ok, output? }] }
+```
+
+**The gap.** A *passing* verification is not persisted. `decisions` has no
+column for it, and adding one is a live migration this environment cannot run
+(no Cloudflare credentials), so the store writes nothing and a merge record
+cannot show which checks ran. The migration is:
+
+```sql
+ALTER TABLE decisions ADD COLUMN verification TEXT;  -- JSON VerifyVerdict
+```
+
+plus the matching write in `D1DecisionStore.record` and a field on
+`DecisionRecord`. `workers/gate/schema.sql` should carry the column so a fresh
+database has it. Until that runs, a failed enforced check *is* recorded (as a
+rejection with `verification_failed`) — only the passing case is invisible, and
+that is the honest half to be missing.
+
+Tests: `packages/verify/src/index.test.ts` (13 — every posture row above,
+including the outage-not-a-failure and no-runs-not-a-pass cases) and
+`workers/gate/src/pipeline.test.ts` ("required verification", 6 — including that
+a refusal leaves the base untouched, that an advisory failure still merges, and
+that a throwing verifier records `error` rather than a rejection).

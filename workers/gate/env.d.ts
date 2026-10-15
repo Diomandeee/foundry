@@ -13,5 +13,9 @@ interface Env {
   LKG_URL?: string;
   LKG_TOKEN?: string;
   PACT_URL?: string;
+  /** Required-check server (`packages/verify`, POST /api/verify). */
+  VERIFY_URL?: string;
+  /** When "1", a failed required check blocks the merge. Default advisory. */
+  VERIFY_ENFORCE?: string;
   DEBUG?: string;
 }

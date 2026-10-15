@@ -11,6 +11,7 @@ import { newScopeToken } from "@foundry/gate-ts";
 import { InMemoryTicketStore } from "@foundry/stores";
 import { StaleBaseError, type MergeRequest } from "@foundry/artifacts-port";
 import type { Merger } from "@foundry/artifacts-port";
+import type { VerifyRequest, Verifier, VerifyVerdict } from "@foundry/verify";
 import { handlePush, type PipelineDeps } from "./pipeline.js";
 import { MemoryDecisionStore } from "@foundry/stores";
 
@@ -288,5 +289,122 @@ describe("handlePush failure classification", () => {
     expect(merged.handled && merged.record.verdict).toBe("merge");
     expect(again.handled && again.record.id).toBe(merged.handled && merged.record.id);
     expect((await deps.store.list()).length).toBe(1);
+  });
+});
+
+describe("required verification", () => {
+  function verifierReturning(
+    verdict: VerifyVerdict,
+    seen: VerifyRequest[] = [],
+  ): Verifier {
+    return {
+      run: async (req) => {
+        seen.push(req);
+        return verdict;
+      },
+    };
+  }
+
+  it("blocks the merge when an enforced check fails, and leaves the base untouched", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const seen: VerifyRequest[] = [];
+    deps.verifier = verifierReturning(
+      { checked: true, ok: false, runs: [{ name: "tsc", ok: false }] },
+      seen,
+    );
+    deps.verifyEnforce = true;
+
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    expect(res.handled).toBe(true);
+    if (!res.handled) return;
+    expect(res.record.verdict).toBe("reject");
+    expect(res.record.reason?.reason).toBe("verification_failed");
+    if (res.record.reason && res.record.reason.reason === "verification_failed") {
+      expect(res.record.reason.message).toContain("tsc");
+    }
+    // The proposal was admissible, so the refusal is recorded against its
+    // files — and the base must not carry the change.
+    expect(res.record.files).toEqual(["feat.ts"]);
+    const base = await deps.port.get("base");
+    expect(await base.readFile("main", "feat.ts")).toBe(null);
+    const hist = await base.history("main", 1);
+    expect(hist[0].sha).toBe(baseSha);
+    base.dispose();
+    // The checker was told the exact revision under test.
+    expect(seen[0].headSha).toBe(after);
+    expect(seen[0].files).toEqual(["feat.ts"]);
+  });
+
+  it("merges anyway when the same failure is only advisory", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    deps.verifier = verifierReturning({
+      checked: true,
+      ok: false,
+      runs: [{ name: "tsc", ok: false }],
+    });
+    // verifyEnforce deliberately unset: the default is advisory.
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    if (!res.handled) return expect.unreachable("expected a decision");
+    expect(res.record.verdict).toBe("merge");
+    const base = await deps.port.get("base");
+    expect(await base.readFile("main", "feat.ts")).toBe("new\n");
+    base.dispose();
+  });
+
+  it("merges when the checks pass, and only then", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    deps.verifier = verifierReturning({
+      checked: true,
+      ok: true,
+      runs: [{ name: "tsc", ok: true }],
+    });
+    deps.verifyEnforce = true;
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    if (!res.handled) return expect.unreachable("expected a decision");
+    expect(res.record.verdict).toBe("merge");
+  });
+
+  it("treats an unreachable verifier as no verdict at all, never as a pass or a fail", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    deps.verifier = verifierReturning({
+      checked: false,
+      ok: true,
+      runs: [],
+      error: "verify 502",
+    });
+    deps.verifyEnforce = true;
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    if (!res.handled) return expect.unreachable("expected a decision");
+    // Fail-open, and it does not pretend a check ran.
+    expect(res.record.verdict).toBe("merge");
+  });
+
+  it("records a throwing verifier as an infrastructure error, not a refusal", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    deps.verifier = {
+      run: async () => {
+        throw new Error("verifier exploded");
+      },
+    };
+    deps.verifyEnforce = true;
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    if (!res.handled) return expect.unreachable("expected a decision");
+    // A verifier that could not run is an outage: retryable, and it must never
+    // read as the change having failed its checks.
+    expect(res.record.verdict).toBe("error");
+    expect(res.record.reason?.reason).toBe("infra_failure");
+  });
+
+  it("runs no checks when no verifier is configured, exactly as before", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    if (!res.handled) return expect.unreachable("expected a decision");
+    expect(res.record.verdict).toBe("merge");
   });
 });

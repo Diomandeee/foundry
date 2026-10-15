@@ -4,10 +4,17 @@ import type { RejectReason } from "@foundry/gate-ts";
  * Foundry's own outcomes, which are not kernel policy reasons. Keeping them
  * out of `RejectReason` preserves the 1:1 mirror of the Rust kernel.
  */
-export type FoundryReason = {
-  reason: "infra_failure";
-  message: string;
-};
+/**
+ * Reasons that come from Foundry's own policy rather than the kernel's
+ * `RejectReason` union. `infra_failure` is not a refusal at all — it marks an
+ * unfinished evaluation. `verification_failed` is a real refusal: the proposal
+ * was admissible, and a repository-declared check then refused it. Keeping
+ * both here rather than widening the kernel union leaves the Rust mirror
+ * (`cc-kernel::RejectReason`) untouched.
+ */
+export type FoundryReason =
+  | { reason: "infra_failure"; message: string }
+  | { reason: "verification_failed"; message: string };
 
 export type DecisionReason = RejectReason | FoundryReason;
 
