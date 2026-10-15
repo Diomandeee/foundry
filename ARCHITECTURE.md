@@ -44,9 +44,13 @@ agents push freely          Cloudflare receives         gate decides
    ticket; diff fork against base in memory; run the five checks in order;
    first failure is the verdict. Pushing the same commit twice hits a
    uniqueness rule and is recorded once — redelivery is safe.
-5. **Merge or refuse**: a pass is merged into base with an ordinary merge
-   commit and its hash is stored on the verdict row. A refusal stores the
-   reason; the fork is untouched so the agent can fix and re-push.
+5. **Merge or refuse**: a pass is squashed onto base as a single commit
+   (`workers/gate/src/merge.ts`, `commitForkFiles`), and that commit's hash is
+   stored on the verdict row. The commit message carries `Fork-Head: <proposal
+   sha>`, so the landed commit points back at the proposal it came from. A
+   refusal stores the reason; the fork is untouched so the agent can fix and
+   re-push. (The local demo's `GitMerger` makes a two-parent merge commit
+   instead — a divergence, tracked in `docs/INTEGRATION-STATUS.md` §3.)
 6. **Read**: `workers/api` serves the board, the JSON list, per-commit
    explanations, and the machine feed — all straight from the same table.
 

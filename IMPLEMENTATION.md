@@ -148,19 +148,33 @@ Nothing in the decision path knows which one it is talking to.
 
 ## 5. The checks, in order
 
-A push must survive all of these to merge. First failure is the verdict.
+A push must survive all of these to merge. First failure is the verdict. This
+list is `workers/gate/src/decide.ts` read top to bottom; it is the authority, not
+prose about it.
 
 1. **Ticket check.** The fork must belong to a known task. Otherwise
    `invalid_args` ("no task ticket") — the most common verdict, and
    deliberate: anonymous work never merges.
-2. **Non-empty diff.** Nothing changed, nothing to merge.
-3. **Freshness.** The fork point must be under 5 minutes old, so agents
-   merge against current code, not yesterday's.
-4. **Scope.** Every touched path must be inside the task's allowed roots.
-5. **Conflicts.** Paths changed on both sides since the fork point are
+2. **History is readable.** The fork point must be present in both the fork and
+   the base history, and the pushed commit must exist on the fork. Otherwise
+   `invalid_args` ("base moved on; rebase the fork") or `proposal_not_found`.
+3. **Kernel admissibility** (`checkAdmissibility`, the `cc-kernel` port): scope
+   valid and unexpired, tool allowed, layer and layer transition, time gate,
+   budget, mutation rights, and snapshot freshness — the fork point must be
+   under 5 minutes old, so agents merge against current code, not yesterday's.
+   The kernel's own reasons are recorded verbatim.
+4. **PACT chains** (only when the ticket declares them): advisory unless a
+   deployment sets `enforce`; an outage fails open and is recorded as unchecked.
+5. **Diff materialised.** An empty diff is `invalid_args` ("empty diff").
+   **Scope** is enforced here on the real diff: every touched path must be
+   inside the task's allowed roots (`path_not_allowed`). The kernel's own path
+   rule cannot run earlier — there is no diff yet.
+6. **Conflicts.** Paths changed on both sides since the fork point are
    compared by content — identical content is not a conflict. Real
    conflicts route to a resolver with both sides attached, never merged
    silently, never dropped quietly.
+7. **Cross-task overlap** (only when `LKG_URL` is configured): the knowledge
+   graph reports other tasks touching the same paths, and a hit is a conflict.
 
 Verdicts: `merge` (with file set + merge hash), `reject` (with reason),
 `conflict` (with the file list).
