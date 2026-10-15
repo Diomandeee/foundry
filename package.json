@@ -16,7 +16,8 @@
     "deploy:orchestrator": "npm run deploy -w @foundry/orchestrator",
     "deploy:gate": "npm run deploy -w @foundry/gate",
     "deploy:api": "npm run deploy -w @foundry/api",
-    "proof:lkg": "tsx tools/lkg-path-proof.ts"
+    "proof:lkg": "tsx tools/lkg-path-proof.ts",
+    "proof:usability": "tsx tools/usability-proof.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261005.1",

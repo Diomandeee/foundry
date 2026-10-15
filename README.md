@@ -62,10 +62,13 @@ verdict row plus the merge hash — enough to replay why any commit exists.
 ```bash
 npm ci
 npm run typecheck            # 0 errors
-npx vitest run               # 136 passed, 19 files
-npx tsx tools/graphvc-demo.ts --root /tmp/foundry-demo
-# -> creates base + fork + ticket locally, pushes a file, prints the
-#    verdict (merge), shows base advanced. Nothing leaves your machine.
+npx vitest run               # 227 passed, 23 files  (+ Rust: 52 + 11 + 2 parity)
+npm run proof:usability      # 26 checks, all PASS — the whole loop, in-process
+npm run demo:graphvc         # the same loop through a real git push + hook
+# proof:usability covers intake -> merge -> path refusal -> enforced
+# verification block -> advisory merge -> every API surface -> kernel rule 10.
+# demo:graphvc does it over real bare repos with a post-receive hook.
+# Both run entirely in /tmp. Nothing leaves your machine, no account needed.
 ```
 
 ## Watch it live (staging)
