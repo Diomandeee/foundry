@@ -2,13 +2,13 @@
 
 Reconnaissance pass over the core workflow and the four vendored substrate
 systems, with the state classified per capability. Written 2026-10-15 against
-`main` @ `acad2fe` (working tree carried the changes described in §5).
+`main` @ `8b38c2b`, 2026-10-15. The fixes in §4 and §5 are committed and green.
 
 How this was established (all re-runnable):
 
 ```bash
 npm run typecheck                        # 0 errors
-npx vitest run                           # 20 files, 149 tests, all pass
+npx vitest run                           # 21 files, 155 tests, all pass
 cargo test --manifest-path substrate/cc-kernel/Cargo.toml        # runs in CI
 curl -s <staging board>/decisions?limit=200                      # live ledger
 ```
@@ -117,8 +117,29 @@ a third of the refusal count. `scripts/capture-record.mjs` labelled them "no mai
 branch" and the demo cut renders them as a refusal *cause*, which turns an
 operational bug into a policy rule. The underlying error is a branch-resolution
 problem in the fork/base history read (`decide.ts`, the fork-side
-`historyBackTo` call has no tolerant path while the base-side call does); that is
-Priority B work, not a doc fix.
+`historyBackTo` call had no tolerant path while the base-side call did).
+
+**Root cause (fixed in `8b38c2b`).** Two independent per-ref differences, both
+of the same shape — a ref that does not exist reported as an outage:
+
+- The Artifacts Workers binding's `log()`/`readFile()` **throws** for a ref that
+  does not exist, while the local `GitAdapter` returns `[]`/`null`. A fork cut
+  from an empty base therefore read as a healthy repo locally and as a broken
+  gate in production. `packages/artifacts-port/src/cloudflare.ts` now maps a
+  missing ref to `[]`/`null` and re-throws everything else, so a real outage
+  still reaches the `error` verdict below.
+- `decide.ts` read the fork on the base's `defaultBranch` instead of the branch
+  the push actually moved (`push.ref`). The pushed branch now drives the fork
+  history read, the fork file reads and the fork side of the conflict comparison
+  (the base side still reads `branch`); an unknown branch fails closed as
+  `proposal_not_found` rather than throwing.
+
+Re-running those seven pushes should now produce a real verdict or
+`proposal_not_found`, never `pipeline error`. Tests:
+`packages/artifacts-port/src/cloudflare.test.ts` (missing ref → `[]`, missing
+ref file → `null`, network failure still rejects, read failure still rejects)
+and the `decidePush branch resolution` cases in `workers/gate/src/decide.test.ts`
+(fail if the `pushedBranch` derivation is reverted).
 
 What changed in this pass:
 
@@ -217,9 +238,12 @@ is false: there is no visualization reading that record.
 
 ## 8. Open items, in the order they should be taken
 
-1. **Root-cause the 7 branch-resolution failures** (`Could not find main`) in the
-   fork/base history read, then correct the historical rows (§4) and re-freeze the
-   record — the demo cut's refusal count is wrong until this lands.
+1. ~~Root-cause the 7 branch-resolution failures~~ — **done** in `8b38c2b`
+   (§4). What remains is the **data**: decision ids 3–9 on staging still read
+   `reject/invalid_args`, and the correction SQL in §4 has not been run because
+   this environment has no Cloudflare credentials. The demo cut also still
+   renders "no main branch" as a refusal cause; both clear after the SQL runs and
+   `scripts/capture-record.mjs` is re-run.
 2. **Adversarial path tests** against `allowsPath`, and a decision on whether the
    fail-open defaults are intended (they should be explicit in the contract).
 3. **Decide on signature**: implement, or delete `signature` and document that
