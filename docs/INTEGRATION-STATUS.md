@@ -35,6 +35,49 @@ not backed by a test or a live read, it says so.
 
 ---
 
+## 0. Deployed vs. committed — read this before believing an endpoint is live
+
+There are **no Cloudflare credentials in the environment this work was done in**
+(`npx wrangler whoami` reports not authenticated), so nothing here was deployed.
+Everything below is committed to `main` and green in CI; the *running* staging
+worker is an older revision and does not have the newest surfaces.
+
+Read live, 2026-10-15:
+
+```bash
+B=https://foundry-api-staging.motionmix-participation.workers.dev
+curl -s -o /dev/null -w '%{http_code}\n' $B                     # 200
+curl -s -o /dev/null -w '%{http_code}\n' $B/decisions?limit=1   # 200
+curl -s -o /dev/null -w '%{http_code}\n' $B/history.json?limit=1 # 200
+curl -s -o /dev/null -w '%{http_code}\n' $B/git-history.json    # 404  <- in the repo, not deployed
+curl -s -o /dev/null -w '%{http_code}\n' $B/evidence/task-1     # 404  <- in the repo, not deployed
+```
+
+| Surface | In the repo | Live on staging |
+|---|---|---|
+| `/` board, `/decisions`, `/why/:sha` | yes | **yes** (200, 28 rows) |
+| `/history.json` | paged, DB cursor, `proposal_sha` + `merge_sha` | **old shape** — items carry `sha` only, no `proposal_sha`/`merge_sha` |
+| `/git-history.json` (spatial viewer feed) | yes (§7) | **404 — not deployed** |
+| `/evidence/:taskId` | yes (§8 item 6) | **404 — not deployed** |
+
+The live ledger, read this turn: 28 rows — 17 `reject/invalid_args`, 7 `merge`,
+4 `reject/snapshot_too_stale`. Seven of the 17 are the `pipeline error:` rows
+described in §4; the correction SQL there has not been run for the same
+credential reason.
+
+To close the gap:
+
+```bash
+npm run deploy:api          # after `npx wrangler login`
+npm run deploy:gate
+npm run deploy:orchestrator
+```
+
+Do not report a surface as working because the code exists; check the status
+code on the deployed origin, which is what the table above does.
+
+---
+
 ## 1. Component status
 
 Status vocabulary: Reference · Ported · Locally verified · Integrated ·
