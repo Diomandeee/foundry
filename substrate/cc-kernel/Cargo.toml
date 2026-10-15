@@ -49,4 +49,10 @@ sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite"], optional = tru
 [dev-dependencies]
 tokio-test = "0.4"
 tempfile = "3"
-
+# LOCAL PATCH — not upstream. An integration test (`tests/parity.rs`) links only
+# against the crate plus its dev-dependencies, so the shared parity case set
+# needs the same three crates the crate itself already depends on. No new
+# entries in Cargo.lock; see substrate/README.md, "Local modifications".
+serde_json = "1.0"
+async-trait = "0.1"
+anyhow = "1.0"

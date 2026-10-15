@@ -2,6 +2,8 @@
 import { describe, expect, it } from "vitest";
 import { checkAdmissibility } from "./gate.js";
 import {
+  allowsPath,
+  canonicalizePath,
   cheapCost,
   InMemoryLedger,
   Layer,
@@ -151,6 +153,88 @@ describe("checkAdmissibility (rule coverage)", () => {
     );
     expect(v.ok).toBe(false);
     if (!v.ok) expect(v.reason.reason).toBe("path_not_allowed");
+  });
+
+  // Adversarial rule-10 cases. The allowlist is a policy boundary, so the
+  // tests below pin the boundary itself rather than one happy path. The same
+  // cases run against the Rust kernel via fixtures/kernel-parity.json.
+  describe("rule 10 · path authorisation", () => {
+    function decidablePath(path: string) {
+      const scope = testScope();
+      scope.allowed_roots = ["src/allowed"];
+      return checkAdmissibility(
+        mockSyscall(Layer.OBSERVE, "read_only"),
+        newProposedCall("mock.syscall", { path }, scope),
+        newKernelState(),
+        new InMemoryLedger(),
+      );
+    }
+
+    it("refuses a traversal that only looks like it is inside the root", () => {
+      const v = decidablePath("src/allowed/../secret.txt");
+      expect(v.ok).toBe(false);
+      if (!v.ok) expect(v.reason.reason).toBe("path_not_allowed");
+    });
+
+    it("refuses a traversal that climbs past the root entirely", () => {
+      const v = decidablePath("src/allowed/../../etc/passwd");
+      expect(v.ok).toBe(false);
+      if (!v.ok) expect(v.reason.reason).toBe("path_not_allowed");
+    });
+
+    it("refuses an absolute path under a relative root", () => {
+      const v = decidablePath("/src/allowed/x.txt");
+      expect(v.ok).toBe(false);
+      if (!v.ok) expect(v.reason.reason).toBe("path_not_allowed");
+    });
+
+    it("refuses a root that is only a string prefix of another directory", () => {
+      const v = decidablePath("src/allowed_elsewhere/x");
+      expect(v.ok).toBe(false);
+      if (!v.ok) expect(v.reason.reason).toBe("path_not_allowed");
+    });
+
+    it("refuses a Windows-style traversal rather than reading it as a path", () => {
+      const v = decidablePath("src\\..\\..\\etc\\passwd");
+      expect(v.ok).toBe(false);
+      if (!v.ok) expect(v.reason.reason).toBe("path_not_allowed");
+    });
+
+    it("admits a dot segment that resolves back inside the root", () => {
+      expect(decidablePath("src/allowed/a/../b.txt").ok).toBe(true);
+    });
+
+    it("admits repeated separators, which resolve to the same file", () => {
+      expect(decidablePath("src//allowed///x.txt").ok).toBe(true);
+    });
+
+    it("treats empty roots as fail-open, and says so", () => {
+      const scope = testScope();
+      expect(scope.allowed_roots).toEqual([]);
+      expect(allowsPath(scope, "/etc/shadow")).toBe(true);
+    });
+  });
+
+  it("canonicalises paths the way a filesystem resolves them", () => {
+    // Mirrors test_canonicalize_path_matches_the_port in the Rust kernel.
+    for (const [input, expected] of [
+      ["a/b", "a/b"],
+      ["a//b", "a/b"],
+      ["a/./b", "a/b"],
+      ["a/../b", "b"],
+      ["a/b/..", "a"],
+      ["..", ".."],
+      ["../a", "../a"],
+      ["a/../../b", "../b"],
+      [".", "."],
+      ["", "."],
+      ["/", "/"],
+      ["/a/b", "/a/b"],
+      ["/../a", "/a"],
+      ["/a/../../b", "/b"],
+    ] as const) {
+      expect(canonicalizePath(input)).toBe(expected);
+    }
   });
 
   it("rejects invalid args", () => {

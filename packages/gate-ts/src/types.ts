@@ -135,12 +135,49 @@ export function allowsLayer(scope: ScopeToken, layer: Layer): boolean {
   return layerInRange(scope.allowed_layers, layer);
 }
 
+/**
+ * Lexically resolve a path the way a filesystem resolves `.` and `..`, without
+ * touching the filesystem. A repo path never contains a dot segment, but a path
+ * handed to the kernel as a tool argument is caller-supplied, so the allowlist
+ * must compare the *effective* target or `src/allowed/../secret.txt` reads as
+ * "under src/allowed". `\` is a filename character here, not a separator: git
+ * paths use `/`, and POSIX agrees. Symlinks are deliberately out of scope — a
+ * string comparison cannot resolve them, so the allowlist is a policy boundary,
+ * not the last line of defence (see docs/INTEGRATION-STATUS.md §6).
+ */
+export function canonicalizePath(path: string): string {
+  const absolute = path.startsWith("/");
+  const out: string[] = [];
+  for (const segment of path.split("/")) {
+    if (segment === "" || segment === ".") continue;
+    if (segment === "..") {
+      if (out.length > 0 && out[out.length - 1] !== "..") out.pop();
+      // `..` at an absolute root is a no-op, as POSIX resolves it.
+      else if (!absolute) out.push("..");
+      continue;
+    }
+    out.push(segment);
+  }
+  const joined = out.join("/");
+  if (absolute) return `/${joined}`;
+  return joined === "" ? "." : joined;
+}
+
+/**
+ * Whether `path` resolves inside one of the scope's allowed roots.
+ *
+ * An empty `allowed_roots` permits everything. That default is fail-open on
+ * purpose (see §6) and is why the orchestrator must set roots explicitly; it is
+ * asserted here so the behaviour cannot change by accident.
+ */
 export function allowsPath(scope: ScopeToken, path: string): boolean {
   if (scope.allowed_roots.length === 0) return true;
-  const norm = path.replace(/\/+$/, "");
+  const norm = canonicalizePath(path);
   return scope.allowed_roots.some((root) => {
-    const r = root.replace(/\/+$/, "");
-    return norm === r || norm.startsWith(r + "/");
+    const r = canonicalizePath(root);
+    if (r === "") return false;
+    if (norm === r) return true;
+    return norm.startsWith(r === "/" ? "/" : r + "/");
   });
 }
 

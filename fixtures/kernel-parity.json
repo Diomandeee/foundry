@@ -1,0 +1,999 @@
+{
+  "version": 1,
+  "note": "One case set, executed by BOTH the Rust reference kernel (substrate/cc-kernel/tests/parity.rs) and the TypeScript port (packages/gate-ts/src/parity.test.ts). A case is only parity if both suites agree with `expect`; changing a rule on one side turns the other side red. `reason` is the RejectReason tag, which is what the gate records \u2014 see docs/INTEGRATION-STATUS.md section 6.",
+  "case_count": 32,
+  "cases": [
+    {
+      "name": "admits a read-only observe call",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 1 \u00b7 an expired scope is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": true,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "scope_expired"
+      }
+    },
+    {
+      "name": "rule 1 \u00b7 a scope that is not yet valid is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": true
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "scope_expired"
+      }
+    },
+    {
+      "name": "rule 2 \u00b7 a tool off the allowlist is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [
+          "fs.scan"
+        ],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "tool_not_allowed"
+      }
+    },
+    {
+      "name": "rule 2 \u00b7 an empty tool allowlist permits every tool",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 3 \u00b7 a layer above the scope maximum is refused",
+      "tool_id": "mock.syscall",
+      "layer": 2,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 2,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 1,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "layer_violation"
+      }
+    },
+    {
+      "name": "rule 3 \u00b7 a layer below the scope minimum is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 1,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "layer_violation"
+      }
+    },
+    {
+      "name": "rule 4 \u00b7 a layer two ahead of the frontier is refused",
+      "tool_id": "mock.syscall",
+      "layer": 2,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "layer_violation"
+      }
+    },
+    {
+      "name": "rule 5 \u00b7 a time gate that has not passed is refused",
+      "tool_id": "mock.syscall",
+      "layer": 1,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": 60,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "time_gate_violation"
+      }
+    },
+    {
+      "name": "rule 5 \u00b7 a time gate that has passed is admitted",
+      "tool_id": "mock.syscall",
+      "layer": 1,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": -60,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 6 \u00b7 a call that exceeds the budget is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 5,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "budget_exceeded"
+      }
+    },
+    {
+      "name": "rule 6 \u00b7 a call that exactly fits the budget is admitted",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 10,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 7 \u00b7 the step ceiling is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 10,
+      "max_steps": 10,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "steps_exceeded"
+      }
+    },
+    {
+      "name": "rule 8 \u00b7 a mutation without scope permission is refused",
+      "tool_id": "mock.syscall",
+      "layer": 3,
+      "mutability": "reversible",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 3,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "mutation_not_allowed"
+      }
+    },
+    {
+      "name": "rule 8 \u00b7 a mutation with scope permission is admitted below Apply",
+      "tool_id": "mock.syscall",
+      "layer": 2,
+      "mutability": "reversible",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 2,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": true,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 9 \u00b7 a proposal older than the ceiling is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": 10,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": -30,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "snapshot_too_stale"
+      }
+    },
+    {
+      "name": "rule 9 \u00b7 a proposal inside the ceiling is admitted",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": 10,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": -5,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 9 \u00b7 a future-dated proposal is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": 10,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 5,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "snapshot_too_stale"
+      }
+    },
+    {
+      "name": "rule 9 \u00b7 no freshness requirement admits any age",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": -100000,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 10 \u00b7 a traversal out of the allowed root is refused",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [
+          "src/allowed"
+        ],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {
+        "path": "src/allowed/../secret.txt"
+      },
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "path_not_allowed"
+      }
+    },
+    {
+      "name": "rule 10 \u00b7 a path inside the allowed root is admitted",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [
+          "src/allowed"
+        ],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {
+        "path": "src/allowed/x.txt"
+      },
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 10 \u00b7 an absolute path is not under a relative root",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [
+          "src/allowed"
+        ],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {
+        "path": "/src/allowed/x.txt"
+      },
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "path_not_allowed"
+      }
+    },
+    {
+      "name": "rule 10 \u00b7 empty roots permit every path, absolute included",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {
+        "path": "/etc/shadow"
+      },
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 10 \u00b7 the root match stops at a path segment boundary",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [
+          "src/allowed"
+        ],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {
+        "path": "src/allowed_elsewhere/x"
+      },
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "path_not_allowed"
+      }
+    },
+    {
+      "name": "rule 10 \u00b7 a dot segment that stays inside is admitted",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [
+          "src/allowed"
+        ],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {
+        "path": "src/allowed/a/../b.txt"
+      },
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 10 \u00b7 repeated separators collapse to the same target",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [
+          "src/allowed"
+        ],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {
+        "path": "src//allowed///x.txt"
+      },
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 10 \u00b7 a backslash is a filename character, not a separator",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [
+          "src/allowed"
+        ],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {
+        "path": "src\\..\\..\\etc\\passwd"
+      },
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "path_not_allowed"
+      }
+    },
+    {
+      "name": "rule 11 \u00b7 arguments the syscall rejects fail the call",
+      "tool_id": "mock.syscall",
+      "layer": 0,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 0,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": true,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "invalid_args"
+      }
+    },
+    {
+      "name": "rule 12 \u00b7 Apply without a proposal reference is refused",
+      "tool_id": "mock.syscall",
+      "layer": 3,
+      "mutability": "irreversible",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 3,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": true,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": false,
+        "reason": "missing_proposal_ref"
+      }
+    },
+    {
+      "name": "rule 12 \u00b7 proposal-only at Apply needs no reference",
+      "tool_id": "mock.syscall",
+      "layer": 3,
+      "mutability": "propose_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 3,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": true,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    },
+    {
+      "name": "rule 12 \u00b7 a proposal hash absent from the ledger is refused",
+      "tool_id": "mock.syscall",
+      "layer": 3,
+      "mutability": "reversible",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 3,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": true,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "expect": {
+        "ok": false,
+        "reason": "proposal_not_found"
+      }
+    },
+    {
+      "name": "rule 12 \u00b7 read-only at Apply needs no reference",
+      "tool_id": "mock.syscall",
+      "layer": 3,
+      "mutability": "read_only",
+      "cost_worst": 10,
+      "max_snapshot_age_secs": null,
+      "frontier": 3,
+      "budget_remaining": 1000,
+      "monotone_step": 0,
+      "max_steps": 10000,
+      "scope": {
+        "tools": [],
+        "can_mutate": false,
+        "min_layer": 0,
+        "max_layer": 3,
+        "roots": [],
+        "expired": false,
+        "not_yet_valid": false
+      },
+      "args": {},
+      "proposed_at_offset_secs": 0,
+      "layer_gate_offset_secs": null,
+      "reject_args": false,
+      "proposal_hash_hex": null,
+      "expect": {
+        "ok": true,
+        "reason": null
+      }
+    }
+  ]
+}

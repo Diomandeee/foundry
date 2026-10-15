@@ -2,14 +2,15 @@
 
 Reconnaissance pass over the core workflow and the four vendored substrate
 systems, with the state classified per capability. Written 2026-10-15 against
-`main` @ `8b38c2b`, 2026-10-15. The fixes in §4 and §5 are committed and green.
+`main` @ `8b38c2b`. The fixes in §4, §5 and §6 are committed and green.
 
 How this was established (all re-runnable):
 
 ```bash
 npm run typecheck                        # 0 errors
-npx vitest run                           # 21 files, 155 tests, all pass
-cargo test --manifest-path substrate/cc-kernel/Cargo.toml        # runs in CI
+npx vitest run                           # 22 files, 197 tests, all pass
+cargo test --manifest-path substrate/cc-kernel/Cargo.toml        # 52 + 11 + 2 parity
+cat fixtures/kernel-parity.json          # the shared Rust<->TS case set (§6)
 curl -s <staging board>/decisions?limit=200                      # live ledger
 ```
 
@@ -203,23 +204,41 @@ A malformed cursor is now `400` instead of being silently ignored.
   store holds; integrity rests on who can write D1, not on cryptography. Treat
   the field as vestigial or implement the Rust scheme — do not treat it as a
   control.
-- **`allowsPath` is not a security boundary.** It strips trailing slashes and
-  does prefix matching with a directory boundary; `..`, backslashes, dot-segments
-  and absolute paths are not normalised. `allowed_roots: ["src"]` accepts
-  `src/../secret.txt`, which resolves outside the root. In the gate the paths come
-  from git tree entries (git itself rejects `..` segments), which is what keeps
-  this from being exploitable today — but the function must not be reused for
-  non-git input, and the adversarial cases in the brief are not yet tested.
-- **Fail-open defaults.** Empty `allowed_roots` → every path allowed; empty
-  `allowed_tools` → every tool allowed. Both are noted on the type fields
-  (`types.ts:86,91`) but appear in no gate rule, README or test, and
-  `newScopeToken()` defaults both to empty — so a ticket saved without explicit
-  roots is unrestricted, silently. That default should be an explicit decision in
-  the contract, not a side effect.
-- Parity test coverage between Rust and TypeScript is **not** fixture-driven:
-  `packages/gate-ts/src/gate.test.ts` is a standalone TS suite, and the Rust
-  tests live in `substrate/cc-kernel/tests/`. There is no shared fixture set and
-  no comparison of refusal reasons across the two implementations.
+- **`allowsPath` now canonicalises, in both implementations** (fixed
+  2026-10-15). It previously did prefix matching on the raw string, so
+  `allowed_roots: ["src/allowed"]` admitted `src/allowed/../secret.txt` — a path
+  that resolves outside the root. The two implementations also disagreed on the
+  same input: Rust's `Path::starts_with` collapses repeated separators, so
+  `src//allowed/x` was admitted there and refused by the port. Both sides now
+  run the same lexical canonicalisation (`canonicalizePath` in
+  `packages/gate-ts/src/types.ts`, `canonicalize_path` in
+  `substrate/cc-kernel/src/types/scope.rs`), which resolves `.` and `..`,
+  collapses repeated separators, keeps `\` a filename character (POSIX), and
+  refuses an absolute path under a relative root. Symlinks remain out of scope:
+  a string comparison cannot resolve them, so this is a policy boundary, not the
+  last line of defence. The Rust edit is a **local patch to vendored code** and
+  is recorded in `substrate/README.md`.
+- **The path rule is currently vacuous in production.** `workers/orchestrator`
+  never sets `scope.allowed_roots` — only tests do (`rg allowed_roots workers/`
+  finds nothing) — and `newScopeToken()` defaults it to `[]`, which permits every
+  path. So rule 10 admits everything on the live path today. That is a property
+  of the intake, not of the rule: the fix is to have intake derive roots from the
+  ticket, which is a change to `workers/orchestrator/src/tasks.ts`.
+- **Fail-open defaults are now asserted.** Empty `allowed_roots` → every path;
+  empty `allowed_tools` → every tool. Both were implicit; both are now pinned by
+  tests (`test_allows_path_empty_roots_is_fail_open`, "treats empty roots as
+  fail-open") so a change to them is a failing test rather than a silent
+  widening.
+- **Parity is fixture-driven** (added 2026-10-15). `fixtures/kernel-parity.json`
+  holds 32 cases covering all twelve rules, and **both** sides execute it:
+  `packages/gate-ts/src/parity.test.ts` and
+  `substrate/cc-kernel/tests/parity.rs`. Both drive the real
+  `check_admissibility` entry point — not a re-implementation of the rules —
+  and compare the refusal *reason tag*, which is what the gate
+  records. A rule changed on one side now turns the other side red; the case set
+  also asserts that every rule 1–12 is represented. Verified non-vacuous:
+  neutering the TypeScript canonicalisation fails exactly the two rule-10
+  traversal cases.
 
 ## 7. Spatial Git — the consumer is not connected
 
@@ -244,11 +263,18 @@ is false: there is no visualization reading that record.
    this environment has no Cloudflare credentials. The demo cut also still
    renders "no main branch" as a refusal cause; both clear after the SQL runs and
    `scripts/capture-record.mjs` is re-run.
-2. **Adversarial path tests** against `allowsPath`, and a decision on whether the
-   fail-open defaults are intended (they should be explicit in the contract).
+2. ~~Adversarial path tests against `allowsPath`~~ — **done** (§6): the rule
+   canonicalises in both implementations, the adversarial cases are tested on
+   both sides, and the fail-open defaults are pinned by tests. What remains is
+   the **production wiring**: intake still leaves `allowed_roots` empty, so rule
+   10 admits everything live. Set roots from the ticket in
+   `workers/orchestrator/src/tasks.ts` before treating path scope as a control.
 3. **Decide on signature**: implement, or delete `signature` and document that
    scope integrity is stored, not cryptographic.
-4. **Rust/TS parity fixtures**: one shared case set, outcomes and reasons compared.
+4. ~~Rust/TS parity fixtures~~ — **done** for the kernel (§6):
+   `fixtures/kernel-parity.json`, run by both suites, reasons compared. Not yet
+   covered: parity for the graph-kernel ↔ `lkg-client` triple shapes and for the
+   trajectory schema ↔ `packages/evidence`, which are still prose claims.
 5. **Connect the spatial view** through an adapter, and show missing graph or
    evidence records as missing rather than omitted.
 6. **Trajectory/evidence**: `packages/evidence` is unwired; decide the minimum
@@ -260,3 +286,9 @@ is false: there is no visualization reading that record.
    result compiles or passes.
 8. **Reconcile the local demo merger with production** (§3) or document the
    divergence as intentional.
+9. **Pin an upstream revision per vendored system.** `substrate/README.md`
+   records where and when each of the four systems was copied, but no commit
+   SHA, tag or release. The `diff -r` verification therefore cannot be repeated,
+   and a re-vendor cannot be reviewed as a diff. Until then the vendored copies
+   are *unpinned*, and the local patches in `substrate/README.md` are the only
+   record of how they differ from their sources.
