@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -506,5 +507,52 @@ describe("decidePush fork-point honesty", () => {
     } else {
       expect.unreachable("expected invalid_args reject");
     }
+  });
+});
+
+describe("decidePush branch resolution", () => {
+  // A fork's branch is not always called what the base calls its default.
+  // Reading the fork on the base's branch name turned that into either a
+  // pipeline error or a phantom "proposal not found".
+  function eventWithRef(repo: string, ref: string, before: string, after: string) {
+    return {
+      namespace: "test",
+      repo,
+      ref,
+      before,
+      after,
+    } as Parameters<typeof decidePush>[2];
+  }
+
+  it("decides a push on a branch that is not the base default", async () => {
+    const { baseSha } = await setup();
+    execFileSync("git", ["-C", forkWork, "checkout", "-q", "-b", "feature"]);
+    const after = kit.commitAll(forkWork, "feat on feature", {
+      "feat.ts": "new\n",
+    });
+    const res = await decidePush(
+      port,
+      tickets,
+      eventWithRef("task-1", "refs/heads/feature", baseSha, after),
+    );
+    expect(res.verdict).toBe("merge");
+    if (res.verdict !== "merge") return;
+    expect(res.files).toEqual({ "feat.ts": "new\n" });
+  });
+
+  it("refuses a push on a branch the fork does not have, without throwing", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const res = await decidePush(
+      port,
+      tickets,
+      eventWithRef("task-1", "refs/heads/ghost", baseSha, after),
+    );
+    expect(res.verdict).toBe("reject");
+    if (res.verdict !== "reject") return;
+    expect(res.reason.reason).toBe("invalid_args");
+    expect(
+      res.reason.reason === "invalid_args" ? res.reason.message : "",
+    ).toMatch(/fork point|not in fork history/);
   });
 });

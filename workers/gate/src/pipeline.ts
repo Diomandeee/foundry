@@ -13,6 +13,7 @@ import type { PlanCheck } from "@foundry/plan-check";
 import type {
   DecisionRecord,
   DecisionStore,
+  TaskTicket,
   TicketStore,
 } from "@foundry/stores";
 
@@ -158,12 +159,22 @@ export async function handlePush(
     // An infrastructure failure is not a verdict. Recording it as `error`
     // keeps it visible, retryable and out of the refusal counts — a repo
     // outage must never read as an agent's mistake (7 staging rows were).
+    // Best-effort attribution: an outage should still say which task it hit,
+    // even though the ticket is not what the failing path returned.
+    let hit: TaskTicket | null = null;
+    try {
+      hit = await deps.tickets.getTicketByFork(push.repo);
+    } catch {
+      // The ticket store is a likely casualty itself; the row still lands.
+    }
     const record = await deps.store.record({
       namespace: push.namespace,
       repo: push.repo,
       ref: push.ref,
       before_sha: push.before,
       after_sha: push.after,
+      task_id: hit?.taskId ?? null,
+      agent_id: hit?.agentId ?? null,
       verdict: "error",
       reason: {
         reason: "infra_failure",

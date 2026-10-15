@@ -176,7 +176,15 @@ export async function decidePush(
     } catch {
       // Empty/unreadable base metadata: fall through with "main".
     }
-    const forkBack = await historyBackTo(fork, branch, ticket.baseSha);
+    // Read the fork on the branch the push actually moved, not on the base's
+    // default-branch name: the two are not always the same, and assuming they
+    // are made a missing ref look like a broken gate. The port reports a ref
+    // that does not exist as an empty history, so an unknown branch fails
+    // closed below (proposal_not_found) instead of throwing.
+    const pushedBranch = /^refs\/heads\//.test(push.ref)
+      ? push.ref.slice("refs/heads/".length)
+      : branch;
+    const forkBack = await historyBackTo(fork, pushedBranch, ticket.baseSha);
     const forkHist = forkBack.hist;
     let baseHist: CommitInfo[];
     try {
@@ -285,7 +293,7 @@ export async function decidePush(
     const realConflicts: string[] = [];
     for (const p of overlapping) {
       const [a, b] = await Promise.all([
-        fork.readFile(branch, p),
+        fork.readFile(pushedBranch, p),
         base.readFile(branch, p),
       ]);
       if (a !== b) realConflicts.push(p);
@@ -325,7 +333,7 @@ export async function decidePush(
     const files: Record<string, string> = {};
     const deletedFiles: string[] = [];
     for (const p of forkPaths) {
-      const content = await fork.readFile(branch, p);
+      const content = await fork.readFile(pushedBranch, p);
       if (content !== null) files[p] = content;
       else deletedFiles.push(p);
     }

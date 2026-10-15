@@ -14,6 +14,20 @@ import type {
 type Binding = any; // narrowed by worker-configuration.d.ts at deploy time
 type RepoBinding = any;
 
+/**
+ * A ref that does not exist yet is data, not an outage. A fork cut from an
+ * empty base has no branch to log; the local adapter returns [] for that, and
+ * the Workers path must agree or the same push reads as an empty repo locally
+ * and as a failure in production (7 staging rows read "Could not find main.").
+ * Anything else — a network failure, a bad credential, a malformed binding —
+ * is re-thrown so it surfaces as an infrastructure error, never as an empty
+ * repository, which the gate would treat as "nothing to merge".
+ */
+function isMissingRef(e: unknown): boolean {
+  const msg = e instanceof Error ? e.message : String(e);
+  return /could not find|not found|no such|does not exist|unborn/i.test(msg);
+}
+
 /** All file paths in a tree, recursive. Bounded for worker CPU safety. */
 async function treeFiles(
   binding: RepoBinding, treeHash: string, prefix = "",
@@ -91,8 +105,13 @@ function toHandle(
       };
     },
     async readFile(ref: string, filePath: string) {
-      const blob = await binding.readFile({ ref, path: filePath });
-      return blob ? await blob.text() : null;
+      try {
+        const blob = await binding.readFile({ ref, path: filePath });
+        return blob ? await blob.text() : null;
+      } catch (e) {
+        if (isMissingRef(e)) return null;
+        throw e;
+      }
     },
     async history(ref: string, limit = 50): Promise<CommitInfo[]> {
       // Real binding: log(), not history(). Commit metadata carries no file
@@ -100,7 +119,13 @@ function toHandle(
       // parent (bounded: newest FILES_CAP commits; older entries omit files
       // and the gate treats unknown paths as conflict — safe default).
       const FILES_CAP = 25;
-      const commits = await binding.log({ ref, limit });
+      let commits: any[] | null;
+      try {
+        commits = await binding.log({ ref, limit });
+      } catch (e) {
+        if (isMissingRef(e)) return [];
+        throw e;
+      }
       const out: CommitInfo[] = [];
       for (const c of commits ?? []) {
         const sha: string = c.hash ?? "";

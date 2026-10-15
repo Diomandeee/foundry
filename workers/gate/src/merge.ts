@@ -45,7 +45,9 @@ export class IsomorphicMerger implements Merger {
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       if (req.expectedBaseSha || !/could not find/i.test(msg)) {
-        throw new Error(`merge:clone: ${msg}`);
+        throw new Error(
+          `merge:clone: ${req.baseName}@${req.baseBranch}: ${msg}`,
+        );
       }
       // Else: possibly an empty base — verified below via listBranches.
     }
@@ -110,7 +112,9 @@ export class IsomorphicMerger implements Merger {
       });
     } catch (e) {
       throw new Error(
-        `merge:push: ${e instanceof Error ? e.message : String(e)}`,
+        `merge:push: ${req.baseBranch} -> ${req.baseName}: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
       );
     }
     return sha;
