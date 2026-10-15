@@ -23,6 +23,8 @@ const BOARD = `<!doctype html>
   .merge { background: #14532d; color: #4ade80; }
   .reject { background: #450a0a; color: #f87171; }
   .conflict { background: #451a03; color: #fbbf24; }
+  /* an unfinished attempt: infrastructure, not a verdict */
+  .error { background: #1e1b4b; color: #a5b4fc; }
   a { color: #f59e0b; text-decoration: none; }
   a:hover { text-decoration: underline; }
   #status { color: #8b8b98; font-size: 13px; margin-top: 16px; }
@@ -106,29 +108,44 @@ export function createApi(store: DecisionStore) {
   });
 
   // Machine feed for the Spatial Git view (substrate/spatial-git).
-  // Supports repo filter + id-cursor paging: nextCursor is the id to pass
-  // as cursor for the following page (null when the feed is exhausted).
+  // Paging happens in the database (id cursor), so history older than the
+  // first page stays reachable: the feed used to read 200 rows and page
+  // inside those, silently truncating everything past row 200.
+  //
+  // A proposal and the commit that landed are different identifiers, and a
+  // refused proposal has no merge sha at all. `sha` is kept for existing
+  // consumers; both halves are named explicitly beside it.
   app.get("/history.json", async (c) => {
     const repo = c.req.query("repo") || undefined;
     const limit = Math.min(
       Math.max(parseInt(c.req.query("limit") ?? "50", 10) || 50, 1),
       200,
     );
-    const cursor = parseInt(c.req.query("cursor") ?? "", 10);
-    const rows = await store.list(repo, 200);
-    const page = rows
-      .filter((r) => !(cursor > 0) || (r.id ?? -1) < cursor)
-      .slice(0, limit);
+    const rawCursor = c.req.query("cursor") ?? "";
+    const cursor = parseInt(rawCursor, 10);
+    if (rawCursor !== "" && !(cursor > 0)) {
+      return c.json({ error: "cursor must be a positive decision id" }, 400);
+    }
+    // One row past the page: its presence is what "more history" means, which
+    // also stops the last full page from advertising another one.
+    const rows = await store.listPage({
+      repo,
+      beforeId: cursor > 0 ? cursor : undefined,
+      limit: limit + 1,
+    });
+    const hasMore = rows.length > limit;
+    const page = rows.slice(0, limit);
     return c.json({
       commits: page.map((r) => ({
         sha: r.merged_sha ?? r.after_sha,
+        proposal_sha: r.after_sha,
+        merge_sha: r.merged_sha ?? null,
         verdict: r.verdict,
         repo: r.repo,
         files: r.files ?? [],
         decided_at: r.decided_at,
       })),
-      nextCursor:
-        page.length === limit ? (page[page.length - 1].id ?? null) : null,
+      nextCursor: hasMore ? (page[page.length - 1]?.id ?? null) : null,
     });
   });
 
