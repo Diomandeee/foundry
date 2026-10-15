@@ -92,6 +92,15 @@ export interface ScopeToken {
   allowed_roots: string[];
   issued_at: number;
   expires_at: number;
+  /**
+   * DECIDED 2026-10-15: kept for shape-compatibility with the Rust
+   * `ScopeToken`, and deliberately **not** a control. Nothing sets it, nothing
+   * verifies it, and no component issues or revokes a signed token — scope
+   * integrity rests on who can write the ticket store, not on cryptography.
+   * Do not treat a present `signature` as evidence that a scope was
+   * authorised. The Rust field is `Option<Vec<u8>>` and is equally unused.
+   * See docs/INTEGRATION-STATUS.md §6.
+   */
   signature?: number[];
 }
 

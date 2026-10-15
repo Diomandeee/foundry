@@ -9,11 +9,9 @@ except by re-vendoring — the deviations from that intent are enumerated under
 Nothing in `substrate/` is imported by Foundry's own build — it is reference
 material and the authority for ports that live in `packages/`.
 
-Vendored 2026-10-14. File lists were verified identical to sources (`diff -r`)
-at that date. Four local patches have since been applied by hand — they are
-listed under "Local modifications" below, and they are the only differences.
-Nothing here pins an upstream *revision* (see "Provenance" below), which is the
-open gap: a `diff -r` against a moving source cannot be reproduced later.
+Vendored 2026-10-14 and re-verified against the sources on 2026-10-15: the
+differences are exactly the entries under "Local modifications" below. The
+upstream revision each system was taken from is pinned under "Provenance".
 
 | Dir | Source | License | Excluded |
 |---|---|---|---|
@@ -33,8 +31,10 @@ How Foundry uses each:
 - `trajectory-memory-ledger/examples/trajectory-card.schema-v2.json`
   is the schema the why-trail follows; `packages/evidence` is its
   standalone TS companion (unwired — see README layout).
-- `spatial-git/` feeds `GET /history.json` (see `workers/api`);
-  `web/` remains the Phase-3 board that renders it.
+- `spatial-git/` is fed by `GET /git-history.json` in `workers/api`, which
+  renders the decision ledger in this viewer's own schema (`{branches,
+  commits:[…]}`), so serving `index.html` on the API origin needs no edit here.
+  `GET /history.json` carries the same rows in Foundry's shape, paged.
 - `orchestratord` (headless pane-orchestrator daemon) is the pattern
   `workers/orchestrator/src/tasks.ts` follows — fork, ticket, scope,
   dispatch. **It is not vendored:** upstream declares no license, so its
@@ -44,26 +44,67 @@ How Foundry uses each:
 ## Local modifications
 
 The header above says vendored code is edited only by re-vendoring. In practice
-Foundry holds four hand-edits, all of them ours, all of them here so a re-vendor
-does not silently lose them. Each is marked `LOCAL PATCH` at the site.
+Foundry holds hand-edits, all of them ours, all of them listed here so a
+re-vendor does not silently lose them. Re-verified 2026-10-15 with:
 
-| File | Date | Change | Why |
-|---|---|---|---|
-| `cc-kernel/src/types/scope.rs` | 2026-10-15 | `allows_path` canonicalises `.`/`..` before comparing, via a new private `canonicalize_path` | Upstream compared raw components, so `src/allowed/../secret.txt` — which resolves outside the root — was admitted. It also disagreed with the TypeScript port on `src//allowed/x` (Rust: allowed, TS: refused). Both sides now share one behaviour. |
-| `cc-kernel/src/admissibility.rs`, `cc-kernel/src/functiongemma/*` | 2026-10-14 | Two stale-test fixes: `ToolSchema` re-export, `MockSyscall::execute` | Upstream had not been built against its own pinned deps; `cargo check --tests` did not compile. |
-| `cc-kernel/Cargo.toml` | 2026-10-15 | `serde_json`, `async-trait`, `anyhow` added to `[dev-dependencies]` | An integration test links only against the crate plus its dev-dependencies. All three are already normal dependencies of the same crate, so `Cargo.lock` is unchanged. |
-| `cc-kernel/tests/parity.rs` | 2026-10-15 | New file — Foundry's cross-language parity suite | Upstream has no shared case set. See `fixtures/kernel-parity.json`. |
+```bash
+diff -rq --exclude=.git --exclude=target --exclude=node_modules \
+  substrate/<name> <source path from the table above>
+```
+
+### cc-kernel — seven files, plus one generated
+
+| File | Change | Why |
+|---|---|---|
+| `src/types/scope.rs` | `allows_path` canonicalises `.`/`..` via a new private `canonicalize_path` | Upstream compared raw components, so `src/allowed/../secret.txt` — which resolves outside the root — was admitted, and it disagreed with the TypeScript port on `src//allowed/x`. Our patch, 2026-10-15. |
+| `Cargo.toml` | `serde_json`, `async-trait`, `anyhow` added to `[dev-dependencies]` | An integration test links only against the crate plus its dev-dependencies. All three are already normal dependencies of the same crate, so the lock file gains no entries. Our patch, 2026-10-15. |
+| `tests/parity.rs` | New — Foundry's cross-language parity suite | Upstream has no shared case set. Ours, 2026-10-15. |
+| `src/functiongemma/mod.rs` | `pub use schema::{ToolSchema, ToolSchemaFormatter}` | Upstream re-exported only the formatter, so `cargo check --tests` could not resolve `ToolSchema`. |
+| `tests/integration_test.rs` | imports `functiongemma::ToolSchema` instead of the private `functiongemma::schema::ToolSchema` | Same cause: the test reached through a module that is not public. |
+| `src/functiongemma/runtime.rs` | `mock_generate` lowercases the prompt before matching | Upstream's heuristic was case-sensitive, so a capitalised prompt fell through to the default. |
+| `src/kernel.rs`, `src/ledger/mod.rs` | unused-import fixes; `#[async_trait::async_trait]` added to the ledger's `MockSyscall` | Upstream did not build against its own pinned deps. |
+| `Cargo.lock` | present here, absent upstream | Generated by building; upstream does not commit a lock file at this path. |
+
+An earlier version of this file described the pre-vendoring edits as "two
+stale-test fixes: `ToolSchema` re-export, `MockSyscall::execute`". That was
+wrong — it named one file and one cause where there are five files and three
+causes — and it was written from memory rather than from a diff. The table
+above is the diff.
+
+### The other three
+
+- `live-knowledge-graphs` — **byte-identical** to source (2026-10-15).
+- `trajectory-memory-ledger` — identical for every file that was vendored. The
+  upstream-only paths (`benchmarks/`, `cache/`, `output/`) are the documented
+  exclusions, not drift.
+- `spatial-git` — one addition: `LICENSE-MIT`. Upstream declares MIT in
+  `package.json` and the directory the copy came from carries no separate
+  licence text, so the text was placed here. It is the only file that exists in
+  `substrate/` and not upstream.
 
 `packages/` is not vendored and is not covered by this table.
 
 ## Provenance
 
-Every row above records *where* a system came from and *when* it was copied. None
-records *which revision* it was copied from: no upstream commit SHA, tag or
-release is pinned for any of the four systems, and the sources live outside this
-repository. That makes "the vendored copy equals the source" unverifiable later,
-and makes any future re-vendor a manual diff against a moving target.
+Every row in the table at the top records *where* a system came from and *when*
+it was copied. This is *which revision* it came from, resolved 2026-10-15 by
+reading each source checkout directly:
 
-Recording a revision per system (and, where a port exists, asserting the port
-against it) is tracked in `docs/INTEGRATION-STATUS.md` §8. Until then, treat the
-`diff -r` note as a claim from the vendoring date, not as current evidence.
+| Dir | Upstream revision | Committed | Working tree at copy time |
+|---|---|---|---|
+| `cc-kernel/` | `ee324ffe1306b2b10966f5c56b8d6319cba26140` (`iphone-era-reference-48-gee324ffe`, 2026-08-31) | `feat: export DELL latent anticipation windows` | clean |
+| `live-knowledge-graphs/` | `cf7ca62809452eb0f9ff6c4ba0d72282d2d7d9a1` (2026-03-22) | `feat: deeper domain shift — 33.5% coverage drop, Cohen's d=1.23` | clean |
+| `trajectory-memory-ledger/` | `e2ff6070a9250762de89a6bd34494c9566876078` (`v0.2.6-18-ge2ff607`, 2026-06-11) | `Add partial official real repo evidence` | **dirty** — `README.md` and `docs/harness-skills.md` modified, one untracked benchmark JSON |
+| `spatial-git/` | `48fbb527217ba7fec9a2b69cda12fecfa49257ca` (2026-04-02) | `chore: sync latest changes` | clean |
+
+`cc-kernel/` is a subdirectory of a larger checkout, and the revision above is
+that checkout's `HEAD`: upstream versions the containing repository, not this
+crate, so a SHA alone does not identify the tree. `trajectory-memory-ledger` was
+copied from a working tree with uncommitted edits, so its revision plus a clean
+checkout is *not* enough to reproduce the vendored bytes — the vendored copy
+matches the dirty working tree, not `v0.2.6-18-ge2ff607`.
+
+That is the residual gap: three of the four are reproducible from the revision,
+one is not, and all four live outside this repository, so none can be verified
+from a clean clone of Foundry alone. Re-copy any of them with the command above
+and expect the Local modifications table as the only diff.

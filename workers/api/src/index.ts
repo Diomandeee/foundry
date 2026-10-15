@@ -1,5 +1,91 @@
 import { Hono } from "hono";
-import { D1DecisionStore, type DecisionStore } from "@foundry/stores";
+import {
+  checkClaim,
+  recoverTask,
+  type MemoryLeg,
+} from "@foundry/evidence";
+import type { KGClient } from "@foundry/lkg-client";
+import {
+  D1DecisionStore,
+  D1TicketStore,
+  type DecisionRecord,
+  type DecisionStore,
+  type TicketStore,
+} from "@foundry/stores";
+
+/**
+ * Optional read-path dependencies. The decision feed works without them; the
+ * spatial feed and the evidence trail name what they are missing instead of
+ * failing quietly.
+ */
+export interface ApiDeps {
+  tickets?: TicketStore;
+  kg?: KGClient;
+  memory?: MemoryLeg;
+}
+
+const VERDICT_LABEL: Record<DecisionRecord["verdict"], string> = {
+  merge: "MERGE",
+  reject: "REJECT",
+  conflict: "CONFLICT",
+  error: "ERROR",
+};
+
+/**
+ * The decision ledger in the shape `substrate/spatial-git/index.html` fetches:
+ * `{branches, commits:[{hash, fullHash, author, date, message, branch,
+ * parents, files:[{path, type}], additions, deletions}]}`. Serving it here
+ * means the vendored viewer can be hosted on this origin unmodified — before
+ * this it fetched `git-history.json`, which only `git-to-json.sh` produced from
+ * a local checkout, so the endpoint and the viewer were never joined.
+ *
+ * `verdict`, `proposal_sha`, `merge_sha`, `decision_id` and `task_id` ride along
+ * as extra fields. The viewer ignores them; anything Foundry-aware gets the
+ * authoritative outcome without re-deriving it from git history.
+ *
+ * One commit per decision, oldest first, grouped by repo (the viewer's branch
+ * axis) because a fork is the meaningful lane in a multi-agent run. A refusal
+ * keeps its own identity — `hash` is the proposal sha, not a merge sha, and
+ * `merge_sha` is null — so the view can never imply it entered the base.
+ */
+export function spatialFeed(rows: DecisionRecord[]) {
+  const commits = [...rows]
+    .sort(
+      (a, b) =>
+        a.decided_at.localeCompare(b.decided_at) || (a.id ?? 0) - (b.id ?? 0),
+    )
+    .map((r) => {
+      const landed = r.verdict === "merge" ? r.merged_sha : null;
+      const sha = landed ?? r.after_sha;
+      const branch = r.ref.startsWith("refs/heads/")
+        ? r.ref.slice("refs/heads/".length)
+        : r.ref;
+      const reason = r.reason as { reason?: string } | null | undefined;
+      return {
+        hash: sha.slice(0, 8),
+        fullHash: sha,
+        author: r.agent_id ?? "foundry",
+        date: r.decided_at,
+        message:
+          `${VERDICT_LABEL[r.verdict]} ${branch}` +
+          (reason?.reason ? ` · ${reason.reason}` : ""),
+        branch: r.repo,
+        parents: [r.before_sha],
+        files: (r.files ?? []).map((path) => ({ path, type: "modified" })),
+        additions: 0,
+        deletions: 0,
+        verdict: r.verdict,
+        proposal_sha: r.after_sha,
+        merge_sha: landed,
+        decision_id: r.id ?? null,
+        task_id: r.task_id ?? null,
+      };
+    });
+  return {
+    branches: [...new Set(rows.map((r) => r.repo))].sort(),
+    commits,
+  };
+}
 
 const BOARD = `<!doctype html>
 <html lang="en">
@@ -75,7 +161,7 @@ setInterval(load, 5000);
 </body>
 </html>`;
 
-export function createApi(store: DecisionStore) {
+export function createApi(store: DecisionStore, deps: ApiDeps = {}) {
   const app = new Hono();
 
   app.get("/health", (c) => c.json({ ok: true, worker: "api" }));
@@ -149,10 +235,60 @@ export function createApi(store: DecisionStore) {
     });
   });
 
+  // The vendored Spatial Git viewer fetches this exact path. Same rows as
+  // /history.json, rendered in the viewer's schema (see `spatialFeed`).
+  app.get("/git-history.json", async (c) => {
+    const repo = c.req.query("repo") || undefined;
+    const limit = Math.min(
+      Math.max(parseInt(c.req.query("limit") ?? "200", 10) || 200, 1),
+      500,
+    );
+    const rows = await store.list(repo, limit);
+    return c.json({
+      ...spatialFeed(rows),
+      // The viewer reads one shot and stops; say so rather than let a full
+      // page look like the whole history.
+      truncated: rows.length >= limit,
+    });
+  });
+
+  // Evidence recovery: the read path that reconstructs why a task's decisions
+  // exist (`packages/evidence`). Unconfigured is 503 with the missing leg
+  // named — never a 200 with an empty chain, which would read as "no evidence
+  // needed" rather than "not wired".
+  app.get("/evidence/:taskId", async (c) => {
+    if (!deps.tickets) {
+      return c.json(
+        { error: "evidence read path not configured: no ticket store" },
+        503,
+      );
+    }
+    const taskId = c.req.param("taskId");
+    if (!/^[A-Za-z0-9._-]{1,64}$/.test(taskId)) {
+      return c.json({ error: "invalid task id" }, 400);
+    }
+    const chain = await recoverTask(
+      {
+        tickets: deps.tickets,
+        decisions: store,
+        kg: deps.kg,
+        memory: deps.memory,
+      },
+      taskId,
+    );
+    const claim = checkClaim(chain);
+    // 404 when nothing at all was recovered; 200 with `gaps` when the chain is
+    // partial — a partial chain is real information, and it is labelled.
+    return c.json({ ...chain, claim }, chain.unrecoverable ? 404 : 200);
+  });
+
   return app;
 }
 
 export default {
   fetch: (req: Request, env: { DB: D1Database }) =>
-    createApi(new D1DecisionStore(env.DB)).fetch(req),
+    createApi(new D1DecisionStore(env.DB), {
+      // Same D1 database holds tickets; the evidence trail reads from it.
+      tickets: new D1TicketStore(env.DB),
+    }).fetch(req),
 };

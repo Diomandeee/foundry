@@ -2,13 +2,14 @@
 
 Reconnaissance pass over the core workflow and the four vendored substrate
 systems, with the state classified per capability. Written 2026-10-15 against
-`main` @ `8b38c2b`. The fixes in §4, §5 and §6 are committed and green.
+`main` @ `dc1707a`. The corrections in §4, §5, §6 and §7 are committed, tested
+and green.
 
 How this was established (all re-runnable):
 
 ```bash
 npm run typecheck                        # 0 errors
-npx vitest run                           # 22 files, 197 tests, all pass
+npx vitest run                           # 22 files, 207 tests, all pass
 cargo test --manifest-path substrate/cc-kernel/Cargo.toml        # 52 + 11 + 2 parity
 cat fixtures/kernel-parity.json          # the shared Rust<->TS case set (§6)
 curl -s <staging board>/decisions?limit=200                      # live ledger
@@ -39,7 +40,7 @@ Production verified · Advisory · Planned/incomplete.
 | `substrate/live-knowledge-graphs` | Reference | `cargo test` in CI (its own crate); authority for `triples.ts` shapes |
 | `packages/evidence` (trajectory companion) | **Locally verified, unwired** | `packages/evidence/src/index.ts` + `index.test.ts`; no import outside the package |
 | `substrate/trajectory-memory-ledger` | Reference | schema `examples/trajectory-card.schema-v2.json`; no runtime import |
-| `substrate/spatial-git` | Reference | viewer + CLI vendored; consumes its own `git-history.json`, **not** Foundry's `/history.json` — see §7 |
+| `substrate/spatial-git` | Reference + **Integrated** (feed adapter) | viewer + CLI vendored; `workers/api` now serves `/git-history.json` in the viewer's shape — see §7 |
 | `packages/plan-check` (PACT) | Integrated but **advisory by default** | `decide.ts` step 1b; rejects only when `enforce` is set; outages fail open (`checked=false, ok=true`) |
 | `workers/participation-coordinator` | Integrated (separate product line) | `@foundry/participation-coordinator`, own D1, same Cloudflare account/subdomain |
 
@@ -198,12 +199,15 @@ A malformed cursor is now `400` instead of being silently ignored.
 
 - The port is **in the live path**, not a parallel subsystem (§2, step 1). The
   scope it evaluates is the ticket's, attached at intake.
-- **Signature is not implemented.** `ScopeToken.signature?: number[]` exists as a
-  type; `newScopeToken` never sets it, nothing verifies it, and no component
-  issues or revokes signed tokens. Today the scope token is *data* the ticket
-  store holds; integrity rests on who can write D1, not on cryptography. Treat
-  the field as vestigial or implement the Rust scheme — do not treat it as a
-  control.
+- **Signature is not implemented — decided, not pending** (2026-10-15).
+  `ScopeToken.signature?: number[]` exists as a type; `newScopeToken` never sets
+  it, nothing verifies it, and no component issues or revokes signed tokens.
+  Today the scope token is *data* the ticket store holds; integrity rests on who
+  can write D1, not on cryptography. The Rust field (`Option<Vec<u8>>`) is
+  equally unused, so the field is kept for shape-compatibility and is now
+  labelled at the type (`types.ts`, on `signature`) as **not** a control. If
+  remote-issued scopes are ever needed, this is the hook to implement — until
+  then, a present `signature` proves nothing.
 - **`allowsPath` now canonicalises, in both implementations** (fixed
   2026-10-15). It previously did prefix matching on the raw string, so
   `allowed_roots: ["src/allowed"]` admitted `src/allowed/../secret.txt` — a path
@@ -240,20 +244,38 @@ A malformed cursor is now `400` instead of being silently ignored.
   neutering the TypeScript canonicalisation fails exactly the two rule-10
   traversal cases.
 
-## 7. Spatial Git — the consumer is not connected
+## 7. Spatial Git — joined 2026-10-15
 
-`workers/api` serves `/history.json`. The vendored viewer does **not** read it:
-`substrate/spatial-git/index.html` fetches `git-history.json`, produced by
-`cli.js`/`git-to-json.sh` from a local repo checkout, in the shape
-`{commits: [{hash, fullHash, author, date, message, branch, parents, files,
-additions, deletions}]}`. The viewer renders `c.author`, `c.date`, `c.files`,
-`c.message` and has **no concept of a verdict**.
+`workers/api` serves `/history.json` (paged, DB-cursor) and now also
+`/git-history.json`, which renders the same decisions in the exact shape the
+vendored viewer fetches (`{branches, commits:[{hash, fullHash, author, date,
+message, branch, parents, files:[{path,type}], additions, deletions}]}`). The
+viewer needed no edit: it already fetches `git-history.json`, so hosting
+`substrate/spatial-git/index.html` on the API origin is the whole integration.
 
-So the endpoint exists and the viewer exists, and nothing joins them. Connecting
-them needs a thin adapter on Foundry's side (decisions → the viewer's commit
-shape, carrying verdict/proposal/merge identity) rather than an edit to the
-vendored viewer. Until then, "the visualization shows the authoritative record"
-is false: there is no visualization reading that record.
+What the adapter decides, and why (`spatialFeed` in `workers/api/src/index.ts`):
+
+- **One commit per decision**, oldest first, grouped by repo (the viewer's
+  branch axis) — a fork is the meaningful lane in a multi-agent run, where every
+  ref is `main` and would collapse into a single row.
+- **Proposal and merge identity stay distinct.** `fullHash` is the merge commit
+  for a merge and the proposal sha otherwise; `merge_sha` is `null` for a
+  refusal. A refused proposal therefore cannot appear to have entered the base.
+- **The verdict rides along** as `verdict`, `proposal_sha`, `merge_sha`,
+  `decision_id` and `task_id`. The viewer ignores unknown fields; anything
+  Foundry-aware reads the authoritative outcome instead of re-deriving it from
+  git history. The commit message carries the verdict and refusal reason so the
+  verdict is visible in the stock viewer without a viewer change.
+- **Truncation is declared.** The feed reads one page (max 500) and sets
+  `truncated` rather than letting a full page look like the whole history.
+
+Tests: `workers/api/src/api.test.ts` — the viewer-facing field set is asserted
+field by field, and a merge/refusal pair is checked for identity separation.
+
+**Still not done:** navigation from the viewer into the evidence trail. The
+viewer's click handler fetches `/api/diff/:hash`, which this worker does not
+serve, so the inspector pane is inert on a Foundry-hosted viewer. Either serve
+that path or accept the viewer as a read-only overview.
 
 ## 8. Open items, in the order they should be taken
 
@@ -269,26 +291,43 @@ is false: there is no visualization reading that record.
    the **production wiring**: intake still leaves `allowed_roots` empty, so rule
    10 admits everything live. Set roots from the ticket in
    `workers/orchestrator/src/tasks.ts` before treating path scope as a control.
-3. **Decide on signature**: implement, or delete `signature` and document that
-   scope integrity is stored, not cryptographic.
+3. ~~Decide on signature~~ — **done** (§6): kept for shape-compatibility with the
+   Rust type, labelled at the field as explicitly not a control. No
+   implementation of signing is pending; if remote-issued scopes are ever
+   required, that is new work against this hook.
 4. ~~Rust/TS parity fixtures~~ — **done** for the kernel (§6):
    `fixtures/kernel-parity.json`, run by both suites, reasons compared. Not yet
    covered: parity for the graph-kernel ↔ `lkg-client` triple shapes and for the
    trajectory schema ↔ `packages/evidence`, which are still prose claims.
-5. **Connect the spatial view** through an adapter, and show missing graph or
-   evidence records as missing rather than omitted.
-6. **Trajectory/evidence**: `packages/evidence` is unwired; decide the minimum
-   event set the gate needs, then wire it with the decision id as the join key.
-   Graph updates are best-effort today, which is a defensible choice — but it is
-   not yet recorded *whether* a given decision's graph write succeeded.
+5. ~~Connect the spatial view through an adapter~~ — **done** (§7): `/git-history.json`
+   serves the viewer's own schema from the decision ledger, with verdict and
+   proposal/merge identity carried through. What remains is the viewer's
+   `/api/diff/:hash` inspector, which this worker does not serve.
+6. **Evidence read path is now reachable** (2026-10-15): `GET
+   /evidence/:taskId` on the API worker calls `recoverTask` from
+   `packages/evidence` with the D1 ticket store and the decision store, and
+   returns the chain plus the claim gate. Unconfigured is `503` naming the
+   missing leg; nothing recovered is `404` with `gaps`; a partial chain is `200`
+   with `gaps` — never an empty success. Tests cover all four.
+
+   Still open: the **trajectory** half. `packages/evidence` reads ticket →
+   decision → triples → memory; the
+   `trajectory-memory-ledger` schema (`tool sequence, event counts, timing,
+   successes, failures, outcome annotations`) is still only a reference, so
+   "what sequence of operations produced this" is not recoverable from Foundry
+   records. The join key would be the decision id; the gate still writes no
+   trajectory events. Graph writes also remain best-effort with no per-decision
+   record of whether the write succeeded.
 7. **Verification interface** (typecheck/build/tests before finalising a merge):
    does not exist. Today the gate admits a change; it does not establish that the
    result compiles or passes.
 8. **Reconcile the local demo merger with production** (§3) or document the
    divergence as intentional.
-9. **Pin an upstream revision per vendored system.** `substrate/README.md`
-   records where and when each of the four systems was copied, but no commit
-   SHA, tag or release. The `diff -r` verification therefore cannot be repeated,
-   and a re-vendor cannot be reviewed as a diff. Until then the vendored copies
-   are *unpinned*, and the local patches in `substrate/README.md` are the only
-   record of how they differ from their sources.
+9. ~~Pin an upstream revision per vendored system~~ — **done** (§`substrate/README.md`
+   → Provenance). All four revisions resolved from the source checkouts on
+   2026-10-15 and `diff -r` re-run: `live-knowledge-graphs` is byte-identical,
+   and the other three differ by exactly the documented local modifications.
+   Three of the four are reproducible from their revision; the fourth
+   (`trajectory-memory-ledger`) was copied from a working tree with uncommitted
+   edits, so its revision alone does not reproduce the vendored bytes. All four
+   live outside this repository, so none is verifiable from a clean clone.

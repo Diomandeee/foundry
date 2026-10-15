@@ -8,7 +8,12 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@foundry/evidence": "*",
+    "@foundry/lkg-client": "*",
     "@foundry/stores": "*",
     "hono": "^4"
+  },
+  "devDependencies": {
+    "@foundry/gate-ts": "*"
   }
 }
