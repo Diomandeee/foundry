@@ -15,7 +15,12 @@ CREATE TABLE IF NOT EXISTS decisions (
   merged_sha TEXT,                -- merge commit sha when verdict=merge
   task_id TEXT,
   agent_id TEXT,
-  decided_at TEXT NOT NULL
+  decided_at TEXT NOT NULL,
+  -- JSON VerifyVerdict when required checks ran (packages/verify, §9 of
+  -- docs/INTEGRATION-STATUS.md). Null on existing rows and on every row until a
+  -- deployment configures VERIFY_URL. Databases created before 2026-10-15 lack
+  -- this column: `ALTER TABLE decisions ADD COLUMN verification TEXT;`
+  verification TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_decisions_repo ON decisions (namespace, repo);
 CREATE INDEX IF NOT EXISTS idx_decisions_verdict ON decisions (verdict);

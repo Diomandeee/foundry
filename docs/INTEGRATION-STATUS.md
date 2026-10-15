@@ -9,7 +9,7 @@ How this was established (all re-runnable):
 
 ```bash
 npm run typecheck                        # 0 errors
-npx vitest run                           # 23 files, 226 tests, all pass
+npx vitest run                           # 23 files, 227 tests, all pass
 cargo test --manifest-path substrate/cc-kernel/Cargo.toml        # 52 + 11 + 2 parity
 cat fixtures/kernel-parity.json          # the shared Rust<->TS case set (§6)
 curl -s <staging board>/decisions?limit=200                      # live ledger
@@ -412,8 +412,9 @@ ALTER TABLE decisions ADD COLUMN verification TEXT;  -- JSON VerifyVerdict
 ```
 
 plus the matching write in `D1DecisionStore.record` and a field on
-`DecisionRecord`. `workers/gate/schema.sql` should carry the column so a fresh
-database has it. Until that runs, a failed enforced check *is* recorded (as a
+`DecisionRecord`. `workers/gate/schema.sql` already carries the column (asserted
+by the schema test in `decisions.d1.test.ts`), so a fresh database is ready and
+only an existing one needs the `ALTER`. Until that runs, a failed enforced check *is* recorded (as a
 rejection with `verification_failed`) — only the passing case is invisible, and
 that is the honest half to be missing.
 

@@ -35,10 +35,11 @@ const event = {
   after_sha: "b".repeat(40),
 };
 
+let db: DatabaseSync;
 let store: D1DecisionStore;
 
 beforeEach(() => {
-  const db = new DatabaseSync(":memory:");
+  db = new DatabaseSync(":memory:");
   db.exec(
     readFileSync(
       join(import.meta.dirname, "../../../workers/gate/schema.sql"),
@@ -46,6 +47,38 @@ beforeEach(() => {
     ),
   );
   store = new D1DecisionStore(shim(db));
+});
+
+describe("decisions schema", () => {
+  it("carries every column the store writes, and the verification slot", () => {
+    // The ledger's columns are a contract between three places that cannot see
+    // each other: this DDL, the INSERT in D1DecisionStore, and a live database
+    // that was migrated by hand. Pin the first so a missing column is a failing
+    // test rather than a 500 in production. `verification` is written by nobody
+    // yet (see docs/INTEGRATION-STATUS.md §9) but the slot is reserved so a
+    // fresh database does not need the ALTER.
+    const cols = (
+      db.prepare("PRAGMA table_info(decisions)").all() as { name: string }[]
+    ).map((c) => c.name);
+    for (const c of [
+      "namespace",
+      "repo",
+      "ref",
+      "before_sha",
+      "after_sha",
+      "verdict",
+      "reason",
+      "conflict_files",
+      "files",
+      "merged_sha",
+      "task_id",
+      "agent_id",
+      "decided_at",
+      "verification",
+    ]) {
+      expect(cols).toContain(c);
+    }
+  });
 });
 
 describe("D1DecisionStore failure classification", () => {
