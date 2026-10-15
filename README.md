@@ -75,7 +75,6 @@ Deployed and working now:
 | Piece | Where |
 |---|---|
 | Board | https://foundry-api-staging.motionmix-participation.workers.dev |
-| Orchestrator | https://foundry-orchestrator-staging.motionmix-participation.workers.dev |
 | Gate | `foundry-gate-staging` (queue consumer, no web page) |
 | Repos | Artifacts namespace `foundry-staging` (`dispatch`, `seed`, `base`, …) |
 | Database | D1 `foundry-decisions-staging` |
