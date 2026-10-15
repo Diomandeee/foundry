@@ -9,10 +9,6 @@ Built for the [Cloudflare next-Git-platform competition](http://cloudflare.com/g
 It runs on Workers (the checkers), Artifacts (git hosting), Queues (event
 delivery), and D1 (the decision database).
 
-There is a narrated 5:13 demo of the whole loop — see `VIDEO-SCRIPT.md` for the
-beat-by-beat script, or skip the video and run the system yourself with the
-commands under "Verify locally" below.
-
 ## What happens when an agent pushes
 
 ```
