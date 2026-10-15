@@ -198,12 +198,91 @@ describe("handlePush debug flag", () => {
       const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
       expect(res.handled).toBe(true);
       if (!res.handled) return;
-      expect(res.record.verdict).toBe("reject");
+      // An outage is an unfinished attempt, not a refusal.
+      expect(res.record.verdict).toBe("error");
       const reason = res.record.reason;
-      expect(reason && reason.reason === "invalid_args" && reason.message).toContain("boom");
-      expect(reason && reason.reason === "invalid_args" && reason.message).toContain("at ");
+      expect(
+        reason && reason.reason === "infra_failure" && reason.message,
+      ).toContain("boom");
+      expect(
+        reason && reason.reason === "infra_failure" && reason.message,
+      ).toContain("at ");
     } finally {
       deps.debug = false;
     }
+  });
+});
+
+describe("handlePush failure classification", () => {
+  // 7 rows on the live staging board read exactly like this: a repo/transport
+  // failure recorded as `reject`/`invalid_args`, i.e. counted as the agent's
+  // fault. These tests hold the line between an outage and a verdict.
+  function exploding(error: string): Merger {
+    return {
+      merge: async (_req: MergeRequest) => {
+        throw new Error(error);
+      },
+    } as Merger;
+  }
+
+  it("records a transport failure as error, never as a refusal", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const real = deps.merger;
+    deps.merger = exploding("merge:push: Could not find main.");
+    try {
+      const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+      expect(res.handled).toBe(true);
+      if (!res.handled) return;
+      expect(res.record.verdict).toBe("error");
+      expect(res.record.reason?.reason).toBe("infra_failure");
+      // The shared base is untouched: nothing partial landed.
+      const base = await deps.port.get("base");
+      expect(await base.readFile("main", "feat.ts")).toBeNull();
+      base.dispose();
+    } finally {
+      deps.merger = real;
+    }
+  });
+
+  it("lets a retry replace the error row with the real verdict", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const body = pushBody("task-1", baseSha, after);
+    const real = deps.merger;
+    deps.merger = exploding("merge:clone: network");
+    let first;
+    try {
+      first = await handlePush(deps, "test", body);
+    } finally {
+      deps.merger = real;
+    }
+    expect(first.handled && first.record.verdict).toBe("error");
+
+    const second = await handlePush(deps, "test", body);
+    expect(second.handled).toBe(true);
+    if (!first.handled || !second.handled) return;
+    expect(second.record.verdict).toBe("merge");
+    // Same event, same row: the ledger has one row from first failure on.
+    expect(second.record.id).toBe(first.record.id);
+    expect((await deps.store.list()).length).toBe(1);
+  });
+
+  it("still returns the first real decision on redelivery after an error", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const body = pushBody("task-1", baseSha, after);
+    const real = deps.merger;
+    deps.merger = exploding("merge:push: transient");
+    try {
+      await handlePush(deps, "test", body);
+    } finally {
+      deps.merger = real;
+    }
+    const merged = await handlePush(deps, "test", body);
+    const again = await handlePush(deps, "test", body);
+    expect(merged.handled && merged.record.verdict).toBe("merge");
+    expect(again.handled && again.record.id).toBe(merged.handled && merged.record.id);
+    expect((await deps.store.list()).length).toBe(1);
   });
 });

@@ -1,5 +1,11 @@
 // Re-exports: canonical triple shapes + cross-task overlap oracle.
-export { intakeTriples, touchTriples, verdictTriples, type VerdictRecord } from "./triples.js";
+export {
+  intakeTriples,
+  isVerdictRecord,
+  touchTriples,
+  verdictTriples,
+  type VerdictRecord,
+} from "./triples.js";
 export { KgOverlapOracle, type KgOverlapOpts, type OverlapInput, type OverlapOracle } from "./overlap.js";
 
 // KGClient — fetch client for the Live Knowledge Graphs REST API.

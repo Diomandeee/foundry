@@ -3,6 +3,10 @@
 // Namespaces: task:<id>, repo:<name>, agent:<id>, commit:<sha>, path:<file>.
 import type { NewTriple } from "./index.js";
 
+/**
+ * A graph claim about an outcome. `error` is deliberately absent: an
+ * unfinished attempt is not a verdict, and the graph must never record one.
+ */
 export interface VerdictRecord {
   after_sha: string;
   merged_sha?: string | null;
@@ -10,6 +14,16 @@ export interface VerdictRecord {
   verdict: "merge" | "reject" | "conflict";
   agent_id?: string | null;
   task_id?: string | null;
+}
+
+/**
+ * Whether a recorded push carries a real verdict. `error` rows are unfinished
+ * attempts (see @foundry/stores): the graph can only be told about outcomes.
+ */
+export function isVerdictRecord(r: { verdict: string }): r is VerdictRecord {
+  return (
+    r.verdict === "merge" || r.verdict === "reject" || r.verdict === "conflict"
+  );
 }
 
 /** Verdict triples for one recorded push decision. */

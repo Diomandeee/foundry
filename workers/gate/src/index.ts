@@ -2,7 +2,13 @@
 // Production deps: CloudflareAdapter + D1 stores + IsomorphicMerger/memfs.
 import { memfs } from "memfs";
 import { cloudflarePort } from "@foundry/artifacts-port";
-import { KGClient, KgOverlapOracle, touchTriples, verdictTriples } from "@foundry/lkg-client";
+import {
+  isVerdictRecord,
+  KGClient,
+  KgOverlapOracle,
+  touchTriples,
+  verdictTriples,
+} from "@foundry/lkg-client";
 import { PactServerPlanCheck } from "@foundry/plan-check";
 import { IsomorphicMerger } from "./merge.js";
 import { handlePush, type PipelineDeps } from "./pipeline.js";
@@ -47,14 +53,22 @@ export default {
           msg.body?.source?.repoName,
           res.handled ? "handled" : "ignored",
         );
+        // An unfinished attempt is retried, not acked: the push gets another
+        // chance, and the `error` row stays as its discoverable explanation.
+        // Only a real verdict is worth telling the graph about.
+        if (res.handled && res.record.verdict === "error") {
+          msg.retry();
+          continue;
+        }
         // Best-effort verdict triples; the D1 record stands without them.
-        if (res.handled && env.LKG_URL) {
+        const record = res.handled ? res.record : null;
+        if (record && isVerdictRecord(record) && env.LKG_URL) {
           try {
             const kg = new KGClient(env.LKG_URL, env.LKG_TOKEN);
-            for (const t of verdictTriples(res.record)) {
+            for (const t of verdictTriples(record)) {
               await kg.addTriple(t);
             }
-            for (const t of touchTriples(res.record.after_sha, res.record.files ?? [])) {
+            for (const t of touchTriples(record.after_sha, record.files ?? [])) {
               await kg.addTriple(t);
             }
           } catch (e) {

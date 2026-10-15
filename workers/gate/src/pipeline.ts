@@ -155,16 +155,19 @@ export async function handlePush(
       deps.debug && e instanceof Error && e.stack
         ? ` :: ${e.stack.split("\n").slice(0, 6).join(" | ")}`
         : "";
+    // An infrastructure failure is not a verdict. Recording it as `error`
+    // keeps it visible, retryable and out of the refusal counts — a repo
+    // outage must never read as an agent's mistake (7 staging rows were).
     const record = await deps.store.record({
       namespace: push.namespace,
       repo: push.repo,
       ref: push.ref,
       before_sha: push.before,
       after_sha: push.after,
-      verdict: "reject",
+      verdict: "error",
       reason: {
-        reason: "invalid_args",
-        message: `pipeline error: ${e instanceof Error ? e.message : String(e)}${stack}`,
+        reason: "infra_failure",
+        message: `${e instanceof Error ? e.message : String(e)}${stack}`,
       },
     });
     return { handled: true, record };

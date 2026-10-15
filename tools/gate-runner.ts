@@ -4,7 +4,12 @@
 import { readFile, writeFile, appendFile } from "node:fs/promises";
 import { join } from "node:path";
 import { GitAdapter, GitMerger } from "@foundry/artifacts-port/node";
-import { KGClient, touchTriples, verdictTriples } from "@foundry/lkg-client";
+import {
+  isVerdictRecord,
+  KGClient,
+  touchTriples,
+  verdictTriples,
+} from "@foundry/lkg-client";
 import type { TicketStore, TaskTicket, DecisionStore, DecisionRecord } from "@foundry/stores";
 import { serializeScope, reviveScope } from "@foundry/stores";
 import { handlePush } from "../workers/gate/src/pipeline.js";
@@ -53,6 +58,8 @@ class JsonlDecisionStore implements DecisionStore {
     return (
       rows.find(
         (r) =>
+          // An `error` row is an unfinished attempt, not a decision.
+          r.verdict !== "error" &&
           r.namespace === namespace &&
           r.repo === repo &&
           r.ref === ref &&
@@ -98,6 +105,15 @@ class JsonlDecisionStore implements DecisionStore {
     const filtered = repo ? rows.filter((r) => r.repo === repo) : rows;
     return filtered.slice(-limit).reverse();
   }
+  async listPage(opts: { repo?: string; beforeId?: number; limit: number }) {
+    const rows = (await this.list(
+      opts.repo,
+      Number.MAX_SAFE_INTEGER,
+    )) as DecisionRecord[];
+    return rows
+      .filter((r) => opts.beforeId === undefined || (r.id ?? 0) < opts.beforeId)
+      .slice(0, opts.limit);
+  }
 }
 
 async function readStdin(): Promise<string> {
@@ -128,7 +144,8 @@ async function main() {
               (r.reason ? ` reason=${JSON.stringify(r.reason)}` : ""));
 
   // Graph notify is optional: empty --lkg (judge default) skips writes.
-  if (lkg) {
+  // An `error` row is an unfinished attempt — there is no verdict to assert.
+  if (lkg && isVerdictRecord(r)) {
     const kg = new KGClient(lkg, process.env.LKG_TOKEN);
     const triples = [...verdictTriples(r), ...touchTriples(r.after_sha, r.files ?? [])];
     for (const t of triples) {
