@@ -59,6 +59,19 @@ verdict row plus the merge hash — enough to replay why any commit exists.
 
 ## Verify locally (no Cloudflare account needed)
 
+**Prerequisites.** Node 22+ (CI pins 22), `npm`, and `git` on `PATH`. Nothing
+else is required for the TypeScript suites, the gate demo, or the usability
+proof — they shell out to `git` and write only inside a temp directory. Rust is
+needed only for the vendored substrate tests, which CI runs separately:
+
+```bash
+# optional, only for substrate/cc-kernel and substrate/live-knowledge-graphs
+rustup toolchain install 1.98.1     # or any stable
+rustup default 1.98.1
+```
+
+**Setup and the command that starts it:**
+
 ```bash
 npm ci
 npm run typecheck            # 0 errors
@@ -73,7 +86,10 @@ npm run demo:graphvc         # the same loop through a real git push + hook
 
 ## Watch it live (staging)
 
-Deployed and working now:
+The board below answers over HTTP right now. Its revision predates the newest
+endpoints: `/`, `/decisions` and `/why/:sha` are live, while `/history.json`
+still returns the old shape and `/git-history.json` and `/evidence/:taskId` are
+not deployed yet. `docs/INTEGRATION-STATUS.md` §0 has the status codes and why.
 
 | Piece | Where |
 |---|---|
