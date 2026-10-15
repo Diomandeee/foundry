@@ -1,9 +1,14 @@
 # Foundry — integration status and contract corrections
 
 Reconnaissance pass over the core workflow and the four vendored substrate
-systems, with the state classified per capability. Written 2026-10-15 against
-`main` @ `dc1707a`. The corrections in §4, §5, §6 and §7 are committed, tested
-and green.
+systems, with the state classified per capability. First written 2026-10-15
+against `main` @ `dc1707a`; the staleness corrections in §6 and §8 and the
+usability proof were added later the same day, so where a line disagrees with the
+code, believe the code and re-run the commands below.
+
+Every claim here is anchored to a file and line, a test name, or a live read. An
+item marked done was done in a commit and is covered by a test; an item marked
+open names the exact change it needs.
 
 How this was established (all re-runnable):
 
@@ -250,12 +255,23 @@ A malformed cursor is now `400` instead of being silently ignored.
   a string comparison cannot resolve them, so this is a policy boundary, not the
   last line of defence. The Rust edit is a **local patch to vendored code** and
   is recorded in `substrate/README.md`.
-- **The path rule is currently vacuous in production.** `workers/orchestrator`
-  never sets `scope.allowed_roots` — only tests do (`rg allowed_roots workers/`
-  finds nothing) — and `newScopeToken()` defaults it to `[]`, which permits every
-  path. So rule 10 admits everything on the live path today. That is a property
-  of the intake, not of the rule: the fix is to have intake derive roots from the
-  ticket, which is a change to `workers/orchestrator/src/tasks.ts`.
+- **The path rule is wired, but fail-open when a caller omits the roots.**
+  Corrected 2026-10-15: an earlier revision of this document said the
+  orchestrator never sets `scope.allowed_roots`. That was true when this section
+  was first written and is no longer true — intake now sets it at
+  `workers/orchestrator/src/tasks.ts:161`
+  (`scope.allowed_roots = [...(input.allowedRoots ?? [])]`), the ticket echoes
+  the granted surface back to the caller, and `POST /tasks` validates the roots
+  (an array of at most 50 repo-relative paths with no `.`, `..`, leading or
+  trailing slash). `workers/orchestrator/src/tasks.test.ts:189` asserts the
+  scope carries them and `:204` asserts an omitted list stays empty.
+  What remains is a *default*, not a missing wire: `newScopeToken()` starts at
+  `[]`, and an empty list permits every path, so a task created without
+  `allowedRoots` still has no path control. That is deliberate (fail-open) and
+  pinned by tests, but it means the control is only as good as the caller that
+  sets it. `tools/usability-proof.ts` §3 exercises the enforced case end to end:
+  a task created with `allowedRoots: ["src"]` that pushes `secrets.env` is
+  refused with `reason=path_not_allowed` and the base does not move.
 - **Fail-open defaults are now asserted.** Empty `allowed_roots` → every path;
   empty `allowed_tools` → every tool. Both were implicit; both are now pinned by
   tests (`test_allows_path_empty_roots_is_fail_open`, "treats empty roots as
@@ -313,12 +329,14 @@ that path or accept the viewer as a read-only overview.
    this environment has no Cloudflare credentials. The demo cut also still
    renders "no main branch" as a refusal cause; both clear after the SQL runs and
    `scripts/capture-record.mjs` is re-run.
-2. ~~Adversarial path tests against `allowsPath`~~ — **done** (§6): the rule
-   canonicalises in both implementations, the adversarial cases are tested on
-   both sides, and the fail-open defaults are pinned by tests. What remains is
-   the **production wiring**: intake still leaves `allowed_roots` empty, so rule
-   10 admits everything live. Set roots from the ticket in
-   `workers/orchestrator/src/tasks.ts` before treating path scope as a control.
+2. ~~Adversarial path tests against `allowsPath`~~ — **done, and the wiring
+   landed too** (§6). The rule canonicalises in both implementations, the
+   adversarial cases are tested on both sides, the fail-open defaults are pinned
+   by tests, and intake sets `scope.allowed_roots` from the task
+   (`workers/orchestrator/src/tasks.ts:161`), proven end to end by
+   `tools/usability-proof.ts` §3. What remains is not code: tasks created
+   *without* `allowedRoots` are still fail-open by design, so any caller that
+   wants path scope must pass it.
 3. ~~Decide on signature~~ — **done** (§6): kept for shape-compatibility with the
    Rust type, labelled at the field as explicitly not a control. No
    implementation of signing is pending; if remote-issued scopes are ever
