@@ -85,10 +85,26 @@ Both are true of different code paths:
 | **Local demo** (`tools/graphvc-demo.ts`) | `GitMerger` (`packages/artifacts-port/src/git.ts:215`) | **True merge commit**, two parents — asserted by `workers/gate/src/pipeline.test.ts` ("True merge: two parents") |
 
 Canonical policy: **production squashes**, and the `Fork-Head:` trailer is the
-proposal → landed-commit link. The local demo's two-parent merge is a divergence,
-not a second policy. Either the demo should squash too, or the divergence must be
-documented as intentional — it is currently neither, and the two docs each
-describe one of them as if it were the only one.
+proposal → landed-commit link. The two-parent local merge is a deliberate
+difference of *purpose*, not a second policy, and it is now recorded as such
+(2026-10-15):
+
+- Production squashes because a shared base should not carry every agent's
+  intermediate history.
+- The local runner (`tools/gate-runner.ts`) merges because preserving the fork's
+  commits is how you inspect what an agent actually did. It is a debugging
+  surface, and it is the code path the recorded demo exercises.
+- Both write the same `Fork-Head: <proposal sha>` trailer, which is what makes
+  the two interchangeable at the record level. **Depend on the trailer, never on
+  the parent count.** The trailer is now asserted for the local merger in
+  `workers/gate/src/pipeline.test.ts` and for the production merger in
+  `workers/gate/src/merge-iso.test.ts`.
+
+Fixed alongside: `GitAdapter.history()` read the commit *subject* (`%s`), so the
+trailer — the canonical link — was not readable through the port at all. It now
+reads the full message (`%B`), matching what the Workers binding already
+returned. `ARCHITECTURE.md` was corrected to describe the squash in commit
+`0d860e3`; `TECHNICAL-OVERVIEW.md` was already right.
 
 ## 4. Failure semantics — an outage was recorded as a refusal
 
@@ -321,8 +337,11 @@ that path or accept the viewer as a read-only overview.
 7. **Verification interface** (typecheck/build/tests before finalising a merge):
    does not exist. Today the gate admits a change; it does not establish that the
    result compiles or passes.
-8. **Reconcile the local demo merger with production** (§3) or document the
-   divergence as intentional.
+8. ~~Reconcile the local demo merger with production~~ — **resolved** (§3):
+   documented as an intentional difference of purpose, with the shared
+   `Fork-Head:` trailer as the contract both satisfy and an assertion for each.
+   The port also stopped truncating commit messages to the subject, which had
+   made that trailer unreadable.
 9. ~~Pin an upstream revision per vendored system~~ — **done** (§`substrate/README.md`
    → Provenance). All four revisions resolved from the source checkouts on
    2026-10-15 and `diff -r` re-run: `live-knowledge-graphs` is byte-identical,

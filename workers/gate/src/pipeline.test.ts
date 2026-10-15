@@ -81,6 +81,10 @@ describe("handlePush pipeline", () => {
     // True merge: two parents.
     const hist = await base.history("main", 1);
     expect(hist[0].parents.length).toBe(2);
+    // The proposal -> landed link. This trailer is the canonical join between
+    // the two merge shapes: production squashes (one parent) and the local
+    // runner merges (two), and the record has to be the same either way.
+    expect(hist[0].message).toContain(`Fork-Head: ${after}`);
     base.dispose();
   });
 

@@ -92,7 +92,13 @@ export class GitRepoHandle implements RepoHandle {
         ref,
         "-n",
         String(limit),
-        "--pretty=format:%H%x1f%s%x1f%an%x1f%cI%x1f%P%x1e",
+        // `%B`, not `%s`: the subject alone hides the commit body, and the
+        // `Fork-Head: <proposal sha>` trailer lives there. That trailer is the
+        // canonical proposal -> landed link (see docs/INTEGRATION-STATUS.md §3),
+        // so truncating it here made the link unreadable through the port.
+        // The Workers binding returns the platform's message unmodified, so
+        // this also brings the two adapters closer, not further apart.
+        "--pretty=format:%H%x1f%B%x1f%an%x1f%cI%x1f%P%x1e",
       );
     } catch {
       return [];
@@ -208,6 +214,16 @@ export class GitAdapter implements ArtifactsPort {
  * True-history merge over real git: clone base, fetch fork, merge, push.
  * Unlike IsomorphicMerger's squash path, this preserves both parents.
  * `workRoot` parents the scratch clone (callers own cleanup).
+ *
+ * DECIDED 2026-10-15: the two-parent shape is intentional, not drift. This
+ * merger is the local runner's (`tools/gate-runner.ts`), where keeping the
+ * fork's commits visible in the base is the point — it is how you inspect what
+ * an agent actually did. Production squashes (`IsomorphicMerger`), because a
+ * shared base should not carry every agent's intermediate history. Both write
+ * the same `Fork-Head: <proposal sha>` trailer, which is the link that makes
+ * the two policies interchangeable at the record level; that trailer is what
+ * you should depend on, never the parent count.
+ * See docs/INTEGRATION-STATUS.md §3.
  */
 export class GitMerger implements Merger {
   constructor(private workRoot: string = tmpdir()) {}
