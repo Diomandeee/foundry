@@ -18,6 +18,8 @@ npx vitest run                           # 23 files, 227 tests, all pass
 npm run proof:usability                  # 26 checks, all PASS — the loop, in-process
 npm run demo:graphvc                     # the same loop over a real git push + hook
 cargo test --manifest-path substrate/cc-kernel/Cargo.toml        # 52 + 11 + 2 parity
+cargo test --manifest-path substrate/live-knowledge-graphs/Cargo.toml   # 13 + 2 doctests
+cargo test --manifest-path substrate/trajectory-memory-ledger/Cargo.toml # 16
 cat fixtures/kernel-parity.json          # the shared Rust<->TS case set (§6)
 curl -s <staging board>/decisions?limit=200                      # live ledger
 ```
@@ -85,7 +87,7 @@ Production verified · Advisory · Planned/incomplete.
 
 | Component | Status | Evidence |
 |---|---|---|
-| `substrate/cc-kernel` (Rust) | Reference + CI-verified | `cargo test` in `.github/workflows/ci.yml:45`; `substrate/cc-kernel/tests/integration_test.rs` |
+| `substrate/cc-kernel` (Rust) | Reference + CI-verified | `cargo test` in `.github/workflows/ci.yml`; **65 tests local and green** (52 unit + 11 integration + 2 parity) |
 | `packages/gate-ts` (12-rule kernel port) | Ported + locally verified + **Integrated** | `packages/gate-ts/src/gate.ts`; called from the live decision path at `workers/gate/src/decide.ts:230` |
 | `packages/gate-ts` path allowlist | Ported + **canonicalising, parity-checked**; a policy boundary, not a filesystem control | `allowsPath` in `packages/gate-ts/src/types.ts`; mirrored in `substrate/cc-kernel/src/types/scope.rs`; 32-case shared fixture in `fixtures/kernel-parity.json` — see §6 |
 | `packages/gate-ts` scope token | Ported, **unsigned** | `signature?: number[]` (`types.ts:95`) is declared and never set or verified — see §6 |
@@ -96,9 +98,9 @@ Production verified · Advisory · Planned/incomplete.
 | `packages/artifacts-port` | Integrated | `cloudflarePort` bound in the gate worker; `GitAdapter`/`GitMerger` used by local demo |
 | `packages/stores` (D1) | Integrated, production verified | `tickets.ts`, `decisions.ts`; schema `workers/gate/schema.sql` |
 | `packages/lkg-client` | **Integrated but advisory** | `workers/gate/src/index.ts` builds `KgOverlapOracle` when `LKG_URL` is set; verdict triples are written best-effort in a `try/catch` that only warns |
-| `substrate/live-knowledge-graphs` | Reference | `cargo test` in CI (its own crate); authority for `triples.ts` shapes |
+| `substrate/live-knowledge-graphs` | Reference + CI-verified | `cargo test` in CI; **13 tests + 2 doctests local and green**; authority for `triples.ts` shapes |
 | `packages/evidence` (trajectory companion) | **Locally verified, unwired** | `packages/evidence/src/index.ts` + `index.test.ts`; no import outside the package |
-| `substrate/trajectory-memory-ledger` | Reference | schema `examples/trajectory-card.schema-v2.json`; no runtime import |
+| `substrate/trajectory-memory-ledger` | Reference + **CI-verified as of 2026-10-15** | schema `examples/trajectory-card.schema-v2.json`; **16 tests local and green**, and now run by CI (they were not, until this pass). No runtime import — Foundry writes no trajectory events (§8 item 6). |
 | `substrate/spatial-git` | Reference + **Integrated** (feed adapter) | viewer + CLI vendored; `workers/api` now serves `/git-history.json` in the viewer's shape — see §7 |
 | `packages/plan-check` (PACT) | Integrated but **advisory by default** | `decide.ts` step 1b; rejects only when `enforce` is set; outages fail open (`checked=false, ok=true`) |
 | `workers/participation-coordinator` | Integrated (separate product line) | `@foundry/participation-coordinator`, own D1, same Cloudflare account/subdomain |

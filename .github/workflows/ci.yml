@@ -48,3 +48,10 @@ jobs:
       - name: graph-kernel tests
         run: cargo test --manifest-path substrate/live-knowledge-graphs/Cargo.toml
         timeout-minutes: 20
+
+      # Three crates are vendored, so three suites run. This one was missing
+      # while its 16 tests passed locally: a vendored system whose tests CI
+      # never executes is a system whose drift nobody would notice.
+      - name: trajectory-ledger tests
+        run: cargo test --manifest-path substrate/trajectory-memory-ledger/Cargo.toml
+        timeout-minutes: 20

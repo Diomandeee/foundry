@@ -75,13 +75,19 @@ rustup default 1.98.1
 ```bash
 npm ci
 npm run typecheck            # 0 errors
-npx vitest run               # 227 passed, 23 files  (+ Rust: 52 + 11 + 2 parity)
+npx vitest run               # 227 passed, 23 files
 npm run proof:usability      # 26 checks, all PASS — the whole loop, in-process
 npm run demo:graphvc         # the same loop through a real git push + hook
 # proof:usability covers intake -> merge -> path refusal -> enforced
 # verification block -> advisory merge -> every API surface -> kernel rule 10.
 # demo:graphvc does it over real bare repos with a post-receive hook.
 # Both run entirely in /tmp. Nothing leaves your machine, no account needed.
+
+# Optional: the three vendored substrate suites (needs the Rust toolchain).
+#   cargo test --manifest-path substrate/cc-kernel/Cargo.toml                  # 65
+#   cargo test --manifest-path substrate/live-knowledge-graphs/Cargo.toml      # 13 + 2 doctests
+#   cargo test --manifest-path substrate/trajectory-memory-ledger/Cargo.toml   # 16
+# All three run in CI; all three are green locally.
 ```
 
 ## Watch it live (staging)
