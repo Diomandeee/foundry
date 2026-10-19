@@ -29,3 +29,12 @@
 - decided: Supabase Memory `zdcqqvvcpfpfyvbbfgsy` via ai-memory-runtime = sole agent memory; foundry-memory MCP reads it; D1 decisions stay authority. Recorded in ARCHITECTURE.md.
 - done: full AO ao.db archived to GCS (md5 verified), local replaced by a 466 MB slim copy (all tables except change_log bodies and conversation_provider_events; integrity ok; ao-sessions verified).
 - open: Part B steps B1-B6 unchanged; disk reserve status: Mac1 ~34+ GiB, Mac4 46 GiB, Mac5 92 GiB free (B3 reserve 50 GiB).
+
+## 2026-10-19 02:35 EDT first real project through the staging gate: Air Deck
+- done: Artifacts repo `foundry-staging/airdeck` seeded by operator push of GitHub `Diomandeee/AirDeck@a1bb6a2` (bootstrap, outside the gate) and subscribed.
+- done: staging orchestrator `TASK_TOKEN` rotated (the old value was not held anywhere on Mac1); new value only in `~/.config/foundry/staging-task-token` (0600). Push/fetch helpers `~/.config/foundry/bin/foundry-{push,fetch}` issue 15 min repo tokens and pass them through GIT_ASKPASS (never on a command line).
+- done: task `airdeck-saved-crate-to-drive` -> decision 29 merge 7537246; task `airdeck-saved-crate-edits` -> decision 33 merge 0a2f409. GitHub main fast-forwarded to the gated merge.
+- BUG (deployed staging gate, version 585ff890 = foundry main cf27ac6 code): `artifacts-port/cloudflare.ts diffFiles` compares blob hashes only when a commit adds/deletes nothing, so a commit that adds or deletes AND edits loses the edits (task 1 dropped 4 edited files, admitted the rest, merged silently). Also `commitForkFiles` writes without mode, so the executable bit is lost. The integration branch already fixes the diff (full [hash,type,mode] inventory) and checks landed bytes/modes against admission; it is not deployed. Until then: keep add/delete and edit commits separate per task, run scripts with `bash`.
+- BUG (cosmetic): the base repo is subscribed, so every gated merge echoes as a "no task ticket for fork <base>" reject (decisions 30, 32; the Oct 14 `dispatch` rejects are the same echo).
+- BUG (cosmetic): `GET /decisions` on foundry-api-staging served a stale list (ended at id 28) while D1 held 29-33.
+- limit: the gate admits UTF-8 text only (8 MiB per merge). Binary assets must be seeded or live outside Git (Air Deck audio -> gdrive:Assets/AirDeck).
