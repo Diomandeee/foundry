@@ -1,3 +1,5 @@
+> **Current cloud-workspace source stop:** `R6-independent-source-review-complete-validation-HOLD`. [Independent review and local repairs](docs/cloud-workspaces/independent-review-2026-10-18/README.md) cover Linux user-namespace/filesystem isolation, input/capacity/liveness, actual Mac CAS accounting and durable operator recovery. No unresolved actionable finding remains in that bounded review scope. Compilation, tests and operational acceptance are pending; deployment/installation/provisioning/spending/credentials/merge/cleanup remain gated. Linux is still one owner-mediated retained attempt, not an unattended repeat-job service.
+
 # Foundry — every push is reviewed before it lands
 
 Foundry is a merge gate for teams of AI agents sharing one codebase. Agents
@@ -59,10 +61,14 @@ verdict row plus the merge hash — enough to replay why any commit exists.
 
 ## Verify locally (no Cloudflare account needed)
 
-**Prerequisites.** Node 22+ (CI pins 22), `npm`, and `git` on `PATH`. Nothing
-else is required for the TypeScript suites, the gate demo, or the usability
-proof — they shell out to `git` and write only inside a temp directory. Rust is
-needed only for the vendored substrate tests, which CI runs separately:
+**Prerequisites.** The locked test runner declares Node `^22.12.0 || ^24.0.0 ||
+>=26.0.0`; Node 23 and Node 22 releases before 22.12 are outside that declared
+range. CI requests Node 22 but does not pin the exact patch release. The
+proposed Node 24 handler image target is a separate runtime choice and is not a
+tested claim. `npm` and `git` must be on `PATH`. Nothing else is required for the
+TypeScript suites, the gate demo, or the usability proof — they shell out to
+`git` and write only inside a temp directory. Rust is needed only for the
+vendored substrate tests, which CI runs separately:
 
 ```bash
 # optional, only for substrate/cc-kernel and substrate/live-knowledge-graphs

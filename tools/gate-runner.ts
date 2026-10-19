@@ -12,6 +12,8 @@ import {
 } from "@foundry/lkg-client";
 import type { TicketStore, TaskTicket, DecisionStore, DecisionRecord } from "@foundry/stores";
 import { serializeScope, reviveScope } from "@foundry/stores";
+import {recordLocalVerification} from "./local-verification-store.js";
+import type {VerificationReceipt} from "@foundry/stores";
 import { handlePush } from "../workers/gate/src/pipeline.js";
 
 function arg(name: string, def?: string): string | undefined {
@@ -47,6 +49,7 @@ class JsonTicketStore implements TicketStore {
 
 class JsonlDecisionStore implements DecisionStore {
   constructor(private file: string) {}
+  async recordVerification(receipt:VerificationReceipt){await recordLocalVerification(this.file+".verification",receipt);}
   async findByEvent(
     namespace: string,
     repo: string,

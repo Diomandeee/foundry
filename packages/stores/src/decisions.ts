@@ -24,6 +24,13 @@ export type DecisionReason = RejectReason | FoundryReason;
  * retryable, an operator can filter on it, and a later attempt for the same
  * event replaces it with the final verdict.
  */
+export interface VerificationReceipt {
+  version:1;sha256:string;
+  request:{repo:string;baseBranch:string;headSha:string;files:string[];namespace:string;ref:string;before:string;baseSha:string|null;contentHash:string};
+  policy:{enforce:boolean;requireChecked:boolean};
+  verdict:{checked:boolean;ok:boolean;runs:{name:string;ok:boolean}[]};
+}
+
 export interface DecisionRecord {
   id?: number;
   namespace: string;
@@ -38,10 +45,13 @@ export interface DecisionRecord {
   merged_sha?: string | null;
   task_id?: string | null;
   agent_id?: string | null;
+  verification?:VerificationReceipt|null;
   decided_at: string;
 }
 
 export interface DecisionStore {
+  /** Durable, immutable pre-merge evidence. A missing implementation blocks merging. */
+  recordVerification?(receipt:VerificationReceipt):Promise<void>;
   record(d: Omit<DecisionRecord, "id" | "decided_at">): Promise<DecisionRecord>;
   list(repo?: string, limit?: number): Promise<DecisionRecord[]>;
   /**
@@ -68,6 +78,12 @@ export interface DecisionStore {
 
 export class MemoryDecisionStore implements DecisionStore {
   private rows: DecisionRecord[] = [];
+  private verifications=new Map<string,string>();
+  async recordVerification(receipt:VerificationReceipt):Promise<void>{
+    const encoded=JSON.stringify(receipt),old=this.verifications.get(receipt.sha256);
+    if(old!==undefined&&old!==encoded)throw new Error('verification receipt collision');
+    this.verifications.set(receipt.sha256,encoded);
+  }
 
   async findByEvent(
     namespace: string,
@@ -179,12 +195,19 @@ function mapRow(r: Record<string, unknown>): DecisionRecord {
     merged_sha: (r.merged_sha as string | null) ?? null,
     task_id: (r.task_id as string | null) ?? null,
     agent_id: (r.agent_id as string | null) ?? null,
+    verification:r.verification?JSON.parse(r.verification as string) as VerificationReceipt:null,
     decided_at: r.decided_at as string,
   };
 }
 
 export class D1DecisionStore implements DecisionStore {
   constructor(private db: D1Database) {}
+  async recordVerification(receipt:VerificationReceipt):Promise<void>{
+    const encoded=JSON.stringify(receipt);
+    await this.db.prepare('INSERT OR IGNORE INTO verification_receipts (sha256, receipt) VALUES (?, ?)').bind(receipt.sha256,encoded).run();
+    const row=await this.db.prepare('SELECT receipt FROM verification_receipts WHERE sha256 = ?').bind(receipt.sha256).first<{receipt:string}>();
+    if(!row||row.receipt!==encoded)throw new Error('verification receipt not durably confirmed');
+  }
 
   /** `finalOnly` skips `error` rows — an unfinished attempt is not a decision. */
   private async selectEvent(
@@ -229,8 +252,8 @@ export class D1DecisionStore implements DecisionStore {
       .prepare(
         `INSERT INTO decisions
          (namespace, repo, ref, before_sha, after_sha, verdict, reason,
-          conflict_files, files, merged_sha, task_id, agent_id, decided_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          conflict_files, files, merged_sha, task_id, agent_id, decided_at, verification)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT (namespace, repo, ref, before_sha, after_sha) DO UPDATE SET
            verdict = excluded.verdict,
            reason = excluded.reason,
@@ -239,7 +262,8 @@ export class D1DecisionStore implements DecisionStore {
            merged_sha = excluded.merged_sha,
            task_id = excluded.task_id,
            agent_id = excluded.agent_id,
-           decided_at = excluded.decided_at
+           decided_at = excluded.decided_at,
+           verification = excluded.verification
          WHERE decisions.verdict = 'error'`,
       )
       .bind(
@@ -256,6 +280,7 @@ export class D1DecisionStore implements DecisionStore {
         d.task_id ?? null,
         d.agent_id ?? null,
         decided_at,
+        d.verification?JSON.stringify(d.verification):null,
       )
       .run();
     // Read back without the `error` filter: a just-recorded error row is a
@@ -268,7 +293,8 @@ export class D1DecisionStore implements DecisionStore {
       d.after_sha,
       false,
     );
-    return row ?? { ...d, decided_at };
+    if(!row)throw new Error('decision persistence readback unavailable');
+    return row;
   }
 
   async findBySha(sha: string): Promise<DecisionRecord | null> {

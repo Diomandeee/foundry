@@ -1,0 +1,125 @@
+
+ RUN  v5.0.3 /Users/mohameddiomande/Developer/foundry-integration/source
+
+(node:44169) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ packages/library-gcs/src/index.test.ts > exact immutable two-GET journey, native broker read port and immutable snapshot 32ms
+ ✓ packages/library-gcs/src/index.test.ts > unchanged metadata metageneration 1 succeeds with all generation fences 1ms
+ ✓ packages/library-gcs/src/index.test.ts > unchanged metadata metageneration 9007199254740993 succeeds with all generation fences 1ms
+ ✓ packages/library-gcs/src/index.test.ts > unchanged metadata metageneration 99999999999999999999999999999999 succeeds with all generation fences 2ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration undefined rejects before media 1ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration null rejects before media 1ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration 1 rejects before media 1ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration 0 rejects before media 1ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration true rejects before media 1ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration {} rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration [] rejects before media 1ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "0" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "00" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "01" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "-1" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "+1" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "1.0" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "1e3" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration " 1" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "1 " rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "1\n" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "1\r\n" rejects before media 2ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "1\t" rejects before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "１" rejects before media 1ms
+ ✓ packages/library-gcs/src/index.test.ts > missing/malformed metadata metageneration "١" rejects before media 1ms
+ ✓ packages/library-gcs/src/index.test.ts > metadata encoding changes at unchanged generation: media 412 rejects without body read or retry 2ms
+ ✓ packages/library-gcs/src/index.test.ts > manifest namespace and 32-digit generation preserved without number coercion 1ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"projectId":"other"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"projectId":"project-a\n"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"objectKey":"https://evil.test/x"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"objectKey":"../x"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"objectKey":"projects/other/objects/45fb976f7bf8855615f6bcd7f1d7d37bc30ff466a28cd0592be8c336a4adb380"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"objectKey":"projects/project-a/objects/45fb976f7bf8855615f6bcd7f1d7d37bc30ff466a28cd0592be8c336a4adb380\n"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"objectKey":"projects/project-a/objects/45fb976f7bf8855615f6bcd7f1d7d37bc30ff466a28cd0592be8c336a4adb380?x=1"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"objectKey":"projects/project-a/%2e%2e/x"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"generation":"0"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"generation":"01"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"generation":"1\n"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"generation":"999999999999999999999999999999999"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"sha256":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"sha256":"45fb976f7bf8855615f6bcd7f1d7d37bc30ff466a28cd0592be8c336a4adb380\n"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"sizeBytes":0} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"sizeBytes":-1} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"sizeBytes":1.5} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"sizeBytes":8388609} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > invalid ref {"url":"https://evil.test"} rejected before credentials/fetch 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject getters, proxies, symbols and inherited/decorated references without invoking code 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject maxBytes 0 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject maxBytes -1 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject maxBytes NaN 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject maxBytes Infinity 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject maxBytes 1.5 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject maxBytes 24 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject maxBytes 8388609 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"origin":"https://evil.test"} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"origin":"http://storage.googleapis.com"} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"origin":"https://storage.googleapis.com/"} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"bucket":"../other"} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"bucket":"bucket/path"} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"credentialRef":"token\nsecret"} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"limits":{"maxActiveReads":9}} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"limits":{"timeoutMs":0}} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject host config {"extra":1} 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject metadata mismatch bucket=other before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject metadata mismatch name=other before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject metadata mismatch generation=1 before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject metadata mismatch generation=123 before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject metadata mismatch size=25 before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject metadata mismatch size=999 before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject metadata mismatch contentEncoding=gzip before media 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 206 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 301 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 302 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 307 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 308 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 401 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 403 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 404 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 412 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 429 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 500 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > status 503 rejected with no retry/body leakage 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject media headers {"content-length":"999"} before pulling 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject media headers {"content-length":"025"} before pulling 1ms
+ ✓ packages/library-gcs/src/index.test.ts > reject media headers {"content-encoding":"gzip"} before pulling 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject media headers {"content-range":"bytes 0-24/25"} before pulling 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject media headers {"x-goog-generation":"999"} before pulling 1ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture redirected 1ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture wrong-url 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture bad-json 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture oversize-metadata 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture metadata-length 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture encoded-metadata 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture short 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture long 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture wrong-hash 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture empty-chunk 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture shared-chunk 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture stream-error 0ms
+ ✓ packages/library-gcs/src/index.test.ts > reject bounded fixture missing-body 0ms
+ ✓ packages/library-gcs/src/index.test.ts > pre-abort makes no credential or HTTP call 0ms
+ ✓ packages/library-gcs/src/index.test.ts > aggregate byte admission and concurrency reject before credentials; successful reads release reservations 3ms
+ ✓ packages/library-gcs/src/index.test.ts > timeout rejects even when token provider ignores signal; occupied slot stays quarantined 23ms
+ ✓ packages/library-gcs/src/index.test.ts > fetch ignoring abort rejects promptly; late body is cancelled and capacity recovers 24ms
+ ✓ packages/library-gcs/src/index.test.ts > abort cancels stalled stream, and timeout handles stream ignoring read AND cancel 35ms
+ ✓ packages/library-gcs/src/index.test.ts > token/fetch failures are sanitized and never retried 1ms
+ ✓ packages/library-gcs/src/index.test.ts > real storage broker authorizes, verifies, seals and replays without extra provider GETs 11ms
+ ✓ packages/library-gcs/src/index.test.ts > metadata advertised length mismatch rejected 1ms
+ ✓ packages/library-gcs/src/index.test.ts > stream split into native chunks verifies without requiring Content-Length or generation echo 1ms
+ ✓ packages/library-gcs/src/index.test.ts > host configuration is copied and trusted port failures remain sanitized without retry 1ms
+ ✓ packages/library-gcs/src/index.test.ts > aggregate budget limits simultaneous requests independently of concurrency cap 3ms
+ ✓ packages/library-gcs/src/index.test.ts > whole-call deadline includes metadata body; no media request follows a stalled metadata stream 24ms
+ ✓ packages/library-gcs/src/index.test.ts > lingering response cancellation retains capacity until cleanup settles 24ms
+
+ Test Files  1 passed (1)
+      Tests  114 passed (114)
+   Start at  01:29:21
+   Duration  832ms (transform 41%, tests 38%, import 14%, worker 7%)
+

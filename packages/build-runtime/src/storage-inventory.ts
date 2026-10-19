@@ -1,0 +1,77 @@
+import { lstat, opendir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { performance } from 'node:perf_hooks';
+import { canonical } from './host.js';
+import { absolute, check } from './plans.js';
+export interface StorageRoot {role:'cache'|'workspace';path:string;uid:number;
+  /** VM namespace is root-controlled with dedicated-user raw disks. Metadata
+   * observation only; unreadable private trees and mounts remain incomplete. */
+  vmChildUid?:number;
+}
+export interface StorageScanLimits {maxEntries:number;maxDepth:number;maxDurationMs:number}
+export interface StorageMeasurement {
+  role:'cache'|'workspace';root:string;complete:boolean;
+  observedEntries:number;observedApparentBytes:number;observedAllocatedBytes:number;
+  reason:'complete'|'limit'|'unsafe-or-unavailable'|'changed-during-scan';
+}
+export interface ManagedStorageInventory {
+  observedAt:number;source:'node-lstat';complete:boolean;
+  /** Census budget uses apparent bytes; neither measure is APFS reclaimable space. */
+  cacheBytes:number|null;workspaceBytes:number|null;roots:StorageMeasurement[];
+}
+/** Read-only, bounded metadata scan. Never opens file contents, follows symlinks,
+ * traverses nested mounts, deletes, evicts, or treats APFS blocks as reclaimable. */
+export async function managedStorageInventory(approved:readonly StorageRoot[],limits:StorageScanLimits={maxEntries:10000,maxDepth:32,maxDurationMs:2000}):Promise<ManagedStorageInventory> {
+  const roots = approved.map(root => ({...root})), budget = {...limits};
+  check(roots.length > 0 && roots.length <= 16,'inventory-root-count');
+  for (const root of roots) {absolute(root.path);check(root.role === 'cache' || root.role === 'workspace','inventory-role');}
+  for (let i=0;i<roots.length;i++) for (let j=i+1;j<roots.length;j++) check(roots[i]!.path !== roots[j]!.path && !roots[i]!.path.startsWith(`${roots[j]!.path}/`) && !roots[j]!.path.startsWith(`${roots[i]!.path}/`),'inventory-overlapping-roots');
+  check(Number.isSafeInteger(budget.maxEntries) && budget.maxEntries > 0 && budget.maxEntries <= 100000 && Number.isSafeInteger(budget.maxDepth) && budget.maxDepth > 0 && budget.maxDepth <= 64 && Number.isSafeInteger(budget.maxDurationMs) && budget.maxDurationMs > 0 && budget.maxDurationMs <= 30000,'inventory-limits');
+  const began = performance.now(); let entries = 0;
+  const result:StorageMeasurement[] = [];
+  for (const root of roots) {
+    const row:StorageMeasurement = {role:root.role,root:root.path,complete:false,observedEntries:0,observedApparentBytes:0,observedAllocatedBytes:0,reason:'unsafe-or-unavailable'};
+    let failed:StorageMeasurement['reason']|undefined;
+    const available = () => {
+      if (entries >= budget.maxEntries || performance.now()-began >= budget.maxDurationMs) {failed = 'limit';return false;}
+      return true;
+    };
+    try {
+      const vm=root.vmChildUid!==undefined;
+      if(vm)check(root.path==='/Library/Foundry/VM/attempts'&&root.uid===0&&Number.isSafeInteger(root.vmChildUid)&&Number(root.vmChildUid)>=501,'inventory-vm-root');
+      await canonical(root.path,root.uid,'directory',!vm);
+      const anchor = await lstat(root.path);
+      const walk = async (path:string,depth:number):Promise<void> => {
+        if (failed || !available()) return;
+        if (depth > budget.maxDepth) {failed = 'limit';return;}
+        const before = await lstat(path);
+        check((before.uid === root.uid || (vm&&before.isFile()&&before.uid===root.vmChildUid)) && (before.mode & 0o022) === 0 && !before.isSymbolicLink() && before.dev === anchor.dev && (before.isDirectory() || (before.isFile() && before.nlink === 1)),'unsafe-inventory-entry');
+        entries++;row.observedEntries++;
+        // Apparent FILE data excludes directory metadata; allocated includes directory blocks.
+        row.observedApparentBytes += before.isFile() ? before.size : 0;
+        row.observedAllocatedBytes += before.blocks*512;
+        check(Number.isSafeInteger(row.observedApparentBytes) && Number.isSafeInteger(row.observedAllocatedBytes),'inventory-byte-overflow');
+        if (before.isDirectory()) {
+          const directory = await opendir(path);
+          try {
+            for await (const entry of directory) {
+              if (!available() || failed) break;
+              await walk(join(path,entry.name),depth+1);
+            }
+          } finally {await directory.close().catch(() => {});}
+        }
+        const after = await lstat(path);
+        if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size || before.mtimeMs !== after.mtimeMs || before.ctimeMs !== after.ctimeMs) failed = 'changed-during-scan';
+      };
+      await walk(root.path,0); if (performance.now()-began >= budget.maxDurationMs) failed = 'limit';
+      row.complete = !failed; row.reason = failed ?? 'complete';
+    } catch {row.reason = failed ?? 'unsafe-or-unavailable';}
+    result.push(row);
+  }
+  const total = (role:StorageRoot['role']):number|null => {
+    const selected = result.filter(row => row.role === role);
+    return selected.length && selected.every(row => row.complete) ? selected.reduce((n,row) => n+row.observedApparentBytes,0) : null;
+  };
+  const cacheBytes = total('cache'), workspaceBytes = total('workspace');
+  return {observedAt:Date.now(),source:'node-lstat',complete:result.every(row => row.complete) && cacheBytes !== null && workspaceBytes !== null,cacheBytes,workspaceBytes,roots:result};
+}

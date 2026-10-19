@@ -76,3 +76,57 @@ describe("worker registry", () => {
     expect(reg.get("vps")).toBeNull();
   });
 });
+
+ describe("registry reference isolation regressions", () => {
+  it("owns registration/reassert inputs and freezes nested output arrays", () => {
+    const reg = new WorkerRegistry();
+    const caps = structuredClone(vpsCaps);
+    caps.gpus = [{ kind: "metal", vramMib: 2048 }];
+    const labels = { zone: "local" };
+    const rec = reg.register({ workerId: "owned", displayName: "Owned", workerClass: "general", capabilities: caps, labels });
+    caps.reservableMib = 1;
+    caps.runtimes.push("injected");
+    caps.gpus[0].vramMib = 1;
+    labels.zone = "changed";
+    expect(reg.get("owned")!.capabilities.reservableMib).toBe(3000);
+    expect(reg.get("owned")!.labels.zone).toBe("local");
+    expect(Object.isFrozen(rec.capabilities.runtimes)).toBe(true);
+    expect(Object.isFrozen(rec.capabilities.gpus)).toBe(true);
+    expect(Object.isFrozen(rec.capabilities.gpus[0])).toBe(true);
+    expect(reg.get("owned")!.capabilities.gpus[0].vramMib).toBe(2048);
+    expect(reg.get("owned")!.capabilities.runtimes).not.toContain("injected");
+    const next = structuredClone(vpsCaps);
+    reg.reassert("owned", next);
+    next.runtimes.push("injected");
+    expect(reg.list()[0].capabilities.runtimes).not.toContain("injected");
+  });
+  it.each([Infinity, NaN, 1.5, "2"])("rejects non-finite/non-integer caps %s", (value) => {
+    const reg = new WorkerRegistry();
+    for (const field of ["logicalCores", "reservableCores", "totalMib", "reservableMib", "maxParallelAttempts"]) {
+      expect(() => reg.register({ workerId: "bad", displayName: "Bad", workerClass: "general", capabilities: { ...vpsCaps, [field]: value } as WorkerCapabilities })).toThrow();
+    }
+  });
+  it.each([{ gpus: [null] }, { gpus: [{ kind: "metal", vramMib: Infinity }] }, { runtimes: [null] }, { runtimes: "node" }, { labels: [] }, { labels: { zone: 1 } }])("rejects malformed collections %#", (patch) => {
+    const reg = new WorkerRegistry();
+    expect(() => reg.register({ workerId: "bad", displayName: "Bad", workerClass: "general", capabilities: { ...vpsCaps, ...patch }, ...("labels" in patch ? { labels: patch.labels } : {}) } as never)).toThrow(/invalid/);
+  });
+});
+
+it("rejects sparse runtime collections", () => {
+  expect(() => new WorkerRegistry().register({ workerId: "sparse", displayName: "S", workerClass: "general", capabilities: { ...vpsCaps, runtimes: new Array(1) } })).toThrow("bad-runtimes");
+});
+
+describe("registration class stability", () => {
+  it.each(["edge", "general"] as const)("rejects changing an existing %s worker class without changing its record", (workerClass) => {
+    const reg = new WorkerRegistry();
+    const input = { workerId: "stable-class", displayName: "Original", workerClass, capabilities: structuredClone(vpsCaps) };
+    const original = reg.register(input, 1000);
+    expect(() => reg.register({ ...input, displayName: "Changed", workerClass: workerClass === "edge" ? "general" : "edge" }, 2000)).toThrow("workerClass cannot change");
+    expect(reg.get(input.workerId)).toEqual(original);
+    const refreshed = reg.register({ ...input, displayName: "Refreshed" }, 3000);
+    expect(refreshed.workerClass).toBe(workerClass);
+    expect(refreshed.trustTier).toBe(original.trustTier);
+    expect(refreshed.firstSeen).toBe(1000);
+    expect(refreshed.lastReassert).toBe(3000);
+  });
+});

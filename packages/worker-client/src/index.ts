@@ -1,0 +1,239 @@
+import { createHash } from 'node:crypto';
+import { buildPlan, identityKey, profileDigest, type ExecutionProfile, type ExecutionPlan, type RunResult } from '../../worker-runtime/src/index';
+import type { ApprovedIdentity } from '../../worker-enrollment/src/contracts';
+
+export interface HostConfig {
+  origin: string; credentialReference: string; identity: ApprovedIdentity;
+  /** Server-derived authority pins. Must match /v1/worker/status before any work is admitted. */
+  environment: string; authorityId: string;
+  expectedEpoch: number; revision: number; incarnation: number;
+  /** Owner's stable invocation identity. Retry the same step until terminal. */
+  stepKey: string;
+  /** Owner chooses >= server heartbeat minimum and < freshness window; default 1000ms. */
+  heartbeatRefreshMs?: number; profile: ExecutionProfile; ttlMs: number; httpDeadlineMs: number;
+}
+export type Summary = Readonly<{ kind: 'idle' | 'heartbeat' | 'uploaded' | 'blocked' | 'retry'; code?: string; httpStatus?: number }>;
+type Phase = 'heartbeat' | 'poll' | 'ready' | 'running' | 'upload' | 'done' | 'blocked';
+export interface JournalState {
+  version: 1; binding: string; stepKey: string; heartbeatSequence: number; heartbeatPending: boolean; heartbeatLastSeen: number | null; heartbeatRefreshRequired: boolean; pollSequence: number;
+  phase: Phase; keys: {heartbeat: string; poll: string; upload: string}; used: string[]; work?: Work; upload?: Upload; stop?: RunResult['stop']; summary?: Summary;
+}
+/** Exclusive across all callers/processes. Save must be durable before resolving.
+ * Missing/corrupt/ambiguous storage must fail closed, never silently reset. */
+export interface JournalSession { load(): Promise<JournalState | null>; save(state: JournalState): Promise<void> }
+export interface HostJournal { exclusive<T>(run: (session: JournalSession) => Promise<T>): Promise<T> }
+/** Node host transport, deliberately independent of Cloudflare RequestInit.
+ * Adapter must honor credentials:omit and redirect:error (never forward bearer). */
+export interface HostRequestInit {
+  method: 'POST'; redirect: 'error'; credentials: 'omit'; signal: AbortSignal;
+  headers: Record<string,string>; body: string;
+}
+export type HostFetch = (url: string, init: HostRequestInit) => Promise<Response>;
+export interface HostPorts {
+  fetch: HostFetch; journal: HostJournal;
+  credential(reference: string): Promise<string>;
+  runtime: { runBoundedJob(plan: ExecutionPlan, signal?: AbortSignal): Promise<RunResult> };
+  now?: () => number;
+}
+interface Lease { id: string; worker_id: string; workload_id: string; epoch: number; generation: number; incarnation: number; capability: string; expires_ms: number; state: string }
+interface Work { profileHash: string; workload: {id: string; specification: string; resources: {cpu: number; ramMib: number}; expectedHash: string; maxBytes: number}; lease: Lease }
+interface Upload { expectedEpoch: number; key: string; fence: {leaseId: string; epoch: number; generation: number; incarnation: number; capability: string}; bytesBase64: string; exitCode: 0 }
+const hash = (v: string | Uint8Array) => createHash('sha256').update(v).digest('hex');
+function check(v: unknown): asserts v { if (!v) throw Error('invalid'); }
+const uint = (v: unknown, min = 0): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= min;
+const key = (v: unknown): v is string => typeof v === 'string' && /^[A-Za-z0-9._-]{1,64}$/.test(v);
+const safeCodes = new Set(['unauthorized','forbidden','stale-epoch','sequence-conflict','poll-sequence-conflict','poll-key-conflict','idempotency-conflict','worker-incarnation','worker-scope','lease-scope','heartbeat-stale','heartbeat-rate-limited','credential-expired','credential-revoked','temporarily-unavailable','artifact-capacity']);
+class TransportFailure extends Error {
+  constructor(readonly status?: number, readonly safeCode?: string) { super('http-failure'); }
+  get code(): string { return this.safeCode ?? (this.status ? `http-${this.status}` : 'http-unavailable'); }
+  get permanent(): boolean { return !!this.status && this.status >= 400 && this.status < 500 && ![408,425,429].includes(this.status) && !['heartbeat-stale','heartbeat-rate-limited'].includes(this.code); }
+}
+function normalizedIdentity(value: ApprovedIdentity): ApprovedIdentity {
+  check(value && Object.keys(value).sort().join(',') === 'cpu,devices,principal,ramMib,workerClass,workerId');
+  check(key(value.workerId) && key(value.principal) && uint(value.cpu) && uint(value.ramMib) && Array.isArray(value.devices) && value.devices.length <= 64);
+  check(value.workerClass === 'general' || value.workerClass === 'edge');
+  const devices=value.devices.map(d=>{check(d && Object.keys(d).sort().join(',') === 'id,kind,vramMib' && key(d.id) && (d.kind === 'cuda' || d.kind === 'metal') && uint(d.vramMib,1));return {id:d.id,kind:d.kind,vramMib:d.vramMib};}).sort((a,b)=>a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+  check(new Set(devices.map(d=>d.id)).size === devices.length);
+  check(value.workerClass === 'edge' ? value.cpu === 0 && value.ramMib === 0 && devices.length === 0 : value.cpu > 0 && value.ramMib > 0);
+  return {workerId:value.workerId,principal:value.principal,workerClass:value.workerClass,cpu:value.cpu,ramMib:value.ramMib,devices};
+}
+let occupiedRequests=0;
+/** Logical deadlines never release unresolved physical operations. Slots are
+ * process-wide, including direct clients outside the outer pilot wrapper. */
+async function post(c:HostConfig,p:HostPorts,path:string,body:unknown,signal?:AbortSignal):Promise<any>{
+  if(signal?.aborted)throw new TransportFailure(408);
+  if(occupiedRequests>=4)throw new TransportFailure(429);
+  occupiedRequests++;
+  const abort=new AbortController(),expires=Date.now()+c.httpDeadlineMs;
+  let reader:ReadableStreamDefaultReader<Uint8Array>|undefined,cancelling:Promise<void>|undefined;
+  let uncertain=false,complete=false,errorStatus:number|undefined;
+  const cancelBody=()=>{if(reader)cancelling??=reader.cancel().catch(()=>{uncertain=true;});};
+  abort.signal.addEventListener('abort',cancelBody);
+  const cancel=()=>abort.abort();signal?.addEventListener('abort',cancel,{once:true});
+  let timer:ReturnType<typeof setTimeout>;
+  const failed=new Promise<never>((_,reject)=>{
+    abort.signal.addEventListener('abort',()=>reject(new TransportFailure()),{once:true});
+    timer=setTimeout(()=>abort.abort(),c.httpDeadlineMs);
+  });
+  const operation=(async()=>{
+    try{
+      const credential=await p.credential(c.credentialReference);
+      check(typeof credential==='string'&&credential.length>0&&credential.length<=8192&&!/[\r\n]/.test(credential));
+      check(!abort.signal.aborted);
+      const response=await p.fetch(c.origin+path,{method:'POST',redirect:'error',credentials:'omit',signal:abort.signal,
+        headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)});
+      if(abort.signal.aborted||response.redirected||!/^application\/json(?:;|$)/i.test(response.headers.get('content-type')??'')){
+        await response.body?.cancel().catch(()=>{uncertain=true;});throw new TransportFailure();
+      }
+      if(!response.ok)errorStatus=response.status;
+      reader=response.body?.getReader();if(!reader)throw new TransportFailure();
+      const bytes=new Uint8Array(65536);let size=0;
+      for(let count=0;;count++){
+        if(count>=4096||Date.now()>=expires||abort.signal.aborted)throw new TransportFailure();
+        const part=await reader.read();if(abort.signal.aborted)throw new TransportFailure();
+        if(part.done){complete=true;break;}
+        if(part.value.byteLength>bytes.length-size)throw new TransportFailure();bytes.set(part.value,size);size+=part.value.byteLength;
+      }
+      const parsed=JSON.parse(new TextDecoder('utf-8',{fatal:true,ignoreBOM:false}).decode(bytes.subarray(0,size)));
+      if(!response.ok)throw new TransportFailure(response.status,typeof parsed?.code==='string'&&safeCodes.has(parsed.code)?parsed.code:undefined);
+      return parsed;
+    }finally{
+      if(!complete)cancelBody();
+      if(cancelling)await cancelling;
+      reader?.releaseLock();abort.signal.removeEventListener('abort',cancelBody);
+      if(!uncertain)occupiedRequests--;
+    }
+  })();
+  void operation.catch(()=>{});
+  try{return await Promise.race([operation,failed]);}
+  catch(e){throw e instanceof TransportFailure&&e.status?e:new TransportFailure(errorStatus);}
+  finally{clearTimeout(timer!);signal?.removeEventListener('abort',cancel);abort.abort();}
+}
+function planFor(c: HostConfig, work: Work, now: number): ExecutionPlan {
+  const w = work.workload, l = work.lease;
+  check(work.profileHash === profileDigest(c.profile));
+  check(w && l && l.worker_id === c.identity.workerId && l.workload_id === w.id && l.epoch === c.expectedEpoch && l.incarnation === c.incarnation);
+  check(key(l.id) && uint(l.generation) && typeof l.capability === 'string' && l.capability.length > 0 && l.capability.length <= 8192 && l.state === 'RUNNING');
+  check(uint(l.expires_ms) && l.expires_ms > now + c.profile.timeoutMs + 15000);
+  check(typeof w.id === 'string' && typeof w.specification === 'string' && w.resources && Number.isFinite(w.resources.cpu) && w.resources.cpu > 0 && w.resources.cpu === c.profile.cpu && w.resources.cpu <= c.identity.cpu);
+  check(uint(w.resources.ramMib,1) && w.resources.ramMib === c.profile.ramMib && w.resources.ramMib <= c.identity.ramMib);
+  check(uint(w.maxBytes,1) && w.maxBytes <= 1048576 && /^[0-9a-f]{64}$/.test(w.expectedHash));
+  const plan = buildPlan(c.profile,{workerClass:c.identity.workerClass,leaseId:l.id,epoch:l.epoch,generation:l.generation,incarnation:l.incarnation,workloadId:w.id,specification:w.specification});
+  check(plan.expectedHash === w.expectedHash);
+  return plan;
+}
+/** No scheduling, enrollment, renew, verification, quota or reconciliation authority. */
+export async function boundedStep(config: HostConfig, ports: HostPorts, signal?: AbortSignal): Promise<Summary> {
+  try {
+    // Snapshot caller data; retain only the runtime-branded immutable profile.
+    const c: HostConfig = {...JSON.parse(JSON.stringify(config)),profile:config.profile};
+    c.identity=normalizedIdentity(c.identity);
+    const refreshMs=c.heartbeatRefreshMs ?? 1000;
+    check(uint(refreshMs,1) && refreshMs <= 300000);
+    const url = new URL(c.origin);
+    check(url.protocol === 'https:' && url.origin === c.origin && !url.username && !url.password);
+    check(key(c.environment) && key(c.authorityId));
+    check(key(c.stepKey) && uint(c.expectedEpoch,1) && uint(c.revision,1) && uint(c.incarnation));
+    check(uint(c.httpDeadlineMs,1) && c.httpDeadlineMs <= 30000 && uint(c.ttlMs,1000) && c.ttlMs <= 60000);
+    check(c.identity.workerClass === 'general' || c.identity.workerClass === 'edge');
+    if(c.identity.workerClass==='general')check(c.ttlMs>c.profile.timeoutMs+15000);
+    // Authority pins are part of the binding: a journal written against one
+    // environment/authority can never be replayed against another.
+    const binding = hash(JSON.stringify([c.origin,c.credentialReference,c.environment,c.authorityId,c.identity,c.expectedEpoch,c.revision,c.incarnation,{image:c.profile.image,cpu:c.profile.cpu,ramMib:c.profile.ramMib,pids:c.profile.pids,tmpMib:c.profile.tmpMib,maxOutputBytes:c.profile.maxOutputBytes,timeoutMs:c.profile.timeoutMs},c.ttlMs,refreshMs]));
+    const keys = {heartbeat:hash(JSON.stringify([binding,c.stepKey,'heartbeat'])),poll:hash(JSON.stringify([binding,c.stepKey,'poll'])),upload:hash(JSON.stringify([binding,c.stepKey,'upload']))};
+    return await ports.journal.exclusive(async j => {
+      let s = await j.load();
+      if(s) check(s.version === 1 && s.binding === binding && uint(s.heartbeatSequence,1) && uint(s.pollSequence) && typeof s.heartbeatPending === 'boolean' && typeof s.heartbeatRefreshRequired === 'boolean' && (s.heartbeatLastSeen === null || uint(s.heartbeatLastSeen)) && Array.isArray(s.used) && s.used.length <= 1024);
+      if(s && s.stepKey !== c.stepKey) {
+        check(s.phase === 'done' && s.summary && s.used.length < 1024);
+        s = {version:1,binding,stepKey:c.stepKey,heartbeatSequence:s.heartbeatSequence+1,heartbeatPending:true,heartbeatLastSeen:s.heartbeatLastSeen,heartbeatRefreshRequired:false,pollSequence:s.pollSequence,phase:'heartbeat',keys,used:s.used};
+        await j.save(s);
+      }
+      if(!s) { s = {version:1,binding,stepKey:c.stepKey,heartbeatSequence:1,heartbeatPending:true,heartbeatLastSeen:null,heartbeatRefreshRequired:false,pollSequence:0,phase:'heartbeat',keys,used:[]}; await j.save(s); }
+      const state = s;
+      check(state.keys.poll === keys.poll && state.keys.upload === keys.upload && /^[0-9a-f]{64}$/.test(state.keys.heartbeat));
+      const block = async (code: string, httpStatus?: number): Promise<Summary> => {state.phase='blocked';state.summary={kind:'blocked',code,...(httpStatus ? {httpStatus} : {})};await j.save(state);return state.summary;};
+      if(state.phase === 'done' || state.phase === 'blocked') { check(state.summary); return state.summary; }
+      if(state.phase === 'running') return block('ambiguous-execution');
+      const requestKey = (operation: keyof typeof keys) => state.keys[operation];
+      const done = async (kind: Summary['kind']): Promise<Summary> => {state.phase='done';state.summary={kind};delete state.work;delete state.upload;await j.save(state);return state.summary;};
+      try {
+        const ensureAuthority=async()=>{
+          const observed=await post(c,ports,'/v1/worker/status',{},signal);
+          check(observed?.ok===true&&observed.environment===c.environment&&observed.authorityId===c.authorityId&&observed.epoch===c.expectedEpoch);
+        };
+        await ensureAuthority();
+        const ensureHeartbeat = async (): Promise<boolean> => {
+          // At most replay one prepared heartbeat and issue one fresh heartbeat in a call.
+          for(let attempt=0;attempt<2;attempt++) {
+            const now=ports.now?.() ?? Date.now();
+            if(!state.heartbeatPending && !state.heartbeatRefreshRequired && state.heartbeatLastSeen !== null && now >= state.heartbeatLastSeen && now-state.heartbeatLastSeen < refreshMs) return true;
+            if(!state.heartbeatPending) {
+              check(state.heartbeatSequence < Number.MAX_SAFE_INTEGER);
+              state.heartbeatSequence++;state.keys.heartbeat=hash(JSON.stringify([binding,'heartbeat-refresh',state.heartbeatSequence]));
+              state.heartbeatPending=true;await j.save(state);
+            }
+            const r=await post(c,ports,'/v1/enrollment/heartbeat',{expectedEpoch:c.expectedEpoch,request:{key:requestKey('heartbeat'),sequence:state.heartbeatSequence,observedIdentity:c.identity}},signal);
+            const st=r?.status, observedNow=ports.now?.() ?? Date.now();
+            check(r.ok === true && st?.workerId === c.identity.workerId && st.principal === c.identity.principal && st.revision === c.revision && st.incarnation === c.incarnation && st.sequence === state.heartbeatSequence && st.freshness === 'fresh' && st.revokedAt === null && st.expiresAt > observedNow && uint(st.lastSeen) && st.lastSeen <= observedNow);
+            check(JSON.stringify(normalizedIdentity(st.identity)) === JSON.stringify(c.identity));
+            state.heartbeatLastSeen=st.lastSeen;state.heartbeatPending=false;state.heartbeatRefreshRequired=false;await j.save(state);
+          }
+          const now=ports.now?.() ?? Date.now();
+          return state.heartbeatLastSeen !== null && now >= state.heartbeatLastSeen && now-state.heartbeatLastSeen < refreshMs;
+        };
+        // Heartbeat liveness is independent of the pending poll/upload replay head.
+        if(!await ensureHeartbeat()) return {kind:'retry',code:'heartbeat-refresh-needed'};
+        if(state.phase === 'heartbeat') {
+          if(c.identity.workerClass === 'edge') return done('heartbeat');
+          state.phase='poll';state.pollSequence++;await j.save(state);
+        }
+        if(state.phase === 'poll') {
+          const r = await post(c,ports,'/v1/worker/poll',{expectedEpoch:c.expectedEpoch,request:{key:requestKey('poll'),sequence:state.pollSequence,ttlMs:c.ttlMs,profileHash:profileDigest(c.profile)}},signal);
+          check(r?.ok === true);
+          if(r.kind === 'idle') return done('idle');
+          check(r.kind === 'work');
+          planFor(c,r,ports.now?.() ?? Date.now());
+          const {id,worker_id,workload_id,epoch,generation,incarnation,capability,expires_ms,state:leaseState}=r.lease;
+          state.work={profileHash:r.profileHash,lease:{id,worker_id,workload_id,epoch,generation,incarnation,capability,expires_ms,state:leaseState},workload:r.workload};state.phase='ready';await j.save(state);
+        }
+        if(state.phase === 'ready') {
+          await ensureAuthority();
+          check(state.work);
+          const plan = planFor(c,state.work,ports.now?.() ?? Date.now());
+          const identity = identityKey(plan.identity);
+          if(state.used.includes(identity)) return block('lease-already-attempted');
+          if(signal?.aborted) return block('cancelled-before-run');
+          check(state.used.length < 1024);
+          state.used.push(identity);state.stop={identity:plan.identity,containerId:null,stopped:false,reason:'unknown'};state.phase='running';await j.save(state);
+          // Runtime must use its own durable StagingPort marker as a second fence.
+          const result = await ports.runtime.runBoundedJob(plan,signal);
+          state.stop=JSON.parse(JSON.stringify(result.stop));
+          check(result.stop && identityKey(result.stop.identity) === identity);
+          if(result.outcome !== 'completed' || result.stop.stopped !== true || result.stop.reason !== 'inspect-stopped' || !/^[0-9a-f]{64}$/.test(result.stop.containerId ?? '') || signal?.aborted) return block('execution-not-uploadable');
+          const output = Uint8Array.from(result.output);
+          check(output.length > 0 && output.length <= c.profile.maxOutputBytes && output.length <= state.work.workload.maxBytes && hash(output) === plan.expectedHash);
+          const l = state.work.lease;
+          state.upload={expectedEpoch:c.expectedEpoch,key:requestKey('upload'),fence:{leaseId:l.id,epoch:l.epoch,generation:l.generation,incarnation:l.incarnation,capability:l.capability},bytesBase64:Buffer.from(output).toString('base64'),exitCode:0};
+          state.phase='upload';await j.save(state);
+        }
+        if(state.phase === 'upload') {
+          await ensureAuthority();
+          if(!await ensureHeartbeat()) return {kind:'retry',code:'heartbeat-refresh-needed'};
+          check(state.upload && state.work && state.stop?.stopped);
+          const r = await post(c,ports,'/v1/artifacts',state.upload,signal);
+          check(r?.ok === true && r.artifact?.sha256 === state.work.workload.expectedHash && r.artifact.bytes === Buffer.from(state.upload.bytesBase64,'base64').length && typeof r.artifact.reference === 'string' && r.artifact.reference.length > 0);
+          return done('uploaded');
+        }
+        return block('invalid-state');
+      } catch(e) {
+        if(e instanceof TransportFailure) {
+          if(e.permanent) return block(e.code,e.status);
+          if(e.code === 'heartbeat-stale') {state.heartbeatRefreshRequired=true;await j.save(state);}
+          return {kind:'retry',code:e.code,...(e.status ? {httpStatus:e.status} : {})};
+        }
+        return block('validation-or-runtime-failure');
+      }
+    });
+  } catch { return {kind:'blocked',code:'host-or-journal-failure'}; }
+}

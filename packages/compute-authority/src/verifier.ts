@@ -1,8 +1,10 @@
-// T6: independent verifier + append-only audit + transactional outbox.
+// Reference byte checker + in-memory append-only audit cursor.
+// Not durable storage or a transactional outbox implementation.
 // A worker's hash proves nothing by itself: the verifier re-checks the
 // result against the workload's expectation, and only a verified result
-// becomes the committed pointer. Audit + outbox drain as one unit.
+// can be accepted by the authority. Audit drain redelivers until acknowledged.
 import type { ExecResult } from "./executor.js";
+import { createHash } from "node:crypto";
 
 export interface VerificationExpectation {
   kind: string;
@@ -16,12 +18,25 @@ export interface Verification {
   reason: string;
 }
 
-export function verifyResult(result: ExecResult, exp: VerificationExpectation): Verification {
+/** Pure checker. trustedBytes must come from a separately authorized immutable
+ * artifact reader, never the worker payload. Authority binds exp at intake.
+ */
+export function verifyResult(
+  result: Pick<ExecResult, "outcome" | "exitCode" | "stdoutSha256" | "stdoutBytes">,
+  exp: VerificationExpectation,
+  trustedBytes?: Uint8Array,
+): Verification {
   // R07: outcomes other than clean exit never verify.
   if (result.outcome !== "exited") return { verified: false, reason: `exec-${result.outcome}` };
   // R07: an expectation with no checks verifies nothing.
   if (exp.exitCode === undefined && exp.stdoutSha256 === undefined && exp.minBytes === undefined) {
     return { verified: false, reason: "no-policy" };
+  }
+  if (!(trustedBytes instanceof Uint8Array)) return { verified: false, reason: "no-artifact-bytes" };
+  if (!exp.stdoutSha256 || !/^[a-f0-9]{64}$/.test(exp.stdoutSha256)) return { verified: false, reason: "no-content-policy" };
+  if (trustedBytes.byteLength > 4 * 1024 * 1024 || trustedBytes.byteLength !== result.stdoutBytes ||
+      createHash("sha256").update(trustedBytes).digest("hex") !== result.stdoutSha256) {
+    return { verified: false, reason: "artifact-mismatch" };
   }
   if (exp.exitCode !== undefined && result.exitCode !== exp.exitCode) {
     return { verified: false, reason: `exit ${result.exitCode} != ${exp.exitCode}` };
@@ -32,7 +47,7 @@ export function verifyResult(result: ExecResult, exp: VerificationExpectation): 
   if (exp.minBytes !== undefined && result.stdoutBytes < exp.minBytes) {
     return { verified: false, reason: "too-few-bytes" };
   }
-  return { verified: true, reason: "independent-check-passed" };
+  return { verified: true, reason: "artifact-check-passed" };
 }
 
 export interface AuditEvent {
@@ -57,7 +72,7 @@ export class AuditLog {
 
   /** Drain unprojected events as frozen copies; records the high-water mark. */
   drainOutbox(): AuditEvent[] {
-    const batch = this.events.slice(this.outboxCursor).map((e) => ({ ...e }));
+    const batch = this.events.slice(this.outboxCursor).map((e) => Object.freeze({ ...e }));
     if (batch.length > 0) this.drainedHighWater = this.events.length - 1;
     return batch;
   }

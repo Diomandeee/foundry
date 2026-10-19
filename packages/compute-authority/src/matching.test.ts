@@ -84,3 +84,25 @@ describe("matching", () => {
     expect(needRam.reasons.join(" ")).toMatch("reservable");
   });
 });
+
+ describe("matching malformed inputs", () => {
+  it.each([{ minRamMib: NaN }, { minRamMib: -1 }, { minRamMib: 0.5 }, { runtimes: "python3" }, { arch: "x86_64" }, { osContains: [null] }, { gpu: { kind: "cuda", minVramMib: -1 } }])("fails closed for malformed requirements %#", (requires) => {
+    expect(matchWorker(rig().vps, { ...cpuJob, requires } as never).ok).toBe(false);
+  });
+  it("fails closed for null requirements and invalid worker capabilities", () => {
+    expect(matchWorker(rig().vps, { ...cpuJob, requires: null } as never).ok).toBe(false);
+    expect(matchWorker({ ...rig().vps, capabilities: { ...rig().vps.capabilities, runtimes: null } } as never, cpuJob).ok).toBe(false);
+  });
+  it.each([0, -1, 0.5, Infinity, NaN])("rejects invalid slot requirements %s", (slotsNeeded) => {
+    expect(matchWorker(rig().vps, { ...cpuJob, slotsNeeded }).ok).toBe(false);
+  });
+});
+
+it("rejects sparse requirement collections", () => {
+  expect(matchWorker(rig().vps, { ...cpuJob, requires: { runtimes: new Array(1) } }).reasons).toContain("invalid workload requirements");
+});
+it("refuses a worker whose static parallel cap cannot fit the request", () => {
+  expect(matchWorker(rig().vps, { ...cpuJob, slotsNeeded: 2 }).ok).toBe(false);
+  const worker = rig().vps;
+  expect(matchWorker({ ...worker, capabilities: { ...worker.capabilities, maxParallelAttempts: 0 } }, cpuJob).ok).toBe(false);
+});

@@ -1,7 +1,7 @@
 // T2: outbound execution agent protocol + legacy Pi collector.
 // Workers call out (Cloudflare cannot dial tailnet). The Pi keeps its
 // existing :9107 GET; a private collector translates it into census.
-import { ComputeAuthority, type AuthorityLease } from "./authority.js";
+import { ComputeAuthority, type AuthorityLease, type SubmittedResult, type VerificationPolicy } from "./authority.js";
 
 export interface CensusReading {
   workerId: string;
@@ -38,13 +38,23 @@ export class OutboundAgent {
     return ok;
   }
 
+  /** Trusted adapter calls this only after independently confirming process stop.
+   * Incarnation is a fence, not proof of stop or enrollment authentication.
+   */
+  reconcileAfterStop(incarnation: number): boolean {
+    if (!this.auth.reconcileWorker(this.workerId, incarnation)) return false;
+    this.incarnation = incarnation;
+    this.lease = null;
+    return true;
+  }
+
   complete(
-    result: { outcome: string; exitCode: number | null; stdoutSha256: string; stdoutBytes: number },
-    policy: { kind: string; exitCode?: number; stdoutSha256?: string; minBytes?: number },
+    result: SubmittedResult,
+    policy?: VerificationPolicy,
   ): { accepted: boolean; reason: string } {
     if (!this.lease) return { accepted: false, reason: "no-lease" };
     const res = this.auth.complete(this.lease.leaseId, this.lease.capability, result, policy);
-    this.lease = null;
+    if (res.accepted || res.reason === "lease-not-live" || res.reason === "lease-expired" || res.reason === "workload-terminal") this.lease = null;
     return res;
   }
 }

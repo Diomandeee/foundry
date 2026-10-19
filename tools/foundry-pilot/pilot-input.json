@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "kind": "synthetic-pilot-input",
+  "scope": {
+    "environment": "pilot",
+    "authorityId": "pilot-input",
+    "sourceId": "pilot-synthetic",
+    "network": "stacks-testnet"
+  },
+  "eventId": "[\"pilot-synthetic\",\"stacks-testnet\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",0]",
+  "event": {
+    "network": "stacks-testnet",
+    "blockHeight": 1,
+    "blockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "parentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "transactionId": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "eventIndex": 0,
+    "payload": {
+      "schema": "hiro-nakamoto-contract-log/v1",
+      "contractId": "ST000000000000000000002AMW42H.pilot",
+      "topic": "print",
+      "value": {
+        "hex": "0x0100000000000000000000000000000001",
+        "repr": "u1"
+      },
+      "block": {
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "hash": "1111111111111111111111111111111111111111111111111111111111111111",
+        "parentId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "parentHash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "height": 1,
+        "burnHash": "3333333333333333333333333333333333333333333333333333333333333333",
+        "burnHeight": 1,
+        "tenureHeight": 1
+      }
+    }
+  },
+  "eligibilityGeneration": 1,
+  "policy": {
+    "environment": "pilot",
+    "authorityId": "pilot-input",
+    "sourceId": "pilot-synthetic",
+    "network": "stacks-testnet",
+    "profile": "hiro-nakamoto-contract-log/v1",
+    "allowedContracts": [
+      "ST000000000000000000002AMW42H.pilot"
+    ],
+    "ramMib": 128,
+    "maxOutputBytes": 4096
+  }
+}

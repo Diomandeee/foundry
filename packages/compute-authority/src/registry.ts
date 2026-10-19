@@ -43,34 +43,44 @@ export interface RegistrationInput {
   trustTier?: unknown;
 }
 
+export const integer = (value: unknown, min: number): value is number =>
+  typeof value === "number" && Number.isSafeInteger(value) && value >= min;
+
 const ID = /^[A-Za-z0-9._-]{1,64}$/;
 
-function checkCaps(c: WorkerCapabilities): string | null {
+export function checkCaps(c: WorkerCapabilities): string | null {
   if (!c || typeof c !== "object") return "capabilities-missing";
   if (c.arch !== "x86_64" && c.arch !== "arm64") return "bad-arch";
   if (typeof c.os !== "string" || c.os.length === 0) return "bad-os";
-  if (!(c.logicalCores >= 1) || !(c.reservableCores >= 0) || c.reservableCores > c.logicalCores) {
+  if (!integer(c.logicalCores, 1) || !integer(c.reservableCores, 0) || c.reservableCores > c.logicalCores) {
     return "bad-cpu";
   }
-  if (!(c.totalMib >= 1) || !(c.reservableMib >= 0) || c.reservableMib > c.totalMib) {
+  if (!integer(c.totalMib, 1) || !integer(c.reservableMib, 0) || c.reservableMib > c.totalMib) {
     return "bad-ram";
   }
   if (!Array.isArray(c.gpus)) return "bad-gpus";
   for (const g of c.gpus) {
-    if ((g.kind !== "metal" && g.kind !== "cuda") || !(g.vramMib >= 1)) return "bad-gpu";
+    if (!g || typeof g !== "object" || (g.kind !== "metal" && g.kind !== "cuda") || !integer(g.vramMib, 1) || (g.computeCapability !== undefined && typeof g.computeCapability !== "string")) return "bad-gpu";
   }
-  if (!Array.isArray(c.runtimes)) return "bad-runtimes";
-  if (!(c.maxParallelAttempts >= 0)) return "bad-parallel";
+  if (!Array.isArray(c.runtimes) || ![...c.runtimes].every((r) => typeof r === "string" && r.length > 0)) return "bad-runtimes";
+  if (!integer(c.maxParallelAttempts, 0)) return "bad-parallel";
   return null;
 }
 
 /** Deep-frozen copy: nested caps, gpus, and labels included. */
 function frozen(w: WorkerRecord): WorkerRecord {
+  const c = w.capabilities;
   return Object.freeze({
     ...w,
     capabilities: Object.freeze({
-      ...w.capabilities,
-      gpus: w.capabilities.gpus.map((g) => Object.freeze({ ...g })),
+      arch: c.arch, os: c.os, logicalCores: c.logicalCores,
+      reservableCores: c.reservableCores, totalMib: c.totalMib,
+      reservableMib: c.reservableMib, maxParallelAttempts: c.maxParallelAttempts,
+      gpus: Object.freeze(c.gpus.map((g) => Object.freeze({
+        kind: g.kind, vramMib: g.vramMib,
+        ...(g.computeCapability === undefined ? {} : { computeCapability: g.computeCapability }),
+      }))) as unknown as GpuDevice[],
+      runtimes: Object.freeze([...c.runtimes]) as unknown as string[],
     }),
     labels: Object.freeze({ ...w.labels }),
   });
@@ -80,7 +90,7 @@ export class WorkerRegistry {
   private workers = new Map<string, WorkerRecord>();
 
   register(input: RegistrationInput, now: number = Date.now()): WorkerRecord {
-    if (!input || !ID.test(input.workerId ?? "")) throw new Error("invalid workerId");
+    if (!input || (typeof input.workerId !== "string" || !ID.test(input.workerId))) throw new Error("invalid workerId");
     if (typeof input.displayName !== "string" || input.displayName.length === 0) {
       throw new Error("invalid displayName");
     }
@@ -90,7 +100,16 @@ export class WorkerRegistry {
     if (input.trustTier !== undefined) throw new Error("trustTier is server-assigned");
     const bad = checkCaps(input.capabilities);
     if (bad) throw new Error(`invalid capabilities: ${bad}`);
+    if (input.labels !== undefined && (!input.labels || typeof input.labels !== "object" ||
+      Array.isArray(input.labels) || ![Object.prototype, null].includes(Object.getPrototypeOf(input.labels)) ||
+      !Object.values(input.labels).every((v) => typeof v === "string"))) {
+      throw new Error("invalid labels");
+    }
+    if (!integer(now, 0)) throw new Error("invalid timestamp");
     const prior = this.workers.get(input.workerId);
+    if (prior && prior.workerClass !== input.workerClass) {
+      throw new Error("workerClass cannot change for an existing workerId");
+    }
     const record: WorkerRecord = {
       workerId: input.workerId,
       displayName: input.displayName,
@@ -102,7 +121,7 @@ export class WorkerRegistry {
       firstSeen: prior?.firstSeen ?? now,
       lastReassert: now,
     };
-    this.workers.set(input.workerId, record);
+    this.workers.set(input.workerId, frozen(record));
     return frozen(record);
   }
 
@@ -112,8 +131,9 @@ export class WorkerRegistry {
     if (!prior) throw new Error("unknown worker");
     const bad = checkCaps(capabilities);
     if (bad) throw new Error(`invalid capabilities: ${bad}`);
+    if (!integer(now, 0)) throw new Error("invalid timestamp");
     const next: WorkerRecord = { ...prior, capabilities, lastReassert: now };
-    this.workers.set(workerId, next);
+    this.workers.set(workerId, frozen(next));
     return frozen(next);
   }
 

@@ -13,6 +13,9 @@ export interface DashboardSnapshot {
     trustTier: string;
     arch: string;
     reservableMib: number;
+    incarnation: number | null;
+    quarantined: boolean | null;
+    reconciliation: "required" | "clear" | "unknown";
   }>;
   liveLeases: Array<{
     leaseId: string;
@@ -39,6 +42,7 @@ export function buildSnapshot(
       trustTier: w.trustTier,
       arch: w.capabilities.arch,
       reservableMib: w.capabilities.reservableMib,
+      incarnation: null, quarantined: null, reconciliation: "unknown",
     })),
     recentEvents: audit.all().slice(-eventLimit),
   };
@@ -47,10 +51,20 @@ export function buildSnapshot(
 export function snapshotFor(
   auth: ComputeAuthority,
   registry: WorkerRegistry,
-  audit: AuditLog,
+  audit: AuditLog = auth.audit,
 ): DashboardSnapshot {
+  if (audit !== auth.audit) throw new Error("snapshot requires authority audit");
+  const leases = auth.listLiveLeases(); // expiry mutates state and audit together
   const snap = buildSnapshot(registry, audit);
-  snap.liveLeases = auth.listLiveLeases().map((l) => ({
+  for (const worker of auth.listWorkers()) {
+    const state = {incarnation:worker.incarnation, quarantined:worker.quarantined,
+      reconciliation:worker.quarantined ? "required" as const : "clear" as const};
+    const row = snap.workers.find(w=>w.workerId===worker.id);
+    if(row)Object.assign(row,state,{workerClass:worker.workerClass});
+    else snap.workers.push({workerId:worker.id,workerClass:worker.workerClass,trustTier:"unknown",
+      arch:"unknown",reservableMib:worker.resources.ramMib,...state});
+  }
+  snap.liveLeases = leases.map((l) => ({
     leaseId: l.leaseId,
     workerId: l.workerId,
     workloadId: l.workloadId,

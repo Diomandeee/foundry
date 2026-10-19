@@ -1,0 +1,15 @@
+# Stacks events API v1
+
+Pure, synchronous, fail-closed decoding of a bounded Hiro Nakamoto observation. No I/O, finality, cryptography, chain reads, state mutation, or dispatch.
+
+`decodeNakamotoBlock(raw: unknown): DecodedNakamotoBlock` returns `{id, hash, parentId, parentHash, height, burnHash, burnHeight, tenureHeight, providerCanonical}`. Indexed identities are mandatory and never inferred from plain hashes.
+
+`decodeContractLog({block, transaction, eventIndex}, {network, allowedContracts}): InboxEvent` uses `stacks-mainnet` or `stacks-testnet`. Inbox blockHash/parentHash are indexed IDs; transactionId is normalized. Payload schema `hiro-nakamoto-contract-log/v1` contains only selected facts, with bounded Clarity hex/repr data; mutable provider flags are validated but excluded from immutable event content. It grants no execution authority. Errors throw `StacksDecodeError`.
+
+External hashes require lowercase `0x` followed by exactly 64 uniformly lowercase OR uppercase hex digits (mixed case rejected); normalized output is lowercase without prefix. Clarity hex requires lowercase `0x`, even digits, at most 4096 decoded bytes; digits accept either case and normalize lowercase. Repr is at most 4096 UTF-8 bytes. Payload is at most 16384 UTF-8 bytes.
+
+Input must be JSON data: ordinary/null-prototype objects and dense ordinary arrays; no accessors, symbols, exotic prototypes, nonfinite numbers, undefined, cycles, or pollution keys. Validation does not read accessors. Entire canonical raw observation is bounded to 65536 UTF-8 bytes, depth 32 and 8192 nodes; extra response fields are accepted only under these bounds. JavaScript Proxies are outside the trust boundary: use parsed JSON, not active objects.
+
+The required decoder profile is explicit: block indexed/plain ancestry, height, burn hash/height, tenure height and boolean canonical; transaction ID, plain block/parent hash and height, success status, is_unanchored=false, microblock_hash='', canonical and microblock_canonical booleans, event_count and events. Other full-response fields are opaque bounded data, not a claim of full Hiro schema validation. Events must have recognized type, matching tx_id and unique contiguous indexes 0..event_count-1 (maximum 128); no partial pagination. Selected event must be smart_contract_log, topic print, and exactly allowlisted contract. Contract grammar is uppercase C32-format standard principal plus 1–40 character contract name; network address prefix must match policy. This checks format only, not checksum or deployment. Policy allowlist maximum 128.
+
+Pinned reference: hirosystems/stacks-blockchain-api commit ee0c0ac5bee51b206c67e83e581fab457c34a622, `src/api/schemas/v1/entities/{block,transactions,transaction-events}.ts`; local evidence manifest records source hashes. Fixtures are synthetic schema-profile examples, not live chain evidence. Parent owns finality, reorg reconciliation, persistence and dispatch. Provider canonical flags never establish finality. The standalone normalized block exposes its advisory flag, but immutable inbox payloads exclude all such flags so expected reorg updates do not become content conflicts.

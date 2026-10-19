@@ -1,50 +1,50 @@
 // T2 acceptance: outbound claim/renew/complete cycle + Pi census translation,
 // including the real :9107 payload shape observed on minenode 2026-10-15.
 import { describe, expect, it } from "vitest";
-import { ComputeAuthority } from "./authority.js";
+import {testAuthority, RESULT, POLICY} from "./test-artifacts.js";
 import { OutboundAgent, collectPiCensus } from "./agent.js";
 
 describe("outbound agent lifecycle", () => {
   it("claims, renews, completes against the authority", () => {
-    const auth = new ComputeAuthority();
-    auth.registerWorker("vps", 1);
-    auth.submitWorkload("job", 1);
+    const auth = testAuthority();
+    auth.registerWorker("vps", 1, 'general');
+    auth.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
     const agent = new OutboundAgent(auth, "vps", 0);
     expect(agent.claim("job", "c1")).not.toBeNull();
     expect(agent.renew()).toBe(true);
-    expect(agent.complete({ outcome: "exited", exitCode: 0, stdoutSha256: "a", stdoutBytes: 10 }, { kind: "cpu-job", exitCode: 0 })).toEqual({ accepted: true, reason: "committed" });
+    expect(agent.complete(RESULT)).toEqual({ accepted: true, reason: "committed" });
     expect(agent.renew()).toBe(false);
   });
 
   it("second claim while holding a lease is refused (one active attempt)", () => {
-    const auth = new ComputeAuthority();
-    auth.registerWorker("vps", 2);
-    auth.submitWorkload("job", 1);
-    auth.submitWorkload("job2", 1);
+    const auth = testAuthority();
+    auth.registerWorker("vps", 2, 'general');
+    auth.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
+    auth.submitWorkload("job2", 1, "retry-new-attempt", 3, POLICY);
     const agent = new OutboundAgent(auth, "vps", 0);
     expect(agent.claim("job", "c1")).not.toBeNull();
     expect(agent.claim("job2", "c2")).toBeNull();
   });
 
   it("renew fails after fence; agent drops the lease", () => {
-    const auth = new ComputeAuthority();
-    auth.registerWorker("vps", 1);
-    auth.submitWorkload("job", 1);
+    const auth = testAuthority();
+    auth.registerWorker("vps", 1, 'general');
+    auth.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
     const agent = new OutboundAgent(auth, "vps", 0);
     agent.claim("job", "c1");
     auth.fenceWorker("vps");
     expect(agent.renew()).toBe(false);
-    expect(agent.complete({ outcome: "exited", exitCode: 0, stdoutSha256: "a", stdoutBytes: 10 }, { kind: "cpu-job", exitCode: 0 })).toEqual({ accepted: false, reason: "no-lease" });
+    expect(agent.complete(RESULT)).toEqual({ accepted: false, reason: "no-lease" });
   });
 
   it("completion without a verified receipt is rejected", () => {
-    const auth = new ComputeAuthority();
-    auth.registerWorker("vps", 1);
-    auth.submitWorkload("job", 1);
+    const auth = testAuthority();
+    auth.registerWorker("vps", 1, 'general');
+    auth.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
     const agent = new OutboundAgent(auth, "vps", 0);
     agent.claim("job", "c1");
-    expect(agent.complete({ outcome: "exited", exitCode: 0, stdoutSha256: "a", stdoutBytes: 10 }, { kind: "cpu-job" })).toEqual({
-      accepted: false, reason: "unverified:no-policy",
+    expect(agent.complete(RESULT, { kind: "cpu-job" })).toEqual({
+      accepted: false, reason: "policy-override",
     });
   });
 });

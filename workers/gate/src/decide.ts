@@ -40,6 +40,8 @@ export type Decision =
       deletedFiles: string[];
       /** Base head this decision was made against (null = empty base). */
       baseHead: string | null;
+      /** Exact base branch the admitted decision is destined for. */
+      baseBranch: string;
       planAdvisory?: PlanVerdict;
     }
   | { verdict: "reject"; reason: RejectReason }
@@ -170,21 +172,12 @@ export async function decidePush(
     fork = await port.get(push.repo);
     base = await port.get(ticket.baseRepo);
     // The base's own default branch, not an assumed "main".
-    let branch = "main";
-    try {
-      branch = (await base.info()).defaultBranch ?? "main";
-    } catch {
-      // Empty/unreadable base metadata: fall through with "main".
-    }
-    // Read the fork on the branch the push actually moved, not on the base's
-    // default-branch name: the two are not always the same, and assuming they
-    // are made a missing ref look like a broken gate. The port reports a ref
-    // that does not exist as an empty history, so an unknown branch fails
-    // closed below (proposal_not_found) instead of throwing.
-    const pushedBranch = /^refs\/heads\//.test(push.ref)
-      ? push.ref.slice("refs/heads/".length)
-      : branch;
-    const forkBack = await historyBackTo(fork, pushedBranch, ticket.baseSha);
+    const branch=(await base.info()).defaultBranch;
+    if(!branch)throw new Error('base branch metadata unavailable');
+    // Anchor every fork-side read to the event SHA. Reading the mutable pushed
+    // branch allowed a later commit to supply the paths/content admitted under
+    // an earlier `push.after` value.
+    const forkBack = await historyBackTo(fork, push.after, ticket.baseSha);
     const forkHist = forkBack.hist;
     let baseHist: CommitInfo[];
     try {
@@ -200,10 +193,19 @@ export async function decidePush(
         };
       }
     } catch (e) {
-      // Empty base (first-ever task): no branch to read yet.
-      const msg = e instanceof Error ? e.message : String(e);
-      if (/could not find|not found|no such|empty/i.test(msg)) baseHist = [];
-      else throw e;
+      throw e; // Absence is represented by the port, never inferred from text.
+    }
+    // An unknown proposal SHA is reported as such, before any fork-point claim:
+    // reading history from an absent commit yields an empty list, which must not
+    // be misreported as a missing fork point.
+    if (!forkHist.some((c) => c.sha === push.after)) {
+      return {
+        verdict: "reject",
+        reason: {
+          reason: "proposal_not_found",
+          hash_hex: push.after,
+        },
+      };
     }
     if (ticket.baseSha !== "" && !forkBack.found) {
       return {
@@ -214,14 +216,26 @@ export async function decidePush(
         },
       };
     }
-    if (!forkHist.some((c) => c.sha === push.after)) {
-      return {
-        verdict: "reject",
-        reason: {
-          reason: "proposal_not_found",
-          hash_hex: push.after,
-        },
-      };
+    // The named fork ref must actually resolve to the proposed SHA. Without this
+    // a push event could name a branch the fork does not have and still be
+    // admitted on the strength of the SHA alone.
+    if (/^refs\/heads\//.test(push.ref)) {
+      const pushedBranch = push.ref.slice("refs/heads/".length);
+      let refHead: string | null = null;
+      try {
+        refHead = (await fork.history(pushedBranch, 1))[0]?.sha ?? null;
+      } catch {
+        refHead = null;
+      }
+      if (refHead !== push.after) {
+        return {
+          verdict: "reject",
+          reason: {
+            reason: "invalid_args",
+            message: `branch ${push.ref} is not in fork history at ${push.after.slice(0, 8)}`,
+          },
+        };
+      }
     }
 
     // 1. Admissibility gate (scope/layer/budget/freshness/proposal).
@@ -289,13 +303,13 @@ export async function decidePush(
         reason: { reason: "path_not_allowed", path: badPath },
       };
     }
+    if(forkPaths.size>2000||[...forkPaths].some(p=>p.length>1024))return {verdict:'conflict',ticket,files:['admission-path-budget'],planAdvisory};
     const overlapping = [...forkPaths].filter((p) => basePaths.has(p));
     const realConflicts: string[] = [];
     for (const p of overlapping) {
-      const [a, b] = await Promise.all([
-        fork.readFile(pushedBranch, p),
-        base.readFile(branch, p),
-      ]);
+      if (baseHead === null) continue;
+      const a = await fork.readFile(push.after, p);
+      const b = await base.readFile(baseHead, p);
       if (a !== b) realConflicts.push(p);
     }
     if (realConflicts.length > 0) {
@@ -330,11 +344,16 @@ export async function decidePush(
 
     // 3. Clean: collect fork-side file contents for the merger.
     // Paths absent on the fork side are deletions the merger must apply.
-    const files: Record<string, string> = {};
+    const files: Record<string, string> = Object.create(null);
+    let admittedBytes=0;
     const deletedFiles: string[] = [];
     for (const p of forkPaths) {
-      const content = await fork.readFile(pushedBranch, p);
-      if (content !== null) files[p] = content;
+      const content = await fork.readFile(push.after, p);
+      if (content !== null) {
+        admittedBytes+=new TextEncoder().encode(content).byteLength;
+        if(admittedBytes>8*1048576)throw new Error('admission text-byte budget');
+        files[p]=content;
+      }
       else deletedFiles.push(p);
     }
     return {
@@ -343,6 +362,7 @@ export async function decidePush(
       files,
       deletedFiles,
       baseHead,
+      baseBranch: branch,
       planAdvisory,
     };
   } finally {

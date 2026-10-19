@@ -1,0 +1,1 @@
+{"name":"@foundry/worker-client","version":"0.1.0","private":true,"type":"module","exports":{".":"./src/index.ts","./node":"./src/node.ts"},"scripts":{"test":"vitest run --root . --cache=false","typecheck":"tsc -p tsconfig.json"}}

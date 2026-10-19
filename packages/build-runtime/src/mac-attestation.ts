@@ -1,0 +1,203 @@
+import { createHash, createPublicKey, verify, type KeyObject } from 'node:crypto';
+import { constants } from 'node:fs';
+import { open } from 'node:fs/promises';
+import { join } from 'node:path';
+import { canonical } from './host.js';
+import { absolute, approvalFor, check } from './plans.js';
+import type { Running, RuntimePlan } from './types.js';
+
+const protocol = 'foundry-mac-es-journal-v1';
+const domain = Buffer.from(`${protocol}\0`);
+const zero = '0'.repeat(64);
+const maxJournalBytes = 8 * 1048576, maxRecords = 32768;
+const digest = (bytes:Uint8Array) => createHash('sha256').update(bytes).digest('hex');
+const hex = (v:unknown):v is string => typeof v === 'string' && /^[0-9a-f]{64}$/.test(v);
+const uint = (v:unknown):v is number => Number.isSafeInteger(v) && Number(v) >= 0 && Number(v) <= 0xffffffff;
+function tuple(v:unknown, length:number):asserts v is unknown[] {
+  check(Array.isArray(v) && v.length === length,'mac-evidence-shape');
+}
+function counter(v:unknown):bigint {
+  check(typeof v === 'string' && /^(0|[1-9][0-9]{0,19})$/.test(v),'mac-evidence-counter');
+  const n = BigInt(v); check(n <= 18446744073709551615n,'mac-evidence-counter-overflow'); return n;
+}
+function counters(v:unknown):bigint[] { tuple(v,3); return v.map(counter); }
+function b64(v:unknown, maxBytes:number):Buffer {
+  check(typeof v === 'string' && v.length <= Math.ceil(maxBytes/3)*4,'mac-evidence-encoding');
+  const bytes = Buffer.from(v,'base64');
+  check(bytes.length <= maxBytes && bytes.toString('base64') === v,'mac-evidence-encoding'); return bytes;
+}
+
+/** Audit token words retain pidversion and credentials; start time also binds PID reuse.
+ * EXEC is an explicit old -> new identity transition, never an EXIT of the old image. */
+type ProcessIdentity = [number[],string,number];
+function processIdentity(v:unknown):ProcessIdentity {
+  tuple(v,3); tuple(v[0],8);
+  check(v[0].every(uint) && Number(v[0][5]) > 0 && uint(v[2]) && Number(v[2]) < 1000000,'mac-evidence-process');
+  counter(v[1]); return v as ProcessIdentity;
+}
+const processKey = (p:ProcessIdentity) => JSON.stringify(p);
+const sameLifetime = (a:ProcessIdentity,b:ProcessIdentity) => a[0][5] === b[0][5] && a[1] === b[1] && a[2] === b[2];
+
+/** Public pins only. This package neither provisions a supervisor nor loads signing keys.
+ * The client must authenticate its privileged IPC peer and the peer must authenticate
+ * the worker's audit token. The root supervisor owns launch, ES continuity and journaling.
+ * No compatible privileged companion is supplied/activated by this package. */
+export interface MacSupervisorConfig {
+  clientExecutable:string;
+  clientSha256:string;
+  supervisorSha256:string;
+  evidenceRoot:string;
+  publicKeyPem:string;
+}
+export interface MacLaunchBinding {
+  ticket:string; attemptHash:string; profileHash:string; intentHash:string; uid:number; gid:number;
+}
+export interface MacLaunchCheckpoint {
+  binding:Readonly<MacLaunchBinding>;
+  /** Digest of the authenticated ARMED record, persisted before RUN. Not a stop proof. */
+  armedDigest:string;
+}
+export interface MacEvidenceAssessment {
+  identity:string;
+  processLineage:'open'|'sealed';
+  liveProcesses:number;
+  bootId:string; sessionId:string; headDigest:string; records:number;
+  /** Even an authentic process-only seal cannot attest launchd/XPC/shared work closure. */
+  blocker:'native-service-containment-unimplemented';
+}
+interface Evidence extends MacEvidenceAssessment { armedDigest:string }
+
+/** Read a bounded, stable, root-owned object. No following symlinks, hard links,
+ * account scans, shell, process probes, key discovery or fallback to worker-owned data. */
+async function rootFile(path:string, maxBytes:number, privateEvidence = false):Promise<Buffer> {
+  await canonical(path,0,'file');
+  const file = await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);
+  try {
+    const before = await file.stat();
+    check(before.isFile() && before.uid === 0 && before.nlink === 1 && (before.mode & 0o6022) === 0 && (!privateEvidence || (before.mode & 0o007) === 0) && before.size > 0 && before.size <= maxBytes,'mac-evidence-file');
+    const bytes = Buffer.alloc(before.size);
+    let offset = 0;
+    while (offset < bytes.length) {
+      const read = await file.read(bytes,offset,bytes.length-offset,offset);
+      check(read.bytesRead > 0,'mac-evidence-short-read'); offset += read.bytesRead;
+    }
+    const after = await file.stat();
+    check(before.dev === after.dev && before.ino === after.ino && before.size === after.size && before.mtimeMs === after.mtimeMs && before.ctimeMs === after.ctimeMs,'mac-evidence-changing');
+    return bytes;
+  } finally { await file.close(); }
+}
+
+/** Concrete protocol client and verifier, not an owner-supplied success callback.
+ * Construction is inert. Launch is denied; durable recovery checkpoints remain readable.
+ * V1 supports PROCESS-LINEAGE EVIDENCE ONLY and NEVER emits stopped:true. Installing
+ * a client or signing a seal cannot promote this protocol into full containment. */
+export class NativeDescendantAttestor {
+  private readonly config:Readonly<MacSupervisorConfig>;
+  private readonly key:KeyObject;
+  constructor(config:MacSupervisorConfig) {
+    check(config && typeof config.publicKeyPem === 'string' && config.publicKeyPem.length <= 4096,'mac-public-key-required');
+    check(/^-----BEGIN PUBLIC KEY-----\r?\n[A-Za-z0-9+/=\r\n]+\r?\n-----END PUBLIC KEY-----\s*$/.test(config.publicKeyPem),'mac-public-key-pem-only');
+    absolute(config.clientExecutable); absolute(config.evidenceRoot);
+    check(hex(config.clientSha256) && hex(config.supervisorSha256),'mac-supervisor-pins-required');
+    this.config = Object.freeze({...config});
+    this.key = createPublicKey(config.publicKeyPem);
+    check(this.key.asymmetricKeyType === 'ed25519','mac-ed25519-public-key-required');
+  }
+  private async read(binding:Readonly<MacLaunchBinding>, expectedArmed?:string, prefix?:Evidence):Promise<Evidence> {
+    check(hex(binding.ticket) && hex(binding.attemptHash) && hex(binding.profileHash) && hex(binding.intentHash) && uint(binding.uid) && binding.uid > 0 && uint(binding.gid) && binding.gid > 0,'mac-launch-binding');
+    await canonical(this.config.evidenceRoot,0);
+    const raw = await rootFile(join(this.config.evidenceRoot,`${binding.ticket}.jsonl`),maxJournalBytes,true);
+    const content = new TextDecoder('utf-8',{fatal:true,ignoreBOM:false}).decode(raw);
+    check(content.endsWith('\n'),'mac-evidence-truncated');
+    const lines = content.slice(0,-1).split('\n');
+    check(lines.length > 0 && lines.length <= maxRecords,'mac-evidence-record-limit');
+    let previous = zero, armedDigest = '', bootId = '', sessionId = '';
+    let global = 0n, perType:bigint[] = [], mach = 0n, launched = false, sealed = false;
+    const live = new Map<string,ProcessIdentity>(), seen = new Set<string>();
+    const add = (p:ProcessIdentity) => {
+      const key = processKey(p);
+      check(!seen.has(key) && ![...live.values()].some(x => x[0][5] === p[0][5]),'mac-evidence-identity-reuse');
+      check(seen.size < 4096,'mac-evidence-lineage-limit'); seen.add(key); live.set(key,p);
+    };
+    for (let index=0;index<lines.length;index++) {
+      check(!sealed && lines[index]!.length <= 16384,'mac-evidence-after-seal-or-record-limit');
+      const envelope:unknown = JSON.parse(lines[index]!);
+      check(envelope !== null && typeof envelope === 'object' && !Array.isArray(envelope) && Object.keys(envelope).sort().join(',') === 'payload,signature','mac-evidence-envelope');
+      const e = envelope as {payload:unknown;signature:unknown};
+      const payload = b64(e.payload,8192), signature = b64(e.signature,64);
+      check(signature.length === 64 && verify(null,Buffer.concat([domain,payload]),this.key,signature),'mac-evidence-signature');
+      const row:unknown = JSON.parse(new TextDecoder('utf-8',{fatal:true,ignoreBOM:false}).decode(payload));
+      tuple(row,9);
+      check(row[0] === protocol && row[1] === index && row[2] === previous && row[3] === binding.ticket && row[6] === this.config.supervisorSha256 && row[7] === 'process-events-only','mac-evidence-chain-or-provenance');
+      check(typeof row[4] === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(row[4]) && hex(row[5]),'mac-evidence-session');
+      if (index === 0) { bootId = row[4]; sessionId = row[5]; }
+      check(row[4] === bootId && row[5] === sessionId,'mac-evidence-restart');
+      const body = row[8]; check(Array.isArray(body),'mac-evidence-body');
+      if (index === 0) {
+        tuple(body,11);
+        check(body[0] === 'armed' && body[1] === binding.attemptHash && body[2] === binding.profileHash && body[3] === binding.intentHash && body[4] === binding.uid && body[5] === binding.gid && body[10] === 'unmuted-fork-exec-exit','mac-evidence-not-armed');
+        const worker = processIdentity(body[6]); // authenticated worker, NOT the workload leader
+        check(worker[0][1] === binding.uid && worker[0][2] === binding.gid,'mac-evidence-worker-account');
+        global = counter(body[7]); perType = counters(body[8]); mach = counter(body[9]);
+        armedDigest = digest(payload);
+        check(!expectedArmed || armedDigest === expectedArmed,'mac-evidence-armed-anchor');
+      } else if (body[0] === 'launch') {
+        tuple(body,2); check(!launched,'mac-evidence-launch-replay');
+        // Supervisor obtains this kernel identity while its child is suspended, durably
+        // binds the one-shot ticket, then resumes it. A caller-supplied PID is forbidden.
+        const root = processIdentity(body[1]);
+        check(root[0][1] === binding.uid && root[0][3] === binding.uid && root[0][2] === binding.gid && root[0][4] === binding.gid,'mac-evidence-launch-account');
+        add(root); launched = true;
+      } else if (body[0] === 'event') {
+        tuple(body,6);
+        check(uint(body[1]) && body[1] >= 5,'mac-evidence-message-version');
+        const next = counter(body[2]), sequence = counter(body[3]), time = counter(body[4]);
+        const event = body[5]; check(Array.isArray(event),'mac-evidence-event');
+        const type = ['fork','exec','exit'].indexOf(String(event[0]));
+        check(type >= 0 && global < 18446744073709551615n && next === global+1n && sequence === perType[type]!+1n && time >= mach,'mac-evidence-gap-or-order');
+        global = next; perType[type] = sequence; mach = time;
+        tuple(event,type === 2 ? 2 : 3);
+        const source = processIdentity(event[1]), sourceKey = processKey(source);
+        check(!seen.has(sourceKey) || live.has(sourceKey),'mac-evidence-event-after-exit');
+        const target = type === 2 ? undefined : processIdentity(event[2]);
+        if (live.has(sourceKey)) {
+          if (type === 0) { check(target && target[0][5] !== source[0][5],'mac-evidence-fork'); add(target); }
+          else if (type === 1) {
+            check(target && sameLifetime(source,target),'mac-evidence-exec-lifetime');
+            if (processKey(target) !== sourceKey) { live.delete(sourceKey); add(target); }
+          } else live.delete(sourceKey);
+        } else {
+          // Every subscribed event, including other UIDs, advances continuity. An
+          // unexplained transition involving an enrolled PID is never ignored.
+          check(![...live.values()].some(p => p[0][5] === source[0][5] || (target && p[0][5] === target[0][5])),'mac-evidence-unexplained-lineage');
+        }
+      } else if (body[0] === 'seal') {
+        tuple(body,7);
+        check(launched && live.size === 0 && counter(body[1]) === global && counters(body[2]).every((n,i) => n === perType[i]) && counter(body[3]) === mach && body[4] === 'ticket-consumed-no-relaunch' && body[5] === 'fsync-file-and-directory' && body[6] === 'process-events-only','mac-evidence-invalid-seal');
+        sealed = true;
+      } else {
+        // Explicit gap/fault, mute/filter/subscription changes, reconnect, unknown
+        // versions and future "all stopped" assertions all poison this evidence.
+        check(false,'mac-evidence-fault-or-unsupported-record');
+      }
+      previous = digest(payload);
+      if (prefix && index+1 === prefix.records) check(previous === prefix.headDigest,'mac-evidence-rewritten-prefix');
+    }
+    return {identity:`native:${binding.attemptHash}:${binding.ticket}`,armedDigest,bootId,sessionId,headDigest:previous,records:lines.length,processLineage:sealed?'sealed':'open',liveProcesses:live.size,blocker:'native-service-containment-unimplemented'};
+  }
+  /** Static evidence review after a worker restart. Requires the ORIGINAL durable
+   * checkpoint, never adopts a new session, resumes work, signals PIDs or releases slots. */
+  async reviewRecovery(checkpoint:MacLaunchCheckpoint):Promise<MacEvidenceAssessment> {
+    check(hex(checkpoint.armedDigest),'mac-recovery-anchor-required');
+    return this.read(checkpoint.binding,checkpoint.armedDigest);
+  }
+  /** Kept as an explicit denial for existing callers. A signed process journal
+   * cannot make native launch safe; do not invoke even a provisioned RUN helper. */
+  async start(plan:RuntimePlan, _recordIdentity:(identity:string)=>Promise<void>, _beforeStart:()=>void):Promise<Running> {
+    approvalFor(plan);
+    throw new Error('native-full-containment-unavailable');
+  }
+  async inspectEvidence(_plan:RuntimePlan):Promise<MacEvidenceAssessment> {
+    throw new Error('native-execution-disabled-use-durable-recovery-checkpoint');
+  }
+}

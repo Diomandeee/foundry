@@ -5,8 +5,9 @@ import { execFile } from "node:child_process";
 import { KGClient, intakeTriples } from "@foundry/lkg-client";
 import { promisify } from "node:util";
 import { existsSync } from "node:fs";
-import { mkdir, writeFile, chmod, rm, readFile } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile, chmod, readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { GitAdapter } from "@foundry/artifacts-port/node";
 import { newScopeToken } from "@foundry/gate-ts";
 
@@ -20,7 +21,11 @@ function arg(name: string, def?: string): string | undefined {
 }
 
 async function main() {
-  const root = arg("root")!;
+  const requestedRoot = arg("root");
+  if (process.argv.filter(x => x === '--root').length > 1) throw new Error('duplicate --root');
+  // A demo must never erase a pre-existing directory, including a prior receipt.
+  const root = requestedRoot ?? await mkdtemp(join(tmpdir(), 'foundry-graphvc-'));
+  if (requestedRoot) await mkdir(root, {mode:0o700});
   const work = arg("work", join(root, "work"))!;
   // K11 intake is optional: unset (judge default) skips graph writes.
   const lkg = arg("lkg", process.env.LKG_URL ?? "")!;
@@ -40,8 +45,6 @@ async function main() {
     }
   }
 
-  await rm(root, { recursive: true, force: true });
-  await mkdir(root, { recursive: true });
   await mkdir(work, { recursive: true });
 
   const port = new GitAdapter(root);

@@ -14,79 +14,37 @@ import type {
 type Binding = any; // narrowed by worker-configuration.d.ts at deploy time
 type RepoBinding = any;
 
-/**
- * A ref that does not exist yet is data, not an outage. A fork cut from an
- * empty base has no branch to log; the local adapter returns [] for that, and
- * the Workers path must agree or the same push reads as an empty repo locally
- * and as a failure in production (7 staging rows read "Could not find main.").
- * Anything else — a network failure, a bad credential, a malformed binding —
- * is re-thrown so it surfaces as an infrastructure error, never as an empty
- * repository, which the gate would treat as "nothing to merge".
- */
-function isMissingRef(e: unknown): boolean {
-  const msg = e instanceof Error ? e.message : String(e);
-  return /could not find|not found|no such|does not exist|unborn/i.test(msg);
-}
-
-/** All file paths in a tree, recursive. Bounded for worker CPU safety. */
-async function treeFiles(
-  binding: RepoBinding, treeHash: string, prefix = "",
-  cap = 2000,
-): Promise<Set<string>> {
-  const out = new Set<string>();
-  const entries = (await binding.readTree(treeHash)) ?? [];
-  for (const e of entries) {
-    if (out.size >= cap) break;
-    const p = prefix ? `${prefix}/${e.name}` : e.name;
-    if (e.type === "tree") {
-      for (const sub of await treeFiles(binding, e.hash, p, cap - out.size)) {
-        out.add(sub);
-      }
-    } else {
-      out.add(p);
+/** Complete bounded path -> object/type/mode inventory. A bound or missing
+ * object is uncertainty, never a truncated complete diff. */
+async function treeEntries(binding:RepoBinding, treeHash:string):Promise<Map<string,string>> {
+  const out=new Map<string,string>();let visited=0;
+  async function walk(hash:string,prefix:string,depth:number):Promise<void>{
+    if(depth>64||++visited>4000)throw new Error('artifacts: tree budget');
+    const entries=await binding.readTree(hash);
+    if(!Array.isArray(entries))throw new Error('artifacts: missing tree');
+    const names=new Set<string>();
+    for(const e of entries){
+      if(++visited>4000||typeof e.name!=='string'||!e.name||/[\/\x00-\x1f\x7f]/.test(e.name)||
+        ['.','..'].includes(e.name)||names.has(e.name)||!/^[a-f0-9]{40}$/.test(e.hash)||e.mode===undefined)
+        throw new Error('artifacts: incomplete or invalid tree');
+      names.add(e.name);const path=prefix?`${prefix}/${e.name}`:e.name;
+      if(e.type==='tree')await walk(e.hash,path,depth+1);
+      else {if(out.size>=2000)throw new Error('artifacts: file budget');out.set(path,JSON.stringify([e.hash,e.type,e.mode]));}
     }
   }
-  return out;
+  await walk(treeHash,'',0);return out;
 }
-
-/** Changed paths in one commit: tree diff vs first parent (or all files if root). */
-async function diffFiles(binding: RepoBinding, c: any): Promise<string[]> {
-  const mine = await treeFiles(binding, c.treeHash);
-  if (!c.parents || c.parents.length === 0) return [...mine].sort();
-  const parent = await binding.readCommit(c.parents[0]);
-  const parentTree: string | null = parent ? parent.treeHash : null;
-  const theirs = parentTree
-    ? await treeFiles(binding, parentTree) : new Set<string>();
-  const changed = new Set<string>();
-  for (const p of mine) if (!theirs.has(p)) changed.add(p);
-  for (const p of theirs) if (!mine.has(p)) changed.add(p);
-  // Fast path covers add/delete; same-size trees may still hide content
-  // edits, so compare blob hashes for the intersection when small.
-  if (changed.size === 0 && parentTree && mine.size === theirs.size
-      && mine.size < 500) {
-    const [a, b] = await Promise.all([
-      treeBlobs(binding, c.treeHash), treeBlobs(binding, parentTree),
-    ]);
-    for (const [p, h] of a) if (b.get(p) !== h) changed.add(p);
+async function diffFiles(binding:RepoBinding,c:any):Promise<string[]>{
+  if(!Array.isArray(c.parents))throw new Error('artifacts: parent metadata');
+  const mine=await treeEntries(binding,c.treeHash);
+  let theirs=new Map<string,string>();
+  if(c.parents.length){
+    const parent=await binding.readCommit(c.parents[0]);
+    if(!parent)throw new Error('artifacts: missing parent');
+    theirs=await treeEntries(binding,parent.treeHash);
   }
-  return [...changed].sort();
-}
-
-/** path -> blob hash for a tree, recursive (for content-edit detection). */
-async function treeBlobs(
-  binding: RepoBinding, treeHash: string, prefix = "",
-): Promise<Map<string, string>> {
-  const out = new Map<string, string>();
-  const entries = (await binding.readTree(treeHash)) ?? [];
-  for (const e of entries) {
-    const p = prefix ? `${prefix}/${e.name}` : e.name;
-    if (e.type === "tree") {
-      for (const [sp, sh] of await treeBlobs(binding, e.hash, p)) out.set(sp, sh);
-    } else {
-      out.set(p, e.hash);
-    }
-  }
-  return out;
+  const paths=new Set([...mine.keys(),...theirs.keys()]);
+  return [...paths].filter(p=>mine.get(p)!==theirs.get(p)).sort();
 }
 
 function toHandle(
@@ -105,13 +63,10 @@ function toHandle(
       };
     },
     async readFile(ref: string, filePath: string) {
-      try {
-        const blob = await binding.readFile({ ref, path: filePath });
-        return blob ? await blob.text() : null;
-      } catch (e) {
-        if (isMissingRef(e)) return null;
-        throw e;
-      }
+      const blob=await binding.readFile({ref,path:filePath});
+      if(blob===null)return null; // Documented positive absence; exceptions propagate.
+      if(!blob||blob.size>8*1048576)throw new Error('artifacts: file unavailable or oversized');
+      return new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(await blob.arrayBuffer());
     },
     async history(ref: string, limit = 50): Promise<CommitInfo[]> {
       // Real binding: log(), not history(). Commit metadata carries no file
@@ -119,13 +74,10 @@ function toHandle(
       // parent (bounded: newest FILES_CAP commits; older entries omit files
       // and the gate treats unknown paths as conflict — safe default).
       const FILES_CAP = 25;
-      let commits: any[] | null;
-      try {
-        commits = await binding.log({ ref, limit });
-      } catch (e) {
-        if (isMissingRef(e)) return [];
-        throw e;
-      }
+      // Binding documents an empty array for an unresolved ref. Do not infer
+      // absence from error text: deleted repository, outage and auth errors throw.
+      const commits=await binding.log({ref,limit});
+      if(!Array.isArray(commits))throw new Error('artifacts: history unavailable');
       const out: CommitInfo[] = [];
       for (const c of commits ?? []) {
         const sha: string = c.hash ?? "";

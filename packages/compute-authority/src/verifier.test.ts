@@ -1,16 +1,17 @@
-// T6 acceptance: independent checks reject bad results; outbox drains exactly once.
+// Byte-checking and in-memory audit cursor: delivery repeats until acknowledged.
 import { describe, expect, it } from "vitest";
 import { verifyResult, AuditLog } from "./verifier.js";
+import {ARTIFACT_BYTES, POLICY} from "./test-artifacts.js";
 
 const good = {
   leaseId: "l", outcome: "exited" as const, exitCode: 0, signal: null, resolvedBin: "/usr/bin/python3",
-  stdoutSha256: "abc", stdoutBytes: 100, stderrTail: "",
+  stdoutSha256: POLICY.stdoutSha256, stdoutBytes: 100, stderrTail: "",
 };
 
 describe("verifier", () => {
   it("accepts matching results, rejects mismatches independently", () => {
-    expect(verifyResult(good, { kind: "cpu-job", exitCode: 0 }).verified).toBe(true);
-    expect(verifyResult(good, { kind: "cpu-job", exitCode: 0, stdoutSha256: "zzz" })).toEqual({
+    expect(verifyResult(good, POLICY, ARTIFACT_BYTES).verified).toBe(true);
+    expect(verifyResult(good, { ...POLICY, stdoutSha256: "0".repeat(64) }, ARTIFACT_BYTES)).toEqual({
       verified: false, reason: "sha-mismatch",
     });
     expect(verifyResult(good, { kind: "anything" })).toEqual({
@@ -19,14 +20,16 @@ describe("verifier", () => {
     expect(verifyResult({ ...good, outcome: "timed-out", exitCode: null }, { kind: "cpu-job", exitCode: 0 })).toEqual({
       verified: false, reason: "exec-timed-out",
     });
-    expect(verifyResult({ ...good, stdoutBytes: 1 }, { kind: "cpu-job", minBytes: 10 })).toEqual({
+    expect(verifyResult(good, { ...POLICY, minBytes: 101 }, ARTIFACT_BYTES)).toEqual({
       verified: false, reason: "too-few-bytes",
     });
+    expect(verifyResult(good, POLICY)).toEqual({verified:false,reason:"no-artifact-bytes"});
+    expect(verifyResult({...good,stdoutSha256:"0".repeat(64)}, POLICY, ARTIFACT_BYTES).verified).toBe(false);
   });
 });
 
 describe("audit outbox", () => {
-  it("drains exactly once with ack cursor", () => {
+  it("redelivers until the contiguous prefix is acknowledged", () => {
     const log = new AuditLog();
     log.append("lease-issued", "l1");
     log.append("result-committed", "l1");

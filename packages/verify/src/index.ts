@@ -10,7 +10,8 @@
 // Posture, mirroring @foundry/plan-check:
 //
 // - Not configured, or unreachable, is `checked: false, ok: true`. It never
-//   blocks. An outage must not read as a failed test.
+//   blocks under legacy advisory policy. A separately selected requireChecked
+//   policy can block missing evidence without calling it a failed test.
 // - A missing or absent runner is `checked: false` too, for the same reason:
 //   "nothing ran" must never be recorded as "the tests passed".
 // - Only `checked: true, ok: false` can block, and only when the caller sets
@@ -129,11 +130,11 @@ export class HttpVerifier implements Verifier {
 
 /**
  * Whether a verdict should stop a merge. A function, because the two rules that
- * matter — unchecked never blocks, enforcement is what makes a failure
- * blocking — should be testable in one place rather than re-derived per caller.
+ * matter — legacy enforcement blocks checked failures; an explicit independent
+ * requireChecked policy also blocks missing evidence — live in one place.
  */
-export function blocksMerge(v: VerifyVerdict, enforce: boolean): boolean {
-  return enforce && v.checked && !v.ok;
+export function blocksMerge(v: VerifyVerdict, enforce: boolean, requireChecked=false): boolean {
+  return (requireChecked && (!v.checked || !v.ok)) || (enforce && v.checked && !v.ok);
 }
 
 /** One secret-free line for the decision record, and for operators. */

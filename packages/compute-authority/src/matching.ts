@@ -1,7 +1,7 @@
 // T3: typed workload specs + compatibility matching.
 // Compatibility is checked before capacity. Accelerator kinds are
 // never interchangeable and independent devices are never summed.
-import type { WorkerRecord } from "./registry.js";
+import { checkCaps, integer, type WorkerRecord } from "./registry.js";
 
 export type WorkloadKind = "cpu-job" | "build-test" | "inference-batch" | "training" | "embedding";
 
@@ -26,7 +26,31 @@ export interface MatchVerdict {
   reasons: string[];
 }
 
+/** Runtime boundaries reject malformed JSON instead of coercing requirements. */
+export function validWorkload(spec: WorkloadSpec): boolean {
+  if (!spec || typeof spec !== "object" || typeof spec.workloadId !== "string" || !spec.workloadId ||
+    !["cpu-job", "build-test", "inference-batch", "training", "embedding"].includes(spec.kind) ||
+    typeof spec.reconstructible !== "boolean" ||
+    (spec.slotsNeeded !== undefined && !integer(spec.slotsNeeded, 1))) return false;
+  const req = spec.requires;
+  if (!req || typeof req !== "object" || Array.isArray(req)) return false;
+  for (const key of ["arch", "osContains", "runtimes"] as const) {
+    const value = req[key];
+    if (value !== undefined && (!Array.isArray(value) ||
+      ![...value].every((s) => typeof s === "string" && s.length > 0))) return false;
+  }
+  if (req.arch?.some((a) => a !== "x86_64" && a !== "arm64")) return false;
+  if (req.minRamMib !== undefined && !integer(req.minRamMib, 0)) return false;
+  if (req.gpu !== undefined && (!req.gpu || typeof req.gpu !== "object" ||
+    (req.gpu.kind !== "metal" && req.gpu.kind !== "cuda") || !integer(req.gpu.minVramMib, 1))) return false;
+  return true;
+}
+
 export function matchWorker(worker: WorkerRecord, spec: WorkloadSpec): MatchVerdict {
+  if (!validWorkload(spec)) return { ok: false, reasons: ["invalid workload requirements"] };
+  if (!worker || (worker.workerClass !== "general" && worker.workerClass !== "edge") || checkCaps(worker.capabilities)) {
+    return { ok: false, reasons: ["invalid worker capabilities"] };
+  }
   const reasons: string[] = [];
   const caps = worker.capabilities;
   const req = spec.requires;
@@ -55,6 +79,9 @@ export function matchWorker(worker: WorkerRecord, spec: WorkloadSpec): MatchVerd
   }
   if (worker.workerClass === "edge") {
     return { ok: false, reasons: ["edge workers observe only: zero execution slots"] };
+  }
+  if (caps.maxParallelAttempts < (spec.slotsNeeded ?? 1)) {
+    return { ok: false, reasons: ["parallel capacity below requested slots"] };
   }
   reasons.push(`arch ${caps.arch}`, `ram ${caps.reservableMib}MiB reservable`);
   return { ok: true, reasons };

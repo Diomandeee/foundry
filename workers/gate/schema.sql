@@ -16,10 +16,11 @@ CREATE TABLE IF NOT EXISTS decisions (
   task_id TEXT,
   agent_id TEXT,
   decided_at TEXT NOT NULL,
-  -- JSON VerifyVerdict when required checks ran (packages/verify, §9 of
-  -- docs/INTEGRATION-STATUS.md). Null on existing rows and on every row until a
-  -- deployment configures VERIFY_URL. Databases created before 2026-10-15 lack
-  -- this column: `ALTER TABLE decisions ADD COLUMN verification TEXT;`
+  -- JSON VerificationReceipt for the admitted proposal, including an explicit
+  -- unchecked outcome when no verifier is configured. Historical rows can be
+  -- null or contain the earlier verdict shape. Databases lacking this column
+  -- need a separately approved migration; CREATE TABLE IF NOT EXISTS does not
+  -- upgrade them: `ALTER TABLE decisions ADD COLUMN verification TEXT;`
   verification TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_decisions_repo ON decisions (namespace, repo);
@@ -36,3 +37,13 @@ CREATE TABLE IF NOT EXISTS tickets (
   agent_id TEXT NOT NULL,
   scope_json TEXT NOT NULL
 );
+
+-- Local source preparation only. Apply only with separate migration approval.
+CREATE TABLE IF NOT EXISTS verification_receipts (
+  sha256 TEXT PRIMARY KEY CHECK(length(sha256)=64),
+  receipt TEXT NOT NULL
+);
+CREATE TRIGGER IF NOT EXISTS verification_receipts_no_update BEFORE UPDATE ON verification_receipts
+BEGIN SELECT RAISE(ABORT, 'immutable verification receipt'); END;
+CREATE TRIGGER IF NOT EXISTS verification_receipts_no_delete BEFORE DELETE ON verification_receipts
+BEGIN SELECT RAISE(ABORT, 'immutable verification receipt'); END;

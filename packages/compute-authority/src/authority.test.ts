@@ -3,14 +3,13 @@
 import { describe, expect, it } from "vitest";
 import { ComputeAuthority } from "./authority.js";
 
-const RESULT = { outcome: "exited", exitCode: 0, stdoutSha256: "abc", stdoutBytes: 100 };
-const POLICY = { kind: "cpu-job", exitCode: 0 };
+import {testAuthority, RESULT, POLICY} from './test-artifacts.js';
 
 function setup() {
-  const auth = new ComputeAuthority(() => 1_000_000);
-  auth.registerWorker("vps", 2);
-  auth.registerWorker("mac", 1);
-  auth.submitWorkload("job-a", 1);
+  const auth = testAuthority(() => 1_000_000);
+  auth.registerWorker("vps", 2, 'general');
+  auth.registerWorker("mac", 1, 'general');
+  auth.submitWorkload("job-a", 1, "retry-new-attempt", 3, POLICY);
   return auth;
 }
 
@@ -50,25 +49,25 @@ describe("concurrent claims cannot double-spend one slot", () => {
   });
 
   it("slot ledger sums slotsNeeded, not rows", () => {
-    const auth = new ComputeAuthority(() => 1_000_000);
-    auth.registerWorker("w3", 3);
-    auth.submitWorkload("big1", 2);
-    auth.submitWorkload("big2", 2);
+    const auth = testAuthority(() => 1_000_000);
+    auth.registerWorker("w3", 3, 'general');
+    auth.submitWorkload("big1", 2, "retry-new-attempt", 3, POLICY);
+    auth.submitWorkload("big2", 2, "retry-new-attempt", 3, POLICY);
     expect(auth.claim("w3", "big1", 0, "c1")).not.toBeNull();
     expect(auth.claim("w3", "big2", 0, "c2")).toBeNull(); // 2+2 > 3
   });
 });
 
 describe("terminal states: a committed workload never commits twice", () => {
-  it("second claim and second complete both lose", () => {
+  it("second claim loses and identical completion replays its receipt", () => {
     const auth = setup();
     const lease = auth.claim("vps", "job-a", 0, "c1")!;
-    expect(auth.complete(lease.leaseId, lease.capability, RESULT, POLICY)).toEqual({
+    expect(auth.complete(lease.leaseId, lease.capability, RESULT)).toEqual({
       accepted: true, reason: "committed",
     });
     expect(auth.claim("vps", "job-a", 0, "c2")).toBeNull();
-    expect(auth.complete(lease.leaseId, lease.capability, RESULT, POLICY)).toEqual({
-      accepted: false, reason: "workload-terminal",
+    expect(auth.complete(lease.leaseId, lease.capability, RESULT)).toEqual({
+      accepted: true, reason: "committed",
     });
   });
 
@@ -76,7 +75,7 @@ describe("terminal states: a committed workload never commits twice", () => {
     const auth = setup();
     const lease = auth.claim("vps", "job-a", 0, "c1")!;
     expect(auth.complete(lease.leaseId, lease.capability, RESULT, { kind: "cpu-job" })).toEqual({
-      accepted: false, reason: "unverified:no-policy",
+      accepted: false, reason: "policy-override",
     });
   });
 });
@@ -86,7 +85,7 @@ describe("fence, quarantine, expiry, requeue", () => {
     const auth = setup();
     const lease = auth.claim("vps", "job-a", 0, "c1")!;
     auth.fenceWorker("vps");
-    expect(auth.complete(lease.leaseId, lease.capability, RESULT, POLICY).accepted).toBe(false);
+    expect(auth.complete(lease.leaseId, lease.capability, RESULT).accepted).toBe(false);
     // Capacity is NOT silently freed: new claims refused while quarantined.
     expect(auth.claim("vps", "job-a", 0, "c2")).toBeNull();
     expect(auth.reconcileWorker("vps", 0)).toBe(false); // wrong incarnation
@@ -96,46 +95,45 @@ describe("fence, quarantine, expiry, requeue", () => {
   it("requeue ends the old generation first; old results lose", () => {
     const auth = setup();
     const lease = auth.claim("vps", "job-a", 0, "c1")!;
-    expect(auth.requeue("job-a")).toBe(true);
-    expect(auth.complete(lease.leaseId, lease.capability, RESULT, POLICY)).toEqual({
+    expect(auth.requeue("job-a", 0, "test-requeue")).toBe(true);
+    expect(auth.complete(lease.leaseId, lease.capability, RESULT)).toEqual({
       accepted: false, reason: "lease-not-live",
     });
     const lease2 = auth.claim("mac", "job-a", 0, "c2")!;
     expect(lease2.generation).toBe(1);
-    expect(auth.complete(lease2.leaseId, lease2.capability, RESULT, POLICY)).toEqual({
+    expect(auth.complete(lease2.leaseId, lease2.capability, RESULT)).toEqual({
       accepted: true, reason: "committed",
     });
   });
 
   it("expired leases cannot renew or commit", () => {
     let t = 1_000_000;
-    const auth = new ComputeAuthority(() => t);
-    auth.registerWorker("vps", 1);
-    auth.submitWorkload("job", 1);
+    const auth = testAuthority(() => t);
+    auth.registerWorker("vps", 1, 'general');
+    auth.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
     const lease = auth.claim("vps", "job", 0, "c1", 1000)!;
     t += 2000;
     expect(auth.renew(lease.leaseId, lease.capability)).toBe(false);
     // Renew already killed it: completing now reports not-live, truthfully.
-    expect(auth.complete(lease.leaseId, lease.capability, RESULT, POLICY)).toEqual({
+    expect(auth.complete(lease.leaseId, lease.capability, RESULT)).toEqual({
       accepted: false, reason: "lease-not-live",
     });
     // A fresh expiry observed at commit time reports expired.
-    const auth2 = new ComputeAuthority(() => t);
-    auth2.registerWorker("vps", 1);
-    auth2.submitWorkload("job", 1);
-    t -= 2000;
+    const auth2 = testAuthority(() => t);
+    auth2.registerWorker("vps", 1, 'general');
+    auth2.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
     const lease2 = auth2.claim("vps", "job", 0, "c1", 1000)!;
     t += 2000;
-    expect(auth2.complete(lease2.leaseId, lease2.capability, RESULT, POLICY)).toEqual({
+    expect(auth2.complete(lease2.leaseId, lease2.capability, RESULT)).toEqual({
       accepted: false, reason: "lease-expired",
     });
   });
 
   it("heartbeats extend the lease within a bounded max lifetime", () => {
     let t = 1_000_000;
-    const auth = new ComputeAuthority(() => t, 100_000);
-    auth.registerWorker("vps", 1);
-    auth.submitWorkload("job", 1);
+    const auth = testAuthority(() => t, 100_000);
+    auth.registerWorker("vps", 1, 'general');
+    auth.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
     const lease = auth.claim("vps", "job", 0, "c1", 60_000)!;
     t += 30_000;
     expect(auth.renew(lease.leaseId, lease.capability)).toBe(true); // extends to 90 s
@@ -149,25 +147,25 @@ describe("fence, quarantine, expiry, requeue", () => {
     const auth = setup();
     expect(auth.cancel("job-a")).toBe(true);
     expect(auth.claim("vps", "job-a", 0, "c1")).toBeNull();
-    auth.submitWorkload("once", 1, "fail");
+    auth.submitWorkload("once", 1, "fail", 3, POLICY);
     const lease = auth.claim("vps", "once", 0, "c1")!;
     auth.fenceWorker("vps");
-    expect(auth.complete(lease.leaseId, lease.capability, RESULT, POLICY).accepted).toBe(false);
-    expect(auth.requeue("once")).toBe(false);
+    expect(auth.complete(lease.leaseId, lease.capability, RESULT).accepted).toBe(false);
+    expect(auth.requeue("once", 0, "test-requeue")).toBe(false);
   });
 
   it("edge class holds zero slots even when asked", () => {
-    const auth = new ComputeAuthority(() => 1_000_000);
+    const auth = testAuthority(() => 1_000_000);
     const edge = auth.registerWorker("pi", 4, "edge");
     expect(edge.slots).toBe(0);
-    auth.submitWorkload("job", 1);
+    auth.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
     expect(auth.claim("pi", "job", 0, "c1")).toBeNull();
   });
 
   it("re-registration preserves incarnation", () => {
     const auth = setup();
     auth.fenceWorker("vps");
-    const again = auth.registerWorker("vps", 2);
+    const again = auth.registerWorker("vps", 2, 'general');
     expect(again.incarnation).toBe(1);
   });
 });

@@ -1,3 +1,4 @@
+import {verificationReceipt} from './verification-receipt.js';
 // handlePush — full gate pipeline: normalize event → decide → merge → record.
 // Deps-injected so tests use fakes and the Worker uses real bindings + D1.
 import {
@@ -30,6 +31,8 @@ export interface PipelineDeps {
   verifier?: Verifier;
   /** When true, a failed check blocks the merge. Default: advisory. */
   verifyEnforce?: boolean;
+  /** Independent owner-selected fail-closed requirement; default preserves legacy policy. */
+  verifyRequireChecked?:boolean;
   /** When true, pipeline-error reasons carry the stack (DEBUG=1). */
   debug?: boolean;
 }
@@ -80,21 +83,20 @@ export async function handlePush(
       //
       // A verifier that throws is an infrastructure failure, not a refusal: it
       // falls out of this try block into the catch-all below, which records
-      // `error` and stays retryable. Only a verifier that *ran* and failed,
-      // under explicit enforcement, refuses.
-      // The branch the push moved, resolved as `decidePush` resolves it.
-      const branch = push.ref.startsWith("refs/heads/")
-        ? push.ref.slice("refs/heads/".length)
-        : push.ref;
-      const verify = deps.verifier
-        ? await deps.verifier.run({
+      // `error` and stays retryable. Explicit requireChecked can also refuse
+      // a returned unchecked verdict without claiming a failed test.
+      const verifyRequest = {
             repo: push.repo,
-            baseBranch: branch,
-            files: Object.keys(decision.files),
+            baseBranch: decision.baseBranch,
+            files: [...Object.keys(decision.files), ...decision.deletedFiles].sort(),
             headSha: push.after,
-          })
-        : { checked: false, ok: true, runs: [] };
-      if (blocksMerge(verify, deps.verifyEnforce ?? false)) {
+          };
+      const verify=deps.verifier?await deps.verifier.run(verifyRequest):{checked:false,ok:true,runs:[]};
+      const verification=await verificationReceipt(verifyRequest,verify,{namespace:push.namespace,ref:push.ref,before:push.before,
+        baseSha:decision.baseHead,files:decision.files,deleted:decision.deletedFiles,enforce:deps.verifyEnforce??false,requireChecked:deps.verifyRequireChecked??false});
+      if(!deps.store.recordVerification)throw new Error('durable verification receipt store required');
+      await deps.store.recordVerification(verification);
+      if (blocksMerge(verify, deps.verifyEnforce ?? false, deps.verifyRequireChecked ?? false)) {
         const record = await deps.store.record({
           namespace: push.namespace,
           repo: push.repo,
@@ -103,7 +105,8 @@ export async function handlePush(
           after_sha: push.after,
           verdict: "reject",
           reason: { reason: "verification_failed", message: summarize(verify) },
-          files: Object.keys(decision.files),
+          verification,
+          files: [...Object.keys(decision.files), ...decision.deletedFiles].sort(),
           task_id: decision.ticket.taskId,
           agent_id: decision.ticket.agentId,
         });
@@ -113,20 +116,23 @@ export async function handlePush(
       const baseHandle = await deps.port.get(decision.ticket.baseRepo);
       let mergedSha: string;
       try {
-        const baseInfo = await baseHandle.info();
         mergedSha = await deps.merger.merge({
           baseName: decision.ticket.baseRepo,
           baseRemote: baseHandle.remote,
           baseToken: await baseHandle.createToken("write", 600),
-          baseBranch: baseInfo.defaultBranch,
+          baseBranch: decision.baseBranch,
           forkRemote: forkHandle.remote,
           forkToken: await forkHandle.createToken("read", 600),
+          forkBranch: push.ref.startsWith("refs/heads/")
+            ? push.ref.slice("refs/heads/".length)
+            : undefined,
           forkHeadSha: push.after,
           files: decision.files,
           deletedFiles: decision.deletedFiles,
           message: `Merge ${push.repo}@${push.after.slice(0, 8)}`,
           author: "foundry",
           expectedBaseSha: decision.baseHead ?? undefined,
+          forkPointSha: decision.ticket.baseSha || undefined,
         });
       } catch (e) {
         if (e instanceof StaleBaseError && attempt === 0) continue;
@@ -139,7 +145,7 @@ export async function handlePush(
             after_sha: push.after,
             verdict: "conflict",
             conflict_files: [],
-            files: Object.keys(decision.files),
+            files: [...Object.keys(decision.files), ...decision.deletedFiles].sort(),
             task_id: decision.ticket.taskId,
             agent_id: decision.ticket.agentId,
           });
@@ -157,6 +163,7 @@ export async function handlePush(
         before_sha: push.before,
         after_sha: push.after,
         verdict: "merge",
+        verification,
         merged_sha: mergedSha,
         files: [...Object.keys(decision.files), ...decision.deletedFiles],
         task_id: decision.ticket.taskId,

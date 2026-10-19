@@ -35,12 +35,13 @@ function depsFromEnv(env: Env): PipelineDeps {
     deps.planCheck = new PactServerPlanCheck(env.PACT_URL);
   }
   // Required checks. Unset means the stub, which records "nothing was
-  // checked" and can never block — the same posture as PACT above, so a
+  // checked". It blocks only when VERIFY_REQUIRE_CHECKED is explicitly selected. A
   // deployment without a verifier behaves exactly as it did before.
   if (env.VERIFY_URL) {
     deps.verifier = new HttpVerifier(env.VERIFY_URL);
     deps.verifyEnforce = env.VERIFY_ENFORCE === "1";
   }
+  deps.verifyRequireChecked = env.VERIFY_REQUIRE_CHECKED === "1";
   if (env.DEBUG === "1") deps.debug = true;
   return deps;
 }

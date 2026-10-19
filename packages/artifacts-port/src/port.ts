@@ -66,6 +66,8 @@ export interface MergeRequest {
   baseBranch: string;
   forkRemote: string;
   forkToken: string;
+  /** Fork branch named by the push event; used to resolve the exact proposal SHA. */
+  forkBranch?: string;
   forkHeadSha: string;
   files: Record<string, string>;
   /** Fork-side deletions the merger must apply (true merges handle natively). */
@@ -74,6 +76,12 @@ export interface MergeRequest {
   author: string;
   /** Base head the decision was made against; merger must refuse if moved. */
   expectedBaseSha?: string;
+  /**
+   * Fork point the decision proved the proposal descends from (empty string =
+   * genesis, omitted = not asserted). The merger must refuse an object whose
+   * ancestry cannot be proven against it.
+   */
+  forkPointSha?: string;
 }
 
 /** Base head moved between decide and merge; the decision is stale. */

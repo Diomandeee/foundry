@@ -60,3 +60,57 @@ describe("placer", () => {
     expect(none.rejected).toHaveLength(2);
   });
 });
+
+ describe("placement replay regressions", () => {
+  it("rejects workers with insufficient actual RAM headroom", () => {
+    const p = place(rig(), spec, { "a-worker": 3900, "b-worker": 1900 });
+    expect(p.workerId).toBeNull();
+    expect(p.rejected).toHaveLength(2);
+  });
+  it.each([NaN, Infinity, -1, 0.5])("fails closed on invalid live load %s", (load) => {
+    expect(place(rig(), spec, { "a-worker": load, "b-worker": load }).workerId).toBeNull();
+  });
+  it("captures class, policy and explicit stable reservation evidence without aliases", () => {
+    const evidence = { policyVersion: "owner-policy-7", reservations: [{ reservationId: "lease-1", workerId: "a-worker", slots: 1, expiresAt: 2000 }] };
+    const p = place(rig(), spec, {}, evidence);
+    expect(p.inputSnapshot.workers[0].workerClass).toBe("general");
+    expect(p.inputSnapshot.policyVersion).toBe("owner-policy-7");
+    expect(p.inputSnapshot.reservations).toEqual(evidence.reservations);
+    evidence.reservations[0].reservationId = "changed";
+    expect(p.inputSnapshot.reservations![0].reservationId).toBe("lease-1");
+    expect(Object.isFrozen(p.inputSnapshot.reservations![0])).toBe(true);
+    expect(place(rig(), spec).inputSnapshot.reservations).toBeUndefined();
+  });
+});
+
+it("uses fixed identifier ordering for ties and snapshots regardless of input order", () => {
+  const workers = rig().map((w) => ({ ...w, capabilities: { ...w.capabilities, reservableMib: 4000 } }));
+  workers[0].workerId = "Z-worker";
+  const p = place(workers, spec);
+  expect(p.workerId).toBe("Z-worker");
+  const reversed = place([...workers].reverse(), spec);
+  expect(reversed.workerId).toBe(p.workerId);
+  expect(reversed.inputSnapshot).toEqual(p.inputSnapshot);
+  expect(p.inputSnapshot.placerPolicyVersion).toBeTruthy();
+});
+it("replays eligibility and scoring from the captured inputs", () => {
+  const workers = rig();
+  workers[0] = { ...workers[0], workerClass: "edge" };
+  const p = place(workers, spec, { "a-worker": 100 });
+  const snap = p.inputSnapshot;
+  const replay = place(snap.workers.map((w) => ({ ...workers.find((original) => original.workerId === w.id)!, workerClass: w.workerClass, capabilities: w.capabilities as typeof workers[0]["capabilities"] })), snap.workload, Object.fromEntries(snap.workers.map((w) => [w.id, w.load])));
+  expect(replay.workerId).toBe(p.workerId);
+  expect(replay.rejected).toEqual(p.rejected);
+  expect(replay.facts).toEqual(p.facts);
+});
+it("rejects malformed top-level collections and evidence with controlled errors", () => {
+  expect(() => place(null as never, spec)).toThrow("invalid workers");
+  expect(() => place(rig(), spec, null as never)).toThrow("invalid worker loads");
+  expect(() => place(rig(), spec, {}, { policyVersion: "v", reservations: [null] } as never)).toThrow("invalid placement evidence");
+  expect(() => place(rig(), spec, {}, { policyVersion: "v", reservations: new Array(1) })).toThrow("invalid placement evidence");
+});
+it("does not copy secret-bearing extra reservation fields into audit snapshots", () => {
+  const reservation = { reservationId: "r", workerId: "a-worker", slots: 1, expiresAt: 2000, capability: "fixture-secret" };
+  const p = place(rig(), spec, {}, { policyVersion: "v", reservations: [reservation] });
+  expect(p.inputSnapshot.reservations![0]).not.toHaveProperty("capability");
+});

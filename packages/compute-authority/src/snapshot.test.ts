@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { WorkerRegistry } from "./registry.js";
 import { ComputeAuthority } from "./authority.js";
+import {POLICY} from "./test-artifacts.js";
 import { AuditLog } from "./verifier.js";
 import { snapshotFor } from "./dashboard.js";
 import { normalizeQuotes, filterQuotes } from "./vastai.js";
@@ -20,15 +21,15 @@ describe("dashboard snapshot", () => {
     const audit = new AuditLog();
     audit.append("worker-registered", "vps");
     const auth = new ComputeAuthority();
-    auth.registerWorker("vps", 1);
-    auth.submitWorkload("job", 1);
+    auth.registerWorker("vps", 1, 'general');
+    auth.submitWorkload("job", 1, "retry-new-attempt", 3, POLICY);
     auth.claim("vps", "job", 0, "c1");
-    const snap = snapshotFor(auth, reg, audit);
+    const snap = snapshotFor(auth, reg);
     expect(snap.workers).toHaveLength(1);
     expect(snap.workers[0].trustTier).toBe("standard");
     expect(snap.liveLeases).toHaveLength(1);
     expect(snap.liveLeases[0].workerId).toBe("vps");
-    expect(snap.watermark.pendingOutbox).toBe(1);
+    expect(snap.watermark.pendingOutbox).toBe(3);
     expect(JSON.stringify(snap)).not.toMatch("password|secret|token");
   });
 });

@@ -71,8 +71,8 @@ describe("commitForkFiles", () => {
   });
 });
 
-describe("commitForkFiles idempotency", () => {
-  it("returns the current head instead of an empty commit", async () => {
+describe("commitForkFiles replay boundary", () => {
+  it.each(["same", "different"])("requires caller-proven replay for the %s proposal with identical content", async proposal => {
     const head = "f".repeat(40);
     const first = await commitForkFiles(
       fs,
@@ -82,17 +82,26 @@ describe("commitForkFiles idempotency", () => {
       "foundry",
       head,
     );
-    // Redelivery after the merge already landed: same content, no commit.
-    const second = await commitForkFiles(
+    // Only the merger can prove the full parent/tree relationship. This helper
+    // cannot infer a valid replay from unchanged content and a trailer alone.
+    await expect(commitForkFiles(
       fs,
       dir,
       { "feat.txt": "new\n" },
       "Merge task-1",
       "foundry",
-      head,
-    );
-    expect(second).toBe(first);
+      proposal === "same" ? head : "e".repeat(40),
+    )).rejects.toThrow("no changed tree and no proven replay");
+    expect(await git.resolveRef({ fs, dir, ref: "HEAD" })).toBe(first);
     const log = await git.log({ fs, dir, depth: 3 });
     expect(log.length).toBe(2); // seed + one merge, not two
+  });
+
+  it("refuses unchanged content without proposal provenance", async () => {
+    const before = await git.resolveRef({ fs, dir, ref: "HEAD" });
+    await expect(commitForkFiles(fs, dir, { "app.txt": "v1\n" }, "Merge", "foundry", "f".repeat(40)))
+      .rejects.toThrow("no changed tree and no proven replay");
+    expect(await git.resolveRef({ fs, dir, ref: "HEAD" })).toBe(before);
+    expect((await git.log({ fs, dir })).length).toBe(1);
   });
 });

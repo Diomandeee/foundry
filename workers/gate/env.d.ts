@@ -17,5 +17,6 @@ interface Env {
   VERIFY_URL?: string;
   /** When "1", a failed required check blocks the merge. Default advisory. */
   VERIFY_ENFORCE?: string;
+  VERIFY_REQUIRE_CHECKED?: string;
   DEBUG?: string;
 }
