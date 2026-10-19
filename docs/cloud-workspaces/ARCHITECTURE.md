@@ -71,3 +71,24 @@ Foundry is the only control plane. UCTM Studio (a fork of the open-source Agent 
 Agent memory has one home: the Supabase Memory project `zdcqqvvcpfpfyvbbfgsy`, fed by `ai-memory-runtime` (Mac1 launchd `com.mohameddiomande.ai-memory-runtime`). It collects user/assistant turns and embeddings from AO, Claude Code, Codex, Muse, Mac2/Mac4/Mac5 native sessions, the Foundry host/app, and K11 historical turns. All 22,272 AO messages were verified present (outbox cursor equals the AO table's max rowid). The `foundry-memory` MCP searches these turns first and falls back to the K11 archive. Foundry's Cloudflare D1 decisions remain the formal governance record; Supabase Memory is the searchable recall layer, not an authority. The legacy prompt-logger sync to the Main project (`aaqbofotpchgpyuohmmz`, no longer resolvable) is disabled.
 
 Storage tiers: local disks hold the working set only; Supabase holds the index (Motion for capture, Memory for agents); `gs://fleet-backup-648527652351` holds verified cold archives, including the full AO database (`mac1/state/2026-10-18/`) and the 2026-10-18 fleet project archives; Drive `MotionMix-Central` holds media. K11 is compute, not storage. Apple's container tool is not adopted; its Mac1 storage was removed.
+
+## 2026-10-19 LUME stage and K11 body plane
+
+Machine roles, amended:
+
+| Machine | Role | Foundry relation |
+| --- | --- | --- |
+| Mac1 | operator workstation, live MotionMix hub | operator station |
+| Mac4 | LUME stage: Femto Mega, Unity DYK projector, web fluid lab; build worker | Mac VM build worker when the stage is idle |
+| Mac5 | build worker | primary Mac VM build worker |
+| K11 | LUME/Air Deck body plane (5 NSSM services) and GPU render/batch | external batch facility for render jobs only |
+
+The live loops on Mac1, Mac4 and K11 are outside Foundry: Foundry owns code, builds and
+governed batch jobs, never a stage service. The LUME stage code and both machines' service
+definitions live in github.com/Diomandeee/lume-commerce (stage/mac4, stage/k11, infra/k11,
+infra/launchagents/mac4, infra/launchdaemons/mac4; map in infra/STAGE-MAP.md). Before
+2026-10-19 none of the K11 code and none of the Mac4 runtime was in Git.
+
+K11 data not yet covered by any archive: C:\lume\data\body_motion.sqlite3 (117 GB, the Air
+Deck bridge records every pose frame), C:\lume\voice (73 GB), C:\lume\stems (28 GB),
+C:\lume\airdeck\sessions (15 GB). A retention rule for body_motion is an open decision.
