@@ -1,0 +1,37 @@
+{
+  "hostAlias": "mac4",
+  "at": "2026-10-18T17:32:16.850762+00:00",
+  "exit": 0,
+  "observation": {
+    "hostname": "mac4",
+    "system": "Darwin",
+    "architecture": "arm64",
+    "freeBytes": 15326842880,
+    "nodePath": "/opt/homebrew/bin/node",
+    "installed": {
+      "/Library/Foundry/bin/mac-vm-host": {
+        "present": false
+      },
+      "/Library/Foundry/bin/mac-tree-guard": {
+        "present": false
+      },
+      "/Library/Foundry/bin/cas-python": {
+        "present": false
+      },
+      "/Library/Foundry/bin/mac-cas.py": {
+        "present": false
+      },
+      "/Library/Foundry/CAS/run/store.sock": {
+        "present": false
+      },
+      "/Library/Foundry/Images": {
+        "present": false
+      }
+    },
+    "xcode": {
+      "exit": 0,
+      "output": "Xcode 26.2\nBuild version 17C52"
+    }
+  },
+  "error": null
+}

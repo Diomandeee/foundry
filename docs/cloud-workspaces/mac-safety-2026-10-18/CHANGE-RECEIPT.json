@@ -1,0 +1,132 @@
+{
+  "format": "foundry.mac-safety.change-receipt.v1",
+  "capturedAt": "2026-10-18T14:10:39.427391+00:00",
+  "repository": "/Users/mohameddiomande/Developer/foundry-integration/source",
+  "branch": "codex/foundry-integration-20261016",
+  "head": "cf27ac662730bb98a509af8d1d1ebea4342eef7a",
+  "status": "source-reviewed-primitives-production-HOLD",
+  "baselineFiles": 41,
+  "scopedFiles": 48,
+  "changedProductFiles": [
+    "packages/build-runtime/native/mac-vm-guest.py",
+    "packages/build-runtime/native/mac-vm-host.entitlements",
+    "packages/build-runtime/native/mac-vm-host.swift",
+    "packages/build-runtime/src/adapters.ts",
+    "packages/build-runtime/src/index.ts",
+    "packages/build-runtime/src/mac-attestation.ts",
+    "packages/build-runtime/src/mac-vm-job.ts",
+    "packages/build-runtime/src/mac-vm.ts",
+    "packages/build-storage/native/mac-tree-guard.c",
+    "packages/build-storage/src/index.ts",
+    "packages/build-storage/src/mac-readonly-seal.ts",
+    "packages/build-storage/src/packaging.ts",
+    "packages/build-storage/src/project-input-io.ts",
+    "packages/build-storage/src/project-inputs.ts",
+    "packages/build-storage/src/snapshots.ts",
+    "packages/build-storage/src/types.ts"
+  ],
+  "changedDocumentationFiles": [
+    "docs/cloud-workspaces/MASTER-CHECKLIST.md",
+    "docs/cloud-workspaces/ROUTE.json",
+    "packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md",
+    "packages/build-runtime/README.md"
+  ],
+  "newProductFiles": 7,
+  "modifiedProductFiles": 9,
+  "changedTestPaths": [],
+  "scopedStateSha256": "99d324dbfd82b24395b94550183f4fe558718d990b39ab72a347d9bb386658aa",
+  "stateEncoding": "SHA256 UTF8 JSON array SCOPED-STATE rows; sorted object keys; comma/colon separators; paths sorted; no trailing newline",
+  "patchSha256": "2820453f895883dc2eaba14367ab296802900e22402ba9de4293d187c7510871",
+  "patchBytes": 135125,
+  "reports": [
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/ARCHITECTURE.md",
+      "bytes": 8592,
+      "sha256": "a65dd11b9791e3fae1bcf89060850c0f79ba178056d909c1f2b8f41f268cd7c8"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/CONTAINMENT-INDEPENDENT-REVIEW.md",
+      "bytes": 11937,
+      "sha256": "f1c716796dd421da51a85cb3d5ff126609159c4af620a66666b0c7f3c624e640"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/CONTAINMENT-REVIEW-CLOSURE.md",
+      "bytes": 3684,
+      "sha256": "c3dfe0f9c654af9a212397adc116cc83a600d1adac5117f92a8e297d29331a97"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/CONTAINMENT-REVIEW-FINAL.md",
+      "bytes": 10706,
+      "sha256": "edb8dbbe2e8c81e8e794f22e13db3947fa5f4e4e187cd59e162b2663d7835c1a"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/FILESYSTEM-REVIEW.md",
+      "bytes": 13639,
+      "sha256": "73277cad01367ea13417aa40916bdf5f76c55fadc3e1bfde8910b8adc1e8706c"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/GUEST-REVIEW-FINAL.md",
+      "bytes": 7560,
+      "sha256": "fc43b8cbdf47f46f4e615fdbd0b758b9243ed6f29bc4b58a666f8f6430c6f329"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/GUEST-REVIEW-ROUND2.md",
+      "bytes": 11828,
+      "sha256": "c313fc4578c07b20fe56e61bada26ec449609e5cc41afa17a9c3ce72ff6863f4"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/GUEST-REVIEW.md",
+      "bytes": 14392,
+      "sha256": "a22839622d6f640f3b6b7eaec337e8f91ee18813d907c6afbf238391e21cfb63"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/README.md",
+      "bytes": 3475,
+      "sha256": "1177bb3e30856e777a37158dd2bf02d400d675a0c4ddcae0d40dde0507d1b2e1"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/SOURCE-REVIEW.md",
+      "bytes": 6594,
+      "sha256": "4faff356ef6cdb392d0a1165c89929cedd3e6e665318d01818bb423384fa7a8c"
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/VM-HOST-REVIEW.md",
+      "bytes": 20675,
+      "sha256": "06a661b9913e986758f825c405d360b9281fb17bfc853d73b822ae072153a858"
+    }
+  ],
+  "testsExecuted": 0,
+  "buildsOrTypechecksExecuted": 0,
+  "productImportsOrProbesExecuted": 0,
+  "helpersVmsOrServicesStarted": 0,
+  "operationalChanges": 0,
+  "gitCommitsPushesMerges": 0,
+  "nextLocalEngineering": [
+    "M1 verified immutable staging",
+    "M2 stop-gated readonly result intake",
+    "M3 production adapter/controller and guest capabilities, writable isolation/inherited HOLD"
+  ],
+  "nextGate": "Matching explicit approval before testing/compilation or any operational change. R7 not started.",
+  "evidenceFiles": [
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/BASELINE.json",
+      "sha256": "dcdd9ecf30b33a154b1951ab2c16b3b7fc35ec6fdae4dcc83756499a6e806747",
+      "bytes": 7404
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/DELTA.json",
+      "sha256": "a1d43e5a4e7204f7a19dac9610bb6f5252786039aa70101d6b0a332c54e33fdf",
+      "bytes": 5149
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/FINDINGS.json",
+      "sha256": "20c7d1ca3cbc2c324db30f6b12d37a15188a61015d6f3c740ea5aeb6dae2d901",
+      "bytes": 6340
+    },
+    {
+      "path": "docs/cloud-workspaces/mac-safety-2026-10-18/SCOPED-STATE.json",
+      "sha256": "495245ef26aa38d525dee11f669713d6ec477c1f5a09e73ab0c31186d13bd92a",
+      "bytes": 7969
+    }
+  ]
+}

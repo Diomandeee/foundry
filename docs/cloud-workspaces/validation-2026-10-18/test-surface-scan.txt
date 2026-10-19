@@ -1,0 +1,131 @@
+workers/compute/src/http.test.ts:6:  return new Request('https://local.invalid', {
+workers/compute/src/wrapper-runtime.test.ts:18:      async fetch(request) {
+workers/compute/src/wrapper-runtime.test.ts:19:        if(new URL(request.url).pathname !== '/host-test') return super.fetch();
+workers/compute/src/wrapper-runtime.test.ts:24:    export default { async fetch(request,env) {
+workers/compute/src/wrapper-runtime.test.ts:26:        return env.AUTHORITY.get(env.AUTHORITY.idFromName('fixed-local-authority')).fetch(request);
+workers/compute/src/wrapper-runtime.test.ts:28:      return entry.fetch(request,env);
+workers/compute/src/wrapper-runtime.test.ts:33:    const call=async (body:unknown)=>await (await runtime.dispatchFetch('https://local.test/host-test',{method:'POST',body:JSON.stringify(body)})).json() as Record<string,any>;
+workers/compute/src/wrapper-runtime.test.ts:47:      const response = await runtime.dispatchFetch('https://local.test'+path, {method:'POST',body:'{}'});
+workers/library/src/router.test.ts:10:  const reply=await entry.fetch(new Request('https://local/v1/library/project-a/snapshot',{method:'POST',headers:{authorization:`Bearer ${token('owner')}`}}),env);
+workers/library/src/router.test.ts:15:  const reply=await entry.fetch(new Request('https://local/v1/library/project-a/snapshot',{method:'POST'}),env);
+workers/epoch-pipeline/src/runtime.test.ts:11: const req=async(path:string,body:any={},role='owner',extra={})=>{const r=await mf.dispatchFetch('https://local.invalid'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+token(role),...extra},body:JSON.stringify(body)});return {status:r.status,body:r.headers.get('content-type')?.includes('application/json')?await r.json():await r.text()};};
+workers/compute/src/enrollment-runtime.test.ts:23: async fetch(r){
+workers/compute/src/enrollment-runtime.test.ts:45:  return super.fetch(new Request('https://fixture.test'+input.path,{method:'POST',headers:r.headers,body:stream}));
+workers/compute/src/enrollment-runtime.test.ts:47: if(new URL(r.url).pathname==='/__fault'){this.arm();return Response.json({ok:true});}return super.fetch(r);}
+workers/compute/src/enrollment-runtime.test.ts:49:export default{fetch(r,env){return entry.fetch(r,{...env,...cfg});}};
+workers/compute/src/enrollment-runtime.test.ts:53: const req=async(path:string,body:any,who='owner')=>{const r=await runtime.dispatchFetch('https://fixture.test'+path,{method:'POST',headers:{authorization:'Bearer '+token(who),'content-type':'application/json'},body:JSON.stringify(body)});return {status:r.status,body:await r.json() as any};};
+workers/compute/src/enrollment-runtime.test.ts:173:  const config={origin:'https://fixture.test',credentialReference:'fixture-reference',environment:'enrolled',authorityId:'compute',identity:identity(),expectedEpoch:1,revision:1,incarnation:0,stepKey:'recover-liveness',profile,ttlMs:60000,httpDeadlineMs:5000};
+workers/compute/src/enrollment-runtime.test.ts:190:  const config={origin:'https://fixture.test',credentialReference:'fixture-reference',environment:'enrolled',authorityId:'compute',identity:identity(),expectedEpoch:1,revision:1,incarnation:0,stepKey:'matching-profile',profile,ttlMs:60000,httpDeadlineMs:5000};
+workers/compute/src/enrollment-runtime.test.ts:218:  const denied=await h.hostFetch('https://fixture.test/v1/status',{method:'POST',headers:{authorization:'Bearer '+token('owner'),'content-type':'application/json'},body:'{}'}).then((r:any)=>r.status).catch(()=>500);
+workers/compute/src/enrollment-runtime.test.ts:225:  const denied=await h.hostFetch('https://fixture.test/v1/status',{method:'POST',headers:{authorization:'Bearer '+token('owner'),'content-type':'application/json'},body:'{}'}).then((r:any)=>r.status).catch(()=>500);expect(denied).toBeGreaterThanOrEqual(500);
+workers/library/src/archive-body.test.ts:7: expect(await archiveBody(new Request('https://archive',{method:'POST',headers,body:stream,duplex:'half'} as RequestInit),64)).toBe('\ufeff{}');
+workers/library/src/archive-body.test.ts:11: try{const stream=new ReadableStream<Uint8Array>({pull(c){clock+=10001;c.close();}});await expect(archiveBody(new Request('https://archive',{method:'POST',headers,body:stream,duplex:'half'} as RequestInit),64)).rejects.toMatchObject({status:408});}finally{Date.now=original;}
+workers/library/src/config.test.ts:12:  expect(route(new Request('https://test/v1/library/project-a/commands',{method:'POST'}))).toEqual({projectId:'project-a',action:'commands'});
+workers/library/src/config.test.ts:13:  for(const url of ['http://test/v1/library/project-a/commands','https://test/v1/library/project-a/commands?project=other','https://test/v1/library/project-a%2Fother/commands','https://test/v1/library/project-a/snapshot/'])expect(()=>route(new Request(url,{method:'POST'}))).toThrow();
+workers/library/src/config.test.ts:14:  expect(()=>route(new Request('https://test/v1/library/project-a/snapshot'))).toThrow('post-required');
+workers/compute/src/storage-runtime.test.ts:16: async fetch(request) {
+workers/compute/src/storage-runtime.test.ts:35:export default { fetch(request, env) {
+workers/compute/src/storage-runtime.test.ts:36: return env.PROBE.get(env.PROBE.idFromName('local-storage-preflight')).fetch(request);
+workers/compute/src/storage-runtime.test.ts:53:   const written=await mf.dispatchFetch('https://local.test/write');
+workers/compute/src/storage-runtime.test.ts:56:   const rolled=await mf.dispatchFetch('https://local.test/rollback');
+workers/compute/src/storage-runtime.test.ts:59:   const restarted=await mf.dispatchFetch('https://local.test/read');
+workers/compute/src/transport-runtime.test.ts:19:  async fetch(request){
+workers/compute/src/transport-runtime.test.ts:20:   if(new URL(request.url).pathname!=='/__test')return super.fetch(request);
+workers/compute/src/transport-runtime.test.ts:36: export default {fetch(request,env){return entry.fetch(request,{...env,...bindings});}};
+workers/compute/src/transport-runtime.test.ts:41:  const response=await runtime.dispatchFetch('https://local.test'+path,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${token(role)}`,...headers},body:JSON.stringify(body)});
+workers/gate/src/decide.test.ts:1:import { execFileSync } from "node:child_process";
+workers/gate/src/decide.test.ts:529:    execFileSync("git", ["-C", forkWork, "checkout", "-q", "-b", "feature"]);
+packages/verify/src/index.test.ts:71:    const v = await new HttpVerifier("https://verify.invalid").run(req);
+packages/verify/src/index.test.ts:73:    expect(seen[0].url).toBe("https://verify.invalid/api/verify");
+packages/verify/src/index.test.ts:86:    const v = await new HttpVerifier("https://verify.invalid").run(req);
+packages/verify/src/index.test.ts:94:    const v = await new HttpVerifier("https://verify.invalid").run(req);
+packages/verify/src/index.test.ts:105:    const v = await new HttpVerifier("https://verify.invalid").run(req);
+packages/verify/src/index.test.ts:112:    const v = await new HttpVerifier("https://verify.invalid").run(req);
+packages/verify/src/index.test.ts:122:    const v = await new HttpVerifier("https://verify.invalid").run(req);
+packages/worker-client/src/client.test.ts:17:  const config: HostConfig={origin:'https://foundry.example',credentialReference:'host-vault-ref',environment:'local',authorityId:'chain',identity:{workerId:'mac',principal:'executor',workerClass:'general',cpu:1,ramMib:128,devices:[]},expectedEpoch:1,revision:1,incarnation:0,stepKey:'step-1',profile:validateProfile({image,cpu:1,ramMib:128,pids:16,tmpMib:4,maxOutputBytes:4096,timeoutMs:100},[image]),ttlMs:60000,httpDeadlineMs:10000};
+packages/worker-client/src/client.test.ts:110:      const fetch=f.ports.fetch;f.ports.fetch=async(u,i)=>{f.state=JSON.parse(await readFile(join(root,'state.json'),'utf8'));return fetch(u,i);};
+packages/worker-client/src/client.test.ts:164:        async fetch(r){if(new URL(r.url).pathname==='/__clock'){clock=(await r.json()).now;return Response.json({ok:true});}return super.fetch(r);}
+packages/worker-client/src/client.test.ts:166:      export default{fetch(r,env){return entry.fetch(r,{...env,...config});}};
+packages/plan-check/src/index.test.ts:31:    const v = await new PactServerPlanCheck("http://pact:8730").check(["c:a", "c:b"]);
+packages/plan-check/src/index.test.ts:33:    expect(calls[0].url).toBe("http://pact:8730/api/check-chains");
+packages/plan-check/src/index.test.ts:45:      const v = await new PactServerPlanCheck("http://p").check(["c:a"]);
+packages/plan-check/src/index.test.ts:54:    const v = await new PactServerPlanCheck("http://p").check(["c:a", "c:gone"]);
+packages/plan-check/src/index.test.ts:60:    const v500 = await new PactServerPlanCheck("http://p").check(["c:a"]);
+packages/plan-check/src/index.test.ts:66:    const vdown = await new PactServerPlanCheck("http://p").check(["c:a"]);
+packages/plan-check/src/index.test.ts:73:    const v = await new PactServerPlanCheck("http://p").check([]);
+packages/library-gcs/src/index.test.ts:13:const config: GcsHostConfig = { origin: 'https://storage.googleapis.com', bucket: 'fixture-bucket',
+packages/library-gcs/src/index.test.ts:28:    async fetch(url, init) {
+packages/library-gcs/src/index.test.ts:112:  { projectId: 'other' }, { projectId: 'project-a\n' }, { objectKey: 'https://evil.test/x' },
+packages/library-gcs/src/index.test.ts:118:  { sizeBytes: HARD_LIMITS.maxReadBytes + 1 }, { url: 'https://evil.test' }
+packages/library-gcs/src/index.test.ts:134:for (const patch of [{ origin: 'https://evil.test' }, { origin: 'http://storage.googleapis.com' },
+packages/library-gcs/src/index.test.ts:135:  { origin: 'https://storage.googleapis.com/' }, { bucket: '../other' }, { bucket: 'bucket/path' },
+packages/library-gcs/src/index.test.ts:163:        if (kind === 'wrong-url') return response('https://evil.test/', '{}');
+packages/artifacts-port/src/git.test.ts:88:    const prev = process.env.GIT_DIR;
+packages/artifacts-port/src/git.test.ts:89:    process.env.GIT_DIR = ".";
+packages/artifacts-port/src/git.test.ts:100:      if (prev === undefined) delete process.env.GIT_DIR;
+packages/artifacts-port/src/git.test.ts:101:      else process.env.GIT_DIR = prev;
+packages/worker-runtime/src/runtime.test.ts:2:import { spawnBounded } from './process';
+packages/worker-runtime/src/runtime.test.ts:51:    for(const bad of ['node:latest','https://x/image',`${image};echo evil`]) expect(() => validateProfile({...config,image:bad},[bad])).toThrow();
+packages/worker-runtime/src/runtime.test.ts:74:    const valid = await spawnBounded(process.execPath,args,{stdin:f.job.specification,maxBytes:4096,timeoutMs:3000});
+packages/worker-runtime/src/runtime.test.ts:76:    const bad = await spawnBounded(process.execPath,args,{stdin:'Bearer fixture-private',maxBytes:4096,timeoutMs:3000});
+packages/library-revocation/src/http.test.ts:11:  return { enabled: true, environment: 'test', sourceAuthorityId: 'compute', compute: { origin: 'https://compute.test', credentialRef: 'compute-owner' },
+packages/library-revocation/src/http.test.ts:12:    targets: [ { kind: 'broker', projectId: 'project', authorityId: 'broker', origin: 'https://broker.test', credentialRef: 'broker-owner' },
+packages/library-revocation/src/http.test.ts:13:      { kind: 'catalog', projectId: 'project', authorityId: 'catalog', origin: 'https://catalog.test', credentialRef: 'catalog-owner' } ] };
+packages/library-revocation/src/http.test.ts:48:    expect(requests.map(r => r.url)).toEqual(['https://compute.test/v1/status', 'https://compute.test/v1/library/fences']);
+packages/library-revocation/src/http.test.ts:62:    expect(r.url).toBe(kind === 'broker' ? 'https://broker.test/v1/broker/revocations' : 'https://catalog.test/v1/library/project/revocations');
+packages/library-revocation/src/http.test.ts:69:    c.compute.origin = 'https://attacker.test'; c.compute.credentialRef = 'attacker'; c.targets[0].origin = 'https://attacker.test';
+packages/library-revocation/src/http.test.ts:71:    expect(p.fetch.mock.calls.map(([r]) => new URL(r.url).origin)).toEqual(['https://compute.test', 'https://compute.test', 'https://broker.test']);
+packages/library-revocation/src/http.test.ts:81:  it.each(['http://compute.test', 'https://user:password@compute.test', 'https://compute.test/path', 'https://compute.test/?url=https://attacker.test', 'https://compute.test/#fragment'])('rejects unsafe configured origin %s before transport', origin => {
+packages/library-revocation/src/http.test.ts:107:    const p = ports(), d = { ...delivery(), url: 'https://attacker.test', credential: 'attacker' };
+packages/library-revocation/src/http.test.ts:109:    expect(p.fetch.mock.calls[0][0].url).toBe('https://broker.test/v1/broker/revocations');
+packages/library-revocation/src/http.test.ts:117:    const p = ports(); p.fetch.mockResolvedValueOnce(new Response(null, { status, headers: { location: 'https://attacker.test' } }));
+packages/library-revocation/src/http.test.ts:177:    expect(p.fetch.mock.calls.map(([r]) => r.url)).toEqual(['https://broker.test/v1/broker/revocations', 'https://compute.test/v1/status']);
+packages/worker-runtime/src/node.test.ts:6:import { spawnBounded } from './process';
+packages/worker-runtime/src/node.test.ts:43:    const result = await spawnBounded(process.execPath,['-e','process.stdout.write(String(process.pid)); setInterval(()=>{},1000)'],{stdin:'',maxBytes:128,timeoutMs:500});
+packages/worker-runtime/src/node.test.ts:49:    const result = await spawnBounded(process.execPath,['-e','process.stdout.write(String(process.pid)); setInterval(()=>{},1000)'],{stdin:'',maxBytes:128,timeoutMs:5000,signal:abort.signal}); clearTimeout(timer);
+packages/worker-runtime/src/node.test.ts:54:      const result = await spawnBounded(process.execPath,['-e',`process.${stream}.write('x'.repeat(100000)); setInterval(()=>{},1000)`],{stdin:'',maxBytes:64,timeoutMs:2000});
+packages/worker-runtime/src/node.test.ts:59:    const missing = await spawnBounded('/nonexistent/foundry-cli',[],{stdin:'',maxBytes:64,timeoutMs:100}); expect(missing.code).not.toBe(0); expect(missing.stderr.length).toBe(0);
+packages/worker-runtime/src/node.test.ts:60:    const cancelled = await spawnBounded(process.execPath,['-e','throw Error("must not run")'],{stdin:'',maxBytes:64,timeoutMs:100,signal:AbortSignal.abort()}); expect(cancelled.interrupted).toBe(true); expect(cancelled.stdout.length).toBe(0);
+packages/worker-runtime/src/node.test.ts:63:    process.env.FOUNDRY_TEST_SENTINEL = 'private-fixture';
+packages/worker-runtime/src/node.test.ts:64:    try { const result = await spawnBounded(process.execPath,['-e','process.stdout.write(String(process.env.FOUNDRY_TEST_SENTINEL === undefined))'],{stdin:'',maxBytes:64,timeoutMs:2000}); expect(Buffer.from(result.stdout).toString()).toBe('true'); }
+packages/worker-runtime/src/node.test.ts:65:    finally { delete process.env.FOUNDRY_TEST_SENTINEL; }
+packages/library-jobs/src/index.test.ts:109:for (const objectKey of ['../x', '/projects/project-a/x', 'projects/project-b/objects/x', 'objects/x', 'projects/project-a/../x', 'projects/project-a//x', 'projects/project-a/%2e%2e/x', 'https://example.test/x', 'projects/project-a/a?x=y', 'projects/project-a/a\\b', 'projects/project-a/x\n']) {
+packages/library-jobs/src/index.test.ts:154:  for (const extra of [{ publicationAuthorized: true }, { promotionAuthorized: true }, { hostAttestation: 'forged' }, { sessionUrl: 'https://example.test' }, { credentials: {} }]) assert.throws(() => validateWorkerReport({ ...f.report, ...extra }));
+packages/worker-runtime/src/security.test.ts:4:import { spawnBounded } from './process';
+packages/worker-runtime/src/security.test.ts:6:vi.mock('./process',() => ({spawnBounded:vi.fn()}));
+packages/worker-runtime/src/security.test.ts:22:  vi.mocked(spawnBounded).mockResolvedValue({code:0,stdout:new Uint8Array(),stderr:new Uint8Array(),truncated:false,interrupted:false});
+packages/worker-runtime/src/security.test.ts:27:    const ambient = {proxies:{default:{httpProxy:'http://synthetic-proxy-sentinel@invalid'}}};
+packages/worker-runtime/src/security.test.ts:28:    vi.mocked(spawnBounded).mockImplementation(async (_exe,args) => {
+packages/worker-runtime/src/security.test.ts:35:    expect(spawnBounded).toHaveBeenCalledOnce();
+packages/worker-runtime/src/security.test.ts:40:    expect(spawnBounded).not.toHaveBeenCalled();
+packages/worker-runtime/src/security.test.ts:44:    expect(spawnBounded).not.toHaveBeenCalled();
+packages/worker-runtime/src/security.test.ts:60:    expect(spawnBounded).not.toHaveBeenCalled();
+packages/worker-runtime/src/security.test.ts:68:    expect(spawnBounded).toHaveBeenCalledWith('/trusted/docker',['--config','/trusted/empty','--host','unix:///trusted/socket','info','--format','{{json .}}'],{...options(),signal:original.signal});
+workers/library-broker/src/http.test.ts:46:  return new Request('https://broker.test' + path, { method: 'POST', headers: { 'content-type': media, authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
+workers/library-broker/src/http.test.ts:84:    ['http://broker.test/v1/broker/read', 'POST', 400, 'invalid-origin'],
+workers/library-broker/src/http.test.ts:85:    ['https://broker.test/v1/broker/read?url=elsewhere', 'POST', 400, 'invalid-origin'],
+workers/library-broker/src/http.test.ts:86:    ['https://broker.test/v1/broker/read', 'GET', 405, 'post-required'],
+workers/library-broker/src/http.test.ts:87:    ['https://broker.test/v1/broker/issue', 'POST', 404, 'not-found'],
+workers/library-broker/src/http.test.ts:131:    const req = new Request('https://broker.test/v1/broker/read', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + executorToken }, body, duplex: 'half' } as RequestInit);
+packages/storage-broker/src/index.test.ts:6:import { spawnSync } from 'node:child_process';
+packages/storage-broker/src/index.test.ts:94:    const result = spawnSync(process.execPath,['-e',code,path]); expect(result.signal).toBe('SIGKILL');
+packages/storage-broker/src/index.test.ts:218:  for (const patch of [{ objectKey: '../secrets' },{ objectKey: 'https://example.com' },{ objectKey: `projects/other/objects/${digest(bytes)}` },{ objectKey: `projects/project-1/objects/${digest(bytes)}%2f` },{ generation: '01' },{ generation: '1\n' },{ generation: '1'.repeat(33) },{ generation: '0' },{ generation: 1 },{ sizeBytes: 1048577 },{ projectId: 'other' }]) {
+packages/epoch-jobs/src/index.test.ts:103:    ['payload unknown field', f => { (f.event.payload as any).url = 'https://example.invalid'; }],
+packages/artifacts-port/src/cloudflare.test.ts:11:      remote: "https://example.invalid/task-1.git",
+packages/library-checkpoint/src/http.test.ts:3:const config:ReconcilerHttpConfig={enabled:true,environment:'local',sourceAuthorityId:'compute',origin:'https://compute.fixture',credentialRef:'managed-compute-owner'};
+packages/library-checkpoint/src/http.test.ts:17: it.each(['http://compute.fixture','https://a:b@compute.fixture','https://compute.fixture/path','https://compute.fixture?x=y','https://compute.fixture#x'])('rejects unsafe endpoint %s',origin=>{expect(()=>setup({}, {...config,origin})).toThrow();});
+packages/compute-authority/src/executor.test.ts:51:    const previous = process.env.NODE_OPTIONS;
+packages/compute-authority/src/executor.test.ts:52:    process.env.NODE_OPTIONS = "--definitely-invalid-option";
+packages/compute-authority/src/executor.test.ts:54:    finally { if (previous === undefined) delete process.env.NODE_OPTIONS; else process.env.NODE_OPTIONS = previous; }
+packages/lkg-client/src/client.test.ts:33:    const kg = new KGClient("http://kg:8002", "sekrit");
+packages/lkg-client/src/client.test.ts:45:    const kg = new KGClient("http://kg:8002");
+packages/lkg-client/src/client.test.ts:59:    expect(await new KGClient("http://kg").query("s")).toEqual(bare);
+packages/lkg-client/src/client.test.ts:63:    expect(await new KGClient("http://kg").query("s")).toEqual(bare);
+packages/lkg-client/src/client.test.ts:72:    const res = await new KGClient("http://kg").traverse("path:f", 2);
+packages/lkg-client/src/client.test.ts:143:    const oracle = new KgOverlapOracle(new KGClient("http://kg"));
+packages/lkg-client/src/client.test.ts:163:    const oracle = new KgOverlapOracle(new KGClient("http://kg"));
+packages/lkg-client/src/client.test.ts:174:    const oracle = new KgOverlapOracle(new KGClient("http://kg"));
+packages/lkg-client/src/client.test.ts:199:    const oracle = new KgOverlapOracle(new KGClient("http://kg"));
+packages/lkg-client/src/client.test.ts:217:    const oracle = new KgOverlapOracle(new KGClient("http://kg"));
+workers/compute/src/transport-auth.test.ts:13:  new Request('https://local.invalid', { headers: { ...extra, ...(authorization === null ? {} : { authorization }) } });
+workers/compute/src/transport-auth.test.ts:34:    denied(new Request('https://local.invalid', { headers }));

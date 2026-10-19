@@ -1,0 +1,12 @@
+{
+  "stop": "R6-LOCAL-CANDIDATE-HOLD",
+  "changedSourceFiles": 62,
+  "newSourceFiles": 48,
+  "modifiedSourceFiles": 14,
+  "sourceFilesCaptured": 67,
+  "sourceStateSha256": "3201b8744f5800cef3d4e9e4330d60c198c0657901de73ed83406457a7695773",
+  "patchSha256": "d01c0f2b1f54dab41d08af90c13f117f3c577a0cb8eb1b619721eaed4ceb5c20",
+  "patchBytes": 421929,
+  "artifactReadback": "exact hashes match captured files; not software validation",
+  "allAgentsClosed": true
+}

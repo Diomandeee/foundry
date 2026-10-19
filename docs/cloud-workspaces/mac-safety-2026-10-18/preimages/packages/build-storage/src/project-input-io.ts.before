@@ -1,0 +1,117 @@
+import {readResult} from '../../library-jobs/src/data';
+import * as v from '../../build-jobs/src/validation';
+import {alive, boundedBytes, canonical, check, exactRef, freeze, scopeCopy, sha256, snapshot} from './checks';
+import {shardedLocalRef} from './local-refs';
+import {current, issueCurrent, observeGrant, publish, reserve} from './publication';
+import {PROJECT_INPUT_LIMITS} from './project-input-format';
+import type {SnapshotImportRequest, TrustedSnapshotReader} from './snapshots';
+import type {ArtifactClaim, GrantScope, LocalContentStore, LocalRef, ManagedTreeSeal, ObjectRef, PublicationReservation, TrustedGrantIssuer, TrustedPublicationCapacity, TrustedWriter} from './types';
+
+interface ProjectInputNamespace {scope:GrantScope;issuer:TrustedGrantIssuer;capacity:TrustedPublicationCapacity}
+export interface ProjectInputPublicationNamespace extends ProjectInputNamespace {writer:TrustedWriter}
+export interface ProjectInputReadNamespace extends ProjectInputNamespace {reader:TrustedSnapshotReader}
+export interface ProjectInputRouteRequest {
+  operation:'publish'|'read'; kind:'objects'|'manifests'; ordinal:number; sha256:string; sizeBytes:number; ref:ObjectRef|null;
+}
+export type ProjectInputOperation=Omit<ProjectInputRouteRequest,'ordinal'>;
+
+/** Selector and reserve MUST use this identical scope-bound identity. Search each
+ * approved namespace for its existing receipt BEFORE selecting on free capacity;
+ * ordinal is deliberately ignored so a committed lost reply cannot debit anew. */
+export function projectInputOperationKey(scope:GrantScope,request:ProjectInputOperation|ProjectInputRouteRequest):string {
+  const bound=scopeCopy(scope), r=snapshot(request) as ProjectInputOperation;
+  check((r.operation==='publish'||r.operation==='read')&&(r.kind==='objects'||r.kind==='manifests'),'project-input-operation');
+  v.digest(r.sha256); v.uint(r.sizeBytes,1,1048576);
+  let ref:ObjectRef|null=null;
+  if(r.operation==='read') {
+    ref=exactRef(r.ref,bound.projectId,r.kind);
+    check(ref.sha256===r.sha256&&ref.sizeBytes===r.sizeBytes,'project-input-operation-ref');
+  } else check(r.ref===null,'project-publication-ref-must-be-null');
+  return sha256(canonical({scope:bound,operation:r.operation,kind:r.kind,sha256:r.sha256,sizeBytes:r.sizeBytes,ref}));
+}
+export interface ProjectInputRouting<N extends ProjectInputNamespace> {
+  /** Explicit finite OWNER-APPROVED set, supplied by the trusted host, never from
+   * snapshot metadata. Each capacity/issuer port is bound to this exact scope. */
+  namespaces:readonly N[];
+  /** Coordinator searches existing projectInputOperationKey(candidate.scope,
+   * request) receipts across the ENTIRE approved set before new capacity choice.
+   * Multiple existing debits are a conflict, not permission to choose another.
+   * Selection is NOT capacity approval. No rollover/reset is performed here. */
+  selectNamespace(request:ProjectInputRouteRequest,signal:AbortSignal):Promise<string>;
+}
+export interface ProjectInputPackagingPorts {
+  local:LocalContentStore;seal:ManagedTreeSeal;routing:ProjectInputRouting<ProjectInputPublicationNamespace>;
+}
+export interface ProjectInputReadPorts {local:LocalContentStore;routing:ProjectInputRouting<ProjectInputReadNamespace>}
+
+/** Per-operation receipts stay associated with their real scope-bound ports. The
+ * capacity adapter MUST admit cumulative stored/read/grant/reservation usage,
+ * including prior invocations and abandoned partial runs. Reuse never resets it. */
+function router<N extends ProjectInputNamespace>(scope:GrantScope,routing:ProjectInputRouting<N>,signal:AbortSignal) {
+  const primary=scopeCopy(scope), routes=new Map<string,N>(), receipts:{route:N;receipt:PublicationReservation}[]=[];
+  const choices=new Map<string,N>();
+  check(Array.isArray(routing.namespaces)&&routing.namespaces.length>0&&routing.namespaces.length<=PROJECT_INPUT_LIMITS.maxNamespaces,'approved-input-namespace-set-required');
+  for(const entry of routing.namespaces) {
+    const candidate=scopeCopy(entry.scope);
+    check(candidate.projectId===primary.projectId&&candidate.principalRef===primary.principalRef&&canonical(candidate.compute)===canonical(primary.compute),'input-namespace-fence-mismatch');
+    check(!routes.has(candidate.namespaceRef),'duplicate-input-namespace'); routes.set(candidate.namespaceRef,{...entry,scope:candidate});
+  }
+  check(routes.has(primary.namespaceRef),'primary-input-namespace-not-approved');
+  let ordinal=0;
+  return {
+    async admit(request:ProjectInputOperation) {
+      alive(signal);
+      check(ordinal<PROJECT_INPUT_LIMITS.maxChunks+PROJECT_INPUT_LIMITS.maxSegments+1,'input-io-object-budget');
+      const identity=projectInputOperationKey(primary,request); let route=choices.get(identity);
+      const sequence=ordinal++;
+      if(!route) {
+        const key=await routing.selectNamespace(freeze({...request,ordinal:sequence}),signal); route=routes.get(key);
+        check(route,'input-namespace-not-in-approved-set'); choices.set(identity,route);
+      }
+      check(route,'input-namespace-not-in-approved-set');
+      const operationKey=projectInputOperationKey(route.scope,request);
+      const receipt=await reserve(route.scope,1,request.sizeBytes,route,signal,operationKey);
+      receipts.push({route,receipt}); return {route,receipt};
+    },
+    async finish() {for(const {route,receipt} of receipts) await current(route,receipt,signal);},
+  };
+}
+export function projectPublisher(scope:GrantScope,ports:ProjectInputPackagingPorts,signal:AbortSignal) {
+  check(ports.local.layout==='sharded-v2','project-input-sharded-local-store-required');
+  const routing=router(scope,ports.routing,signal);
+  return {
+    async write(bytes:Uint8Array,kind:'objects'|'manifests'):Promise<{claim:ArtifactClaim;local:LocalRef}> {
+      const {route,receipt}=await routing.admit({operation:'publish',kind,sha256:sha256(bytes),sizeBytes:bytes.length,ref:null});
+      const local=await putProjectLocal(bytes,ports.local,signal); await current(route,receipt,signal);
+      const claim=await publish(bytes,kind,route.scope,receipt,{...route,local:ports.local,seal:ports.seal},signal);
+      return {claim,local};
+    },
+    finish:routing.finish,
+  };
+}
+export function projectReader(request:SnapshotImportRequest,ports:ProjectInputReadPorts,signal:AbortSignal) {
+  check(ports.local.layout==='sharded-v2','project-input-sharded-local-store-required');
+  const scope=scopeCopy(request.scope), routing=router(scope,ports.routing,signal);
+  return {
+    async read(input:ObjectRef):Promise<Uint8Array> {
+      const ref=exactRef(input,scope.projectId), kind=ref.objectKey.includes('/manifests/')?'manifests':'objects';
+      const {route,receipt}=await routing.admit({operation:'read',kind,sha256:ref.sha256,sizeBytes:ref.sizeBytes,ref});
+      const {claim,grant}=await issueCurrent(ref,route.scope,route.issuer,signal,receipt);
+      await current(route,receipt,signal);
+      const value=readResult(await route.reader.readArtifact(claim,route.scope,signal));
+      check(canonical(exactRef(value.ref,scope.projectId))===canonical(ref),'snapshot-generation-readback');
+      const bytes=boundedBytes(value.bytes,ref.sizeBytes);
+      check(bytes.length===ref.sizeBytes&&sha256(bytes)===ref.sha256,'snapshot-byte-readback');
+      await observeGrant(grant,route.issuer,signal); await current(route,receipt,signal); return bytes;
+    },
+    finish:routing.finish,
+  };
+}
+export async function putProjectLocal(bytes:Uint8Array,local:LocalContentStore,signal:AbortSignal):Promise<LocalRef> {
+  const expected=shardedLocalRef(sha256(bytes),bytes.length), ref=await local.put(boundedBytes(bytes,1048576),signal);
+  check(canonical(ref)===canonical(expected),'project-local-byte-binding'); return freeze(expected);
+}
+export async function readProjectLocal(ref:ObjectRef|LocalRef,local:LocalContentStore,signal:AbortSignal):Promise<Uint8Array> {
+  const expected=shardedLocalRef(ref.sha256,ref.sizeBytes), bytes=boundedBytes(await local.read(expected,signal),expected.sizeBytes);
+  check(bytes.length===expected.sizeBytes&&sha256(bytes)===expected.sha256,'project-local-digest'); return bytes;
+}

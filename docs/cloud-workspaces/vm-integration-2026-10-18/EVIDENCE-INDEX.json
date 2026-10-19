@@ -1,0 +1,520 @@
+{
+  "format": "sha256-evidence-inventory-v1",
+  "files": [
+    {
+      "path": "BASELINE.json",
+      "sha256": "7bc9c979e059de36844bbb927ba8bf392592682d3c92258d3e02455ad1eb58dd",
+      "bytes": 16630
+    },
+    {
+      "path": "CHANGE-RECEIPT.json",
+      "sha256": "71049e6aa32b28f0956335651bee6ad8e55a0f9081a06db31cbe444ef8c33c6c",
+      "bytes": 9454
+    },
+    {
+      "path": "DEFERRED-ACCEPTANCE.md",
+      "sha256": "a7e09e1c8aacd7d5a3c88219306e0f33b0a6a7b853d0fe24902702b641db4c26",
+      "bytes": 3542
+    },
+    {
+      "path": "FINDINGS.json",
+      "sha256": "699980ecf3aa6fe60305abcd64bfb34130a5ed6073d931e2c8f1efa31a283703",
+      "bytes": 4315
+    },
+    {
+      "path": "README.md",
+      "sha256": "30a1a56bf66bc8307e86b69e611871e7f7c053572c2b8fcc2e84a209b2279b30",
+      "bytes": 10848
+    },
+    {
+      "path": "SCOPE.json",
+      "sha256": "43623b2ed775c6acded86f6319910c65c20667d494b650dc24f0fff78b6df1fc",
+      "bytes": 20143
+    },
+    {
+      "path": "SOURCE-REVIEW.md",
+      "sha256": "8c784cf850b1c709d92b2b14b381e8c0c7f6f403cf74b5e2a76811364fb20a4f",
+      "bytes": 5968
+    },
+    {
+      "path": "TASKS.md",
+      "sha256": "a644a63b83fd0346f58ffdee49d4a89c74974c805be948c8fd70a5f13c08e80f",
+      "bytes": 1353
+    },
+    {
+      "path": "changes.patch",
+      "sha256": "96a4587621370c5bf9a0710101c19d3f657331b5e2303b91b4275f32b3667bf8",
+      "bytes": 126333
+    },
+    {
+      "path": "current/docs/cloud-workspaces/MASTER-CHECKLIST.md.after",
+      "sha256": "888053574d37e79b356e3f2642f5348d9142084d079ab6f7676fa5856f6dde2e",
+      "bytes": 12376
+    },
+    {
+      "path": "current/docs/cloud-workspaces/ROUTE.json.after",
+      "sha256": "f0092060319294c74315e551e6c703efc4e4039e259b1c7a9a4043bc2fed09d7",
+      "bytes": 9905
+    },
+    {
+      "path": "current/packages/build-jobs/src/authority.ts.after",
+      "sha256": "e6e4f9afafa80f185eb4ea39c5133399bd2fbed02e858af4f89cacfe2119e165",
+      "bytes": 35069
+    },
+    {
+      "path": "current/packages/build-jobs/src/contracts.ts.after",
+      "sha256": "4811a00c70b4195e214560a6ffc7fd2e35e29cfefd8d72a3db5758b3b989c0dd",
+      "bytes": 3821
+    },
+    {
+      "path": "current/packages/build-jobs/src/index.ts.after",
+      "sha256": "d983ea498284ec60fcd8e991b4b117d6c71c3f00facbf426386697e0ca197342",
+      "bytes": 270
+    },
+    {
+      "path": "current/packages/build-jobs/src/mac-vm-capability.ts.after",
+      "sha256": "4b8ab8624985f8f6b2a725d456a6cee17a288c71fa7e42e2ca179c61bba8b2f1",
+      "bytes": 1465
+    },
+    {
+      "path": "current/packages/build-jobs/src/schema.ts.after",
+      "sha256": "88b40047a40eea81fdf55b169abfbb60823a240480fad08e3322ecd573bd06ae",
+      "bytes": 7224
+    },
+    {
+      "path": "current/packages/build-jobs/src/validation.ts.after",
+      "sha256": "9b998991c25157a07762751608fdf62f03753054c9dcf0626d512c8805e907bc",
+      "bytes": 7663
+    },
+    {
+      "path": "current/packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md.after",
+      "sha256": "4dab6e6bd4ad7d7b99faaaf47d59039c1d3cfc1aef097e06bfd3f4e2f899119f",
+      "bytes": 14546
+    },
+    {
+      "path": "current/packages/build-runtime/README.md.after",
+      "sha256": "e7ab6a663e54074b783ae4895ff57b1f169ad8f52f0bbf2bf0bfa915b95da11e",
+      "bytes": 9311
+    },
+    {
+      "path": "current/packages/build-runtime/native/mac-vm-guest.py.after",
+      "sha256": "cff6a97f10bfdc22861fd28eb1051fdd959ed16f1d66fe7dd6d54cefc5fb8c4c",
+      "bytes": 20501
+    },
+    {
+      "path": "current/packages/build-runtime/native/mac-vm-host.swift.after",
+      "sha256": "cf1d497743930966d88ec8967654c2a81cd7d63e3c9bd76003bd524bd9fef3a1",
+      "bytes": 33851
+    },
+    {
+      "path": "current/packages/build-runtime/native/mac-vm-io.py.after",
+      "sha256": "611409d55fd2731a9627eb3674598fcf4445907441649b3df502a1738c03b644",
+      "bytes": 21020
+    },
+    {
+      "path": "current/packages/build-runtime/src/controller.ts.after",
+      "sha256": "312cb57c1bb15286412a4d9351777e3d68ec26c75fa21b9a53dfe5e7bc4a3a18",
+      "bytes": 18821
+    },
+    {
+      "path": "current/packages/build-runtime/src/host.ts.after",
+      "sha256": "f9a3eaf932f987ccca2e360d2c20fa443f3d84e9b911cc2d1f0edb39df749b0c",
+      "bytes": 10707
+    },
+    {
+      "path": "current/packages/build-runtime/src/index.ts.after",
+      "sha256": "418c10a4c452f340b01afbfef6934c19d5e49da0dcf14e512aedd2f1be6bf3cb",
+      "bytes": 2908
+    },
+    {
+      "path": "current/packages/build-runtime/src/liveness.ts.after",
+      "sha256": "ba9a02680f0968e02cdc00d0c48279fff6376050f18696adc4df74afce2fa238",
+      "bytes": 6383
+    },
+    {
+      "path": "current/packages/build-runtime/src/mac-vm-adapter.ts.after",
+      "sha256": "2d6c18c5f1e29495a94ba6545fca1fe85402cb2760da7a982ed91f4d4368f009",
+      "bytes": 10273
+    },
+    {
+      "path": "current/packages/build-runtime/src/mac-vm-capability.ts.after",
+      "sha256": "73370854c6ab2835c587f86ffd094fea714d710d6c573cecb700277f8c59e362",
+      "bytes": 1607
+    },
+    {
+      "path": "current/packages/build-runtime/src/mac-vm-intake.ts.after",
+      "sha256": "f7c6a99868e3c918c058183ec655c23aeabf4d860427a8270978226abaf339a1",
+      "bytes": 13194
+    },
+    {
+      "path": "current/packages/build-runtime/src/mac-vm-job.ts.after",
+      "sha256": "3f8f07c2aa0223765a7c63cc302e41097d84c6a13c0877475fa76ad8865b3eb5",
+      "bytes": 5617
+    },
+    {
+      "path": "current/packages/build-runtime/src/mac-vm-mailbox.ts.after",
+      "sha256": "17f584a16718189eb2e1c6de5406ed48357e3b13b2b4838a4ed0a803d3e43bdf",
+      "bytes": 4230
+    },
+    {
+      "path": "current/packages/build-runtime/src/mac-vm-worker.ts.after",
+      "sha256": "38db59ca77fffcbda3cd9e8e068017c44a2d56dc23abf3d9bbe48412e3e3aebf",
+      "bytes": 1712
+    },
+    {
+      "path": "current/packages/build-runtime/src/mac-vm.ts.after",
+      "sha256": "8ac627f54d53a411110812ce257f74ba786c809790473f883b5d074cdddb5f7b",
+      "bytes": 19277
+    },
+    {
+      "path": "current/packages/build-runtime/src/storage-inventory.ts.after",
+      "sha256": "20c18d64f2001e915c10cc37224ef98afe47863e76c1abbddedfe51f136c5fbe",
+      "bytes": 5439
+    },
+    {
+      "path": "current/packages/build-runtime/src/supervisor.ts.after",
+      "sha256": "2035c4457f363da090c9c901979200711126916bc764b21e4dd5d1064bd0af5e",
+      "bytes": 6674
+    },
+    {
+      "path": "current/packages/build-runtime/src/types.ts.after",
+      "sha256": "9983c1bcd3efca96915434e77d9481a41e5235f9852a4c9efae0eb7241b5c21a",
+      "bytes": 3313
+    },
+    {
+      "path": "current/tools/foundry-pilot/operator/builds.js.after",
+      "sha256": "b0c5aed67686524009cf854b2de6615735cbeb060a66d8b833aefea33c0a7c6b",
+      "bytes": 10564
+    },
+    {
+      "path": "preimages/docs/cloud-workspaces/MASTER-CHECKLIST.md.before",
+      "sha256": "f64099d453f96174e14efd186b45e52d78a5bd31f6aef2fe98dd5b5c7da38e20",
+      "bytes": 10912
+    },
+    {
+      "path": "preimages/docs/cloud-workspaces/ROUTE.json.before",
+      "sha256": "c7b8b71655f6da5e3c7d6f8e023f096821b25c53def5dcb927ed0303e927f5cb",
+      "bytes": 8279
+    },
+    {
+      "path": "preimages/packages/build-jobs/README.md.before",
+      "sha256": "7914e7a959f188c0ea7ee5bfe8daf10dbf780a8bfd5605a14293eb5d3624342b",
+      "bytes": 7468
+    },
+    {
+      "path": "preimages/packages/build-jobs/src/authority.ts.before",
+      "sha256": "88db40abbd5e9c11a2a00433d7863426d38a1712421da20039018a56ce624242",
+      "bytes": 32325
+    },
+    {
+      "path": "preimages/packages/build-jobs/src/broker-reader.ts.before",
+      "sha256": "b7348180fd80db16fbddc91c179123454b5d3bb446994d389895cd58665be26d",
+      "bytes": 1950
+    },
+    {
+      "path": "preimages/packages/build-jobs/src/contracts.ts.before",
+      "sha256": "d2f5e728a1b69f090d17b0390063104bbe37b7060734977fa9389b1a8baf8916",
+      "bytes": 3589
+    },
+    {
+      "path": "preimages/packages/build-jobs/src/index.ts.before",
+      "sha256": "cf57955abc3480c123b1c80647f9bb13e3590698be498b0d8ef890e0d5260d5f",
+      "bytes": 151
+    },
+    {
+      "path": "preimages/packages/build-jobs/src/schema.ts.before",
+      "sha256": "37f091a9174fefb8d7586c0a1bfc1638bac1b95371249cf4c4791fc5cab32fe4",
+      "bytes": 6652
+    },
+    {
+      "path": "preimages/packages/build-jobs/src/validation.ts.before",
+      "sha256": "651403373c15460425862b4cbb93bd9c82923b7e365c3822f766a8f8a1f9ab35",
+      "bytes": 7441
+    },
+    {
+      "path": "preimages/packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md.before",
+      "sha256": "f13a74c891a6d4830d66fc78bd12d8fec307de1c55c421f61d3202269d98ec8b",
+      "bytes": 14072
+    },
+    {
+      "path": "preimages/packages/build-runtime/README.md.before",
+      "sha256": "73d582ea6f0ff514c6cc235fa79e44b8600b2de5e8594f7e07e4a486274dce6f",
+      "bytes": 8670
+    },
+    {
+      "path": "preimages/packages/build-runtime/native/mac-vm-guest.py.before",
+      "sha256": "f12b0f3b95be5998e972f6355531ef0b629f12a0e9e2f25d228157f8a23d045e",
+      "bytes": 17887
+    },
+    {
+      "path": "preimages/packages/build-runtime/native/mac-vm-host.swift.before",
+      "sha256": "bc104a5b3129e4f05615db7e3227fd690bda2fe4aa9ef8c50e0fee95233958b5",
+      "bytes": 33604
+    },
+    {
+      "path": "preimages/packages/build-runtime/native/mac-vm-io.py.before",
+      "sha256": "275584ee624f5a5ba267b8db2f9fc904310b72c11fb1e066ff4fd8613f40b2cb",
+      "bytes": 20340
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/adapters.ts.before",
+      "sha256": "0a9761f6c7d242f39384c5f46b89151e7025f51a7aaae291bf44eb799c7f21bb",
+      "bytes": 10165
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/controller.ts.before",
+      "sha256": "11b43459846b2959c0d95c13d382594b9238ba26d525c32118b688806414af38",
+      "bytes": 17481
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/discovery.ts.before",
+      "sha256": "61e7e210ac54008e0a209273ed1b40a51af06c68b197d3a681eff8c76409ff16",
+      "bytes": 4669
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/host.ts.before",
+      "sha256": "ef5830fee318729039061712040c9bdf421771b2526388db6ff24d382c9a6767",
+      "bytes": 10082
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/index.ts.before",
+      "sha256": "56c683117515ad0fede56eea54581fe7e84b42d5c4b78b490bf5f95e31c74bc0",
+      "bytes": 2535
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/liveness.ts.before",
+      "sha256": "2672ced0619760433c3a69c0eced0109553d9e85f4fbb99db8d93e0c2751ee8e",
+      "bytes": 5034
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/mac-attestation.ts.before",
+      "sha256": "1a06f9434755b2cf2f15e6822b2bd239a61f17bbbb5db26bab55e9586a8ea5b2",
+      "bytes": 13392
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/mac-vm-input.ts.before",
+      "sha256": "ffc9ed9e83beeac2e607fb03463d03153052bcf22ab1f4fb4eff94ab28299fc9",
+      "bytes": 11273
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/mac-vm-intake.ts.before",
+      "sha256": "57ccb589eb16abe1875749ae37fa1a07fe9738e8e84b01ce4ac95d7faf169591",
+      "bytes": 12996
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/mac-vm-job.ts.before",
+      "sha256": "c4f15a30a7f03cb9cc9be47d2424dab98f69c731766ef21cc78641b9b9f0e9e0",
+      "bytes": 4997
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/mac-vm-staging.ts.before",
+      "sha256": "38a00a3870f040f994afb2db986c365ff0111097cd2b72b69b2ce34dc0dfbc81",
+      "bytes": 4316
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/mac-vm-tree.ts.before",
+      "sha256": "eb7c0533796c430f9b264b22eb82e50ea11a183a6e866d87c44025f173a93a07",
+      "bytes": 2781
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/mac-vm.ts.before",
+      "sha256": "1764e6cadf281005af7d7ba36b087a984d045b7918ed7625b786cbec6d55921f",
+      "bytes": 18724
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/node-transport.ts.before",
+      "sha256": "a0f0e3ffd36cb73fd83ee4c754a044140676be6a33e2d448924827ca39d8d803",
+      "bytes": 5224
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/parent-profile.ts.before",
+      "sha256": "9fcb2cefb308a1212b025d82eb1c4b1099487f9bf78f532746a871661ef9f163",
+      "bytes": 5354
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/plans.ts.before",
+      "sha256": "0e60572734cd16b0c6e6944ed727854d54fc50531d4942c10a991b19cd8fc283",
+      "bytes": 7844
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/process.ts.before",
+      "sha256": "5e80a391976333728885b8b84b6e64573f27d49e3269a85d691804dc923c09d7",
+      "bytes": 2470
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/receipts.ts.before",
+      "sha256": "b1105f8e8852404f7ddd7638a92010ea5ca2498195e28845ef3d56a0a66886d3",
+      "bytes": 9361
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/storage-integration.ts.before",
+      "sha256": "24a3acf8cacfa1d2f569232db4f0249dd0f7e5c8893dc949215d4b885030fc14",
+      "bytes": 13412
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/storage-inventory.ts.before",
+      "sha256": "01b58d47cbe0ce1ef880e2b64db5f34c3eaf7755559047916672ffb3fdfcb2a0",
+      "bytes": 4990
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/supervisor.ts.before",
+      "sha256": "d8f6459f7cd2c3d94d73f6c1ba908f781c1545557d24b30334f26f76ba9fcd87",
+      "bytes": 6063
+    },
+    {
+      "path": "preimages/packages/build-runtime/src/types.ts.before",
+      "sha256": "1601f455b0e867a1939bbc9f88cd6cd6ff9a9271fae78e03a4e7bd459c21062c",
+      "bytes": 3052
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/CONTRACT.md.before",
+      "sha256": "d11cb0f17184974539d07aa48650a4b842e9f28b4c4da6da60540337bd9086b6",
+      "bytes": 11726
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/README.md.before",
+      "sha256": "dd49b9e10076bdc26f84b8af86a98817e652faa4a31841ec8ebaade04afcb023",
+      "bytes": 22701
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/build-submission.ts.before",
+      "sha256": "5e0ba3b9a062463af93b84f8aefabc8263375fd39bd65077a0429bb78b41b30f",
+      "bytes": 5654
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/discover-authority.ts.before",
+      "sha256": "8e298274f9ac74d0d795758c73299d11c77d7db1be9162e9786000e9ab9a8581",
+      "bytes": 1048
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/operator/builds.js.before",
+      "sha256": "b6f0684696257086b3ec236b925ec0fd3d70216dc8336b48b82021797b55440d",
+      "bytes": 10271
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/operator/operator.js.before",
+      "sha256": "8cecf2ee99610a9ceee37ad8147171f69d6e688fa2a99fea4a6e3393717bf20f",
+      "bytes": 34320
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/operator-auth.ts.before",
+      "sha256": "3d2a7959eee054dd1ae4be9eaab658ccbfa656193b1fa4cfe893c7dc33c7335f",
+      "bytes": 2505
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/operator-config.ts.before",
+      "sha256": "2c0a1dffaa3dd78f6a0c4adc290222c38b518858a6996b75febcd04152180858",
+      "bytes": 4653
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/operator-server.ts.before",
+      "sha256": "a3f597c76fe400b8fc873a295fb0f3972b6df19853b33605d5e58b8c32a57271",
+      "bytes": 16737
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/owner-host.ts.before",
+      "sha256": "bfce73c4823b8ca6c3d46cee6d64b93fb2e0420941b4eb2f4af5d1c08c96b9e2",
+      "bytes": 7161
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/package-image.ts.before",
+      "sha256": "9c1050af1612e2bae2cb76e860ff0ffbba880d2cf5eaa6da58ca14fed4d27eac",
+      "bytes": 1865
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/pilot-job.ts.before",
+      "sha256": "835dadb41601f3a119de8d578a20b79a1d3ae727142eda28bb066c38ad003156",
+      "bytes": 2063
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/private-state.ts.before",
+      "sha256": "6d1182c6caae2ac3e1e2efe0d2436373155ba1100e62632c5b718677d40fc5be",
+      "bytes": 4549
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/submission.ts.before",
+      "sha256": "035e6a3dbd5b8e2d19789933ca8149041ee70aea51f4419dae82d3b6ec54bc51",
+      "bytes": 4416
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/transport.ts.before",
+      "sha256": "c98a2541ea1714f15cdd23b9263c998096662c9f77cf9226092dbc6a91e2bfb8",
+      "bytes": 5854
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/verifier-config.ts.before",
+      "sha256": "fd925d6b3153fa697a89f083ff899a6d58285fae7b205f5d9126d6d057e6b669",
+      "bytes": 3631
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/verifier-host.ts.before",
+      "sha256": "08a1c61dc261d4b6d808dd2075d6da27a6cd731d231dba5e8637d6996e68f981",
+      "bytes": 20391
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/worker-config.ts.before",
+      "sha256": "47114108089fe6b0c0b84b40aff42516b440c19b5a5149a6f48b76b0d2ce3fc2",
+      "bytes": 7507
+    },
+    {
+      "path": "preimages/tools/foundry-pilot/worker-host.ts.before",
+      "sha256": "eede7971b05189a79f377e9755d730db002d564e19be52fc524e0c24dd9f42d5",
+      "bytes": 20942
+    },
+    {
+      "path": "preimages/workers/compute/README.md.before",
+      "sha256": "ba62df879f097cca0a86752b463521daceec59d9197f1ad8005fb5dff263b9b8",
+      "bytes": 10506
+    },
+    {
+      "path": "preimages/workers/compute/src/artifact-store.ts.before",
+      "sha256": "947d69485ee0146383571a6ae590d69f59261f4e481764e7ac9360fefc5fc0a0",
+      "bytes": 6210
+    },
+    {
+      "path": "preimages/workers/compute/src/authority.ts.before",
+      "sha256": "368f7f1c536bab163bdccaea7304b462b4ddaf5bbf40f6c525f0b4b6cfd11544",
+      "bytes": 35464
+    },
+    {
+      "path": "preimages/workers/compute/src/http.ts.before",
+      "sha256": "4798ffc71d02aeca5c09b7656afad18577653b73372f2c8e1a21f78f9cf63ee3",
+      "bytes": 2908
+    },
+    {
+      "path": "preimages/workers/compute/src/index.ts.before",
+      "sha256": "15e3dbd8bfb80c7127f37141b9c57b91b95756e074077ddc2eeddac282e129d4",
+      "bytes": 782
+    },
+    {
+      "path": "preimages/workers/compute/src/library-feed.ts.before",
+      "sha256": "860741273208122926a9da78e461e331534e241055d3cf5dbe52516cdce0b4ca",
+      "bytes": 4898
+    },
+    {
+      "path": "preimages/workers/compute/src/operator-feed.ts.before",
+      "sha256": "5b873bdd6b679c4052280013ca6d7d39fa08d505b9e3979cda8fdf477a28076d",
+      "bytes": 24863
+    },
+    {
+      "path": "preimages/workers/compute/src/transport-auth.ts.before",
+      "sha256": "de3f968c9ac775e2b89c0411ac2436a93abeb5d63427f00331553a5b17b55292",
+      "bytes": 2960
+    },
+    {
+      "path": "preimages/workers/compute/test-support/authority-fixture.ts.before",
+      "sha256": "c63ee35b506b09177844fdc6cf97f3c89431622e3733160cbfa5501813a593ec",
+      "bytes": 3874
+    },
+    {
+      "path": "preimages/workers/compute/test-support/client.ts.before",
+      "sha256": "fca0ade4387205d142b27e07f2767dcde58bcefcfda120cfa3b81be4b1f1cf57",
+      "bytes": 2583
+    },
+    {
+      "path": "preimages/workers/compute/test-support/runtime.ts.before",
+      "sha256": "34c32862365399bc98989b9720942f691076f6d681a146b0f62f7af97d6c8043",
+      "bytes": 1328
+    }
+  ]
+}

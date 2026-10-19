@@ -1,0 +1,60 @@
+import { cpus, totalmem } from 'node:os';
+import { performance } from 'node:perf_hooks';
+import type { ApprovedIdentity } from '../../worker-enrollment/src/contracts.js';
+import type { HostPolicy } from './types.js';
+import type { WorkerRequestPort } from './node-transport.js';
+import { reserveLivenessSequence } from './host.js';
+import { canonicalData } from './parent-profile.js';
+import { check, hash } from './plans.js';
+import { discoverCensus } from './discovery.js';
+import { managedStorageInventory } from './storage-inventory.js';
+import { assertBuildResponseSource, snapshotWorkerAuthority, type WorkerAuthorityBinding, type BuildResponseSource } from './controller.js';
+export interface WorkerLivenessPort {
+  /** Return the actual validated census wrapper source, never a synthetic success receipt. */
+  refreshLiveness(activeJobs:0|1,signal:AbortSignal):Promise<Readonly<BuildResponseSource>>;
+}
+export interface NodeLivenessConfig {
+  host:Readonly<HostPolicy>; expectedEpoch:number; approvedIdentity:ApprovedIdentity;
+  authority:WorkerAuthorityBinding;
+  /** Bound enrollment revision/incarnation; new revisions require fresh owner baselines. */
+  revision:number; incarnation:number; initialEnrollmentSequence:number; initialCensusSequence:number;
+  developerDirs:readonly string[]; optedIn:boolean;
+  /** Existing owner-private cache root, disjoint from workBase; no automatic creation. */
+  cacheRoot:string;
+}
+/** Concrete CPU-only observer. GPU identities reject until a real GPU census port exists.
+ * Each refresh makes a fresh census; each >=1s refresh uses a fresh durable heartbeat.
+ * No replayed heartbeat is treated as a freshness advance. */
+export class NodeWorkerLiveness implements WorkerLivenessPort {
+  private readonly c:NodeLivenessConfig; private lastHeartbeat = -Infinity;
+  constructor(config:NodeLivenessConfig,private readonly transport:WorkerRequestPort) {
+    this.c = JSON.parse(canonicalData(config)) as NodeLivenessConfig;
+    this.c.authority = snapshotWorkerAuthority(this.c.authority);
+    check(this.c.approvedIdentity.workerId === this.c.authority.workerId,'liveness-worker-pin-mismatch');
+    check(this.c.approvedIdentity.workerClass === 'general' && this.c.approvedIdentity.devices.length === 0,'gpu-observation-not-supported');
+    check(Number.isSafeInteger(this.c.expectedEpoch) && this.c.expectedEpoch > 0 && Number.isSafeInteger(this.c.revision) && this.c.revision > 0 && Number.isSafeInteger(this.c.incarnation) && this.c.incarnation >= 0,'invalid-liveness-binding');
+  }
+  async refreshLiveness(activeJobs:0|1,signal:AbortSignal):Promise<Readonly<BuildResponseSource>> {
+    const c = this.c, identity = c.approvedIdentity;
+    check(!signal.aborted && cpus().length >= identity.cpu && Math.floor(totalmem()/1048576) >= identity.ramMib,'observed-host-capacity-mismatch');
+    const scope = `${identity.workerId}:${c.revision}:${c.incarnation}`;
+    if (performance.now()-this.lastHeartbeat >= 1000) {
+      const stamp = await reserveLivenessSequence(c.host,scope,'enrollment',c.initialEnrollmentSequence);
+      const key = hash(`${scope}:enrollment:${stamp.sequence}`);
+      const response = await this.transport.request('/v1/enrollment/heartbeat',{expectedEpoch:c.expectedEpoch,request:{key,sequence:stamp.sequence,observedIdentity:identity}},signal) as {ok?:boolean;status?:{sequence?:number;freshness?:string;revision?:number;incarnation?:number;identity?:ApprovedIdentity}};
+      check(response.ok === true && response.status?.sequence === stamp.sequence && response.status.freshness === 'fresh' && response.status.revision === c.revision && response.status.incarnation === c.incarnation && canonicalData(response.status.identity) === canonicalData(identity),'heartbeat-receipt-mismatch');
+      await stamp.commit(); this.lastHeartbeat = performance.now();
+    }
+    const stamp = await reserveLivenessSequence(c.host,scope,'census',c.initialCensusSequence);
+    const storage = await managedStorageInventory([{role:'cache',path:c.cacheRoot,uid:c.host.uid},{role:'workspace',path:c.host.workBase,uid:c.host.uid}]);
+    const census = await discoverCensus(c.host.workBase,c.developerDirs,{workerId:identity.workerId,sequence:stamp.sequence,optedIn:c.optedIn,activeJobs},
+      {cacheBytes:storage.cacheBytes,workspaceBytes:storage.workspaceBytes,complete:storage.complete});
+    check(!signal.aborted,'census-aborted');
+    const key = hash(`${scope}:census:${stamp.sequence}`);
+    const response = JSON.parse(canonicalData(await this.transport.request('/v1/builds/commands',{expectedEpoch:c.expectedEpoch,command:{operation:'census',key,body:census}},signal))) as {ok?:boolean;source?:unknown};
+    assertBuildResponseSource(response.source,c.authority,c.expectedEpoch);
+    check(response.ok === true,'census-rejected'); await stamp.commit();
+    if (activeJobs === 0) check(storage.complete && storage.cacheBytes !== null && storage.cacheBytes <= 20*1024**3,'cache-inventory-or-20gib-admission-denied');
+    return Object.freeze({...response.source});
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "stage": "R1-local-source-candidate",
+  "runtimeState": "not-executed",
+  "template": "epoch-event-summary-v1",
+  "inputClassification": "synthetic-pilot-input",
+  "services": {
+    "authority": {
+      "entry": "workers/compute/src/index.ts",
+      "configuration": "tools/foundry-pilot/compute.pilot.toml",
+      "placement": "existing Cloudflare account/target subject to owner selection",
+      "persistentState": "SQLite Durable Object, namespace/issuer/epoch bound",
+      "activation": "disabled"
+    },
+    "operator": {
+      "entry": "tools/foundry-pilot/operator-server.ts",
+      "placement": "approved local operator host, loopback only",
+      "persistentState": "private operator submission journal",
+      "configuration": "owner-managed private OperatorConfig file",
+      "activation": "not-started"
+    },
+    "worker": {
+      "entry": "tools/foundry-pilot/worker-host.ts",
+      "placement": "owner-approved VPS/Mac with qualifying local Linux Docker daemon",
+      "persistentState": "private supervisor, client journal and runtime staging roots per credential",
+      "activation": "disabled until separately approved"
+    },
+    "edge": {
+      "entry": "tools/foundry-pilot/worker-host.ts",
+      "placement": "Pi or approved edge host",
+      "persistentState": "private heartbeat supervisor state",
+      "executionSlots": 0,
+      "activation": "disabled until separately approved"
+    },
+    "verifier": {
+      "entry": "tools/foundry-pilot/verifier-host.ts",
+      "placement": "approved independent verifier process",
+      "persistentState": "private exact-request journal",
+      "configuration": "distinct owner/read and verifier credential references",
+      "activation": "disabled until separately approved"
+    }
+  },
+  "image": {
+    "packager": "tools/foundry-pilot/package-image.ts",
+    "recipe": "tools/foundry-pilot/image/Dockerfile",
+    "handler": "packages/worker-runtime/src/image-handler.ts",
+    "baseImage": null,
+    "approvedDigest": null,
+    "state": "not-built"
+  },
+  "requiredApprovalInputs": [
+    "actual target and stable authority ID",
+    "explicit inputAuthorityId source namespace and distinct submitter/verifier principals",
+    "schema/namespace preservation decision",
+    "managed issuer and role credential references",
+    "separate local operator access credential reference",
+    "canonical private state paths",
+    "approved image base and produced immutable image digest",
+    "actual runtime/socket/isolation prerequisites per host",
+    "immutable input canonical SHA256 and approved workload IDs",
+    "quota and profile approval",
+    "installation/deployment/secret-change permissions"
+  ],
+  "excluded": [
+    "live chain listener",
+    "GCS prerequisite for first CPU job",
+    "Vast provisioning",
+    "financial operations",
+    "automatic physical-stop reconciliation",
+    "new dependencies",
+    "tests/typecheck/build/preview/demo execution during R1 authoring"
+  ],
+  "input": {
+    "path": "tools/foundry-pilot/pilot-input.json",
+    "canonicalSha256": "83edfba967eca70b24bda9d0b5fc495b55a9dc969da4b8475dc50e67961dc279",
+    "kind": "synthetic-pilot-input",
+    "actualChainObservation": false,
+    "profile": {
+      "cpu": 1,
+      "ramMib": 128,
+      "maxOutputBytes": 4096
+    },
+    "executionState": "not-executed",
+    "inputAuthorityId": "pilot-input",
+    "authorityMeaning": "synthetic event-source namespace, separately pinned from deployed compute authority"
+  }
+}

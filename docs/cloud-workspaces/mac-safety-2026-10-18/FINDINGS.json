@@ -1,0 +1,184 @@
+{
+  "format": "foundry.mac-safety.findings.v1",
+  "verdict": "source-reviewed-primitives-production-HOLD",
+  "sourceFindings": [
+    {
+      "id": "MS-G0",
+      "issue": "Mutable executable policy could change after pinning",
+      "resolution": "Captured private canonical owner policy used for pin and spawn",
+      "state": "source-addressed",
+      "evidence": [
+        "GUEST-REVIEW.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-G1",
+      "issue": "Root output path reopen/unsafe follow race",
+      "resolution": "Descriptor-relative no-follow same-device regular-file copy stream",
+      "state": "source-addressed",
+      "evidence": [
+        "GUEST-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-G2",
+      "issue": "Copies exceeded admitted size and lacked operation deadline",
+      "resolution": "Same descriptor bounded copy/hash, growth/stability checks, shared guest deadline",
+      "state": "source-addressed",
+      "evidence": [
+        "GUEST-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-G3",
+      "issue": "Repeated stop wrote to ended stdin",
+      "resolution": "One-shot stopRequested and writableEnded checks",
+      "state": "source-addressed",
+      "evidence": [
+        "GUEST-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-G4",
+      "issue": "Observation or journal settlement could wait indefinitely",
+      "resolution": "Unknown-observation deadlines and EOF/error handling retain quarantine and cannot later upgrade",
+      "state": "source-addressed",
+      "evidence": [
+        "GUEST-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-G5",
+      "issue": "Output enumeration allocated before entry checks",
+      "resolution": "Incremental cumulative traversal with depth/path/time/pending limits",
+      "state": "source-addressed",
+      "evidence": [
+        "GUEST-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-G6",
+      "issue": "Manifest/tool output allocated before size enforcement",
+      "resolution": "Regular bounded job read and streamed capped observation output",
+      "state": "source-addressed",
+      "evidence": [
+        "GUEST-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-G7",
+      "issue": "Receipt metadata admitted after oversized serialization",
+      "resolution": "Per-row encoded upper bound admitted before copying/retaining; 900KiB row budget",
+      "state": "source-addressed",
+      "evidence": [
+        "GUEST-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-H1",
+      "issue": "Wire challenge duration mismatch",
+      "resolution": "One-second wire expiry, separate 500ms supersession; exact shared schema",
+      "state": "source-addressed",
+      "evidence": [
+        "CONTAINMENT-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-H2",
+      "issue": "ACL text renderer could omit entries on failure",
+      "resolution": "Direct filesec presence/first-entry proof with Darwin result semantics",
+      "state": "source-addressed",
+      "evidence": [
+        "CONTAINMENT-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-H3",
+      "issue": "Pinned executable could be an interpreter script",
+      "resolution": "Mach-O/fat magic from actual opened descriptor before reserve/spawn",
+      "state": "source-addressed",
+      "evidence": [
+        "CONTAINMENT-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-H4",
+      "issue": "Readonly preflight I/O could outlive public deadline",
+      "resolution": "Race fatal while tracking verificationPending; late completion cannot spawn; poison retained",
+      "state": "source-addressed",
+      "evidence": [
+        "CONTAINMENT-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-H5",
+      "issue": "Explicit job limits differed; claimed oversized runtime path",
+      "resolution": "Explicit 256KiB ceiling aligned; alleged reachability retracted because canonicalData already imposed same bound",
+      "state": "clarity-fixed-counterexample-retracted",
+      "evidence": [
+        "CONTAINMENT-REVIEW-CLOSURE.md"
+      ],
+      "validation": "not-executed"
+    },
+    {
+      "id": "MS-P1",
+      "issue": "Fresh challenge alone could outlive remaining real lease",
+      "resolution": "Actual current remainingMs permit budget anchored earlier at helper challenge creation, checked at physical start",
+      "state": "source-addressed",
+      "evidence": [
+        "CONTAINMENT-REVIEW-FINAL.md"
+      ],
+      "validation": "not-executed"
+    }
+  ],
+  "openPrerequisites": [
+    {
+      "id": "MS-OPEN-1",
+      "state": "local-engineering-open",
+      "issue": "Verified immutable snapshot/filelist equality and per-attempt guest artifact staging"
+    },
+    {
+      "id": "MS-OPEN-2",
+      "state": "local-engineering-open",
+      "issue": "Stop-gated readonly output-disk intake and independent result verification/publication"
+    },
+    {
+      "id": "MS-OPEN-3",
+      "state": "local-engineering-open",
+      "issue": "Production VM RuntimeAdapter/controller/guest capabilities; native remains ineligible"
+    },
+    {
+      "id": "MS-OPEN-4",
+      "state": "prerequisite-open",
+      "issue": "Generic writable CAS/materialization isolation; readonly guard does not implement it"
+    },
+    {
+      "id": "MS-OPEN-5",
+      "state": "gated-not-started",
+      "issue": "Owner-provisioned identities/accounts/images/toolchains/helper binaries/volumes/resources and actual disk capacity"
+    },
+    {
+      "id": "MS-OPEN-6",
+      "state": "gated-not-started",
+      "issue": "Compilation, tests, runtime acceptance/recovery and progressive activation"
+    },
+    {
+      "id": "MS-OPEN-7",
+      "state": "inherited-HOLD",
+      "issue": "Original integration findings, project readiness/history/assets and required-path contract above128"
+    }
+  ],
+  "note": "Distinct from prior broker/input and inherited integration registers; source disposition is not passing tests or validated closure."
+}

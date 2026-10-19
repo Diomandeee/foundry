@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "at": "2026-10-18T17:08:01.166029+00:00",
+  "repository": "/Users/mohameddiomande/Developer/foundry-integration/source",
+  "baseHead": "cf27ac662730bb98a509af8d1d1ebea4342eef7a",
+  "branch": "codex/foundry-integration-20261016",
+  "stop": "R6-independent-source-review-complete-validation-HOLD",
+  "sourceReview": "six independent lenses, S1, contrarian challenge, bounded repair reviews and parent synthesis; no executable validation",
+  "changed": [
+    {
+      "path": "README.md",
+      "beforeSha256": "3176a923abc0ac386097112a23458962381a1d3cbae14b47759692c04e86118f",
+      "sha256": "60e6d91aceab79c2288b431f032bdf1ec16741682163e2fdbd4b803cebeb18d1",
+      "bytes": 8709,
+      "new": false
+    },
+    {
+      "path": "docs/cloud-workspaces/MASTER-CHECKLIST.md",
+      "beforeSha256": "1048e152a0e37464e8f019a15dc95e2cf097e554926aaa466789474c10726ff4",
+      "sha256": "4cc2dfe6f9b0db1dae209adb6befcefa92cfdaf4c6ecaec50e5568b067a28fb1",
+      "bytes": 16867,
+      "new": false
+    },
+    {
+      "path": "docs/cloud-workspaces/ROUTE.json",
+      "beforeSha256": "ee243eecdf10cced35f8146a77e9fa75b1205c4d07303ef5ec15b6fe8b084b89",
+      "sha256": "ca7590c1745887d5142d8421001bf4a3a08e36feea658d72ebeb21f7b3df5c54",
+      "bytes": 15365,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/native/foundry-linux-build-v1.apparmor",
+      "beforeSha256": null,
+      "sha256": "95222d83c4360b08b9df6f89730a5fbc33c83d5ee4c1b6d4430e9e437d944f9e",
+      "bytes": 438,
+      "new": true
+    },
+    {
+      "path": "packages/build-runtime/native/linux-isolation.py",
+      "beforeSha256": "8f6bd722205d3b9fd28dbc1eeac0460ee48489f390935de826e29e4d180089ba",
+      "sha256": "5a77888a5a8a63a8ecae05ab430bc1466f5d65cab3ff0669bb6ec380fb1379e5",
+      "bytes": 42144,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-adapter.ts",
+      "beforeSha256": "180975b8c171cc59c041f64d3b9eb80effb6dddabab7bee93529f57c4b25997d",
+      "sha256": "cf2c1d1dc5d9ed09d7bd432b774feb3fc048397af5f722120c52d800592fea05",
+      "bytes": 12087,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-census.ts",
+      "beforeSha256": "41ee23afbd3416e91b151eac68a86f4e32ca29f2d161f0dc9b9d269319fb5685",
+      "sha256": "cc87684977930700a3f4a9e474ffca972dea3bad565d9f735ce25fa88788eadd",
+      "bytes": 2555,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-input.ts",
+      "beforeSha256": "e42e80f0db0992a3068a327167ebf7a7469ae1ecc8cf137fcc3a63c50027e5d2",
+      "sha256": "6d355ed5f29dd30438a9dfad489f12947cfd7736e8f81b1e67aca5cd02c88aa9",
+      "bytes": 7148,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/src/liveness.ts",
+      "beforeSha256": "590a021dd15114a4efedd9085db61f6813de25b92e801b8a8263916096f5bdbd",
+      "sha256": "433aa73342f7ee03e3641671f2c899af998656a8be5868c0ce3016bf9bfd5dba",
+      "bytes": 9639,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-worker.ts",
+      "beforeSha256": "38db59ca77fffcbda3cd9e8e068017c44a2d56dc23abf3d9bbe48412e3e3aebf",
+      "sha256": "2af3f0b0cbeb8f0cc6c43b49935140ff7b489dac9025558962f4b80f6cec79c4",
+      "bytes": 1828,
+      "new": false
+    },
+    {
+      "path": "packages/build-storage/native/mac-cas.py",
+      "beforeSha256": "3f71cce0b74cf93e5d71ae19c86a606b85e1e3f71c6449a006e2057c236c9546",
+      "sha256": "dc04de361506a7acc14c9836568992a8722914f402b0591b00798a52502f8a51",
+      "bytes": 18572,
+      "new": false
+    },
+    {
+      "path": "packages/build-storage/src/index.ts",
+      "beforeSha256": "182b761e2616d34fe2f61decd74948a06ec2bdfc5ebcf0898bff139cceb45be4",
+      "sha256": "7ae563ae0e41564e068d1ce42b8be732b07c69d44d5dd188411c6aefdf235a83",
+      "bytes": 1762,
+      "new": false
+    },
+    {
+      "path": "packages/build-storage/src/mac-isolated-store.ts",
+      "beforeSha256": "a8cceaeadcccb9db7222c3099f0f9909922589751df4abca3a51d2de320c7a95",
+      "sha256": "039066bf95a11bdbde7dbc292e61956daa93021c33ccccfd16eb452c63cad66c",
+      "bytes": 9709,
+      "new": false
+    },
+    {
+      "path": "packages/build-storage/src/project-input-io.ts",
+      "beforeSha256": "90d085457f9949b3d0ac01787691c7cc69fc3015c6eb747402feebd549f5e2f8",
+      "sha256": "c469405a014e39ca65a7506dd66039ca3e011bc3131c388fc07046af19f9e3ea",
+      "bytes": 8501,
+      "new": false
+    },
+    {
+      "path": "tools/foundry-pilot/build-submission.ts",
+      "beforeSha256": "5e0ba3b9a062463af93b84f8aefabc8263375fd39bd65077a0429bb78b41b30f",
+      "sha256": "436473db986ec7cf2ff872c60251ab90b53970b5337f98b6c0540af248397939",
+      "bytes": 9599,
+      "new": false
+    },
+    {
+      "path": "tools/foundry-pilot/operator-server.ts",
+      "beforeSha256": "a3f597c76fe400b8fc873a295fb0f3972b6df19853b33605d5e58b8c32a57271",
+      "sha256": "5d949623e587467b1e6831e2508cba4589fffb7f6c7ff2db185d4242b9c2cee5",
+      "bytes": 17658,
+      "new": false
+    },
+    {
+      "path": "tools/foundry-pilot/operator/builds.js",
+      "beforeSha256": "b0c5aed67686524009cf854b2de6615735cbeb060a66d8b833aefea33c0a7c6b",
+      "sha256": "1e5db28423efbb51f78082fa19b1137365326b5e3b7f7a0d741858c00f683a24",
+      "bytes": 15617,
+      "new": false
+    },
+    {
+      "path": "tools/foundry-pilot/operator/index.html",
+      "beforeSha256": "b803c79d62d39d64c98277180a194deae99454ce5ad3a62d08cd727785d62c00",
+      "sha256": "46bd7d1d9c94d46ea6b45106c4f09a2c2fe004e0c6718348439ceed09614a8b1",
+      "bytes": 11481,
+      "new": false
+    },
+    {
+      "path": "workers/gate/schema.sql",
+      "beforeSha256": "65b1be95d5eec847c5319b499d7f7d9b2cab56591a7ca95cbb9a8d4d1cd0207a",
+      "sha256": "d01a0ce8a041dcf335746265f05b3a0f56b7d9973a02d0717e6e7acf24c0f7c7",
+      "bytes": 2298,
+      "new": false
+    }
+  ],
+  "scopeFiles": 89,
+  "scopeSha256": "8352c54d2d15a711c77b55b782717801c8d3944abc7e29bddafb8c192f359413",
+  "patchSha256": "eb2dd7633223e15e97a6a87dfd9b25c2e906311702043087baea39612d2b2568",
+  "patchBytes": 113703,
+  "testsAuthored": 0,
+  "testsExecuted": 0,
+  "buildsExecuted": 0,
+  "operationalChanges": 0,
+  "newProductionFiles": 1,
+  "unresolvedActionableSourceFindingsInScope": 0,
+  "acceptedLimit": "Conservative source-copy fit and retained one-attempt pilot; source review is not operational acceptance"
+}

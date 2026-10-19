@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-18T17:32:29.896572+00:00",
+  "hostname": "mohameds-macbook-air-810.local",
+  "freeBytes": 31179612160,
+  "installed": {
+    "/Library/Foundry/bin/mac-vm-host": {
+      "present": false
+    },
+    "/Library/Foundry/bin/mac-tree-guard": {
+      "present": false
+    },
+    "/Library/Foundry/bin/cas-python": {
+      "present": false
+    },
+    "/Library/Foundry/bin/mac-cas.py": {
+      "present": false
+    },
+    "/Library/Foundry/CAS/run/store.sock": {
+      "present": false
+    },
+    "/Library/Foundry/Images": {
+      "present": false
+    }
+  }
+}

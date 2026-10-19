@@ -1,0 +1,38 @@
+[
+  {
+    "machine": "mac1",
+    "observedAt": "2026-10-18T17:32:29.896572+00:00",
+    "freeGiB": 29.04,
+    "minimumReserveGiB": 50,
+    "belowReserveBeforeJobEstimate": true,
+    "requiredRuntimePathsPresent": 0,
+    "xcode": "see ENVIRONMENT.json",
+    "scope": "metadata only; no installed helper or service invoked"
+  },
+  {
+    "machine": "mac4",
+    "observedAt": "2026-10-18T17:32:16.850762+00:00",
+    "freeGiB": 14.27,
+    "minimumReserveGiB": 50,
+    "belowReserveBeforeJobEstimate": true,
+    "requiredRuntimePathsPresent": 0,
+    "xcode": {
+      "exit": 0,
+      "output": "Xcode 26.2\nBuild version 17C52"
+    },
+    "scope": "metadata only; no installed helper or service invoked"
+  },
+  {
+    "machine": "mac5",
+    "observedAt": "2026-10-18T17:32:16.832918+00:00",
+    "freeGiB": 12.71,
+    "minimumReserveGiB": 50,
+    "belowReserveBeforeJobEstimate": true,
+    "requiredRuntimePathsPresent": 0,
+    "xcode": {
+      "exit": 0,
+      "output": "Xcode 26.3\nBuild version 17C529"
+    },
+    "scope": "metadata only; no installed helper or service invoked"
+  }
+]

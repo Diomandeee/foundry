@@ -1,0 +1,38 @@
+name = "foundry-orchestrator"
+main = "src/index.ts"
+compatibility_date = "2026-10-05"
+
+[[artifacts]]
+binding = "ARTIFACTS"
+namespace = "foundry-dev"
+
+# database_id is a placeholder until `wrangler d1 create foundry-decisions`.
+[[d1_databases]]
+binding = "DB"
+database_name = "foundry-decisions"
+database_id = "12e5a5e8-4e87-4ce6-8074-99e393ff9463"
+
+# K11 Graph Kernel + PACT validation are OPTIONAL integrations: set
+# LKG_URL / LKG_TOKEN / PACT_URL via `wrangler secret put` (or [vars] for
+# a non-secret URL). Empty PACT_URL = stub (advisory pass). Never commit
+# a machine-local address here; Workers cannot reach tailnet IPs.
+# POST /tasks requires the TASK_TOKEN secret (Bearer); without it the
+# route fails closed with 503.
+
+[env.staging]
+[[env.staging.artifacts]]
+binding = "ARTIFACTS"
+namespace = "foundry-staging"
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "foundry-decisions-staging"
+database_id = "4dfb279c-4e61-4954-a13a-3e8ef8181484"
+
+[env.production]
+[[env.production.artifacts]]
+binding = "ARTIFACTS"
+namespace = "foundry-prod"
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "foundry-decisions-prod"
+database_id = "21b306b7-c143-4462-9fab-475742907279"

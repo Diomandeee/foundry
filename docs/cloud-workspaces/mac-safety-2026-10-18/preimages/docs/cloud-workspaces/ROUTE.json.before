@@ -1,0 +1,141 @@
+{
+  "format": "foundry.cloud-workspaces.route.v1",
+  "stop": "R6-local-continuation-source-reviewed-HOLD",
+  "authority": "Cloudflare existing compute authority",
+  "deployments": 0,
+  "testsExecuted": 0,
+  "buildsExecuted": 0,
+  "servicesStarted": 0,
+  "newCloudResources": 0,
+  "stages": [
+    {
+      "id": "R1",
+      "state": "source-reviewed",
+      "evidence": [
+        "BASELINE.json",
+        "R1-REVIEW.md",
+        "R1-FINDINGS.json",
+        "R1-PROJECT-READINESS.json",
+        "R1-CAPACITY.json"
+      ]
+    },
+    {
+      "id": "R2",
+      "state": "implemented-validation-pending",
+      "evidence": [
+        "LIBRARY-REVIEW.md"
+      ],
+      "blockedBy": [
+        "real scoped identity/provider mapping",
+        "approved published chunks/namespaces",
+        "activation approval"
+      ]
+    },
+    {
+      "id": "R3",
+      "state": "implemented-source-reviewed-validation-pending",
+      "evidence": [
+        "SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R4",
+      "state": "implemented-with-explicit-HOLD",
+      "evidence": [
+        "RUNTIME-REVIEW.md",
+        "BUILD-STORAGE-REVIEW.md",
+        "continuation-2026-10-18/CUMULATIVE-REVIEW.md"
+      ],
+      "blockedBy": [
+        "complete native supervisor/service containment and launch fencing",
+        "real managed-tree seal and owner-approved host/account/identity/resources",
+        "all observed Macs below disk headroom (prior observation, not rechecked)",
+        "asset/dependency/history completeness; authority required paths above128",
+        "runtime validation and activation approvals"
+      ]
+    },
+    {
+      "id": "R5",
+      "state": "implemented-source-reviewed-validation-pending",
+      "evidence": [
+        "SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R6",
+      "state": "source-reviewed-HOLD",
+      "evidence": [
+        "SOURCE-REVIEW.md",
+        "DEFERRED-VALIDATION.md",
+        "RESOURCE-PROPOSAL.json",
+        "ACTIVATION-AND-COST.md",
+        "continuation-2026-10-18/CHANGE-RECEIPT.json"
+      ]
+    },
+    {
+      "id": "R7",
+      "state": "not-started-gated",
+      "evidence": []
+    }
+  ],
+  "nextGate": "Review concrete candidate and unresolved prerequisite designs before authorizing validation; installation/provision/spend/secret/merge/deploy/cleanup separately gated.",
+  "continuation": {
+    "folder": "continuation-2026-10-18",
+    "authorization": "local source implementation/review only",
+    "work": [
+      {
+        "id": "C1",
+        "task": "Broker online authority, revocation, capacity and post-claim concrete provider wiring",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "continuation-2026-10-18/BROKER-REVIEW.md",
+          "continuation-2026-10-18/BROKER-REVIEW-FINAL.md"
+        ]
+      },
+      {
+        "id": "C2",
+        "dependsOn": [
+          "C1"
+        ],
+        "task": "Segmented project inputs, bounded namespace recovery, post-claim restoration and actual working-tree verification",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "continuation-2026-10-18/PROJECT-INPUTS.md",
+          "continuation-2026-10-18/INPUTS-REVIEW-ROUND2.md"
+        ]
+      },
+      {
+        "id": "C3",
+        "dependsOn": [
+          "C2"
+        ],
+        "task": "Mac native evidence and full termination attestation",
+        "state": "partial-implemented-full-containment-blocked",
+        "evidence": [
+          "continuation-2026-10-18/MAC-ATTESTATION.md"
+        ],
+        "blockedBy": [
+          "privileged supervisor not supplied",
+          "launchd/XPC/shared-service containment unproved",
+          "current-fence physical launch handling incomplete"
+        ],
+        "nativePlacement": "explicitly-ineligible"
+      },
+      {
+        "id": "C4",
+        "dependsOn": [
+          "C1",
+          "C2",
+          "C3"
+        ],
+        "task": "Cumulative source review and scoped receipt",
+        "state": "source-reviewed-HOLD",
+        "evidence": [
+          "continuation-2026-10-18/CUMULATIVE-REVIEW.md",
+          "continuation-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      }
+    ]
+  },
+  "nextLocalEngineering": "Complete supported native supervisor/containment and current-fence physical launch design; do not treat ES lineage as stop proof."
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "path": "packages/build-runtime/native/linux-isolation.py",
+    "pythonSyntax": "pass"
+  },
+  {
+    "path": "packages/build-runtime/native/mac-vm-io.py",
+    "pythonSyntax": "pass"
+  },
+  {
+    "path": "packages/build-runtime/native/mac-vm-guest.py",
+    "pythonSyntax": "pass"
+  },
+  {
+    "path": "packages/build-storage/native/mac-cas.py",
+    "pythonSyntax": "pass"
+  },
+  {
+    "path": "packages/build-runtime/native/mac-es-observer.c",
+    "clangSyntaxExit": 0,
+    "log": "docs/cloud-workspaces/validation-2026-10-18/mac-es-observer-compile.log"
+  },
+  {
+    "path": "packages/build-storage/native/mac-tree-guard.c",
+    "clangSyntaxExit": 0,
+    "log": "docs/cloud-workspaces/validation-2026-10-18/mac-tree-guard-compile.log"
+  }
+]

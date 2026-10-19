@@ -1,0 +1,54 @@
+{
+  "format": "foundry.static-review-checkpoints.v1",
+  "kind": "source-only",
+  "executionEvidence": false,
+  "checkpoints": [
+    {
+      "reviewer": "independent-authority",
+      "result": "COMMENT: no remaining actionable issue in bounded B06\u2013B11 pass",
+      "remaining": [
+        "native attestation",
+        "actual synchronous current authorization/revocation host wiring",
+        "actual namespace capacity preflight",
+        "project-scale validation"
+      ]
+    },
+    {
+      "reviewer": "independent-operator",
+      "result": "APPROVE bounded recovery/session/placement/download source fixes",
+      "remaining": [
+        "runtime verification",
+        "browser user journey",
+        "installation/activation approvals"
+      ]
+    },
+    {
+      "reviewer": "independent-library",
+      "result": "PASS bounded ancestry/deadline-contract and allowlist/cache source checks",
+      "remaining": [
+        "later concrete HTTP-supervisor implementation not executed",
+        "filesystem/transport behavior and host credential/grant mapping"
+      ]
+    },
+    {
+      "reviewer": "artifact-implementation-source-pass",
+      "result": "complete required-set/tar/size/chunk preflight present",
+      "remaining": [
+        "provider readback, namespace/issuer/seal ports",
+        "runtime validation"
+      ]
+    }
+  ],
+  "notAuthorization": [
+    "tests",
+    "builds",
+    "installation",
+    "provider use",
+    "provisioning",
+    "spending",
+    "secrets",
+    "merge",
+    "deployment",
+    "cleanup"
+  ]
+}

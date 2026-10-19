@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "at": "2026-10-18T16:46:19.986741+00:00",
+  "repository": "/Users/mohameddiomande/Developer/foundry-integration/source",
+  "baseHead": "cf27ac662730bb98a509af8d1d1ebea4342eef7a",
+  "branch": "codex/foundry-integration-20261016",
+  "stop": "R6-linux-isolation-source-reviewed-HOLD",
+  "sourceReview": "six inline passes by implementing agent; independent acceptance pending",
+  "changed": [
+    {
+      "path": "README.md",
+      "beforeSha256": "f132d45b7a9d2eda349e6f2f57baba1f8eae745f8c21601065eb5cc98e006f2e",
+      "sha256": "3176a923abc0ac386097112a23458962381a1d3cbae14b47759692c04e86118f",
+      "bytes": 8621,
+      "new": false
+    },
+    {
+      "path": "docs/cloud-workspaces/MASTER-CHECKLIST.md",
+      "beforeSha256": "c4f2982f14211c8446e255f23df993eccdecd5f45bf2548ed17e4156ab25858a",
+      "sha256": "1048e152a0e37464e8f019a15dc95e2cf097e554926aaa466789474c10726ff4",
+      "bytes": 15311,
+      "new": false
+    },
+    {
+      "path": "docs/cloud-workspaces/ROUTE.json",
+      "beforeSha256": "18ce2cb846d6de0a2a0f2ee3563c12a194ff0ab7d5a841709051346700665817",
+      "sha256": "ee243eecdf10cced35f8146a77e9fa75b1205c4d07303ef5ec15b6fe8b084b89",
+      "bytes": 13666,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/native/linux-isolation.py",
+      "beforeSha256": null,
+      "sha256": "8f6bd722205d3b9fd28dbc1eeac0460ee48489f390935de826e29e4d180089ba",
+      "bytes": 33584,
+      "new": true
+    },
+    {
+      "path": "packages/build-runtime/src/adapters.ts",
+      "beforeSha256": "0a9761f6c7d242f39384c5f46b89151e7025f51a7aaae291bf44eb799c7f21bb",
+      "sha256": "868de4907c44b9e82e97d35ef4c7c255124441879ff0d7e13d240c3a97f63522",
+      "bytes": 1847,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/src/controller.ts",
+      "beforeSha256": "312cb57c1bb15286412a4d9351777e3d68ec26c75fa21b9a53dfe5e7bc4a3a18",
+      "sha256": "726a043ae28e2f457cadbfc5ec401f0e5b082a5d236194d40eb4be329366c8f5",
+      "bytes": 18665,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/src/index.ts",
+      "beforeSha256": "418c10a4c452f340b01afbfef6934c19d5e49da0dcf14e512aedd2f1be6bf3cb",
+      "sha256": "945fc9fed5086e90fcc940fbcbb1d61025a09c26aa16754b84e9d72c2b279ac2",
+      "bytes": 3310,
+      "new": false
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-adapter.ts",
+      "beforeSha256": null,
+      "sha256": "180975b8c171cc59c041f64d3b9eb80effb6dddabab7bee93529f57c4b25997d",
+      "bytes": 12273,
+      "new": true
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-census.ts",
+      "beforeSha256": null,
+      "sha256": "41ee23afbd3416e91b151eac68a86f4e32ca29f2d161f0dc9b9d269319fb5685",
+      "bytes": 2184,
+      "new": true
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-client.ts",
+      "beforeSha256": null,
+      "sha256": "f76290a41cddd8d54f73ca42813b3d8d0eb65f9016ea741840328fad4fa97392",
+      "bytes": 4240,
+      "new": true
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-input.ts",
+      "beforeSha256": null,
+      "sha256": "e42e80f0db0992a3068a327167ebf7a7469ae1ecc8cf137fcc3a63c50027e5d2",
+      "bytes": 5826,
+      "new": true
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-publication.ts",
+      "beforeSha256": null,
+      "sha256": "8116ea9c6b89606939847b8ba448b123675052628e2ae2499e5baf4de188f808",
+      "bytes": 3682,
+      "new": true
+    },
+    {
+      "path": "packages/build-runtime/src/linux-isolated-worker.ts",
+      "beforeSha256": null,
+      "sha256": "77371a59247048fa2c3045d4a76ab03c3261a4ded32605d5bf4438e2a37942c8",
+      "bytes": 1521,
+      "new": true
+    },
+    {
+      "path": "packages/build-runtime/src/liveness.ts",
+      "beforeSha256": "ba9a02680f0968e02cdc00d0c48279fff6376050f18696adc4df74afce2fa238",
+      "sha256": "590a021dd15114a4efedd9085db61f6813de25b92e801b8a8263916096f5bdbd",
+      "bytes": 7619,
+      "new": false
+    },
+    {
+      "path": "packages/build-storage/src/project-input-io.ts",
+      "beforeSha256": "ae527092548739d4889c95d50449a5883ad927c26575cc3a4d407493794207b6",
+      "sha256": "90d085457f9949b3d0ac01787691c7cc69fc3015c6eb747402feebd549f5e2f8",
+      "bytes": 8540,
+      "new": false
+    },
+    {
+      "path": "packages/build-storage/src/publication.ts",
+      "beforeSha256": "3a2718eb6354806f381c71f282c7105693f031d54d3e87954ae7e88ec6a9a7e3",
+      "sha256": "ef64270891475f18a51ae29cc1b83feb5e26c32772d7a0fc6d126a7fea613066",
+      "bytes": 4744,
+      "new": false
+    }
+  ],
+  "changedPathCount": 16,
+  "newProductFiles": [
+    "packages/build-runtime/native/linux-isolation.py",
+    "packages/build-runtime/src/linux-isolated-adapter.ts",
+    "packages/build-runtime/src/linux-isolated-census.ts",
+    "packages/build-runtime/src/linux-isolated-client.ts",
+    "packages/build-runtime/src/linux-isolated-input.ts",
+    "packages/build-runtime/src/linux-isolated-publication.ts",
+    "packages/build-runtime/src/linux-isolated-worker.ts"
+  ],
+  "scopeFiles": 84,
+  "scopeSha256": "222f6c784dab1b3b74bcc0162626ee47ce3fd61491f131de1493a0027b226b22",
+  "patchSha256": "69d1ae672e01680fc3f2b5bfbaa507ad0a0d9129e3ec06743617a9b5fbf139a2",
+  "patchBytes": 93853,
+  "testsAuthored": 0,
+  "testsExecuted": 0,
+  "compilationOrBuilds": 0,
+  "servicesStarted": 0,
+  "operationalChanges": 0,
+  "gitPublication": false
+}

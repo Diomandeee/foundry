@@ -1,0 +1,116 @@
+[
+  {
+    "path": "tools/foundry-pilot/operator-server.ts",
+    "sha256": "b267a3cb78aa04e76fcbe9199e01fd4fab4c4aee7e3a695c553a5910198b7f6d",
+    "method": "Reverse exact additive edits; accepted only by captured pre-edit SHA-256 equality",
+    "storedAs": "preimages/tools/foundry-pilot/operator-server.ts.before"
+  },
+  {
+    "path": "tools/foundry-pilot/operator-config.ts",
+    "sha256": "43a077a5971579e339656736b53c397c98282cd6a987197e098739144099f77c",
+    "method": "Reverse exact additive edits; accepted only by captured pre-edit SHA-256 equality",
+    "storedAs": "preimages/tools/foundry-pilot/operator-config.ts.before"
+  },
+  {
+    "path": "tools/foundry-pilot/transport.ts",
+    "sha256": "0b70788b07f815dbfc26e555e7b834d479e16d0f0e35dd4ed623ae0eb66157be",
+    "method": "Reverse exact additive edits; accepted only by captured pre-edit SHA-256 equality",
+    "storedAs": "preimages/tools/foundry-pilot/transport.ts.before"
+  },
+  {
+    "path": "tools/foundry-pilot/operator/operator.js",
+    "sha256": "19447177b7d8bc5cd4a28c8f2b93a2905e2ddb60a9b5483620acf7cad6f5303b",
+    "method": "Reverse exact additive edit; accepted only by captured pre-edit SHA-256 equality",
+    "storedAs": "preimages/tools/foundry-pilot/operator/operator.js.before"
+  },
+  {
+    "path": "tools/foundry-pilot/operator/index.html",
+    "sha256": "b14d0bcbb0e5f03a5a7dad29a65bc9c2b56aecb244373a090d2cdd4bbd6d6c4d",
+    "method": "Reverse exact additive edits; accepted only by captured pre-edit SHA-256 equality",
+    "storedAs": "preimages/tools/foundry-pilot/operator/index.html.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/pull.py",
+    "sha256": "f4abb5121cffa3e46aa27188beac2b5fd88857550b81da267addad9dce0beedc",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/pull.py.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/cloud.py",
+    "sha256": "e9ca6cf56c4c07794de5df62d123217893242a0b3d6981153acee9d43265ca5b",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/cloud.py.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/ssh_reader.py",
+    "sha256": "802b249e167be8ca691830156abc06523d4739de58915860145d624b50565798",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/ssh_reader.py.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/build_catalog.py",
+    "sha256": "a8a3052aac33eec16c134205b28b832ec7b24cd6019bfcd2aa26b4025946eb1c",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/build_catalog.py.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/bridge.py",
+    "sha256": "f16b799fdda0721b0640b0404160e4a8eadd1ec33bd9e5fdff6f391c5080c5d5",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/bridge.py.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/sync_catalog.py",
+    "sha256": "2e19e55491fd94b6b23163787caed5f5242df1778037f24f8d729d06f6f56abe",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/sync_catalog.py.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/README.md",
+    "sha256": "1da1590edc942f53b20e1f509c6dc37c877d6de0a80defea07afafc043f04aa2",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/README.md.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/common.py",
+    "sha256": "161b487bca92f19cd20af57f63c9911aea76f4e30935b1409e76cfd54d9771f5",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/common.py.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/package_catalog.py",
+    "sha256": "382993a18d9b6862803c3ca05b8f095f2a42b93d50d736bbba5b2d643747a823",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/package_catalog.py.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/web/index.html",
+    "sha256": "39e9e8f3733e06e4b34f1634590ce107b39b2547c054dc165a806d4f579c76b6",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/web/index.html.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/web/style.css",
+    "sha256": "b6894a5bdb966abc6b05fbd48d54ff5526d3525e7dd3237253ae9d7d5ce86af1",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/web/style.css.before"
+  },
+  {
+    "path": "tools/foundry-library-bridge/web/app.js",
+    "sha256": "de89d56799d508de13a3d7e83623157f8456ac0c3604e320bb19a74a1a6f1c1d",
+    "method": "Prior reviewed client copy matches captured pre-edit SHA-256",
+    "storedAs": "preimages/tools/foundry-library-bridge/web/app.js.before"
+  },
+  {
+    "path": "workers/compute/src/authority.ts",
+    "sha256": "8f0e69f83935273038c3aac73fd55c2c07dbd83eb28d188a4769e493be23d41f",
+    "method": "Reverse exact local edits accepted only by captured pre-edit hash equality",
+    "storedAs": "preimages/workers/compute/src/authority.ts.before"
+  },
+  {
+    "path": "workers/library-broker/src/index.ts",
+    "sha256": "5de1b5b43d42b6d7051e158d28f3179c0a2b9e31e52c2d6fe63f56d9dcb8bcd5",
+    "method": "Reverse exact local edits accepted only by captured pre-edit hash equality",
+    "storedAs": "preimages/workers/library-broker/src/index.ts.before"
+  }
+]

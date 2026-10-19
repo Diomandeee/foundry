@@ -1,0 +1,216 @@
+> Superseded launch direction (2026-10-18): native launch is now explicitly denied
+> by both NativeMacAdapter and NativeDescendantAttestor.start. This document records
+> the earlier ES protocol design; its RESERVE/RUN discussion is historical, not an
+> enabled API. Signed recovery-journal review remains available. See
+> ../../docs/cloud-workspaces/mac-safety-2026-10-18/ARCHITECTURE.md for the separate
+> experimental whole-VM containment implementation and unresolved production gates.
+
+> Guest IO update (2026-10-18): verified input staging and stop-gated result intake
+> source now exists in `mac-vm-input.ts`, `mac-vm-staging.ts`, `mac-vm-intake.ts` and
+> `native/mac-vm-io.py`. It requires actual guarded readonly images and private
+> plan/job/stop bindings. The supplied root assembler is an offline owner tool,
+> never a worker-accessible privilege service. See
+> ../../docs/cloud-workspaces/guest-io-2026-10-18/README.md for the source contract,
+> six inline review passes and remaining M3/M4 gates. Direct native execution and
+> production Xcode placement remain denied; no runtime validation occurred.
+
+# Mac observer and supervisor evidence protocol — HOLD
+
+Source candidate only; no native compilation, execution or installation evidence.
+**No native path in this package produces `stopped:true`.** A process-only seal is
+diagnostic evidence and cannot release a host slot or authorize publication.
+
+## Implemented source and missing boundary
+
+`native/mac-es-observer.c` contains an explicit, opt-in public Endpoint Security
+observer. It creates a real ES client and subscribes to `NOTIFY_FORK`, `NOTIFY_EXEC`
+and `NOTIFY_EXIT`. It records full audit-token words, process start time, message
+version, global/per-type sequence counters and Mach time. It does not filter by
+account. Version <5, dropped/reordered/wrapped counters, unsupported events, malformed
+identities, bounded-journal exhaustion and write/fsync failure poison observation.
+The first event of each type establishes its baseline; it says nothing about an
+earlier interval. No readiness, launch binding, final seal or stop proof is emitted.
+
+This is a C library with no executable main, installer, entitlement changes, build
+script, service definition, network listener or automatic invocation. The privileged
+caller must provide a fresh exclusive file descriptor under a protected directory.
+Only numeric process metadata is written; no executable paths, argv, environment,
+source, output or credentials. Its unsigned raw stream is **not accepted** as the
+TypeScript authenticated journal. It is collection source, not a finished supervisor.
+Synchronous fsync can cause backpressure and event drops; loss invalidates coverage.
+Shutdown errors retain poisoned state rather than freeing possible callback state.
+
+`src/mac-attestation.ts` implements a concrete pinned local supervisor client and a
+bounded signed-journal reader/replayer. `NativeDescendantAttestor` is now a class,
+not an injectable `inspect => stopped` interface. `NativeMacAdapter` accepts that
+class or no observer. The old `ps` scan and arbitrary success callback are removed.
+Without an observer the existing group launch/stop remains best effort and unknown.
+With an observer, explicit start requires an already provisioned compatible client;
+absence, bad pins, missing evidence or ambiguity fails closed. No companion binary,
+IPC implementation or signing service is supplied or claimed to exist.
+
+## Owner-only configuration and launch boundary
+
+`MacSupervisorConfig` contains canonical `clientExecutable`, its SHA-256,
+`supervisorSha256`, protected root-owned `evidenceRoot`, and an Ed25519 **public** PEM.
+Constructors perform no filesystem/process/provider I/O. Only explicit methods do.
+Public-key configuration and binary hashes are trust pins, not measured proof of a
+live entitlement, ES subscription, helper installation or current authority.
+
+The client executable and every path ancestor must be root-owned without group or
+world write permission. Setuid/setgid executables and linked files are rejected.
+The executable is hashed before control invocation (16 MiB ceiling). The supervisor
+must authenticate the caller's kernel audit token through IPC and the client must
+authenticate the privileged peer/code requirement. Tickets never replace authority.
+Root-owned evidence files permit group read but no world access; protected ancestry,
+ACLs and a local durable filesystem remain host prerequisites.
+
+`start(plan, recordIdentity, beforeStart)` accepts only a branded, owner-approved
+trusted Xcode plan. It creates a random 256-bit correlation ticket, persists its
+identity and intent marker, then invokes these fixed client operations without a shell:
+
+- `reserve --protocol foundry-mac-es-journal-v1 --ticket T --attempt-hash A
+  --profile-hash P --intent-hash I --uid U --gid G`
+- `run --protocol foundry-mac-es-journal-v1 --ticket T --work-root W
+  --max-output-bytes B --timeout-ms M -- <exact approved argv>`
+- `stop --protocol foundry-mac-es-journal-v1 --ticket T`
+
+The actual code passes these as argv elements, not shell text. `reserve`/`stop` use
+the fixed control environment; `run` uses the exact approved plan environment and
+input-root cwd. The intent digest is SHA-256 of UTF-8 `JSON.stringify` of
+`[plan.argv, sortedEnvironmentEntries, inputRoot, workRoot, uid, gid, maxOutputBytes,
+timeoutMs]`; environment keys sort by JavaScript `<`/`>`, independent of locale.
+The supervisor must recompute this from actual launch inputs before execution.
+
+RESERVE must exclusively create/fsync the journal and directory and may not spawn
+the workload. After verifying an ARMED-only journal, the worker durably records its
+payload digest before RUN. RUN must consume its ticket exactly once, own suspended
+spawn, obtain kernel identity before allowing execution, durably record LAUNCH,
+then resume. Caller-supplied PIDs or post-hoc account scans are not launch binding.
+STOP must close the ticket permanently, including queued/late RUNs, and request
+termination of known identities without PID-reuse races. Proxy close/exit does not
+attest workload termination. Errors never cause replay, adoption or fresh tickets.
+
+The worker's synchronous fence currently fences **client invocation**, not an
+asynchronous privileged supervisor's later resume. Before any future activation,
+the supervisor needs its own real current-authority/lease/cancel fence, bounded
+request lifetime and disconnect/death handling. This is not implemented by the C
+observer or invented from local configuration. Native preflight Xcode controls
+currently also occur outside this observer's launch interval. Both are open gates.
+
+## Authenticated journal wire format
+
+File: `<evidenceRoot>/<ticket>.jsonl`. Maximum 8 MiB, 32,768 records, 16,384 text
+characters per envelope, 8,192 payload bytes; at most 4,096 lineage identities.
+These are reader limits, not hard native process/resource quotas. Journals are never
+rotated, truncated, replaced or deleted by this package.
+
+Each newline-terminated JSON envelope has exactly `{payload, signature}`, canonical
+base64 strings. The Ed25519 signature covers the concatenation of UTF-8
+`foundry-mac-es-journal-v1`, one NUL byte, and the exact decoded payload bytes.
+The payload is a UTF-8 JSON tuple:
+
+```
+[protocol, index, previousPayloadSha256, ticket, bootUuid, sessionId,
+ supervisorSha256, "process-events-only", body]
+```
+
+Index starts at zero and increments by one. Initial previous digest is 64 zeros.
+Boot UUID is lower-case; session ID is a fresh 64-hex identifier for one ES client
+lifetime. Every row pins both. No reconnect or subscription mutation is continuous
+recovery. Digests hash payload bytes, excluding signature/envelope. Unknown body
+types, including attempts to assert stronger coverage, are rejected.
+
+Process identity is `[auditTokenWords[8], startSecondsDecimal, startMicroseconds]`.
+Counters and seconds use canonical nonnegative decimal strings (uint64), never JSON
+floating-point representations. Audit words are uint32. Root and authenticated
+worker account fields must match the launch binding. Descendant events are replayed
+across all UIDs; unexplained credential/PID identity transitions invalidate evidence.
+
+Bodies are:
+
+```
+["armed", attemptHash, profileHash, intentHash, uid, gid, workerIdentity,
+ globalBaseline, [forkBaseline, execBaseline, exitBaseline], machBaseline,
+ "unmuted-fork-exec-exit"]
+["launch", rootIdentity]
+["event", messageVersion, globalSequence, typeSequence, machTime,
+ ["fork", sourceIdentity, childIdentity]]
+["event", messageVersion, globalSequence, typeSequence, machTime,
+ ["exec", oldIdentity, targetIdentity]]
+["event", messageVersion, globalSequence, typeSequence, machTime,
+ ["exit", sourceIdentity]]
+["seal", finalGlobal, [finalFork, finalExec, finalExit], finalMach,
+ "ticket-consumed-no-relaunch", "fsync-file-and-directory", "process-events-only"]
+```
+
+ARMED must precede all job execution, with established counters and audited unmuted
+subscriptions owned by the same continuous collector. All subscribed events,
+including unrelated host processes, must be projected; otherwise global continuity
+cannot be checked. The raw C event tuple matches the `event` body but is unsigned.
+Converting raw events into these signed rows, serializing LAUNCH with event delivery,
+and durable baseline/arm handoff are missing privileged supervisor work, not a
+callback or a permissive default supplied here.
+
+FORK enrolls children while retaining orphaned/reparented descendants. EXEC advances
+one lifetime (same PID/start time) to its target audit identity; it is not EXIT.
+Duplicate/reused active identities, missing transitions and events after a retired
+identity fail. Global and per-event counters must increase by exactly one; Mach
+time cannot regress (conservatively reject unusual delivery ordering). SEAL requires
+a launched root, an empty replayed live set, matching final counters, permanent
+ticket closure and the supervisor's durable-write assertion. No rows may follow it.
+Reading a signed assertion cannot itself independently measure fsync or OS coverage.
+
+The reader checks root ownership, no symlink/hardlink, private evidence permissions,
+file size and metadata stability around a bounded descriptor read. It authenticates
+every row and verifies the previously observed prefix, preventing truncation and
+same-session prefix replacement from being silently adopted. Any ambiguous read
+poisons active evidence. A signed process-only seal still cannot prove service work.
+
+## Recovery and native release conditions
+
+The existing permanent host attempt journal preserves these markers before RUN:
+
+- `native:<attemptHash>:<ticket>`
+- `native-intent:<intentHash>:<uid>:<gid>`
+- `native-evidence:<armedPayloadDigest>`
+
+Its pre-run record already contains local `profileHash`. Together these reconstruct
+the original `MacLaunchCheckpoint`. Recovery must use those retained original bytes,
+never a newly signed ARMED row, regenerated recipe, fresh ticket or latest session.
+Missing/ambiguous markers retain quarantine. `reviewRecovery(checkpoint)` only reads
+and verifies evidence; it never resumes, signals, reconciles authority or clears slots.
+The parent owns any explicit recovery UI/integration; none was added to storage code.
+
+Current release condition: **none**. Both native paths return unknown StopProof,
+including exit zero and a valid signed process-only seal. This preserves the
+`LongJobSupervisor` → `HostJournal.finish` quarantine path and prevents publication.
+The collector intentionally subscribes only to NOTIFY events; it does not enforce
+exec policy. Public ES provides `AUTH_EXEC` and `NOTIFY_FORK`; this implementation
+does not assume an `AUTH_FORK` API. AUTH_EXEC enforcement alone cannot stop fork-only
+code or prove closure of existing shared services. Invisible service escape is
+rejected at the release boundary by refusing every native proof in this version.
+
+Future release needs an independently reviewed, authorized, continuously owned
+supervisor that closes both process lineage and every launchd/XPC/shared-service
+work path, authenticates launch-time identity and current authority, handles
+crash/drop/mute/queue gaps, durably closes all launch/relaunch capabilities, and
+supplies verified terminal service evidence. No account-only scan, responsibility
+token, process group, launchd label, quiet interval or configuration boolean supplies
+that missing capability. Ordinary Xcode projects/build scripts must be explicitly
+trusted and approved. Hostile-code isolation and hard native quotas are not claimed.
+
+## Primary Apple references
+
+- [ES client creation and TCC/entitlement requirements](https://developer.apple.com/documentation/endpointsecurity/es_new_client(_:_:))
+- [Apple-requested ES entitlement](https://developer.apple.com/documentation/BundleResources/Entitlements/com.apple.developer.endpoint-security.client)
+- [Global sequence counter and version requirement](https://developer.apple.com/documentation/endpointsecurity/es_message_t/global_seq_num)
+- [Per-event sequence counter and drops](https://developer.apple.com/documentation/endpointsecurity/es_message_t/seq_num)
+- [Process identities and audit tokens](https://developer.apple.com/documentation/endpointsecurity/es_process_t)
+- [NOTIFY_FORK](https://developer.apple.com/documentation/endpointsecurity/es_event_type_notify_fork), [AUTH_EXEC](https://developer.apple.com/documentation/endpointsecurity/es_event_type_auth_exec)
+- [Launch environment constraints and XPC responsibility](https://developer.apple.com/documentation/Security/applying-launch-environment-and-library-constraints)
+- [Apple launchd source manual: AbandonProcessGroup](https://github.com/apple-oss-distributions/launchd/blob/main/man/launchd.plist.5)
+- [Client destruction errors](https://developer.apple.com/documentation/endpointsecurity/es_delete_client(_:))
+
+These sources support OS mechanisms and their boundaries; none attests this candidate
+was built, run, entitled, installed, connected or capable of complete native containment.

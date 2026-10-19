@@ -1,0 +1,1858 @@
+--- a/docs/cloud-workspaces/MASTER-CHECKLIST.md
++++ b/docs/cloud-workspaces/MASTER-CHECKLIST.md
+@@ -115,3 +115,17 @@
+ - [x] M3.5 Six inline source-review passes, repaired findings, scoped hashes/diff and updated route.
+ - [ ] Inherited prerequisites: concrete generic writable CAS/materialization isolation and cumulative integration HOLD. Not closed by this batch.
+ - [ ] M4 and R7 remain separately gated. Owner I/O and image provisioning are explicit operational steps, not an installed unattended service.
++
++
++## Writable storage and integration batch — current 2026-10-18 stopping point
++
++- [x] W1 Concrete Mac root-owned immutable CAS and bounded authenticated local client implemented; not installed or executed.
++- [x] W2 VM adapter/intake and readonly packaging wired to the concrete store; no fake exclusive seal.
++- [x] W3 Original findings re-reviewed; direct short-client authority checks/physical occupancy, relay cancellation occupancy, complete tree diffs, positive absence, exact merge tree/genesis/replay and persisted verification repaired in source.
++- [x] W4 K11 rollout receipts/source absorbed and hashed; external lane and natural-canary/Fabric boundaries preserved.
++- [x] W5 Six inline source-review passes and corrections; scoped evidence frozen; route updated.
++- [ ] Generic Linux writable materialization remains an engineering gap. This is not hidden inside an operational approval gate.
++- [ ] G3 strict verification policy selection; actual installed resources/pins/schema, per-project readiness and disk headroom.
++- [ ] Independent acceptance, M4 compilation/tests/runtime validation and R7 activation; all still gated.
++
++Current route: `R6-writable-integration-source-reviewed-HOLD`. Detailed evidence and exact supported scope: `writable-integration-2026-10-18/README.md`. This supersedes earlier generic Mac CAS/integration blocker wording without changing frozen historical receipts. No full-fleet completion or operational success is claimed.
+--- a/docs/cloud-workspaces/ROUTE.json
++++ b/docs/cloud-workspaces/ROUTE.json
+@@ -1,6 +1,6 @@
+ {
+   "format": "foundry.cloud-workspaces.route.v1",
+-  "stop": "R6-M3-vm-integration-source-reviewed-HOLD",
++  "stop": "R6-writable-integration-source-reviewed-HOLD",
+   "authority": "Cloudflare existing compute authority",
+   "deployments": 0,
+   "testsExecuted": 0,
+@@ -47,16 +47,17 @@
+         "continuation-2026-10-18/CUMULATIVE-REVIEW.md",
+         "mac-safety-2026-10-18/SOURCE-REVIEW.md",
+         "guest-io-2026-10-18/SOURCE-REVIEW.md",
+-        "vm-integration-2026-10-18/SOURCE-REVIEW.md"
++        "vm-integration-2026-10-18/SOURCE-REVIEW.md",
++        "writable-integration-2026-10-18/SOURCE-REVIEW.md"
+       ],
+       "blockedBy": [
+-        "generic writable CAS/materialization seal; readonly seal is a separate limited capability",
+         "owner-approved host/account/images/helper binaries/toolchains/identities/resources",
+         "all observed Macs below disk headroom (prior observation, not rechecked)",
+         "asset/dependency/history completeness; authority required paths above128",
+         "runtime validation and activation approvals",
+         "operator-mediated stage/intake and provisioned image/source dependencies; no unattended root service",
+-        "M3 compilation and operational acceptance pending"
++        "M3 compilation and operational acceptance pending",
++        "generic Linux writable materialization remains unsupported; Mac CAS source now concrete but installation/acceptance pending"
+       ]
+     },
+     {
+@@ -77,7 +78,8 @@
+         "continuation-2026-10-18/CHANGE-RECEIPT.json",
+         "mac-safety-2026-10-18/SOURCE-REVIEW.md",
+         "guest-io-2026-10-18/SOURCE-REVIEW.md",
+-        "vm-integration-2026-10-18/SOURCE-REVIEW.md"
++        "vm-integration-2026-10-18/SOURCE-REVIEW.md",
++        "writable-integration-2026-10-18/SOURCE-REVIEW.md"
+       ]
+     },
+     {
+@@ -86,7 +88,7 @@
+       "evidence": []
+     }
+   ],
+-  "nextGate": "M3 local implementation/source review is complete. Resolve inherited writable-storage/integration prerequisites; M4 compilation and operational acceptance require separate approval. R7 activation and every installation/provisioning/deployment/spending/secret/cleanup action remain separately gated.",
++  "nextGate": "Local Mac immutable CAS and listed integration repairs are implemented/source-reviewed, not validated. M4 compilation/tests/operational acceptance and independent review require approval. Installation, migration, provisioning, policy activation, deployment, spending, secrets, merge and cleanup remain separately gated.",
+   "continuation": {
+     "folder": "continuation-2026-10-18",
+     "authorization": "local source implementation/review only",
+@@ -145,7 +147,7 @@
+       }
+     ]
+   },
+-  "nextLocalEngineering": "Inherited generic writable CAS/materialization isolation and cumulative integration HOLD. No remaining adapter/controller/guest-capability wiring task is deferred within M3; unattended root I/O/image provisioning is explicitly unsupported by this operator-mediated pilot.",
++  "nextLocalEngineering": "Generic Linux writable workspace isolation remains an explicit unsupported engineering gap. The Mac VM path no longer depends on a generic writable CAS seal. Required-input lists above 128, arbitrary binary/mode merge transport and unattended privileged image IO remain outside the implemented pilot scope.",
+   "macSafety": {
+     "folder": "mac-safety-2026-10-18",
+     "state": "source-reviewed-primitives-production-HOLD",
+@@ -240,7 +242,8 @@
+       "guest-io-2026-10-18/FINDINGS.json",
+       "guest-io-2026-10-18/CHANGE-RECEIPT.json"
+     ],
+-    "integrationEvidence": "vm-integration-2026-10-18/SOURCE-REVIEW.md"
++    "integrationEvidence": "vm-integration-2026-10-18/SOURCE-REVIEW.md",
++    "laterDisposition": "See writableIntegration for current Mac CAS and gate integration status."
+   },
+   "vmIntegration": {
+     "folder": "vm-integration-2026-10-18",
+@@ -272,6 +275,38 @@
+       "actual approved accounts/images/helpers/source seals/scoped storage/capacity",
+       "M4 separately approved compilation/tests/operational acceptance",
+       "R7 separately approved progressive activation"
++    ],
++    "laterDisposition": "See writableIntegration: Mac CAS and named inherited gate/revocation blockers superseded in source; validation/operational HOLD remains."
++  },
++  "writableIntegration": {
++    "folder": "writable-integration-2026-10-18",
++    "state": "implemented-source-reviewed-validation-pending-HOLD",
++    "review": "six inline passes and counterexample correction by implementing agent; no independent acceptance",
++    "testsAuthored": 0,
++    "testsExecuted": 0,
++    "buildsExecuted": 0,
++    "servicesStarted": 0,
++    "operationalChanges": 0,
++    "macStorage": "concrete privileged immutable CAS source; fixed bounded unprivileged client; no installed service",
++    "gateRepairs": [
++      "CR-2 direct authority observation and physical request occupancy",
++      "L3 process-wide physical occupancy/quarantine",
++      "G1/V01/V02 complete immutable reads and positive absence",
++      "G2/V03/V04/V05 genesis, exact tree/mode/content and bounded proven replay",
++      "G4 pre-merge durable verification evidence"
++    ],
++    "policy": "G3 requireChecked mechanism supplied; owner choice and deployment unchanged",
++    "externalLane": "K11 Craft reported rollout absorbed; not enrolled; natural canary remains open",
++    "evidence": [
++      "writable-integration-2026-10-18/README.md",
++      "writable-integration-2026-10-18/FINDINGS.json",
++      "writable-integration-2026-10-18/CHANGE-RECEIPT.json"
++    ],
++    "remaining": [
++      "generic Linux mutable workspace isolation",
++      "actual approved resources/installed pins/schema/headroom/project readiness",
++      "independent cumulative source acceptance and separately approved M4 validation",
++      "separately approved R7 activation and cleanup"
+     ]
+   }
+ }
+--- a/packages/artifacts-port/src/cloudflare.ts
++++ b/packages/artifacts-port/src/cloudflare.ts
+@@ -14,79 +14,37 @@
+ type Binding = any; // narrowed by worker-configuration.d.ts at deploy time
+ type RepoBinding = any;
+ 
+-/**
+- * A ref that does not exist yet is data, not an outage. A fork cut from an
+- * empty base has no branch to log; the local adapter returns [] for that, and
+- * the Workers path must agree or the same push reads as an empty repo locally
+- * and as a failure in production (7 staging rows read "Could not find main.").
+- * Anything else — a network failure, a bad credential, a malformed binding —
+- * is re-thrown so it surfaces as an infrastructure error, never as an empty
+- * repository, which the gate would treat as "nothing to merge".
+- */
+-function isMissingRef(e: unknown): boolean {
+-  const msg = e instanceof Error ? e.message : String(e);
+-  return /could not find|not found|no such|does not exist|unborn/i.test(msg);
+-}
+-
+-/** All file paths in a tree, recursive. Bounded for worker CPU safety. */
+-async function treeFiles(
+-  binding: RepoBinding, treeHash: string, prefix = "",
+-  cap = 2000,
+-): Promise<Set<string>> {
+-  const out = new Set<string>();
+-  const entries = (await binding.readTree(treeHash)) ?? [];
+-  for (const e of entries) {
+-    if (out.size >= cap) break;
+-    const p = prefix ? `${prefix}/${e.name}` : e.name;
+-    if (e.type === "tree") {
+-      for (const sub of await treeFiles(binding, e.hash, p, cap - out.size)) {
+-        out.add(sub);
+-      }
+-    } else {
+-      out.add(p);
++/** Complete bounded path -> object/type/mode inventory. A bound or missing
++ * object is uncertainty, never a truncated complete diff. */
++async function treeEntries(binding:RepoBinding, treeHash:string):Promise<Map<string,string>> {
++  const out=new Map<string,string>();let visited=0;
++  async function walk(hash:string,prefix:string,depth:number):Promise<void>{
++    if(depth>64||++visited>4000)throw new Error('artifacts: tree budget');
++    const entries=await binding.readTree(hash);
++    if(!Array.isArray(entries))throw new Error('artifacts: missing tree');
++    const names=new Set<string>();
++    for(const e of entries){
++      if(++visited>4000||typeof e.name!=='string'||!e.name||/[\/\x00-\x1f\x7f]/.test(e.name)||
++        ['.','..'].includes(e.name)||names.has(e.name)||!/^[a-f0-9]{40}$/.test(e.hash)||e.mode===undefined)
++        throw new Error('artifacts: incomplete or invalid tree');
++      names.add(e.name);const path=prefix?`${prefix}/${e.name}`:e.name;
++      if(e.type==='tree')await walk(e.hash,path,depth+1);
++      else {if(out.size>=2000)throw new Error('artifacts: file budget');out.set(path,JSON.stringify([e.hash,e.type,e.mode]));}
+     }
+   }
+-  return out;
++  await walk(treeHash,'',0);return out;
+ }
+-
+-/** Changed paths in one commit: tree diff vs first parent (or all files if root). */
+-async function diffFiles(binding: RepoBinding, c: any): Promise<string[]> {
+-  const mine = await treeFiles(binding, c.treeHash);
+-  if (!c.parents || c.parents.length === 0) return [...mine].sort();
+-  const parent = await binding.readCommit(c.parents[0]);
+-  const parentTree: string | null = parent ? parent.treeHash : null;
+-  const theirs = parentTree
+-    ? await treeFiles(binding, parentTree) : new Set<string>();
+-  const changed = new Set<string>();
+-  for (const p of mine) if (!theirs.has(p)) changed.add(p);
+-  for (const p of theirs) if (!mine.has(p)) changed.add(p);
+-  // Fast path covers add/delete; same-size trees may still hide content
+-  // edits, so compare blob hashes for the intersection when small.
+-  if (changed.size === 0 && parentTree && mine.size === theirs.size
+-      && mine.size < 500) {
+-    const [a, b] = await Promise.all([
+-      treeBlobs(binding, c.treeHash), treeBlobs(binding, parentTree),
+-    ]);
+-    for (const [p, h] of a) if (b.get(p) !== h) changed.add(p);
++async function diffFiles(binding:RepoBinding,c:any):Promise<string[]>{
++  if(!Array.isArray(c.parents))throw new Error('artifacts: parent metadata');
++  const mine=await treeEntries(binding,c.treeHash);
++  let theirs=new Map<string,string>();
++  if(c.parents.length){
++    const parent=await binding.readCommit(c.parents[0]);
++    if(!parent)throw new Error('artifacts: missing parent');
++    theirs=await treeEntries(binding,parent.treeHash);
+   }
+-  return [...changed].sort();
+-}
+-
+-/** path -> blob hash for a tree, recursive (for content-edit detection). */
+-async function treeBlobs(
+-  binding: RepoBinding, treeHash: string, prefix = "",
+-): Promise<Map<string, string>> {
+-  const out = new Map<string, string>();
+-  const entries = (await binding.readTree(treeHash)) ?? [];
+-  for (const e of entries) {
+-    const p = prefix ? `${prefix}/${e.name}` : e.name;
+-    if (e.type === "tree") {
+-      for (const [sp, sh] of await treeBlobs(binding, e.hash, p)) out.set(sp, sh);
+-    } else {
+-      out.set(p, e.hash);
+-    }
+-  }
+-  return out;
++  const paths=new Set([...mine.keys(),...theirs.keys()]);
++  return [...paths].filter(p=>mine.get(p)!==theirs.get(p)).sort();
+ }
+ 
+ function toHandle(
+@@ -105,13 +63,10 @@
+       };
+     },
+     async readFile(ref: string, filePath: string) {
+-      try {
+-        const blob = await binding.readFile({ ref, path: filePath });
+-        return blob ? await blob.text() : null;
+-      } catch (e) {
+-        if (isMissingRef(e)) return null;
+-        throw e;
+-      }
++      const blob=await binding.readFile({ref,path:filePath});
++      if(blob===null)return null; // Documented positive absence; exceptions propagate.
++      if(!blob||blob.size>8*1048576)throw new Error('artifacts: file unavailable or oversized');
++      return new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(await blob.arrayBuffer());
+     },
+     async history(ref: string, limit = 50): Promise<CommitInfo[]> {
+       // Real binding: log(), not history(). Commit metadata carries no file
+@@ -119,13 +74,10 @@
+       // parent (bounded: newest FILES_CAP commits; older entries omit files
+       // and the gate treats unknown paths as conflict — safe default).
+       const FILES_CAP = 25;
+-      let commits: any[] | null;
+-      try {
+-        commits = await binding.log({ ref, limit });
+-      } catch (e) {
+-        if (isMissingRef(e)) return [];
+-        throw e;
+-      }
++      // Binding documents an empty array for an unresolved ref. Do not infer
++      // absence from error text: deleted repository, outage and auth errors throw.
++      const commits=await binding.log({ref,limit});
++      if(!Array.isArray(commits))throw new Error('artifacts: history unavailable');
+       const out: CommitInfo[] = [];
+       for (const c of commits ?? []) {
+         const sha: string = c.hash ?? "";
+--- a/packages/artifacts-port/src/git.ts
++++ b/packages/artifacts-port/src/git.ts
+@@ -5,7 +5,7 @@
+ // runtime code — only by tests, the agent runner, and local harnesses.
+ import { execFileSync } from "node:child_process";
+ import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
+-import { randomUUID } from "node:crypto";
++import { createHash, randomUUID } from "node:crypto";
+ import { tmpdir } from "node:os";
+ import * as path from "node:path";
+ import {
+@@ -112,22 +112,24 @@
+     return { defaultBranch: this.defaultBranch, lastPushAt };
+   }
+ 
+-  async readFile(ref: string, filePath: string): Promise<string | null> {
+-    try {
+-      return execFileSync(
+-        "git",
+-        [`--git-dir=${this.dir}`, "show", `${ref}:${filePath}`],
+-        { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+-      );
+-    } catch {
+-      return null;
+-    }
++  async readFile(ref:string,filePath:string):Promise<string|null>{
++    const commit=this.bare('rev-parse','--verify',`${ref}^{commit}`);
++    const entries=execFileSync('git',['--literal-pathspecs',`--git-dir=${this.dir}`,'ls-tree','-z',commit,'--',filePath],{encoding:'utf8',stdio:['ignore','pipe','pipe']});
++    if(entries==='')return null;
++    const match=/^([0-7]{6}) blob ([a-f0-9]{40})\t([^\0]+)\0$/.exec(entries);
++    if(!match||match[3]!==filePath||match[1]!=='100644')throw new Error('artifacts: text transport supports regular nonexecutable blobs only');
++    const bytes=execFileSync('git',[`--git-dir=${this.dir}`,'cat-file','blob',match[2]],{stdio:['ignore','pipe','pipe'],maxBuffer:8*1048576});
++    return new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);
+   }
+ 
+   async history(ref: string, limit = 50): Promise<CommitInfo[]> {
+-    let raw: string;
+-    try {
+-      raw = this.bare(
++    // Resolve positive branch absence separately; every other git failure propagates.
++    if(!/^[a-f0-9]{40}$/.test(ref)){
++      const branch=ref.startsWith('refs/heads/')?ref:`refs/heads/${ref}`;
++      try{this.bare('show-ref','--verify','--quiet',branch);}
++      catch(e){if((e as {status?:number}).status===1)return [];throw e;}
++    }
++    const raw = this.bare(
+         "log",
+         ref,
+         "-n",
+@@ -140,22 +142,19 @@
+         // this also brings the two adapters closer, not further apart.
+         "--pretty=format:%H%x1f%B%x1f%an%x1f%cI%x1f%P%x1e",
+       );
+-    } catch {
+-      return [];
+-    }
+     const commits: CommitInfo[] = [];
+     for (const block of raw.split("\x1e")) {
+       const parts = block.trim().split("\x1f");
+       if (parts.length < 5 || !parts[0]) continue;
+       const [sha, message, author, date, parents] = parts;
+-      let files: string[] = [];
++      let files: string[] | undefined;
+       try {
+-        files = this.bare("show", "--pretty=", "--name-only", sha)
+-          .split("\n")
+-          .map((f) => f.trim())
+-          .filter((f) => f.length > 0);
++        files = (parents ? this.bare('diff','--name-only','-z',parents.split(' ')[0],sha) :
++          this.bare('diff-tree','--root','--no-commit-id','--name-only','-r','-z',sha))
++          .split('\0').filter(f=>f.length>0);
++        if(files.some(f=>/[\x00-\x1f\x7f]/.test(f)))throw new Error('unsupported path');
+       } catch {
+-        files = [];
++        files = undefined;
+       }
+       commits.push({
+         sha,
+@@ -265,6 +264,32 @@
+  * you should depend on, never the parent count.
+  * See docs/INTEGRATION-STATUS.md §3.
+  */
++function gitEntries(dir:string,revision:string):Map<string,string>{
++  if(revision===EMPTY_TREE)return new Map();
++  const raw=execFileSync('git',['ls-tree','-r','-z',revision],{cwd:dir,encoding:'utf8',stdio:['ignore','pipe','pipe'],maxBuffer:8*1048576});
++  const result=new Map<string,string>();
++  for(const entry of raw.split('\0').filter(Boolean)){
++    const m=/^([0-7]{6}) (blob|commit) ([a-f0-9]{40})\t(.+)$/.exec(entry);
++    if(!m||result.has(m[4])||result.size>=20000)throw new Error('merge: incomplete tree');
++    result.set(m[4],`${m[1]} ${m[2]} ${m[3]}`);
++  }
++  return result;
++}
++function equalEntries(a:Map<string,string>,b:Map<string,string>):boolean{
++  return a.size===b.size&&[...a].every(([p,e])=>b.get(p)===e);
++}
++function overlayAdmission(base:Map<string,string>,fork:Map<string,string>,req:MergeRequest):Map<string,string>{
++  const expected=new Map(base);
++  for(const [p,content] of Object.entries(req.files)){
++    const bytes=Buffer.from(content,'utf8'),oid=createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
++    const entry=`100644 blob ${oid}`;
++    if(fork.get(p)!==entry)throw new Error('merge: unsupported or changed proposal entry');
++    expected.set(p,entry);
++  }
++  for(const p of req.deletedFiles){if(fork.has(p)||Object.hasOwn(req.files,p))throw new Error('merge: deletion not absent in proposal');expected.delete(p);}
++  return expected;
++}
++
+ export class GitMerger implements Merger {
+   constructor(private workRoot: string = tmpdir()) {}
+ 
+@@ -276,6 +301,8 @@
+       : undefined;
+     const dir = mkdtempSync(path.join(this.workRoot, "foundry-merge-"));
+     runGit(["clone", "--quiet", "--", req.baseRemote, dir]);
++    if(!expectedBaseSha&&runGit(['for-each-ref','--count=1','--format=%(refname)'],dir)!=='')
++      throw new StaleBaseError('genesis destination is not empty');
+     // Select the declared destination branch, never the clone's default HEAD.
+     // An empty base has no branch yet and is the only checkout fallback.
+     try {
+@@ -356,6 +383,21 @@
+         `fork moved ${forkHeadSha.slice(0, 8)} -> ${resolvedFork.slice(0, 8)}`,
+       );
+     }
++    const forkTree=gitEntries(dir,forkHeadSha);
++    const baseTree=gitEntries(dir,expectedBaseSha??EMPTY_TREE);
++    const expectedTree=overlayAdmission(baseTree,forkTree,req);
++    // A replay may only reuse the current landed commit when its actual parent
++    // shape, exact trailer and entire overlay tree prove this proposal landed.
++    if(expectedBaseSha){
++      const priorParents=runGit(['rev-list','--parents','-n','1',expectedBaseSha],dir).split(' ').slice(1);
++      const message=runGit(['show','-s','--format=%B',expectedBaseSha],dir);
++      if((priorParents.length===2||priorParents.length===1)&&priorParents.at(-1)===forkHeadSha&&
++        message.split('\n').includes(`Fork-Head: ${forkHeadSha}`)){
++        const priorBase=priorParents.length===2?priorParents[0]:EMPTY_TREE;
++        if(equalEntries(baseTree,overlayAdmission(gitEntries(dir,priorBase),forkTree,req)))return expectedBaseSha;
++        throw new Error('merge: ambiguous replay tree');
++      }
++    }
+     // Prove the admitted ancestry, not just the identity of the tip. A fork
+     // point that is no longer an ancestor means either the proposal or the
+     // destination was rewritten; neither is mergeable under this decision.
+@@ -372,6 +414,13 @@
+         );
+       }
+     }
++    if(!expectedBaseSha){
++      // An explicit wrapper commit gives genesis the documented proposal parent;
++      // git merge on an unborn branch would simply fast-forward to the proposal.
++      const root=runGit(['-c',`user.name=${req.author}`,'-c','user.email=foundry@local','commit-tree',
++        `${forkHeadSha}^{tree}`,'-p',forkHeadSha,'-m',`${req.message}\n\nFork-Head: ${forkHeadSha}`],dir);
++      runGit(['update-ref','HEAD',root],dir);
++    }else {
+     runGit(
+       [
+         "-c",
+@@ -387,6 +436,7 @@
+       ],
+       dir,
+     );
++    }
+     // Bind the landed object to the admission before it can be pushed: the
+     // parents must be exactly the expected base and the admitted proposal, and
+     // the diff must contain every admitted path and nothing else.
+@@ -408,48 +458,9 @@
+         `landed merge ${landedSha.slice(0, 8)} parents ${parents.join(",")} do not bind: ${parentError}`,
+       );
+     }
+-    const admitted = new Set([
+-      ...Object.keys(req.files),
+-      ...(req.deletedFiles ?? []),
+-    ]);
+-    const touched = runGit(
+-      ["diff", "--name-only", "-z", expectedBaseSha ?? EMPTY_TREE, landedSha],
+-      dir,
+-    )
+-      .split("\0")
+-      .filter(Boolean);
+-    const stray = touched.filter((p) => !admitted.has(p));
+-    // Content is compared as blob identity against the admitted proposal
+-    // object, which is exact and avoids text/whitespace assumptions.
+-    const wrongBlob: string[] = [];
+-    for (const p of Object.keys(req.files)) {
+-      try {
+-        const landedBlob = runGit(["rev-parse", `${landedSha}:${p}`], dir);
+-        const forkBlob = runGit(["rev-parse", `${forkHeadSha}:${p}`], dir);
+-        if (landedBlob !== forkBlob) wrongBlob.push(p);
+-      } catch {
+-        wrongBlob.push(p);
+-      }
+-    }
+-    for (const p of req.deletedFiles ?? []) {
+-      try {
+-        runGit(["rev-parse", `${landedSha}:${p}`], dir);
+-        wrongBlob.push(p);
+-      } catch {
+-        // Absent in the landed tree is the correct outcome for a deletion.
+-      }
+-    }
+-    if (stray.length > 0 || wrongBlob.length > 0) {
+-      throw new Error(
+-        `landed tree does not match admission: stray=${stray.join(",") || "-"} mismatched=${wrongBlob.join(",") || "-"}`,
+-      );
+-    }
++    if(!equalEntries(gitEntries(dir,landedSha),expectedTree))throw new Error('merge: landed bytes/modes/kinds differ from admitted overlay');
+     const pushArgs = ["push", "--quiet"];
+-    if (expectedBaseSha) {
+-      pushArgs.push(
+-        `--force-with-lease=refs/heads/${baseBranch}:${expectedBaseSha}`,
+-      );
+-    }
++    pushArgs.push(`--force-with-lease=refs/heads/${baseBranch}:${expectedBaseSha??""}`);
+     pushArgs.push("--", "origin", `HEAD:refs/heads/${baseBranch}`);
+     runGit(pushArgs, dir);
+     return landedSha;
+--- a/packages/build-runtime/README.md
++++ b/packages/build-runtime/README.md
+@@ -125,10 +125,16 @@
+ for the preserved M1/M2 source contract. The current M3 contract and remaining M4
+ boundary are in `../../docs/cloud-workspaces/vm-integration-2026-10-18/README.md`.
+ 
+-Current source verdict: M3 VM adapter/controller/capability wiring is complete.
+-Generic writable CAS/materialization isolation, inherited integration HOLD and
+-project-scale readiness remain explicit prerequisites. No default-success attestor/authorization port
+-or large-project readiness claim is supplied. The portable profile limits above remain
+-enforced. Compilation, integration, user journey and deployment require separate approval;
+-this source has not been executed or operationally verified. The current scoped
+-freeze is recorded in `../../docs/cloud-workspaces/vm-integration-2026-10-18/CHANGE-RECEIPT.json`.
++Current source verdict: M3 wiring plus the bounded Mac VM writable-storage path
++are implemented and source-reviewed. `MacVmAdapterConfig.storage` now requires
++actual installed interpreter/helper pins and constructs the concrete privileged
++immutable CAS client. There is no injected placeholder writable seal. The CAS
++service source is separate from the still operator-mediated VM image helper;
++neither has been installed or started by this batch.
++
++Generic Linux writable materialization, project readiness, actual resources and
++independent cumulative acceptance remain explicit gaps/gates. No default-success
++attestor, authorization port or large-project readiness claim is supplied. Native
++host execution remains denied. Compilation/tests, operational validation and
++activation require separate approval. Current source and exact limits:
++`../../docs/cloud-workspaces/writable-integration-2026-10-18/README.md`.
+--- a/packages/build-runtime/src/mac-vm-adapter.ts
++++ b/packages/build-runtime/src/mac-vm-adapter.ts
+@@ -2,6 +2,7 @@
+ import type {BuildJob,InputApproval} from '../../build-jobs/src/contracts.js';
+ import type {MacVmCapability} from '../../build-jobs/src/mac-vm-capability.js';
+ import {createMacReadonlyTreeSeal,type MacReadonlySealConfig} from '../../build-storage/src/mac-readonly-seal.js';
++import {createMacIsolatedContentStore,type MacIsolatedStoreConfig} from '../../build-storage/src/mac-isolated-store.js';
+ import type {ApprovedFile,PackagingPorts} from '../../build-storage/src/types.js';
+ import {assertBuildAttemptContext,type BuildAttemptContext} from './controller.js';
+ import {canonical,assertJournalReservation} from './host.js';
+@@ -25,7 +26,7 @@
+   executable:'/Library/Foundry/bin/mac-vm-host';maxBootBytes:number;maxOutputDiskBytes:number;
+   readInput:StorageWorkerConfig['readInput'];
+   resolveResultStorage:NonNullable<StorageWorkerConfig['resolveResultStorage']>;
+-  packaging:Pick<PackagingPorts,'local'|'seal'>;outputs:readonly ApprovedFile[];
++  storage:MacIsolatedStoreConfig;outputs:readonly ApprovedFile[];
+ }
+ interface Prepared {
+   context:BuildAttemptContext;job:BuildJob;guest:MacVmGuestJob;staged:StagedMacVmInput;
+@@ -39,12 +40,13 @@
+   private readonly states=new WeakMap<RuntimePlan,Prepared>();
+   private readonly preparations=new WeakSet<RuntimePlan>();
+   private readonly c:MacVmAdapterConfig;
++  private readonly local:PackagingPorts['local'];
+   readonly capabilityHash:string;
+   constructor(config:MacVmAdapterConfig){
+     assertParentBinding(config.binding);
+     const data=JSON.parse(canonicalData({capability:config.capability,sources:config.sources,executable:config.executable,
+-      maxBootBytes:config.maxBootBytes,maxOutputDiskBytes:config.maxOutputDiskBytes,outputs:config.outputs}));
+-    this.c={...config,...data,packaging:Object.freeze({...config.packaging})};this.capabilityHash=data.capability.sha256;
++      maxBootBytes:config.maxBootBytes,maxOutputDiskBytes:config.maxOutputDiskBytes,outputs:config.outputs,storage:config.storage}));
++    this.c={...config,...data};this.local=createMacIsolatedContentStore(data.storage);this.capabilityHash=data.capability.sha256;
+     check(config.binding.profile.kind==='xcode-build-v1'&&data.executable==='/Library/Foundry/bin/mac-vm-host','vm-adapter-policy');
+     check(/^[0-9a-f]{64}$/.test(this.capabilityHash)&&Array.isArray(data.sources)&&data.sources.length>0&&data.sources.length<=128,'vm-source-policy');
+     const limits=config.binding.approval.limits;
+@@ -118,6 +120,6 @@
+       !s.published&&result.outcome==='completed'&&result.stop.stopped&&result.stop.identity===s.stop.identity,'vm-intake-publication-state');
+     macVmStoppedBinding(s.stop,plan,s.guest);s.scope.assertLease();s.published=true;
+     const resolved=await this.c.resolveResultStorage(job,plan,context,signal);s.scope.assertLease();
+-    return publishMacVmIntake(s.intake,this.c.binding,resolved.scope,this.c.outputs,{...this.c.packaging,...resolved.ports},signal);
++    return publishMacVmIntake(s.intake,this.c.binding,resolved.scope,this.c.outputs,{local:this.local,writer:resolved.ports.writer,issuer:resolved.ports.issuer,capacity:resolved.ports.capacity},signal);
+   }
+ }
+--- a/packages/build-runtime/src/mac-vm-intake.ts
++++ b/packages/build-runtime/src/mac-vm-intake.ts
+@@ -1,3 +1,4 @@
++import {assertMacIsolatedStore} from '../../build-storage/src/mac-isolated-store.js';
+ import {createHash} from 'node:crypto';
+ import {constants} from 'node:fs';
+ import {open,lstat} from 'node:fs/promises';
+@@ -127,6 +128,7 @@
+  * publication authority. No fabricated generations or no-op writable seal. */
+ async function publishIntake(receipt:VerifiedMacVmResult,profile:ParentProfileBinding,
+   scope:GrantScope,outputs:readonly ApprovedFile[],base:PackagingPorts,signal:AbortSignal):Promise<PublishReceipt>{
++  assertMacIsolatedStore(base.local);
+   const known=intakes.get(receipt);check(known&&!known.published&&!publishedRequests.has(known.request),'mac-vm-unverified-or-replayed-intake');
+   assertParentBinding(profile);
+   const {plan,job}=known,binding=assertVerifiedMacVmInput(macVmGuestInput(job,plan),plan),context=binding.context;
+--- a/packages/build-runtime/src/storage-integration.ts
++++ b/packages/build-runtime/src/storage-integration.ts
+@@ -4,7 +4,7 @@
+ import { collectOutputs, writeResultManifest, materializeLocalSnapshot, populateProjectInputSnapshot, materializeProjectInputSnapshot } from '../../build-storage/src/index.js';
+ import type {ProjectInputRouting,ProjectInputReadNamespace} from '../../build-storage/src/project-input-io.js';
+ import type { InputSnapshot } from '../../build-storage/src/snapshots.js';
+-import type { PackagingPorts, LocalRef, ApprovedFile, GrantScope } from '../../build-storage/src/types.js';
++import type { PackagingPorts, LocalRef, ApprovedFile, GrantScope, ManagedTreeSeal } from '../../build-storage/src/types.js';
+ import type { ArtifactClaim, ObjectRef, InputApproval, BuildJob } from '../../build-jobs/src/contracts.js';
+ import type { RuntimePlan, RuntimeAdapter } from './types.js';
+ import { BuildWorkerController, assertBuildAttemptContext, assertBuildResponseSource, snapshotWorkerAuthority, type BuildTransport, type BuildWorkerPorts, type BuildAttemptContext, type WorkerAuthorityBinding } from './controller.js';
+@@ -17,7 +17,7 @@
+ export interface ResolvedProjectInputPorts {scope:GrantScope;routing:ProjectInputRouting<ProjectInputReadNamespace>}
+ export interface StorageWorkerConfig {
+   binding:ParentProfileBinding; transport:BuildTransport; liveness:WorkerLivenessPort;
+-  packaging:Pick<PackagingPorts,'local'|'seal'> & Partial<Pick<PackagingPorts,'writer'|'issuer'|'capacity'>>;
++  packaging:Pick<PackagingPorts,'local'> & {seal:ManagedTreeSeal} & Partial<Pick<PackagingPorts,'writer'|'issuer'|'capacity'>>;
+   authority:WorkerAuthorityBinding;
+   /** Authenticated, bounded, generation-pinned reader. No arbitrary URL is accepted. */
+   readInput(ref:ObjectRef,context:{input:InputApproval;plan:RuntimePlan;claim?:ArtifactClaim;attempt?:BuildAttemptContext},signal:AbortSignal):Promise<Uint8Array>;
+--- /dev/null
++++ b/packages/build-storage/native/mac-cas.py
+@@ -0,0 +1,366 @@
++"""SOURCE ONLY. Explicitly installed/started root CAS service; never auto-started.
++Run with owner-approved isolated Python (-I -S). No installer, sudo, mounts,
++commands, deletion, remote access, arbitrary paths, or writable-tree capability.
++Root/administrators and the installed runtime are trusted; job code is not.
++"""
++import base64
++import ctypes
++import errno
++import hashlib
++import json
++import os
++import re
++import socket
++import stat
++import struct
++import sys
++import time
++
++BASE = '/Library/Foundry/CAS'
++SOCKET = BASE + '/run/store.sock'
++CONFIG = BASE + '/policy.json'
++MAX_OBJECT = 1048576
++MAX_FRAME = 1450000
++LIB = None
++
++
++def need(value, code):
++    if not value:
++        raise ValueError(code)
++
++
++def no_acl(fd):
++    security = LIB.filesec_init()
++    need(security, 'security')
++    acl = ctypes.c_void_p()
++    try:
++        present = ctypes.c_int()
++        observed = ctypes.create_string_buffer(4096)
++        need(LIB.fstatx_np(fd, observed, security) == 0 and
++             LIB.filesec_query_property(security, 5, ctypes.byref(present)) == 0, 'security-read')
++        if not present.value:
++            return
++        need(LIB.filesec_get_property(security, 5, ctypes.byref(acl)) == 0 and
++             acl.value and acl.value != 1, 'acl-read')
++        entry = ctypes.c_void_p()
++        ctypes.set_errno(0)
++        found = LIB.acl_get_entry(acl, 0, ctypes.byref(entry))
++        need(found == -1 and ctypes.get_errno() == errno.EINVAL, 'acl-present')
++    finally:
++        if acl.value and acl.value != 1:
++            LIB.acl_free(acl)
++        LIB.filesec_free(security)
++
++
++def root_fd(path, file=False):
++    need(path.startswith('/') and '//' not in path and all(p not in ('.', '..') for p in path.split('/')), 'path')
++    fd = os.open('/', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try:
++        parts = path.split('/')[1:]
++        for i, part in enumerate([''] + parts):
++            leaf = i == len(parts)
++            if part:
++                flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
++                if not (leaf and file):
++                    flags |= os.O_DIRECTORY
++                child = os.open(part, flags, dir_fd=fd)
++                os.close(fd)
++                fd = child
++            s = os.fstat(fd)
++            need(s.st_uid == 0 and s.st_mode & 0o022 == 0, 'root-owner')
++            need(stat.S_ISREG(s.st_mode) and s.st_nlink == 1 if leaf and file else stat.S_ISDIR(s.st_mode), 'root-type')
++            no_acl(fd)
++        return fd
++    except BaseException:
++        os.close(fd)
++        raise
++
++
++def exact(value, fields):
++    need(type(value) is dict and set(value) == set(fields), 'shape')
++
++
++def unique(pairs):
++    out = {}
++    for k, v in pairs:
++        need(k not in out, 'duplicate-key')
++        out[k] = v
++    return out
++
++
++def decode(raw):
++    need(0 < len(raw) <= MAX_FRAME, 'frame')
++    return json.loads(raw.decode('utf-8'), object_pairs_hook=unique)
++
++
++def encode(obj):
++    return json.dumps(obj, separators=(',', ':'), sort_keys=True).encode('utf-8')
++
++
++def recv_exact(conn, count, deadline):
++    data = bytearray()
++    while len(data) < count:
++        remaining = deadline-time.monotonic()
++        need(remaining > 0, 'deadline')
++        conn.settimeout(remaining)
++        chunk = conn.recv(min(65536, count-len(data)))
++        need(chunk, 'short-frame')
++        data.extend(chunk)
++    return bytes(data)
++
++
++def receive(conn, deadline):
++    length = struct.unpack('!I', recv_exact(conn, 4, deadline))[0]
++    need(0 < length <= MAX_FRAME, 'frame-bound')
++    return recv_exact(conn, length, deadline)
++
++
++def send(conn, raw, deadline):
++    need(0 < len(raw) <= MAX_FRAME and deadline > time.monotonic(), 'response-bound')
++    conn.settimeout(deadline-time.monotonic())
++    conn.sendall(struct.pack('!I', len(raw))+raw)
++
++
++def peer_uid(conn):
++    uid, gid = ctypes.c_uint(), ctypes.c_uint()
++    need(LIB.getpeereid(conn.fileno(), ctypes.byref(uid), ctypes.byref(gid)) == 0, 'peer-identity')
++    return uid.value
++
++
++def ref(digest, size):
++    return {'kind': 'local-cas', 'sha256': digest, 'sizeBytes': size,
++            'relativePath': 'sha256/'+digest[:2]+'/'+digest[2:4]+'/sha256-'+digest}
++
++
++def validate(r):
++    need(type(r) is dict and r.get('op') in ('put', 'read'), 'operation')
++    exact(r, ['version', 'op', 'sha256', 'sizeBytes'] + (['data'] if r['op'] == 'put' else []))
++    need(type(r['version']) is int and r['version'] == 1 and type(r['sha256']) is str and
++         re.fullmatch('[a-f0-9]{64}', r['sha256']) and type(r['sizeBytes']) is int and
++         0 < r['sizeBytes'] <= MAX_OBJECT, 'identity')
++    if r['op'] == 'put':
++        need(type(r['data']) is str and len(r['data']) <= 1398104, 'data')
++        data = base64.b64decode(r['data'], validate=True)
++        need(base64.b64encode(data).decode('ascii') == r['data'] and len(data) == r['sizeBytes'] and
++             hashlib.sha256(data).hexdigest() == r['sha256'], 'digest')
++        return data
++    return None
++
++
++class Store:
++    def __init__(self, policy):
++        self.policy = policy
++        self.fd = root_fd(BASE+'/objects')  # Must be provisioned; no mkdir of trust root.
++        need(stat.S_IMODE(os.fstat(self.fd).st_mode) == 0o700, 'private-root')
++        self.device = os.fstat(self.fd).st_dev
++        self.bytes, self.count = 0, 0
++        # Include incomplete creates in durable quota reconstruction; never erase
++        # or discount them after a crash. Fail on unknown entries and oversize trees.
++        self.inventory(self.fd, 0, '')
++
++    def child(self, parent, name, create=False):
++        if create:
++            try:
++                os.mkdir(name, 0o700, dir_fd=parent)
++                os.fsync(parent)
++            except FileExistsError:
++                pass
++        fd = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
++        try:
++            s = os.fstat(fd)
++            need(s.st_uid == 0 and s.st_dev == self.device and stat.S_IMODE(s.st_mode) == 0o700, 'private-shard')
++            no_acl(fd)
++            return fd
++        except BaseException:
++            os.close(fd)
++            raise
++
++    def inventory(self, fd, depth, prefix):
++        # scandir(fd) is streaming, not an unbounded listdir allocation.
++        with os.scandir(fd) as entries:
++            n = 0
++            for e in entries:
++                n += 1
++                need(n <= (1 if depth == 0 else 256 if depth < 3 else 4096), 'shard-bound')
++                if depth < 3:
++                    need(e.name == 'sha256' if depth == 0 else re.fullmatch('[a-f0-9]{2}', e.name), 'shard-name')
++                    child = self.child(fd, e.name)
++                    try:
++                        self.inventory(child, depth+1, prefix+(e.name if depth else ''))
++                    finally:
++                        os.close(child)
++                else:
++                    need(re.fullmatch('sha256-'+prefix+'[a-f0-9]{60}', e.name), 'object-name')
++                    s = e.stat(follow_symlinks=False)
++                    need(stat.S_ISREG(s.st_mode) and s.st_uid == 0 and s.st_dev == self.device and
++                         s.st_nlink == 1 and stat.S_IMODE(s.st_mode) == 0o400 and 0 <= s.st_size <= MAX_OBJECT, 'object-entry')
++                    self.count += 1
++                    self.bytes += s.st_size
++                    need(self.count <= self.policy['maxObjects'] and self.bytes <= self.policy['maxBytes'], 'quota')
++
++    def read(self, parent, name, digest, size):
++        fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
++        try:
++            s = os.fstat(fd)
++            need(stat.S_ISREG(s.st_mode) and s.st_uid == 0 and s.st_dev == self.device and s.st_nlink == 1 and
++                 stat.S_IMODE(s.st_mode) == 0o400 and s.st_size == size, 'object-metadata')
++            no_acl(fd)
++            data = bytearray()
++            while len(data) < size:
++                b = os.read(fd, min(65536, size-len(data)))
++                need(b, 'short-object')
++                data.extend(b)
++            need(not os.read(fd, 1) and hashlib.sha256(data).hexdigest() == digest, 'object-integrity')
++            return bytes(data)
++        finally:
++            os.close(fd)
++
++    def operation(self, r):
++        data = validate(r)
++        digest, size = r['sha256'], r['sizeBytes']
++        parent = os.dup(self.fd)
++        try:
++            if data is not None:
++                space = os.fstatvfs(self.fd)
++                need(space.f_bavail*space.f_frsize-size-65536 >= self.policy['reserveBytes'], 'disk-reserve-with-shards')
++            for name in ('sha256', digest[:2], digest[2:4]):
++                child = self.child(parent, name, data is not None)
++                os.close(parent)
++                parent = child
++            name = 'sha256-'+digest
++            if data is not None:
++                try:
++                    existing = os.stat(name, dir_fd=parent, follow_symlinks=False)
++                except FileNotFoundError:
++                    existing = None
++                if existing is None:
++                    with os.scandir(parent) as siblings:
++                        for number, _ in enumerate(siblings, 1):
++                            need(number < 4096, 'shard-full')
++                    need(self.count+1 <= self.policy['maxObjects'] and self.bytes+size <= self.policy['maxBytes'], 'quota')
++                    space = os.fstatvfs(self.fd)
++                    need(space.f_bavail*space.f_frsize-size >= self.policy['reserveBytes'], 'disk-reserve')
++                    # Debit before creation. Failed write stays counted until restart
++                    # reconstructs actual retained size; it cannot be overwritten.
++                    self.count += 1
++                    self.bytes += size
++                    out = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o400, dir_fd=parent)
++                    try:
++                        offset = 0
++                        while offset < size:
++                            n = os.write(out, data[offset:])
++                            need(n > 0, 'write-progress')
++                            offset += n
++                        os.fsync(out)
++                    finally:
++                        os.close(out)
++                    os.fsync(parent)
++            verified = self.read(parent, name, digest, size)
++            result = {'version': 1, 'ok': True, 'ref': ref(digest, size)}
++            if r['op'] == 'read':
++                result['data'] = base64.b64encode(verified).decode('ascii')
++            return result
++        finally:
++            os.close(parent)
++
++
++def policy_read():
++    fd = root_fd(CONFIG, file=True)
++    try:
++        need(os.fstat(fd).st_size <= 4096, 'policy-bound')
++        policy = decode(os.read(fd, 4097))
++    finally:
++        os.close(fd)
++    exact(policy, ['version', 'workerUid', 'workerGid', 'maxBytes', 'maxObjects', 'reserveBytes'])
++    need(all(type(v) is int for v in policy.values()) and policy['version'] == 1 and
++         501 <= policy['workerUid'] < 2**31 and 501 <= policy['workerGid'] < 2**31 and
++         MAX_OBJECT <= policy['maxBytes'] <= 20*1024**3 and 1 <= policy['maxObjects'] <= 200000 and
++         50*1024**3 <= policy['reserveBytes'] <= 1024**4, 'policy')
++    return policy
++
++
++def serve():
++    need(os.getuid() == 0 and os.geteuid() == 0, 'root-service-required')
++    policy = policy_read()
++    run = root_fd(BASE+'/run')
++    need(stat.S_IMODE(os.fstat(run).st_mode) == 0o755, 'socket-directory')
++    # No stale-socket removal. An existing name requires owner reconciliation;
++    # reboot/restart cannot silently replace another service's endpoint.
++    store = Store(policy)
++    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as server:
++        server.bind(SOCKET)
++        os.chown(SOCKET, 0, policy['workerGid'])
++        os.chmod(SOCKET, 0o660)
++        os.fsync(run)
++        server.listen(4)
++        while True:
++            conn, _ = server.accept()
++            with conn:
++                deadline = time.monotonic()+15
++                try:
++                    need(peer_uid(conn) == policy['workerUid'], 'unauthorized-peer')
++                    r = decode(receive(conn, deadline))
++                    reply = store.operation(r)
++                    send(conn, encode(reply), deadline)
++                except Exception:
++                    try:
++                        send(conn, encode({'version': 1, 'ok': False}), deadline)
++                    except Exception:
++                        pass
++    os.close(run)
++
++
++def client():
++    need(os.getuid() >= 501 and os.getuid() == os.geteuid() and os.getgid() == os.getegid(), 'unprivileged-client')
++    for path in ('/Library/Foundry/bin/cas-python', '/Library/Foundry/bin/mac-cas.py'):
++        fd = root_fd(path, file=True)
++        os.close(fd)
++    fd = root_fd(BASE+'/run')
++    try:
++        s = os.stat('store.sock', dir_fd=fd, follow_symlinks=False)
++        need(stat.S_ISSOCK(s.st_mode) and s.st_uid == 0 and stat.S_IMODE(s.st_mode) == 0o660, 'socket-owner')
++        # Parent is root-only writable and ACL-free. Kernel peer credentials bind
++        # the connection to root, independent of a process-supplied READY string.
++        raw = sys.stdin.buffer.read(MAX_FRAME+1)
++        validate(decode(raw))
++        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as conn:
++            deadline = time.monotonic()+15
++            conn.settimeout(15)
++            conn.connect(SOCKET)
++            need(peer_uid(conn) == 0, 'root-peer-required')
++            send(conn, raw, deadline)
++            reply = receive(conn, deadline)
++            # The Node consumer verifies exact reference and actual content hash.
++            sys.stdout.buffer.write(reply)
++    finally:
++        os.close(fd)
++
++
++def main():
++    global LIB
++    need(sys.platform == 'darwin' and sys.flags.isolated and sys.flags.no_site, 'isolated-darwin-python-required')
++    need(len(sys.argv) == 2 and sys.argv[1] in ('client', 'serve'), 'mode')
++    LIB = ctypes.CDLL('/usr/lib/libSystem.B.dylib', use_errno=True)
++    LIB.filesec_init.restype = ctypes.c_void_p
++    LIB.filesec_free.argtypes = [ctypes.c_void_p]
++    LIB.filesec_free.restype = None
++    LIB.fstatx_np.argtypes = [ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p]
++    LIB.filesec_query_property.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
++    LIB.filesec_get_property.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
++    LIB.acl_get_entry.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
++    LIB.acl_free.argtypes = [ctypes.c_void_p]
++    LIB.getpeereid.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint)]
++    os.umask(0o077)
++    if sys.argv[1] == 'serve':
++        serve()
++    else:
++        client()
++
++
++if __name__ == '__main__':
++    try:
++        main()
++    except Exception:
++        # No object contents, request bytes, policy values, or raw exceptions.
++        sys.stderr.write('foundry-cas: refused\n')
++        sys.exit(1)
+--- a/packages/build-storage/src/index.ts
++++ b/packages/build-storage/src/index.ts
+@@ -15,3 +15,6 @@
+ 
+ export {createMacReadonlyTreeSeal} from './mac-readonly-seal';
+ export type {ReadonlyManagedTreeSeal,MacReadonlySealConfig,MacReadonlyTreeIdentity} from './mac-readonly-seal';
++
++export {createMacIsolatedContentStore,assertMacIsolatedStore} from './mac-isolated-store';
++export type {MacIsolatedStoreConfig} from './mac-isolated-store';
+--- /dev/null
++++ b/packages/build-storage/src/mac-isolated-store.ts
+@@ -0,0 +1,90 @@
++import {spawn} from 'node:child_process';
++import {constants} from 'node:fs';
++import {access,lstat,open} from 'node:fs/promises';
++import {createHash} from 'node:crypto';
++import {alive,boundedBytes,canonical,check,freeze,sha256} from './checks';
++import {shardedLocalRef,validateLocalRef} from './local-refs';
++import type {LocalContentStore,LocalRef} from './types';
++
++export interface MacIsolatedStoreConfig {
++  /** Actual installed binary/script hashes, supplied only after approved installation. */
++  python:{path:'/Library/Foundry/bin/cas-python';sha256:string};
++  helper:{path:'/Library/Foundry/bin/mac-cas.py';sha256:string};
++}
++const stores=new WeakSet<LocalContentStore>();
++let children=0;
++export function assertMacIsolatedStore(store:LocalContentStore):void {
++  check(stores.has(store),'concrete-mac-isolated-store-required');
++}
++async function pinned(path:string,digest:string,executable:boolean,signal:AbortSignal):Promise<void> {
++  alive(signal);check(process.platform==='darwin'&&process.getuid?.()!==0&&process.getuid?.()===process.geteuid?.(),'cas-unprivileged-mac-client');
++  let current='';const parts=path.slice(1).split('/');
++  for(let i=-1;i<parts.length;i++) {
++    current=i===-1?'/':`${current==='/'?'':current}/${parts[i]}`;
++    const s=await lstat(current),leaf=i===parts.length-1;
++    check(s.uid===0&&(s.mode&0o022)===0&&!s.isSymbolicLink()&&(leaf?s.isFile()&&s.nlink===1&&(s.mode&0o6000)===0:s.isDirectory()),'cas-helper-ownership');
++    if(leaf&&executable)check((s.mode&0o111)!==0,'cas-python-executable');
++    // The native client independently rejects ACLs; this also refuses effective
++    // write access before invoking an installed, owner-trusted interpreter.
++    let writable=false;
++    try{await access(current,constants.W_OK);writable=true;}
++    catch(e){check(['EACCES','EPERM','EROFS'].includes((e as NodeJS.ErrnoException).code??''),'cas-access-unknown');}
++    check(!writable,'cas-helper-writable');alive(signal);
++  }
++  const fd=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
++  try{
++    const s=await fd.stat();check(s.isFile()&&s.uid===0&&s.nlink===1&&s.size>0&&s.size<=64*1048576,'cas-helper-size');
++    const hash=createHash('sha256'),buffer=Buffer.alloc(65536);let offset=0;
++    while(offset<s.size){alive(signal);const r=await fd.read(buffer,0,Math.min(buffer.length,s.size-offset),offset);check(r.bytesRead>0,'cas-helper-short');hash.update(buffer.subarray(0,r.bytesRead));offset+=r.bytesRead;}
++    check(hash.digest('hex')===digest,'cas-helper-pin');
++  }finally{await fd.close();}
++}
++/** Immutable object operations, not a writable-tree callback. Construction never
++ * starts the privileged service. Client has no filesystem path or command input.
++ * The service's root-owned namespace and exact peer UID enforce the boundary. */
++export function createMacIsolatedContentStore(config:MacIsolatedStoreConfig):LocalContentStore {
++  const python=Object.freeze({...config.python}),helper=Object.freeze({...config.helper});
++  check(python.path==='/Library/Foundry/bin/cas-python'&&helper.path==='/Library/Foundry/bin/mac-cas.py'&&
++    [python.sha256,helper.sha256].every(x=>/^[a-f0-9]{64}$/.test(x)),'cas-installed-pins-required');
++  let busy=false;
++  async function exchange(request:object,signal:AbortSignal):Promise<Record<string,unknown>> {
++    alive(signal);check(!busy&&children<4,'cas-client-occupied');busy=true;children++;
++    let spawned=false;
++    try{
++      await pinned(python.path,python.sha256,true,signal);await pinned(helper.path,helper.sha256,false,signal);alive(signal);
++      const raw=Buffer.from(JSON.stringify(request));check(raw.length<=1450000,'cas-request-bound');
++      return await new Promise<Record<string,unknown>>((resolve,reject)=>{
++        const child=spawn(python.path,['-I','-S',helper.path,'client'],{shell:false,env:{LANG:'C',LC_ALL:'C'},stdio:['pipe','pipe','pipe']});
++        spawned=true;let done=false,total=0;const chunks:Buffer[]=[];
++        const fail=(code:string)=>{if(!done){done=true;reject(new Error(`build-storage: ${code}`));}child.kill('SIGKILL');};
++        const abort=()=>fail('cas-aborted');const timer=setTimeout(()=>fail('cas-deadline'),20000);
++        signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();
++        child.on('error',()=>fail('cas-client-start'));
++        child.stdin.on('error',()=>fail('cas-client-input'));
++        child.stdout.on('data',(b:Buffer)=>{total+=b.length;if(total>1450000)fail('cas-response-bound');else chunks.push(b);});
++        child.stderr.on('data',()=>{}); // Never echo privileged paths, bytes or errors.
++        child.on('close',(code)=>{
++          clearTimeout(timer);signal.removeEventListener('abort',abort);busy=false;children--;
++          if(done)return;done=true;
++          try{alive(signal);check(code===0,'cas-client-failed');const value=JSON.parse(Buffer.concat(chunks).toString('utf8'));check(value&&value.version===1&&value.ok===true,'cas-service-refused');resolve(value);}
++          catch(e){reject(e);}
++        });
++        child.stdin.end(raw);
++      });
++    }finally{if(!spawned){busy=false;children--;}}
++  }
++  const store:LocalContentStore=Object.freeze({layout:'sharded-v2' as const,
++    async put(input:Uint8Array,signal:AbortSignal){
++      const bytes=boundedBytes(input,1048576);check(bytes.length>0,'cas-empty-object');
++      const ref=shardedLocalRef(sha256(bytes),bytes.length);
++      const r=await exchange({version:1,op:'put',sha256:ref.sha256,sizeBytes:ref.sizeBytes,data:Buffer.from(bytes).toString('base64')},signal);
++      check(canonical(r.ref)===canonical(ref)&&Object.keys(r).sort().join(',')==='ok,ref,version','cas-put-receipt');return freeze(ref);
++    },
++    async read(input:LocalRef,signal:AbortSignal){
++      const ref=JSON.parse(canonical(input)) as LocalRef;validateLocalRef(ref,true);
++      const r=await exchange({version:1,op:'read',sha256:ref.sha256,sizeBytes:ref.sizeBytes},signal);
++      check(canonical(r.ref)===canonical(ref)&&typeof r.data==='string'&&Object.keys(r).sort().join(',')==='data,ok,ref,version','cas-read-receipt');
++      const bytes=Buffer.from(r.data,'base64');check(bytes.toString('base64')===r.data&&bytes.length===ref.sizeBytes&&sha256(bytes)===ref.sha256,'cas-read-integrity');return new Uint8Array(bytes);
++    }});
++  stores.add(store);return store;
++}
+--- a/packages/build-storage/src/packaging.ts
++++ b/packages/build-storage/src/packaging.ts
+@@ -41,7 +41,8 @@
+   check(selected.size===required.size&&r.profile.outputPaths.every(path=>selected.has(path)),'required-output-selection-incomplete');
+   check(r.outputs.every(f=>required.has(f.path)&&f.classification!=='build-log'),'unapproved-output');
+   check(r.logs.every(f=>f.classification==='build-log'),'log-classification');
+-  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal.withExclusiveTrees.bind(ports.seal);
++  check(ports.readSeal||ports.seal,'source-tree-isolation-required');
++  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal!.withExclusiveTrees.bind(ports.seal!);
+   return readTrees([root.path],async()=>{
+     const plans:ArtifactPlan[]=[]; let total=0,count=0,entries=0;
+     // Preflight ALL files before cloud writes: no partial publish for known size/type errors.
+--- a/packages/build-storage/src/project-input-io.ts
++++ b/packages/build-storage/src/project-input-io.ts
+@@ -40,7 +40,7 @@
+   selectNamespace(request:ProjectInputRouteRequest,signal:AbortSignal):Promise<string>;
+ }
+ export interface ProjectInputPackagingPorts {
+-  local:LocalContentStore;seal:ManagedTreeSeal;readSeal?:ManagedReadonlyTreeSeal;routing:ProjectInputRouting<ProjectInputPublicationNamespace>;
++  local:LocalContentStore;seal?:ManagedTreeSeal;readSeal?:ManagedReadonlyTreeSeal;routing:ProjectInputRouting<ProjectInputPublicationNamespace>;
+ }
+ export interface ProjectInputReadPorts {local:LocalContentStore;routing:ProjectInputRouting<ProjectInputReadNamespace>}
+ 
+--- a/packages/build-storage/src/project-inputs.ts
++++ b/packages/build-storage/src/project-inputs.ts
+@@ -43,7 +43,8 @@
+   for(const path of requiredInputs) {check(!required.has(path),'duplicate-required-input'); paths.add(path,true); required.add(path);}
+   const missingInputs=requiredInputs.filter(p=>!selected.has(p));
+   const publisher=projectPublisher(scope,ports,signal); // Validates explicit namespace set and local layout before disk reads.
+-  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal.withExclusiveTrees.bind(ports.seal);
++  check(ports.readSeal||ports.seal,'source-tree-isolation-required');
++  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal!.withExclusiveTrees.bind(ports.seal!);
+   return readTrees([root.path],async()=>{
+     const tree=new ProjectInputTree(signal), plans:SegmentPlan[]=[plan()]; let total=0,objectCount=0;
+     for(const file of files) {
+--- a/packages/build-storage/src/snapshots.ts
++++ b/packages/build-storage/src/snapshots.ts
+@@ -53,7 +53,8 @@
+     }
+   }
+   if(r.git.revision!==null) check(/^[a-f0-9]{40,64}$/.test(r.git.revision),'git-revision');
+-  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal.withExclusiveTrees.bind(ports.seal);
++  check(ports.readSeal||ports.seal,'source-tree-isolation-required');
++  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal!.withExclusiveTrees.bind(ports.seal!);
+   return readTrees([root.path],async()=>{
+     const stats:Stats[]=[]; let total=0,count=0;
+     for(const file of r.files) {
+--- a/packages/build-storage/src/types.ts
++++ b/packages/build-storage/src/types.ts
+@@ -65,9 +65,10 @@
+ export interface OutputLineage extends FileLineage {format:ArtifactFormat}
+ export interface PackagingPorts {
+   writer:TrustedWriter; issuer:TrustedGrantIssuer; capacity:TrustedPublicationCapacity;
+-  seal:ManagedTreeSeal; local:LocalContentStore;
+-  /** Optional concrete immutable source/output root guard. Local CAS writes retain
+-   * their independent writable store/seal; never adapt this into a writable seal. */
++  seal?:ManagedTreeSeal; local:LocalContentStore;
++  /** Optional concrete immutable source/output root guard. Local CAS writes use
++   * an independent store. At least one read-side seal is required by collectors;
++   * never adapt a readonly seal into a writable seal. */
+   readSeal?:ManagedReadonlyTreeSeal;
+ }
+ export interface CollectedOutputs {
+--- a/packages/library-revocation/src/http.ts
++++ b/packages/library-revocation/src/http.ts
+@@ -1,4 +1,4 @@
+-import {boundedJson,HttpFailure} from '../../../workers/compute/src/http';
++import {HttpFailure} from '../../../workers/compute/src/http';
+ import {canonical,freeze} from '../../library-jobs/src/data';
+ import type {Delivery,FencePage,DeliveryPort,RevocationContext} from './types';
+ import {RevocationRelay} from './index';
+@@ -6,8 +6,33 @@
+ interface TargetEndpoint extends Endpoint {kind:'catalog'|'broker';projectId:string;authorityId:string}
+ export interface RelayHttpConfig {enabled?:boolean;environment:string;sourceAuthorityId:string;compute:Endpoint;targets:TargetEndpoint[]}
+ export interface RelayHttpPorts {
+- credential(reference:string):Promise<string>;
++ credential(reference:string,signal:AbortSignal):Promise<string>;
+  fetch(request:Request):Promise<Response>;
++}
++// Process-wide occupancy: constructing another relay cannot bypass a hung call.
++const MAX_INFLIGHT=4;let inflight=0;
++async function responseJson(response:Response,signal:AbortSignal,expiresAt:number,quarantine:()=>void):Promise<unknown>{
++ if(!/^application\/json(?:\s*;|$)/i.test(response.headers.get('content-type')??'')){
++  await response.body?.cancel().catch(()=>quarantine());throw new HttpFailure(415,'relay-json-required');
++ }
++ const reader=response.body?.getReader();if(!reader)throw new HttpFailure(400,'relay-body-required');
++ let cancelling:Promise<void>|undefined;
++ const abort=()=>{cancelling??=reader.cancel().catch(()=>quarantine());};
++ signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();
++ const bytes=new Uint8Array(65536);let used=0;
++ try{
++  for(let reads=0;;reads++){
++   if(signal.aborted||Date.now()>=expiresAt)throw new Error('relay timeout');
++   if(reads>=65536)throw new HttpFailure(413,'relay-chunks');
++   // No inner logical race: the outer caller can time out, while this operation
++   // retains its slot until the actual read AND cancellation have settled.
++   const {value,done}=await reader.read();if(signal.aborted)throw new Error('relay timeout');
++   if(done)break;if(value.byteLength>bytes.length-used)throw new HttpFailure(413,'relay-body-limit');
++   bytes.set(value,used);used+=value.byteLength;
++  }
++  return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes.subarray(0,used)));
++ }catch(e){abort();throw e;}
++ finally{signal.removeEventListener('abort',abort);if(cancelling)await cancelling;reader.releaseLock();}
+ }
+ /** Host-fixed origins and credential references only. No request may select a URL or bearer. */
+ export function relayHttp(config:RelayHttpConfig,ports:RelayHttpPorts):DeliveryPort&{readPage(after:number):Promise<FencePage>}{
+@@ -17,22 +42,20 @@
+   const url=new URL(e.origin);if(url.protocol!=='https:'||url.pathname!=='/'||url.username||url.password||url.search||url.hash||typeof e.credentialRef!=='string'||!/^[A-Za-z0-9_-]{1,96}(?![\s\S])/.test(e.credentialRef))throw new Error('invalid relay endpoint');
+  }
+  const names=new Set<string>();for(const t of policy.targets){const name=canonical([t.kind,t.projectId,t.authorityId]);if(names.has(name)||!['catalog','broker'].includes(t.kind)||!/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?![\s\S])/.test(t.projectId))throw new Error('invalid target');names.add(name);}
+- const MAX_INFLIGHT=4;
+- let inflight=0;
+  async function post(e:Endpoint,path:string,body:unknown):Promise<any>{
+   if(policy.enabled!==true)throw new Error('relay disabled');
+   // Deny excess work before any credential, fetch or body operation starts.
+   if(inflight>=MAX_INFLIGHT)throw new Error('relay busy');
+-  inflight++;
++  inflight++;let uncertain=false;const quarantine=()=>{uncertain=true;};
+   const abort=new AbortController(),expiresAt=Date.now()+5000,timer=setTimeout(()=>abort.abort(),5000);
+   const deadline=new Promise<never>((_,reject)=>{abort.signal.addEventListener('abort',()=>reject(new Error('relay timeout')),{once:true});});
+   const head=(async()=>{
+-   const credential=await ports.credential(e.credentialRef);
++   const credential=await ports.credential(e.credentialRef,abort.signal);
+    if(abort.signal.aborted)throw new Error('relay timeout');
+    if(typeof credential!=='string'||!/^[A-Za-z0-9._~+/-]{32,}=*(?![\s\S])/.test(credential))throw new Error('credential unavailable');
+    const response=await ports.fetch(new Request(new URL(path,e.origin),{method:'POST',redirect:'error',signal:abort.signal,headers:{'content-type':'application/json',authorization:'Bearer '+credential},body:canonical(body)}));
+-   if(abort.signal.aborted){void response.body?.cancel().catch(()=>{});throw new Error('relay timeout');}
+-   if(response.status!==200){void response.body?.cancel().catch(()=>{});throw new HttpFailure(response.status,'relay-target-response');}
++   if(abort.signal.aborted){await response.body?.cancel().catch(()=>quarantine());throw new Error('relay timeout');}
++   if(response.status!==200){await response.body?.cancel().catch(()=>quarantine());throw new HttpFailure(response.status,'relay-target-response');}
+    return response;
+   })();
+   // The admission slot is released only when the underlying operation (including
+@@ -40,13 +63,12 @@
+   const operation=(async()=>{
+    try{
+     const response=await head;
+-    return await boundedJson(new Request('https://relay.response',{method:'POST',headers:{'content-type':response.headers.get('content-type')??''},body:response.body,duplex:'half'} as RequestInit),65536,Math.max(1,expiresAt-Date.now()),abort.signal);
+-   }finally{inflight--;}
++    return await responseJson(response,abort.signal,expiresAt,quarantine);
++   }finally{if(!uncertain)inflight--;}
+   })();
+   void operation.catch(()=>{});
+   try{
+-   await Promise.race([head,deadline]);
+-   return await operation;
++   return await Promise.race([operation,deadline]);
+   }finally{abort.abort();clearTimeout(timer);}
+  }
+  return {
+--- a/packages/stores/src/decisions.ts
++++ b/packages/stores/src/decisions.ts
+@@ -24,6 +24,13 @@
+  * retryable, an operator can filter on it, and a later attempt for the same
+  * event replaces it with the final verdict.
+  */
++export interface VerificationReceipt {
++  version:1;sha256:string;
++  request:{repo:string;baseBranch:string;headSha:string;files:string[];namespace:string;ref:string;before:string;baseSha:string|null;contentHash:string};
++  policy:{enforce:boolean;requireChecked:boolean};
++  verdict:{checked:boolean;ok:boolean;runs:{name:string;ok:boolean}[]};
++}
++
+ export interface DecisionRecord {
+   id?: number;
+   namespace: string;
+@@ -38,10 +45,13 @@
+   merged_sha?: string | null;
+   task_id?: string | null;
+   agent_id?: string | null;
++  verification?:VerificationReceipt|null;
+   decided_at: string;
+ }
+ 
+ export interface DecisionStore {
++  /** Durable, immutable pre-merge evidence. A missing implementation blocks merging. */
++  recordVerification?(receipt:VerificationReceipt):Promise<void>;
+   record(d: Omit<DecisionRecord, "id" | "decided_at">): Promise<DecisionRecord>;
+   list(repo?: string, limit?: number): Promise<DecisionRecord[]>;
+   /**
+@@ -68,6 +78,12 @@
+ 
+ export class MemoryDecisionStore implements DecisionStore {
+   private rows: DecisionRecord[] = [];
++  private verifications=new Map<string,string>();
++  async recordVerification(receipt:VerificationReceipt):Promise<void>{
++    const encoded=JSON.stringify(receipt),old=this.verifications.get(receipt.sha256);
++    if(old!==undefined&&old!==encoded)throw new Error('verification receipt collision');
++    this.verifications.set(receipt.sha256,encoded);
++  }
+ 
+   async findByEvent(
+     namespace: string,
+@@ -179,12 +195,19 @@
+     merged_sha: (r.merged_sha as string | null) ?? null,
+     task_id: (r.task_id as string | null) ?? null,
+     agent_id: (r.agent_id as string | null) ?? null,
++    verification:r.verification?JSON.parse(r.verification as string) as VerificationReceipt:null,
+     decided_at: r.decided_at as string,
+   };
+ }
+ 
+ export class D1DecisionStore implements DecisionStore {
+   constructor(private db: D1Database) {}
++  async recordVerification(receipt:VerificationReceipt):Promise<void>{
++    const encoded=JSON.stringify(receipt);
++    await this.db.prepare('INSERT OR IGNORE INTO verification_receipts (sha256, receipt) VALUES (?, ?)').bind(receipt.sha256,encoded).run();
++    const row=await this.db.prepare('SELECT receipt FROM verification_receipts WHERE sha256 = ?').bind(receipt.sha256).first<{receipt:string}>();
++    if(!row||row.receipt!==encoded)throw new Error('verification receipt not durably confirmed');
++  }
+ 
+   /** `finalOnly` skips `error` rows — an unfinished attempt is not a decision. */
+   private async selectEvent(
+@@ -229,8 +252,8 @@
+       .prepare(
+         `INSERT INTO decisions
+          (namespace, repo, ref, before_sha, after_sha, verdict, reason,
+-          conflict_files, files, merged_sha, task_id, agent_id, decided_at)
+-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
++          conflict_files, files, merged_sha, task_id, agent_id, decided_at, verification)
++         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          ON CONFLICT (namespace, repo, ref, before_sha, after_sha) DO UPDATE SET
+            verdict = excluded.verdict,
+            reason = excluded.reason,
+@@ -239,7 +262,8 @@
+            merged_sha = excluded.merged_sha,
+            task_id = excluded.task_id,
+            agent_id = excluded.agent_id,
+-           decided_at = excluded.decided_at
++           decided_at = excluded.decided_at,
++           verification = excluded.verification
+          WHERE decisions.verdict = 'error'`,
+       )
+       .bind(
+@@ -256,6 +280,7 @@
+         d.task_id ?? null,
+         d.agent_id ?? null,
+         decided_at,
++        d.verification?JSON.stringify(d.verification):null,
+       )
+       .run();
+     // Read back without the `error` filter: a just-recorded error row is a
+@@ -268,7 +293,8 @@
+       d.after_sha,
+       false,
+     );
+-    return row ?? { ...d, decided_at };
++    if(!row)throw new Error('decision persistence readback unavailable');
++    return row;
+   }
+ 
+   async findBySha(sha: string): Promise<DecisionRecord | null> {
+--- a/packages/verify/src/index.ts
++++ b/packages/verify/src/index.ts
+@@ -10,7 +10,8 @@
+ // Posture, mirroring @foundry/plan-check:
+ //
+ // - Not configured, or unreachable, is `checked: false, ok: true`. It never
+-//   blocks. An outage must not read as a failed test.
++//   blocks under legacy advisory policy. A separately selected requireChecked
++//   policy can block missing evidence without calling it a failed test.
+ // - A missing or absent runner is `checked: false` too, for the same reason:
+ //   "nothing ran" must never be recorded as "the tests passed".
+ // - Only `checked: true, ok: false` can block, and only when the caller sets
+@@ -129,11 +130,11 @@
+ 
+ /**
+  * Whether a verdict should stop a merge. A function, because the two rules that
+- * matter — unchecked never blocks, enforcement is what makes a failure
+- * blocking — should be testable in one place rather than re-derived per caller.
++ * matter — legacy enforcement blocks checked failures; an explicit independent
++ * requireChecked policy also blocks missing evidence — live in one place.
+  */
+-export function blocksMerge(v: VerifyVerdict, enforce: boolean): boolean {
+-  return enforce && v.checked && !v.ok;
++export function blocksMerge(v: VerifyVerdict, enforce: boolean, requireChecked=false): boolean {
++  return (requireChecked && (!v.checked || !v.ok)) || (enforce && v.checked && !v.ok);
+ }
+ 
+ /** One secret-free line for the decision record, and for operators. */
+--- a/packages/worker-client/src/index.ts
++++ b/packages/worker-client/src/index.ts
+@@ -57,43 +57,57 @@
+   check(value.workerClass === 'edge' ? value.cpu === 0 && value.ramMib === 0 && devices.length === 0 : value.cpu > 0 && value.ramMib > 0);
+   return {workerId:value.workerId,principal:value.principal,workerClass:value.workerClass,cpu:value.cpu,ramMib:value.ramMib,devices};
+ }
+-/** One fixed-origin request, bounded even if injected fetch ignores abort. No remote error text escapes. */
+-async function post(c: HostConfig, p: HostPorts, path: string, body: unknown, signal?: AbortSignal): Promise<any> {
+-  const abort = new AbortController(); let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+-  let timer: ReturnType<typeof setTimeout> | undefined;
+-  const expires = Date.now() + c.httpDeadlineMs;
+-  let errorStatus: number | undefined;
+-  const failed = new Promise<never>((_, reject) => {
+-    const fail = () => { abort.abort(); reject(new TransportFailure()); };
+-    timer = setTimeout(fail,c.httpDeadlineMs);
+-    abort.signal.addEventListener('abort',() => reject(new TransportFailure()),{once:true});
+-    if(signal?.aborted) fail();
++let occupiedRequests=0;
++/** Logical deadlines never release unresolved physical operations. Slots are
++ * process-wide, including direct clients outside the outer pilot wrapper. */
++async function post(c:HostConfig,p:HostPorts,path:string,body:unknown,signal?:AbortSignal):Promise<any>{
++  if(signal?.aborted)throw new TransportFailure(408);
++  if(occupiedRequests>=4)throw new TransportFailure(429);
++  occupiedRequests++;
++  const abort=new AbortController(),expires=Date.now()+c.httpDeadlineMs;
++  let reader:ReadableStreamDefaultReader<Uint8Array>|undefined,cancelling:Promise<void>|undefined;
++  let uncertain=false,complete=false,errorStatus:number|undefined;
++  const cancelBody=()=>{if(reader)cancelling??=reader.cancel().catch(()=>{uncertain=true;});};
++  abort.signal.addEventListener('abort',cancelBody);
++  const cancel=()=>abort.abort();signal?.addEventListener('abort',cancel,{once:true});
++  let timer:ReturnType<typeof setTimeout>;
++  const failed=new Promise<never>((_,reject)=>{
++    abort.signal.addEventListener('abort',()=>reject(new TransportFailure()),{once:true});
++    timer=setTimeout(()=>abort.abort(),c.httpDeadlineMs);
+   });
+-  const cancel = () => abort.abort(); signal?.addEventListener('abort',cancel,{once:true});
+-  try {
+-    const operation = async () => {
+-      const credential = await p.credential(c.credentialReference);
+-      check(typeof credential === 'string' && credential.length > 0 && credential.length <= 8192 && !/[\r\n]/.test(credential));
++  const operation=(async()=>{
++    try{
++      const credential=await p.credential(c.credentialReference);
++      check(typeof credential==='string'&&credential.length>0&&credential.length<=8192&&!/[\r\n]/.test(credential));
+       check(!abort.signal.aborted);
+-      const response = await p.fetch(c.origin + path,{method:'POST',redirect:'error',credentials:'omit',signal:abort.signal,headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)});
+-      if(abort.signal.aborted) {void response.body?.cancel().catch(()=>{});throw new TransportFailure();}
+-      if(!response.ok) errorStatus=response.status;
+-      if(response.redirected || !/^application\/json(?:;|$)/i.test(response.headers.get('content-type') ?? '')) {void response.body?.cancel().catch(()=>{});throw new TransportFailure();}
+-      reader = response.body?.getReader(); if(!reader) throw new TransportFailure();
+-      const chunks: Uint8Array[] = []; let size = 0;
+-      for(let count=0;;count++) {
+-        if(count >= 4096 || Date.now() >= expires || abort.signal.aborted) throw new TransportFailure();
+-        const part = await reader.read(); if(part.done) break;
+-        size += part.value.byteLength; if(size > 65536) throw new TransportFailure(); chunks.push(part.value);
+-      }
+-      const bytes = Buffer.concat(chunks);
+-      const parsed = JSON.parse(new TextDecoder('utf-8',{fatal:true,ignoreBOM:false}).decode(bytes));
+-      if(!response.ok) throw new TransportFailure(response.status,typeof parsed?.code === 'string' && safeCodes.has(parsed.code) ? parsed.code : undefined);
++      const response=await p.fetch(c.origin+path,{method:'POST',redirect:'error',credentials:'omit',signal:abort.signal,
++        headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)});
++      if(abort.signal.aborted||response.redirected||!/^application\/json(?:;|$)/i.test(response.headers.get('content-type')??'')){
++        await response.body?.cancel().catch(()=>{uncertain=true;});throw new TransportFailure();
++      }
++      if(!response.ok)errorStatus=response.status;
++      reader=response.body?.getReader();if(!reader)throw new TransportFailure();
++      const bytes=new Uint8Array(65536);let size=0;
++      for(let count=0;;count++){
++        if(count>=4096||Date.now()>=expires||abort.signal.aborted)throw new TransportFailure();
++        const part=await reader.read();if(abort.signal.aborted)throw new TransportFailure();
++        if(part.done){complete=true;break;}
++        if(part.value.byteLength>bytes.length-size)throw new TransportFailure();bytes.set(part.value,size);size+=part.value.byteLength;
++      }
++      const parsed=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes.subarray(0,size)));
++      if(!response.ok)throw new TransportFailure(response.status,typeof parsed?.code==='string'&&safeCodes.has(parsed.code)?parsed.code:undefined);
+       return parsed;
+-    };
+-    return await Promise.race([operation(),failed]);
+-  } catch(e) { throw e instanceof TransportFailure && e.status ? e : new TransportFailure(errorStatus); }
+-  finally { clearTimeout(timer); signal?.removeEventListener('abort',cancel); if(reader) void reader.cancel().catch(()=>{}); abort.abort(); }
++    }finally{
++      if(!complete)cancelBody();
++      if(cancelling)await cancelling;
++      reader?.releaseLock();abort.signal.removeEventListener('abort',cancelBody);
++      if(!uncertain)occupiedRequests--;
++    }
++  })();
++  void operation.catch(()=>{});
++  try{return await Promise.race([operation,failed]);}
++  catch(e){throw e instanceof TransportFailure&&e.status?e:new TransportFailure(errorStatus);}
++  finally{clearTimeout(timer!);signal?.removeEventListener('abort',cancel);abort.abort();}
+ }
+ function planFor(c: HostConfig, work: Work, now: number): ExecutionPlan {
+   const w = work.workload, l = work.lease;
+@@ -144,6 +158,11 @@
+       const requestKey = (operation: keyof typeof keys) => state.keys[operation];
+       const done = async (kind: Summary['kind']): Promise<Summary> => {state.phase='done';state.summary={kind};delete state.work;delete state.upload;await j.save(state);return state.summary;};
+       try {
++        const ensureAuthority=async()=>{
++          const observed=await post(c,ports,'/v1/status',{},signal);
++          check(observed?.ok===true&&observed.environment===c.environment&&observed.authorityId===c.authorityId&&observed.epoch===c.expectedEpoch);
++        };
++        await ensureAuthority();
+         const ensureHeartbeat = async (): Promise<boolean> => {
+           // At most replay one prepared heartbeat and issue one fresh heartbeat in a call.
+           for(let attempt=0;attempt<2;attempt++) {
+@@ -179,6 +198,7 @@
+           state.work={profileHash:r.profileHash,lease:{id,worker_id,workload_id,epoch,generation,incarnation,capability,expires_ms,state:leaseState},workload:r.workload};state.phase='ready';await j.save(state);
+         }
+         if(state.phase === 'ready') {
++          await ensureAuthority();
+           check(state.work);
+           const plan = planFor(c,state.work,ports.now?.() ?? Date.now());
+           const identity = identityKey(plan.identity);
+@@ -198,6 +218,7 @@
+           state.phase='upload';await j.save(state);
+         }
+         if(state.phase === 'upload') {
++          await ensureAuthority();
+           if(!await ensureHeartbeat()) return {kind:'retry',code:'heartbeat-refresh-needed'};
+           check(state.upload && state.work && state.stop?.stopped);
+           const r = await post(c,ports,'/v1/artifacts',state.upload,signal);
+--- a/workers/gate/env.d.ts
++++ b/workers/gate/env.d.ts
+@@ -17,5 +17,6 @@
+   VERIFY_URL?: string;
+   /** When "1", a failed required check blocks the merge. Default advisory. */
+   VERIFY_ENFORCE?: string;
++  VERIFY_REQUIRE_CHECKED?: string;
+   DEBUG?: string;
+ }
+--- a/workers/gate/schema.sql
++++ b/workers/gate/schema.sql
+@@ -36,3 +36,13 @@
+   agent_id TEXT NOT NULL,
+   scope_json TEXT NOT NULL
+ );
++
++-- Local source preparation only. Apply only with separate migration approval.
++CREATE TABLE IF NOT EXISTS verification_receipts (
++  sha256 TEXT PRIMARY KEY CHECK(length(sha256)=64),
++  receipt TEXT NOT NULL
++);
++CREATE TRIGGER IF NOT EXISTS verification_receipts_no_update BEFORE UPDATE ON verification_receipts
++BEGIN SELECT RAISE(ABORT, 'immutable verification receipt'); END;
++CREATE TRIGGER IF NOT EXISTS verification_receipts_no_delete BEFORE DELETE ON verification_receipts
++BEGIN SELECT RAISE(ABORT, 'immutable verification receipt'); END;
+--- a/workers/gate/src/decide.ts
++++ b/workers/gate/src/decide.ts
+@@ -172,12 +172,8 @@
+     fork = await port.get(push.repo);
+     base = await port.get(ticket.baseRepo);
+     // The base's own default branch, not an assumed "main".
+-    let branch = "main";
+-    try {
+-      branch = (await base.info()).defaultBranch ?? "main";
+-    } catch {
+-      // Empty/unreadable base metadata: fall through with "main".
+-    }
++    const branch=(await base.info()).defaultBranch;
++    if(!branch)throw new Error('base branch metadata unavailable');
+     // Anchor every fork-side read to the event SHA. Reading the mutable pushed
+     // branch allowed a later commit to supply the paths/content admitted under
+     // an earlier `push.after` value.
+@@ -197,10 +193,7 @@
+         };
+       }
+     } catch (e) {
+-      // Empty base (first-ever task): no branch to read yet.
+-      const msg = e instanceof Error ? e.message : String(e);
+-      if (/could not find|not found|no such|empty/i.test(msg)) baseHist = [];
+-      else throw e;
++      throw e; // Absence is represented by the port, never inferred from text.
+     }
+     // An unknown proposal SHA is reported as such, before any fork-point claim:
+     // reading history from an absent commit yields an empty list, which must not
+@@ -310,6 +303,7 @@
+         reason: { reason: "path_not_allowed", path: badPath },
+       };
+     }
++    if(forkPaths.size>2000||[...forkPaths].some(p=>p.length>1024))return {verdict:'conflict',ticket,files:['admission-path-budget'],planAdvisory};
+     const overlapping = [...forkPaths].filter((p) => basePaths.has(p));
+     const realConflicts: string[] = [];
+     for (const p of overlapping) {
+@@ -350,11 +344,16 @@
+ 
+     // 3. Clean: collect fork-side file contents for the merger.
+     // Paths absent on the fork side are deletions the merger must apply.
+-    const files: Record<string, string> = {};
++    const files: Record<string, string> = Object.create(null);
++    let admittedBytes=0;
+     const deletedFiles: string[] = [];
+     for (const p of forkPaths) {
+       const content = await fork.readFile(push.after, p);
+-      if (content !== null) files[p] = content;
++      if (content !== null) {
++        admittedBytes+=new TextEncoder().encode(content).byteLength;
++        if(admittedBytes>8*1048576)throw new Error('admission text-byte budget');
++        files[p]=content;
++      }
+       else deletedFiles.push(p);
+     }
+     return {
+--- a/workers/gate/src/index.ts
++++ b/workers/gate/src/index.ts
+@@ -35,12 +35,13 @@
+     deps.planCheck = new PactServerPlanCheck(env.PACT_URL);
+   }
+   // Required checks. Unset means the stub, which records "nothing was
+-  // checked" and can never block — the same posture as PACT above, so a
++  // checked". It blocks only when VERIFY_REQUIRE_CHECKED is explicitly selected. A
+   // deployment without a verifier behaves exactly as it did before.
+   if (env.VERIFY_URL) {
+     deps.verifier = new HttpVerifier(env.VERIFY_URL);
+     deps.verifyEnforce = env.VERIFY_ENFORCE === "1";
+   }
++  deps.verifyRequireChecked = env.VERIFY_REQUIRE_CHECKED === "1";
+   if (env.DEBUG === "1") deps.debug = true;
+   return deps;
+ }
+--- a/workers/gate/src/merge.ts
++++ b/workers/gate/src/merge.ts
+@@ -16,6 +16,46 @@
+   return token.split("?expires=")[0];
+ }
+ 
++type GitFS=Parameters<typeof git.clone>[0]['fs'];
++async function completeTree(fs:GitFS,dir:string,oid:string|undefined):Promise<Map<string,string>>{
++  const result=new Map<string,string>();let visited=0;
++  if(!oid)return result;
++  async function walk(hash:string,prefix:string,depth:number):Promise<void>{
++    if(depth>64||++visited>40000)throw new Error('merge: tree budget');
++    const {tree}=await git.readTree({fs,dir,oid:hash});
++    for(const entry of tree){
++      if(++visited>40000||!entry.path||/[\/\x00-\x1f\x7f]/.test(entry.path)||['.','..'].includes(entry.path))throw new Error('merge: invalid tree entry');
++      const path=prefix?`${prefix}/${entry.path}`:entry.path;
++      if(entry.type==='tree')await walk(entry.oid,path,depth+1);
++      else{if(result.size>=20000||result.has(path))throw new Error('merge: incomplete tree');result.set(path,`${entry.mode} ${entry.type} ${entry.oid}`);}
++    }
++  }
++  await walk(oid,'',0);return result;
++}
++function equalTrees(a:Map<string,string>,b:Map<string,string>):boolean{
++  return a.size===b.size&&[...a].every(([p,e])=>b.get(p)===e);
++}
++function mergePath(path:string):void{
++  if(!path||path.startsWith('/')||/[\\\x00-\x1f\x7f]/.test(path)||
++    path.split('/').some(p=>!p||p==='.'||p==='..'||p.toLowerCase()==='.git'))throw new Error('merge: unsafe path');
++}
++async function admissionOverlay(base:Map<string,string>,proposal:Map<string,string>,req:MergeRequest):Promise<Map<string,string>>{
++  const expected=new Map(base);
++  for(const [path,content] of Object.entries(req.files)){
++    mergePath(path);
++    // The current admission port transports text. Refuse executable/symlink/gitlink
++    // or non-roundtripping bytes rather than quietly changing their representation.
++    const {oid}=await git.hashBlob({object:new TextEncoder().encode(content)});
++    const entry=`100644 blob ${oid}`;
++    if(proposal.get(path)!==entry)throw new Error('merge: unsupported or substituted proposal entry');
++    const old=base.get(path);if(old&&!old.startsWith('100644 blob '))throw new Error('merge: unsupported destination entry');
++    const parts=path.split('/');for(let i=1;i<parts.length;i++)if(base.has(parts.slice(0,i).join('/')))throw new Error('merge: destination ancestor is not directory');
++    expected.set(path,entry);
++  }
++  for(const path of req.deletedFiles){mergePath(path);if(proposal.has(path)||Object.hasOwn(req.files,path))throw new Error('merge: deletion not absent');expected.delete(path);}
++  return expected;
++}
++
+ export class IsomorphicMerger implements Merger {
+   /**
+    * fs is injected: memfs in Workers, node:fs in tests.
+@@ -29,50 +69,35 @@
+   async merge(req: MergeRequest): Promise<string> {
+     const fs = this.fs as Parameters<typeof git.clone>[0]["fs"];
+     const dir = `${this.workdirBase}-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+-    let workDir = dir;
++    const workDir = dir;
+     const onAuth = () => ({ username: "x", password: tokenSecret(req.baseToken) });
+-    try {
+-      await git.clone({
+-        fs,
+-        http,
+-        dir,
+-        url: req.baseRemote,
+-        ref: req.baseBranch,
+-        singleBranch: true,
+-        depth: 50,
+-        onAuth,
+-      });
+-    } catch (e) {
+-      const msg = e instanceof Error ? e.message : String(e);
+-      if (req.expectedBaseSha || !/could not find/i.test(msg)) {
+-        throw new Error(
+-          `merge:clone: ${req.baseName}@${req.baseBranch}: ${msg}`,
+-        );
++    if(!/^[a-f0-9]{40}$/.test(req.forkHeadSha)||req.expectedBaseSha&&!/^[a-f0-9]{40}$/.test(req.expectedBaseSha))throw new Error('merge: commit identity');
++    const refs=await git.listServerRefs({http,url:req.baseRemote,onAuth});
++    const destination=refs.find(r=>r.ref===`refs/heads/${req.baseBranch}`);
++    if(req.expectedBaseSha?destination?.oid!==req.expectedBaseSha:refs.length!==0)throw new StaleBaseError('destination changed or genesis is not empty');
++    if(req.expectedBaseSha){
++      await git.clone({fs,http,dir,url:req.baseRemote,ref:req.baseBranch,singleBranch:true,depth:50,onAuth});
++    }else{
++      await git.init({fs,dir,defaultBranch:req.baseBranch});
++      await git.addRemote({fs,dir,remote:'origin',url:req.baseRemote});
++    }
++    // Fetch the proposal independently with its own read credential. Every
++    // admitted byte/mode is checked against immutable objects before any write.
++    const proposalDir=`${dir}-proposal`;
++    await git.clone({fs,http,dir:proposalDir,url:req.forkRemote,ref:req.forkBranch??req.forkHeadSha,
++      singleBranch:true,depth:1,noCheckout:true,onAuth:()=>({username:'x',password:tokenSecret(req.forkToken)})});
++    const proposalHead=await git.resolveRef({fs,dir:proposalDir,ref:'HEAD'});
++    if(proposalHead!==req.forkHeadSha)throw new Error('merge: proposal moved');
++    const proposal=await completeTree(fs,proposalDir,proposalHead);
++    const base=await completeTree(fs,dir,req.expectedBaseSha);
++    const expected=await admissionOverlay(base,proposal,req);
++    if(req.expectedBaseSha){
++      const prior=await git.readCommit({fs,dir,oid:req.expectedBaseSha});
++      if(prior.commit.parent.length<=1&&prior.commit.message.split('\n').includes(`Fork-Head: ${req.forkHeadSha}`)){
++        const before=await completeTree(fs,dir,prior.commit.parent[0]);
++        if(equalTrees(base,await admissionOverlay(before,proposal,req)))return req.expectedBaseSha;
++        throw new Error('merge: ambiguous replay');
+       }
+-      // Else: possibly an empty base — verified below via listBranches.
+-    }
+-    // A clone of an empty repo can "succeed" with HEAD pointing at a
+-    // branch that was never created (commits would land on the wrong
+-    // branch and the push would fail). When the expected branch is
+-    // absent and no base was expected, start from a fresh checkout in
+-    // a sibling dir; the push below creates the branch remotely.
+-    const branches = await git
+-      .listBranches({ fs, dir })
+-      .catch(() => [] as string[]);
+-    if (!branches.includes(req.baseBranch)) {
+-      if (req.expectedBaseSha) {
+-        throw new StaleBaseError(
+-          `base has no ${req.baseBranch} (expected ${req.expectedBaseSha.slice(0, 8)})`,
+-        );
+-      }
+-      workDir = `${dir}-emptybase`;
+-      await git.init({ fs, dir: workDir, defaultBranch: req.baseBranch });
+-      await git.addRemote({
+-        fs,
+-        dir: workDir,
+-        remote: "origin",
+-        url: req.baseRemote,
+-      });
+     }
+     // Refuse to land a decision made against a base that has since moved;
+     // the caller re-decides against the new head.
+@@ -100,29 +125,17 @@
+         `merge:commit: ${e instanceof Error ? e.message : String(e)}`,
+       );
+     }
+-    // The production route squashes, so lineage cannot rest on the Fork-Head
+-    // trailer alone: the landed commit must descend from the expected base and
+-    // the landed tree must contain exactly the admitted paths.
+-    if (req.expectedBaseSha && sha !== req.expectedBaseSha) {
+-      const landed = await git.readCommit({ fs, dir: workDir, oid: sha });
+-      if (landed.commit.parent[0] !== req.expectedBaseSha) {
+-        throw new Error(
+-          `merge:parent: ${sha.slice(0, 8)} does not descend from expected base ${req.expectedBaseSha.slice(0, 8)}`,
+-        );
+-      }
+-    }
+-    const listed = new Set(
+-      await git.listFiles({ fs, dir: workDir, ref: sha }),
+-    );
+-    const absent = Object.keys(req.files).filter((p) => !listed.has(p));
+-    const retained = (req.deletedFiles ?? []).filter((p) => listed.has(p));
+-    if (absent.length > 0 || retained.length > 0) {
+-      throw new Error(
+-        `merge:tree: missing=${absent.join(",") || "-"} retained-deletions=${retained.join(",") || "-"}`,
+-      );
+-    }
++    const landed=await git.readCommit({fs,dir:workDir,oid:sha});
++    const parents=req.expectedBaseSha?[req.expectedBaseSha]:[];
++    if(JSON.stringify(landed.commit.parent)!==JSON.stringify(parents))throw new Error('merge: landed parent contract');
++    if(!equalTrees(await completeTree(fs,workDir,sha),expected))throw new Error('merge: landed bytes/modes/kinds differ from admission');
++    // Re-observe just before push. Git receive-pack still owns the ref CAS; no
++    // force push is requested, and a racing update must remain an integration test.
++    const current=await git.listServerRefs({http,url:req.baseRemote,onAuth});
++    const currentHead=current.find(r=>r.ref===`refs/heads/${req.baseBranch}`)?.oid;
++    if(currentHead!==req.expectedBaseSha)throw new StaleBaseError('destination changed before push');
+     try {
+-      await git.push({
++      const pushed=await git.push({
+         fs,
+         http,
+         dir: workDir,
+@@ -131,6 +144,7 @@
+         remoteRef: `refs/heads/${req.baseBranch}`,
+         onAuth,
+       });
++      if(!pushed.ok||pushed.refs[`refs/heads/${req.baseBranch}`]?.ok!==true)throw new Error("merge: destination update not acknowledged");
+     } catch (e) {
+       throw new Error(
+         `merge:push: ${req.baseBranch} -> ${req.baseName}: ${
+@@ -163,6 +177,7 @@
+     writeFile(p: string, c: string): Promise<void>;
+   } }).promises;
+   for (const [name, content] of Object.entries(files)) {
++    mergePath(name);
+     const fp = `${dir}/${name}`;
+     const slash = fp.lastIndexOf("/");
+     if (slash > 0) await promises.mkdir(fp.slice(0, slash), { recursive: true });
+@@ -171,15 +186,17 @@
+   }
+   for (const name of deletedFiles) {
+     // Absent on both sides (created-then-deleted on the fork) is a no-op.
+-    await git.remove({ fs, dir, filepath: name }).catch(() => {});
+-  }
+-  // Idempotent redelivery: the merge already landed (crash between push
+-  // and record) — return the current head instead of an empty commit.
++    mergePath(name);
++    const tracked=await git.listFiles({fs,dir});
++    if(tracked.includes(name))await git.remove({fs,dir,filepath:name});
++  }
++  // Replay is proven by the caller against parents and whole-tree content.
++  // An unchanged worktree alone is not replay evidence.
+   const matrix = await git.statusMatrix({ fs, dir });
+   const dirty = matrix.some(
+     ([, head, workdir, stage]) => !(head === 1 && workdir === 1 && stage === 1),
+   );
+-  if (!dirty) return git.resolveRef({ fs, dir, ref: "HEAD" });
++  if (!dirty) throw new Error("merge: no changed tree and no proven replay");
+   return git.commit({
+     fs,
+     dir,
+--- a/workers/gate/src/pipeline.ts
++++ b/workers/gate/src/pipeline.ts
+@@ -1,3 +1,4 @@
++import {verificationReceipt} from './verification-receipt.js';
+ // handlePush — full gate pipeline: normalize event → decide → merge → record.
+ // Deps-injected so tests use fakes and the Worker uses real bindings + D1.
+ import {
+@@ -30,6 +31,8 @@
+   verifier?: Verifier;
+   /** When true, a failed check blocks the merge. Default: advisory. */
+   verifyEnforce?: boolean;
++  /** Independent owner-selected fail-closed requirement; default preserves legacy policy. */
++  verifyRequireChecked?:boolean;
+   /** When true, pipeline-error reasons carry the stack (DEBUG=1). */
+   debug?: boolean;
+ }
+@@ -80,17 +83,20 @@
+       //
+       // A verifier that throws is an infrastructure failure, not a refusal: it
+       // falls out of this try block into the catch-all below, which records
+-      // `error` and stays retryable. Only a verifier that *ran* and failed,
+-      // under explicit enforcement, refuses.
+-      const verify = deps.verifier
+-        ? await deps.verifier.run({
++      // `error` and stays retryable. Explicit requireChecked can also refuse
++      // a returned unchecked verdict without claiming a failed test.
++      const verifyRequest = {
+             repo: push.repo,
+             baseBranch: decision.baseBranch,
+             files: [...Object.keys(decision.files), ...decision.deletedFiles].sort(),
+             headSha: push.after,
+-          })
+-        : { checked: false, ok: true, runs: [] };
+-      if (blocksMerge(verify, deps.verifyEnforce ?? false)) {
++          };
++      const verify=deps.verifier?await deps.verifier.run(verifyRequest):{checked:false,ok:true,runs:[]};
++      const verification=await verificationReceipt(verifyRequest,verify,{namespace:push.namespace,ref:push.ref,before:push.before,
++        baseSha:decision.baseHead,files:decision.files,deleted:decision.deletedFiles,enforce:deps.verifyEnforce??false,requireChecked:deps.verifyRequireChecked??false});
++      if(!deps.store.recordVerification)throw new Error('durable verification receipt store required');
++      await deps.store.recordVerification(verification);
++      if (blocksMerge(verify, deps.verifyEnforce ?? false, deps.verifyRequireChecked ?? false)) {
+         const record = await deps.store.record({
+           namespace: push.namespace,
+           repo: push.repo,
+@@ -99,6 +105,7 @@
+           after_sha: push.after,
+           verdict: "reject",
+           reason: { reason: "verification_failed", message: summarize(verify) },
++          verification,
+           files: [...Object.keys(decision.files), ...decision.deletedFiles].sort(),
+           task_id: decision.ticket.taskId,
+           agent_id: decision.ticket.agentId,
+@@ -156,6 +163,7 @@
+         before_sha: push.before,
+         after_sha: push.after,
+         verdict: "merge",
++        verification,
+         merged_sha: mergedSha,
+         files: [...Object.keys(decision.files), ...decision.deletedFiles],
+         task_id: decision.ticket.taskId,
+--- /dev/null
++++ b/workers/gate/src/verification-receipt.ts
+@@ -0,0 +1,26 @@
++import type {VerifyRequest,VerifyVerdict} from '@foundry/verify';
++import type {VerificationReceipt} from '@foundry/stores';
++async function bytesDigest(bytes:Uint8Array):Promise<string>{
++  return [...new Uint8Array(await crypto.subtle.digest('SHA-256',new Uint8Array(bytes).buffer))].map(b=>b.toString(16).padStart(2,'0')).join('');
++}
++const digest=(value:unknown)=>bytesDigest(new TextEncoder().encode(JSON.stringify(value)));
++/** Persist only bounded identities and outcomes, not source contents, credentials,
++ * verifier output or exception text. Exact proposal SHA binds complete Git content. */
++export async function verificationReceipt(request:VerifyRequest,verdict:VerifyVerdict,
++  context:{namespace:string;ref:string;before:string;baseSha:string|null;files:Record<string,string>;deleted:readonly string[];enforce:boolean;requireChecked:boolean}):Promise<VerificationReceipt>{
++  if(typeof verdict.checked!=='boolean'||typeof verdict.ok!=='boolean'||!Array.isArray(verdict.runs)||verdict.runs.length>128)
++    throw new Error('verification: invalid bounded verdict');
++  const runs=verdict.runs.map(r=>{
++    if(typeof r.name!=='string'||!r.name||r.name.length>200||typeof r.ok!=='boolean')throw new Error('verification: invalid run');
++    return {name:r.name,ok:r.ok};
++  });
++  if(verdict.checked&&(runs.length===0||verdict.ok!==runs.every(r=>r.ok)))throw new Error('verification: inconsistent outcome');
++  const files=[];
++  for(const path of Object.keys(context.files).sort())files.push({path,sha256:await bytesDigest(new TextEncoder().encode(context.files[path]))});
++  const contentHash=await digest({files,deleted:[...context.deleted].sort()});
++  const body={version:1 as const,request:{repo:request.repo,baseBranch:request.baseBranch,headSha:request.headSha,
++    files:[...request.files],namespace:context.namespace,ref:context.ref,before:context.before,baseSha:context.baseSha,contentHash},
++    policy:{enforce:context.enforce,requireChecked:context.requireChecked},verdict:{checked:verdict.checked,ok:verdict.ok,runs}};
++  if(new TextEncoder().encode(JSON.stringify(body)).byteLength>262144)throw new Error('verification: receipt byte budget');
++  return {...body,sha256:await digest(body)};
++}

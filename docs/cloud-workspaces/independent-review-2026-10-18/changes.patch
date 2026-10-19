@@ -1,0 +1,1323 @@
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-> **Current cloud-workspace source stop:** `R6-linux-isolation-source-reviewed-HOLD`. The [Linux isolation delivery](docs/cloud-workspaces/linux-isolation-2026-10-18/README.md) supplies a concrete owner-mediated pilot path with private staging/workspace/capture, permanent cgroup containment, real scoped storage and census. Legacy shared-directory Linux execution is denied. No tests, installation or activation have occurred; independent acceptance, M4 validation and R7 operations remain gated. Automatic repeat-job reconciliation is not supplied.
++> **Current cloud-workspace source stop:** `R6-independent-source-review-complete-validation-HOLD`. [Independent review and local repairs](docs/cloud-workspaces/independent-review-2026-10-18/README.md) cover Linux user-namespace/filesystem isolation, input/capacity/liveness, actual Mac CAS accounting and durable operator recovery. No unresolved actionable finding remains in that bounded review scope. Compilation, tests and operational acceptance are pending; deployment/installation/provisioning/spending/credentials/merge/cleanup remain gated. Linux is still one owner-mediated retained attempt, not an unattended repeat-job service.
+ 
+ # Foundry — every push is reviewed before it lands
+ 
+--- a/docs/cloud-workspaces/MASTER-CHECKLIST.md
++++ b/docs/cloud-workspaces/MASTER-CHECKLIST.md
+@@ -1,4 +1,7 @@
+ # Cloud workspaces master checklist
++
++**Current stop: `R6-independent-source-review-complete-validation-HOLD`.** The bounded independent review and local repairs are complete at source level. See [the current delivery](independent-review-2026-10-18/README.md), [findings](independent-review-2026-10-18/FINDINGS.json) and ROUTE.json. Earlier sections below preserve historical substeps; they are not competing current stops. M4/R6 validation and R7 activation remain separately gated.
++
+ 
+ Status vocabulary: **implemented**, **source-reviewed**, **validation-pending**, **validated**, **activated**, **blocked**. Source review never substitutes for execution evidence. No task in this route is validated or activated by this implementation session.
+ 
+@@ -58,7 +61,7 @@
+ 
+ The original Foundry R2–R7 integration route remains separate: this feature route does not close inherited merge-gate HOLD findings or grant merge/deployment approval.
+ 
+-## Current stop — R6 M3 VM integration implemented and source-reviewed, operational HOLD
++## Historical stop — R6 M3 VM integration implemented and source-reviewed, operational HOLD
+ 
+ The `mac-safety-2026-10-18` batch supersedes the previous native execution direction. Native adapter/client launch now rejects locally. Concrete Swift whole-VM containment, branded guest jobs, bounded guest runner and a separate kernel-read-only volume guard exist as source. The optional read-side packaging capability is wired without claiming a mutable-tree seal. Independent static reviews and scoped receipts describe the exact coverage. No compiler, test or runtime evidence exists for this batch.
+ 
+@@ -117,7 +120,7 @@
+ - [ ] M4 and R7 remain separately gated. Owner I/O and image provisioning are explicit operational steps, not an installed unattended service.
+ 
+ 
+-## Writable storage and integration batch — current 2026-10-18 stopping point
++## Historical writable storage and integration batch — 2026-10-18
+ 
+ - [x] W1 Concrete Mac root-owned immutable CAS and bounded authenticated local client implemented; not installed or executed.
+ - [x] W2 VM adapter/intake and readonly packaging wired to the concrete store; no fake exclusive seal.
+@@ -128,10 +131,10 @@
+ - [ ] G3 strict verification policy selection; actual installed resources/pins/schema, per-project readiness and disk headroom.
+ - [ ] Independent acceptance, M4 compilation/tests/runtime validation and R7 activation; all still gated.
+ 
+-Current route: `R6-writable-integration-source-reviewed-HOLD`. Detailed evidence and exact supported scope: `writable-integration-2026-10-18/README.md`. This supersedes earlier generic Mac CAS/integration blocker wording without changing frozen historical receipts. No full-fleet completion or operational success is claimed.
++Historical route: `R6-writable-integration-source-reviewed-HOLD`. Detailed evidence and exact supported scope: `writable-integration-2026-10-18/README.md`. This supersedes earlier generic Mac CAS/integration blocker wording without changing frozen historical receipts. No full-fleet completion or operational success is claimed.
+ 
+ 
+-## Linux isolation — current source stop, 2026-10-18
++## Historical Linux isolation source delivery — 2026-10-18
+ 
+ - [x] L1 Narrow root broker, private allocated workspace filesystem, fixed recipe policy, durable slot and independent cgroup watchdog.
+ - [x] L2 Actual broker-admitted v1/v2 source bytes -> bounded stream -> double hash verification -> exact recipe execution -> permanent stop-gated capture.
+@@ -142,4 +145,17 @@
+ - [ ] Actual owner-approved policy/resources/installed pins and remaining G3/schema/project/Mac capacity prerequisites.
+ - [ ] R7 activation/provisioning/publication/spending/cleanup approvals and execution.
+ 
+-Current stop: `R6-linux-isolation-source-reviewed-HOLD`. The generic Linux writable-seal gap is superseded for the concrete pilot path, not implemented as a pretend universal seal. The pilot deliberately retains its root slot, disk, cgroup, socket and evidence after one attempt; automatic reuse/reclamation is not supplied. See `linux-isolation-2026-10-18/README.md`. No tests, compilation or operational changes occurred. Historical checked/unchecked rows above remain dated evidence, not current operational completion claims.
++Historical stop: `R6-linux-isolation-source-reviewed-HOLD`. The generic Linux writable-seal gap is superseded for the concrete pilot path, not implemented as a pretend universal seal. The pilot deliberately retains its root slot, disk, cgroup, socket and evidence after one attempt; automatic reuse/reclamation is not supplied. See `linux-isolation-2026-10-18/README.md`. No tests, compilation or operational changes occurred. Historical checked/unchecked rows above remain dated evidence, not current operational completion claims.
++
++## Independent source review and repairs — current completion
++
++- [x] IR1 Capture matching candidate hashes/preimages and record dirty-work boundary.
++- [x] IR2 Six independent source lenses; preserve findings and S1 synthesis.
++- [x] IR3 Repair Linux filesystem/procfs/census/input/capacity/interface boundaries, Mac CAS census, publication API and operator recovery.
++- [x] IR4 Contrarian challenge, bounded repair review, explicit conservative-admission disposition.
++- [x] IR5 Current findings, deferred acceptance, scoped diffs/hashes and exact route stop.
++- [ ] M4/R6 compilation/tests/operational validation — approval required; none run.
++- [ ] Actual approved installation/resources/policy/mapping/schema/project/headroom prerequisites.
++- [ ] R7 progressive activation/provisioning/publication/spending/cleanup — matching approvals required.
++
++This closes only the stated local repair/review scope. The end goal still requires accepted real Linux and Xcode jobs, recovery and catalog access across the Macs. Linux remains a retained one-attempt pilot; no automatic reuse or deletion is supplied.
+--- a/docs/cloud-workspaces/ROUTE.json
++++ b/docs/cloud-workspaces/ROUTE.json
+@@ -1,6 +1,6 @@
+ {
+   "format": "foundry.cloud-workspaces.route.v1",
+-  "stop": "R6-linux-isolation-source-reviewed-HOLD",
++  "stop": "R6-independent-source-review-complete-validation-HOLD",
+   "authority": "Cloudflare existing compute authority",
+   "deployments": 0,
+   "testsExecuted": 0,
+@@ -49,7 +49,8 @@
+         "guest-io-2026-10-18/SOURCE-REVIEW.md",
+         "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+         "writable-integration-2026-10-18/SOURCE-REVIEW.md",
+-        "linux-isolation-2026-10-18/SOURCE-REVIEW.md"
++        "linux-isolation-2026-10-18/SOURCE-REVIEW.md",
++        "independent-review-2026-10-18/README.md"
+       ],
+       "blockedBy": [
+         "owner-approved host/account/images/helper binaries/toolchains/identities/resources",
+@@ -58,7 +59,8 @@
+         "runtime validation and activation approvals",
+         "operator-mediated stage/intake and provisioned image/source dependencies; no unattended root service",
+         "M3 compilation and operational acceptance pending",
+-        "isolated Linux broker installation/acceptance; one owner-mediated attempt; automatic repeat-job reconciliation not supplied"
++        "isolated Linux broker installation/acceptance; one owner-mediated attempt; automatic repeat-job reconciliation not supplied",
++        "actual Docker userns-remap ownership/mappings and approved enforcing AppArmor compiled payload; operational acceptance pending"
+       ]
+     },
+     {
+@@ -70,7 +72,7 @@
+     },
+     {
+       "id": "R6",
+-      "state": "source-reviewed-HOLD",
++      "state": "independently-source-reviewed-validation-HOLD",
+       "evidence": [
+         "SOURCE-REVIEW.md",
+         "DEFERRED-VALIDATION.md",
+@@ -81,7 +83,8 @@
+         "guest-io-2026-10-18/SOURCE-REVIEW.md",
+         "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+         "writable-integration-2026-10-18/SOURCE-REVIEW.md",
+-        "linux-isolation-2026-10-18/SOURCE-REVIEW.md"
++        "linux-isolation-2026-10-18/SOURCE-REVIEW.md",
++        "independent-review-2026-10-18/README.md"
+       ]
+     },
+     {
+@@ -90,7 +93,7 @@
+       "evidence": []
+     }
+   ],
+-  "nextGate": "Local Mac immutable CAS and listed integration repairs are implemented/source-reviewed, not validated. M4 compilation/tests/operational acceptance and independent review require approval. Installation, migration, provisioning, policy activation, deployment, spending, secrets, merge and cleanup remain separately gated.",
++  "nextGate": "M4/R6 compilation, tests and operational acceptance require explicit validation approval. Installation, provisioning, loaded policy/mapping changes, migration, deployment, spending, credentials, merge and cleanup remain separately gated. Bounded independent source review is complete; it is not runtime acceptance.",
+   "continuation": {
+     "folder": "continuation-2026-10-18",
+     "authorization": "local source implementation/review only",
+@@ -149,7 +152,7 @@
+       }
+     ]
+   },
+-  "nextLocalEngineering": "Authorized bounded Linux pilot source is implemented/reviewed. Independent cumulative acceptance and approved M4 validation are next. Unattended Linux repeat scheduling/reconciliation remains outside this pilot; no operational work is authorized.",
++  "nextLocalEngineering": "No unresolved actionable finding remains in the bounded independent review/repair scope. Retained pilot limitations and per-project/resource readiness remain explicit. Next route is separately approved M4/R6 validation followed by separately approved R7 activation; no operations are authorized now.",
+   "macSafety": {
+     "folder": "mac-safety-2026-10-18",
+     "state": "source-reviewed-primitives-production-HOLD",
+@@ -310,7 +313,7 @@
+       "independent cumulative source acceptance and separately approved M4 validation",
+       "separately approved R7 activation and cleanup"
+     ],
+-    "laterDisposition": "See linuxIsolation: Linux seal-dependent production dispatch replaced in source by concrete private bounded pilot path; unattended reuse and validation/operational HOLD remain explicit."
++    "laterDisposition": "See linuxIsolation and independentReview: concrete bounded Linux path, Mac CAS accounting and named integration repairs source-reviewed. Runtime validation and activation remain gated."
+   },
+   "linuxIsolation": {
+     "folder": "linux-isolation-2026-10-18",
+@@ -346,6 +349,33 @@
+       "generic ManagedTreeSeal and legacy shared-UID Linux execution",
+       "automatic root-slot release, replay, resource reclamation or repeat-job broker service",
+       "arbitrary network recipes, signed/release operations or directory bundle outputs"
++    ],
++    "laterDisposition": "See independentReview: source repairs and bounded independent acceptance complete, with required userns-remap/AppArmor/read-only capture. Frozen prior evidence remains historical; no operational acceptance."
++  },
++  "independentReview": {
++    "folder": "independent-review-2026-10-18",
++    "state": "bounded-source-review-complete-validation-HOLD",
++    "method": "six independent source lenses, S1, contrarian challenge, bounded repairs and follow-up reviews",
++    "unresolvedActionableSourceFindingsInScope": 0,
++    "testsAuthored": 0,
++    "testsExecuted": 0,
++    "buildsExecuted": 0,
++    "servicesStarted": 0,
++    "operationalChanges": 0,
++    "evidence": [
++      "independent-review-2026-10-18/FINDINGS.json",
++      "independent-review-2026-10-18/CHANGE-RECEIPT.json",
++      "independent-review-2026-10-18/DEFERRED-ACCEPTANCE.md"
++    ],
++    "remaining": [
++      "M4/R6 separately approved compilation/tests/operational acceptance",
++      "actual installed resources/pins/AppArmor payload/namespace mappings, G3/schema/project readiness and Mac headroom",
++      "R7 separately approved progressive fleet activation and cleanup"
++    ],
++    "unsupported": [
++      "unattended Linux repeat-job reconciliation/reclamation",
++      "direct native host Xcode execution",
++      "K11 execution enrollment without separate authority/containment work"
+     ]
+   }
+ }
+--- /dev/null
++++ b/packages/build-runtime/native/foundry-linux-build-v1.apparmor
+@@ -0,0 +1,14 @@
++# Source only. Install/load solely after owner approval and parser validation.
++# No includes: the reviewed policy is independent of host abstraction changes.
++profile foundry-linux-build-v1 flags=(attach_disconnected,mediate_deleted) {
++  file,
++  /** ix,
++  signal (send, receive),
++  deny capability,
++  deny ptrace (read, readby, trace, tracedby),
++  deny mount,
++  deny umount,
++  deny pivot_root,
++  deny /proc/** wklx,
++  deny /sys/** wklx,
++}
+--- a/packages/build-runtime/native/linux-isolation.py
++++ b/packages/build-runtime/native/linux-isolation.py
+@@ -25,6 +25,8 @@
+ FRAME = 1450000
+ CHUNK = 1048576
+ ENV = {'PATH': '/usr/sbin:/usr/bin:/sbin:/bin', 'LANG': 'C', 'LC_ALL': 'C'}
++APPARMOR_PROFILE = 'foundry-linux-build-v1'
++APPARMOR_SOURCE_SHA256 = '95222d83c4360b08b9df6f89730a5fbc33c83d5ee4c1b6d4430e9e437d944f9e'
+ 
+ def require(value):
+     if not value:
+@@ -109,11 +111,15 @@
+     require(stat.S_ISREG(s.st_mode) and s.st_nlink == 1 and s.st_size <= 262144)
+     with open(ROOT+'/policy.json', 'rb') as f:
+         p = json.load(f)
+-    exact(p, 'version controllerUid controllerGid buildUid buildGid maxWorkBytes reserveBytes executables profiles')
++    exact(p, 'version controllerUid controllerGid buildUid buildGid mappedBuildUid mappedBuildGid maxWorkBytes reserveBytes executables profiles apparmorCompiledSha256')
+     require(p['version'] == 1)
++    hexhash(p['apparmorCompiledSha256'])
+     for k in ('controllerUid', 'controllerGid', 'buildUid', 'buildGid'):
+         number(p[k], 1000, 2147483647)
++    for k in ('buildUid','buildGid'):number(p[k],1000,65535)
++    for k in ('mappedBuildUid','mappedBuildGid'):number(p[k],65536,2147483647)
+     require(p['controllerUid'] != p['buildUid'] and p['controllerGid'] != p['buildGid'])
++    require(p['mappedBuildUid']!=p['controllerUid'] and p['mappedBuildGid']!=p['controllerGid'])
+     number(p['maxWorkBytes'], 268435456, 8*1024**3)
+     require(p['maxWorkBytes'] % 4096 == 0)
+     number(p['reserveBytes'], 50*1024**3, 1024**5)
+@@ -149,6 +155,54 @@
+             require(not path.endswith(('.app','.dSYM','.xcarchive')))
+     return p
+ 
++def apparmor_policy(p):
++    # The source file and a loaded name alone cannot establish active policy.
++    # Require the kernel-exported compiled-policy digest approved at installation.
++    # No parser/load/profile change runs here. The install receipt must bind this
++    # include-free source, parser/features and the exact compiled bytes/digest.
++    source='/etc/apparmor.d/'+APPARMOR_PROFILE
++    s=trusted(source);require(stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_size<=16384)
++    with open(source,'rb') as f:require(digest(f.read(16385))==APPARMOR_SOURCE_SHA256)
++    with open('/sys/module/apparmor/parameters/enabled') as f:require(f.read(16).strip()=='Y')
++    with open('/sys/module/apparmor/parameters/mode') as f:require(f.read(32).strip()=='enforce')
++    security='/sys/kernel/security/apparmor';trusted(security,True)
++    with open(security+'/.ns_level') as f:require(f.read(16).strip()=='0')
++    with open(security+'/features/ptrace/mask') as f:require({'read','trace'}<=set(f.read(256).split()))
++    # policy is a kernel magic link into apparmorfs, not a filesystem pathname
++    # suitable for realpath. Follow only that exact kernel entry, then use dirfds.
++    require(re.fullmatch(r'apparmorfs:\[[0-9]+\]',os.readlink(security+'/policy')))
++    base=os.open(security+'/policy',os.O_RDONLY|os.O_DIRECTORY)
++    def kernel_read(directory,name,limit,raw_link=False):
++        if raw_link:require(re.fullmatch(r'\.\./\.\./raw_data/[0-9]+/sha256',os.readlink(name,dir_fd=directory)))
++        fd=os.open(name,os.O_RDONLY|(0 if raw_link else os.O_NOFOLLOW),dir_fd=directory)
++        try:
++            s=os.fstat(fd);require(s.st_uid==0 and stat.S_ISREG(s.st_mode) and not s.st_mode&0o222)
++            data=bytearray()
++            while len(data)<=limit:
++                chunk=os.read(fd,limit+1-len(data))
++                if not chunk:break
++                data.extend(chunk)
++            require(len(data)<=limit);return data.decode('ascii').strip()
++        finally:os.close(fd)
++    try:
++        profiles=os.open('profiles',os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW,dir_fd=base)
++        try:
++            count=0;matches=0
++            with os.scandir(profiles) as entries:
++                for e in entries:
++                    count+=1;require(count<=4096 and e.is_dir(follow_symlinks=False))
++                    directory=os.open(e.name,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW,dir_fd=profiles)
++                    try:
++                        if kernel_read(directory,'name',256)!=APPARMOR_PROFILE:continue
++                        matches+=1
++                        require(kernel_read(directory,'mode',32)=='enforce')
++                        require(kernel_read(directory,'raw_sha256',128,True)==p['apparmorCompiledSha256'])
++                        require(kernel_read(directory,'name',256)==APPARMOR_PROFILE and kernel_read(directory,'mode',32)=='enforce')
++                    finally:os.close(directory)
++            require(matches==1)
++        finally:os.close(profiles)
++    finally:os.close(base)
++
+ def census(policy, helper_hash, python_hash, attempt=None):
+     # Account backing images once; never recurse into mounted build filesystems.
+     began=time.monotonic();entries=0;total=0;complete=True;dev=os.stat(ROOT).st_dev
+@@ -187,6 +241,15 @@
+         self.p, self.q = p, p['profiles'][request['profileHash']]
+         number(request['bytes'], 0, self.q['maxInputBytes'])
+         number(request['files'], 1, 8192)
++        # Conservative source-copy allocation bound, before consuming the sole
++        # slot. Include worst-case path directories, block rounding and inodes;
++        # reserve 1/8 of the image for ext4 metadata/journal. Actual usable blocks
++        # and inodes are checked again after formatting, before accepting bytes.
++        source_dirs=min(65536,request['files']*31)+1
++        source_inodes=request['files']+source_dirs+128
++        source_bytes=request['bytes']+(request['files']+source_dirs)*4096
++        if self.q['sourceCopy']:
++            require(source_bytes+source_inodes*256 <= p['maxWorkBytes']*7//8)
+         self.identity = digest(encoded([request['attemptId'],request['profileHash'],request['inputHash'],request['filesHash']]))
+         self.request, self.root = request, ROOT+'/attempts/'+request['attemptId']
+         self.child = None
+@@ -199,6 +262,9 @@
+         self.total = 0
+         self.entries = []
+         self.components = set()
++        self.file_names = set()
++        self.directory_names = set()
++        self.component_spellings = {}
+         self.active = None
+         self.log = bytearray()
+         self.outputs = []
+@@ -206,22 +272,31 @@
+         self.contained = False
+         self.deadline = time.monotonic() + self.q['timeoutMs']/1000
+         self.boot_offset=time.clock_gettime(time.CLOCK_BOOTTIME)-time.monotonic()
++        trusted(ROOT+'/attempts', True, True)
++        free = os.statvfs(ROOT)
++        overhead=(65536+8192+128)*free.f_frsize*2+self.q['maxOutputBytes']
++        require(free.f_bavail*free.f_frsize >= p['reserveBytes']+request['bytes']+p['maxWorkBytes']+overhead)
++        require(free.f_favail >= source_inodes+len(self.q['outputPaths'])+128)
+         # Durable global lock precedes all run-capable work. No restart replay.
+         create(ROOT+'/slot.json', encoded({'version':1,'identity':self.identity,'request':request}))
++        os.mkdir(self.root, 0o700)
++        sync_dir(ROOT+'/attempts')
++        create(self.root+'/events.jsonl', encoded({'event':'intent','identity':self.identity})+b'\n')
+         trusted('/sys/fs/cgroup/foundry-builds', True)
+         self.cgroup='/sys/fs/cgroup/foundry-builds/'+self.identity
+         os.mkdir(self.cgroup,0o700)
+         with open(self.cgroup+'/cgroup.subtree_control','w') as f:f.write('+cpu +memory +pids')
+-        trusted(ROOT+'/attempts', True, True)
+-        free = os.statvfs(ROOT)
+-        overhead=(65536+8192+128)*free.f_frsize*2+self.q['maxOutputBytes']
+-        require(free.f_bavail*free.f_frsize >= p['reserveBytes']+request['bytes']+p['maxWorkBytes']+overhead)
+-        os.mkdir(self.root, 0o700)
+-        sync_dir(ROOT+'/attempts')
++        with open(self.cgroup+'/cgroup.type') as f:require(f.read().strip()=='domain')
++        for name in ('cgroup.kill','cgroup.freeze'):
++            # Opening does not issue a kill/freeze, but proves the required
++            # kernel control exists and is writable before any launch is possible.
++            fd=os.open(self.cgroup+'/'+name,os.O_WRONLY|os.O_NOFOLLOW)
++            os.close(fd)
++        with open(self.cgroup+'/cgroup.events') as f:events=dict(line.split() for line in f)
++        require(events.get('populated')=='0' and events.get('frozen')=='0')
+         os.mkdir(self.root+'/input', 0o755)
+         os.mkdir(self.root+'/captured', 0o700)
+         os.mkdir(self.root+'/work', 0o700)
+-        create(self.root+'/events.jsonl', encoded({'event':'intent','identity':self.identity})+b'\n')
+         raw = self.root+'/work.ext4'
+         fd = os.open(raw, os.O_RDWR|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW, 0o600)
+         try:
+@@ -230,15 +305,17 @@
+         finally:
+             os.close(fd)
+         sync_dir(self.root)
+-        self.cmd(['/usr/sbin/mke2fs','-t','ext4','-q','-F','-m','0',raw])
++        self.cmd(['/usr/sbin/mke2fs','-t','ext4','-q','-F','-m','0','-b','4096','-I','256','-N',str(max(8192,source_inodes+128)),raw])
+         self.cmd(['/usr/bin/mount','-t','ext4','-o','loop,nodev,nosuid',raw,self.root+'/work'])
+         self.work_dev = os.stat(self.root+'/work').st_dev
+         require(self.work_dev != os.stat(self.root).st_dev)
+-        os.chown(self.root+'/work', p['buildUid'], p['buildGid'])
++        os.chown(self.root+'/work', p['mappedBuildUid'], p['mappedBuildGid'])
+         os.chmod(self.root+'/work', 0o700)
+         if self.q['sourceCopy']:
++            work_space=os.statvfs(self.root+'/work')
++            require(work_space.f_frsize==4096 and work_space.f_bavail*work_space.f_frsize>=source_bytes and work_space.f_favail>=source_inodes)
+             os.mkdir(self.root+'/work/source', 0o700)
+-            os.chown(self.root+'/work/source',p['buildUid'],p['buildGid'])
++            os.chown(self.root+'/work/source',p['mappedBuildUid'],p['mappedBuildGid'])
+         self.event({'event':'prepared-disk'})
+         self.watch_read,self.watch_write=os.pipe()
+         self.watch_pid=os.fork()
+@@ -291,7 +368,15 @@
+         finally:
+             os.close(fd)
+ 
+-    def cmd(self, args):
++    def failure(self, operation):
++        # Best effort only: an unwritable/full journal cannot establish evidence.
++        # Never persist exception text or untrusted field values.
++        safe=operation if operation in ('begin','file','append','end','seal','start','pulse','status','stop','capture','read','tick','census','containment') else 'protocol'
++        try:self.event({'event':'operation-failed','operation':safe,'containmentConfirmed':getattr(self,'contained',False),'captureComplete':getattr(self,'captured',False)})
++        except Exception:pass
++
++    @staticmethod
++    def cmd(args):
+         # Bounded output; no shell, plugins or ambient Docker context.
+         p = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=ENV, cwd=ROOT, start_new_session=True)
+         data = bytearray()
+@@ -327,11 +412,15 @@
+         number(r['mode'],0,0o777); require(not r['mode'] & 0o022)
+         # Global casefold/path-prefix collision checks also cover file/dir aliases.
+         name=r['path'].casefold()
+-        for f in self.entries:
+-            old=f['path'].casefold()
+-            require(name!=old and not name.startswith(old+'/') and not old.startswith(name+'/'))
++        parents=['/'.join(name.split('/')[:i]) for i in range(1,len(name.split('/')))]
++        require(name not in self.file_names and name not in self.directory_names and not any(p in self.file_names for p in parents))
++        self.file_names.add(name);self.directory_names.update(parents)
+         require(self.total+r['sizeBytes']<=self.request['bytes'])
+         parts=r['path'].split('/')
++        for i in range(1,len(parts)+1):
++            prefix='/'.join(parts[:i]);key=prefix.casefold()
++            require(key not in self.component_spellings or self.component_spellings[key]==prefix)
++            self.component_spellings[key]=prefix
+         self.components.update('/'.join(parts[:i]) for i in range(1,len(parts)+1))
+         require(len(self.components)<=65536)
+         parent=os.path.dirname(self.root+'/input/'+r['path'])
+@@ -361,7 +450,7 @@
+             # write them during execution, never the host controller UID.
+             cursor=os.path.dirname(dst)
+             while cursor != self.root+'/work':
+-                os.chown(cursor,self.p['buildUid'],self.p['buildGid']);cursor=os.path.dirname(cursor)
++                os.chown(cursor,self.p['mappedBuildUid'],self.p['mappedBuildGid']);cursor=os.path.dirname(cursor)
+             with open(self.root+'/input/'+m['path'],'rb') as src:
+                 fd=os.open(dst,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o700 if m['mode'] & 0o111 else 0o600)
+                 try:
+@@ -371,7 +460,7 @@
+                         view=memoryview(b)
+                         while view:
+                             n=os.write(fd,view);require(n>0);view=view[n:]
+-                    os.fchown(fd,self.p['buildUid'],self.p['buildGid']);os.fsync(fd)
++                    os.fchown(fd,self.p['mappedBuildUid'],self.p['mappedBuildGid']);os.fsync(fd)
+                 finally:os.close(fd)
+         self.entries.append(m);self.total+=m['sizeBytes']
+ 
+@@ -386,13 +475,14 @@
+     def launch(self,phase):
+         require(not self.terminal and time.monotonic()<min(self.deadline,self.expires))
+         require(not os.path.lexists(self.root+'/watchdog-closed.json') and os.waitpid(self.watch_pid,os.WNOHANG)==(0,0))
++        apparmor_policy(self.p)
+         self.phase=phase; q=self.q
+         name='foundry-isolated-'+self.identity+'-'+str(phase)
+         self.container=name
+         self.event({'event':'create-intent','container':name,'phase':phase})
+         args=['create','--name',name,'--label','foundry.isolated='+self.identity,'--restart=no','--pull=never','--runtime=runc',
+-              '--platform','linux/'+q['architecture'],'--network=none','--read-only','--privileged=false','--userns=host',
+-              '--user',str(self.p['buildUid'])+':'+str(self.p['buildGid']),'--cap-drop=ALL','--security-opt=no-new-privileges=true',
++              '--platform','linux/'+q['architecture'],'--network=none','--read-only','--privileged=false',
++              '--user',str(self.p['buildUid'])+':'+str(self.p['buildGid']),'--cap-drop=ALL','--security-opt=no-new-privileges=true','--security-opt=apparmor='+APPARMOR_PROFILE,
+               '--cgroup-parent=/foundry-builds/'+self.identity,'--cgroupns=private','--ipc=private','--cpus',str(q['cpu']),'--memory',str(q['ramMib'])+'m','--memory-swap',str(q['ramMib'])+'m',
+               '--pids-limit',str(q['pids']),'--ulimit','core=0:0','--ulimit','nofile=1024:1024','--log-driver=none',
+               '--mount','type=bind,src='+self.root+'/input,dst=/input,readonly,bind-recursive=disabled',
+@@ -403,6 +493,7 @@
+         args.extend([q['image']]+q['commands'][phase][1:])
+         cid=self.docker(args).decode().strip();hexhash(cid)
+         self.container=cid;self.event({'event':'container-created','container':cid})
++        state=self.state();require(not state['Running'] and state['Status']=='created')
+         require(time.monotonic()<min(self.deadline,self.expires))
+         self.child=subprocess.Popen(['/usr/bin/docker','--config',ROOT+'/docker-config','--host','unix:///run/docker.sock','start','--attach',cid],
+               cwd=ROOT,env=ENV,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
+@@ -414,6 +505,8 @@
+         s=rows[0];require(s['Config']['Labels'].get('foundry.isolated')==self.identity and s['Id']==self.container)
+         require(s['HostConfig']['RestartPolicy']['Name']=='no')
+         require(s['HostConfig']['CgroupParent']=='/foundry-builds/'+self.identity)
++        require(s['HostConfig']['UsernsMode']=='')
++        require(s['AppArmorProfile']==APPARMOR_PROFILE)
+         return s['State']
+ 
+     def empty(self):
+@@ -449,6 +542,7 @@
+         require(info['OSType']=='linux' and info['CgroupVersion']=='2' and info.get('CgroupDriver')=='cgroupfs' and all(info.get(k) is True for k in ('CpuCfsQuota','MemoryLimit','PidsLimit')))
+         require(os.uname().machine==('x86_64' if self.q['architecture']=='amd64' else 'aarch64'))
+         require('name=seccomp,profile=builtin' in info['SecurityOptions'] and not info.get('Warnings'))
++        require('name=userns' in info['SecurityOptions'])
+         rows=json.loads(self.docker(['image','inspect',self.q['image']]))
+         require(len(rows)==1 and rows[0]['Os']=='linux' and rows[0]['Architecture']==self.q['architecture'] and self.q['image'] in rows[0].get('RepoDigests',[]) and not rows[0]['Config'].get('Volumes'))
+         self.started=True;self.launch(0)
+@@ -496,6 +590,21 @@
+     def capture(self):
+         require(self.terminal and self.success and self.contained and self.empty() and not self.outputs)
+         s=self.state();require(not s['Running'] and s['Status']=='exited' and s['ExitCode']==0)
++        # Seal the entire ext4 superblock, not just this mount's bind flags.
++        # Existing external writable descriptors/mappings must prevent sealing;
++        # no output is read or accepted if the kernel cannot make it readonly.
++        self.cmd(['/usr/bin/mount','-t','ext4','-o','remount,ro,nodev,nosuid',self.root+'/work.ext4',self.root+'/work'])
++        require(os.stat(self.root+'/work').st_dev==self.work_dev and os.statvfs(self.root+'/work').f_flag & os.ST_RDONLY)
++        with open('/proc/self/mountinfo','rb') as f:mounts=f.read(CHUNK+1)
++        require(len(mounts)<=CHUNK)
++        mounted=[]
++        for line in mounts.decode('ascii').splitlines():
++            before,after=line.split(' - ',1);left,right=before.split(),after.split()
++            if left[4]==self.root+'/work':mounted.append((left,right))
++        require(len(mounted)==1)
++        left,right=mounted[0]
++        require(left[2]==str(os.major(self.work_dev))+':'+str(os.minor(self.work_dev)) and right[0]=='ext4' and 'ro' in right[2].split(','))
++        self.event({'event':'workspace-readonly'})
+         total=len(self.log); chunks=(len(self.log)+CHUNK-1)//CHUNK
+         selected=[]
+         # The broker is the only Docker authority. Terminal state has no restart
+@@ -566,6 +675,12 @@
+     require(sys.platform=='linux' and os.geteuid()==0)
+     os.umask(0o022)
+     p=load_policy();trusted('/run/foundry-linux',True)
++    apparmor_policy(p)
++    version=json.loads(Attempt.cmd(['/usr/bin/docker','--config',ROOT+'/docker-config','--host','unix:///run/docker.sock','version','--format','{{json .}}']))
++    for side in ('Client','Server'):
++        v=version[side]['Version'];require(type(v) is str and re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(?:[-+][A-Za-z0-9._-]+)?',v) and int(v.split('.')[0])>=25)
++    info=json.loads(Attempt.cmd(['/usr/bin/docker','--config',ROOT+'/docker-config','--host','unix:///run/docker.sock','info','--format','{{json .}}']))
++    require('name=userns' in info['SecurityOptions'])
+     trusted(sys.executable);trusted(os.path.abspath(__file__))
+     with open(sys.executable,'rb') as f:python_hash=digest(f.read())
+     with open(os.path.abspath(__file__),'rb') as f:helper_hash=digest(f.read())
+@@ -575,22 +690,30 @@
+     sock.settimeout(1)
+     while True:
+         census(p,helper_hash,python_hash)
+-        try:conn,_=sock.accept();break
++        try:
++            conn,_=sock.accept()
++            try:authorized=peer(conn)==(p['controllerUid'],p['controllerGid'])
++            except Exception:authorized=False
++            if authorized:break
++            conn.close()
+         except socket.timeout:continue
+-    attempt=None
++    attempt=None;operation='begin'
+     try:
+         require(peer(conn)==(p['controllerUid'],p['controllerGid']))
+         conn.settimeout(10)
+         request=receive(conn)
+-        attempt=Attempt(p,request)
++        attempt=Attempt.__new__(Attempt)
++        attempt.__init__(p,request)
+         send(conn,{'identity':attempt.identity,'profile':attempt.q,'helperSha256':helper_hash,'pythonSha256':python_hash})
+         # Serialized frames are bounded by an absolute deadline even when a peer
+         # dribbles bytes. A separate timer is not allowed to race mutation handlers.
+         conn.setblocking(False)
+         buf=bytearray(); frame_start=None;last=time.monotonic();observed=0
+         while True:
++            operation='tick'
+             attempt.tick()
+             if time.monotonic()-observed>=1:
++                operation='census'
+                 census(p,helper_hash,python_hash,attempt);observed=time.monotonic()
+             require(time.monotonic()<attempt.deadline and time.monotonic()-last<(10 if attempt.started and not attempt.terminal else 60))
+             if frame_start is not None:require(time.monotonic()-frame_start<2)
+@@ -609,12 +732,17 @@
+             require(len(buf)==n+4)
+             r=json.loads(bytes(buf[4:]));buf.clear();frame_start=None
+             # tick BEFORE a pulse; a late request cannot revive expired admission.
+-            attempt.tick();response=attempt.dispatch(r);last=time.monotonic()
++            operation='tick';attempt.tick()
++            operation=r.get('op') if type(r) is dict else 'protocol'
++            response=attempt.dispatch(r);last=time.monotonic()
+             conn.settimeout(2);send(conn,response);conn.setblocking(False)
++    except Exception:
++        if attempt:attempt.failure(operation)
++        raise
+     finally:
+         if attempt:
+             try:attempt.stop()
+-            except Exception:pass  # Durable slot already retained; never claim stop.
++            except Exception:attempt.failure('containment')  # Never claim stop.
+             try:os.close(attempt.watch_write)
+             except Exception:pass
+         conn.close();sock.close()
+--- a/packages/build-runtime/src/linux-isolated-adapter.ts
++++ b/packages/build-runtime/src/linux-isolated-adapter.ts
+@@ -57,13 +57,11 @@
+     const storage=await c.resolveInputStorage(input,plan,context,scope.signal);scope.assertLease();
+     check(storage.scope.projectId===input.projectId&&canonicalData(storage.scope.compute)===canonicalData(context.compute),'linux-input-broker-scope');
+     const reader=projectObjectReader(storage.scope,storage.routing,scope.signal);
+-    // At most one pinned blob is retained. Packed adjacent files share its bytes;
+-    // all issued reservations are freshly rechecked before physical launch.
+-    let cached:{key:string;bytes:Uint8Array}|undefined;
++    // Streaming owns its bounded segment-group cache; metadata and other chunks
++    // are not retained here. Every issued reservation is rechecked by finish below.
+     const read:StorageWorkerConfig['readInput']=async(ref,_context,signal)=>{
+       check(signal===scope.signal&&!signal.aborted,'linux-input-read-scope');scope.assertLease();
+-      const key=canonicalData(ref);if(cached?.key===key)return Uint8Array.from(cached.bytes);
+-      const bytes=await reader.read(ref);scope.assertLease();cached={key,bytes:Uint8Array.from(bytes)};return bytes;
++      const bytes=await reader.read(ref);scope.assertLease();return bytes;
+     };
+     const prepared=await prepareLinuxInput(input,job,plan,context,read,scope,Math.min(c.maxInputBytes,maxInputBytes));
+     const client=await LinuxIsolationClient.connect(c.isolation,scope.signal);
+--- a/packages/build-runtime/src/linux-isolated-census.ts
++++ b/packages/build-runtime/src/linux-isolated-census.ts
+@@ -8,9 +8,15 @@
+ export async function readLinuxIsolationCensus():Promise<LinuxIsolationCensus>{
+   check(process.platform==='linux','linux-census-platform');
+   for(const path of ['/run','/run/foundry-linux']){const s=await lstat(path);check(s.isDirectory()&&!s.isSymbolicLink()&&s.uid===0&&(s.mode&0o022)===0,'linux-census-namespace');}
+-  const f=await open('/run/foundry-linux/census.json',constants.O_RDONLY|constants.O_NOFOLLOW);
+-  try{
+-    const s=await f.stat();check(s.isFile()&&s.uid===0&&s.nlink===1&&(s.mode&0o222)===0&&s.size>0&&s.size<=4096,'linux-census-file');
++  for(let attempt=0;attempt<3;attempt++){
++   const f=await open('/run/foundry-linux/census.json',constants.O_RDONLY|constants.O_NOFOLLOW);
++   try{
++    const s=await f.stat();
++    // The root publisher atomically replaces this pathname. An open descriptor
++    // can refer to the just-unlinked old inode; reopen rather than treating
++    // normal publication as loss of liveness. Hard links still fail closed.
++    if(s.nlink===0)continue;
++    check(s.isFile()&&s.uid===0&&s.nlink===1&&(s.mode&0o222)===0&&s.size>0&&s.size<=4096,'linux-census-file');
+     const data=Buffer.alloc(4097),read=await f.read(data,0,data.length,0);check(read.bytesRead===s.size,'linux-census-size');
+     const c=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(data.subarray(0,read.bytesRead))) as LinuxIsolationCensus;
+     check(Object.keys(c).sort().join(',')==='complete,freeBytes,helperSha256,observedAt,profiles,pythonSha256,slotFree,version,workspaceBytes'&&c.version===1&&typeof c.complete==='boolean'&&typeof c.slotFree==='boolean','linux-census-shape');
+@@ -19,5 +25,7 @@
+     check(Number.isSafeInteger(c.observedAt)&&c.observedAt<=Date.now()&&Date.now()-c.observedAt<=15000&&Number.isSafeInteger(c.freeBytes)&&c.freeBytes>=0,'linux-census-freshness');
+     check(c.workspaceBytes===null?!c.complete:Number.isSafeInteger(c.workspaceBytes)&&c.workspaceBytes>=0&&c.complete,'linux-census-accounting');
+     return c;
+-  }finally{await f.close();}
++   }finally{await f.close();}
++  }
++  throw new Error('linux-census-replacement-budget');
+ }
+--- a/packages/build-runtime/src/linux-isolated-input.ts
++++ b/packages/build-runtime/src/linux-isolated-input.ts
+@@ -6,11 +6,11 @@
+ import type {StorageWorkerConfig} from './storage-integration.js';
+ import type {RuntimePlan,ExecutionScope} from './types.js';
+ import {canonicalData} from './parent-profile.js';
+-import {verifyObject} from './receipts.js';
++import {sameRef,verifyObject} from './receipts.js';
+ import {check,hash,localPath} from './plans.js';
+ import type {LinuxIsolationClient} from './linux-isolated-client.js';
+ interface Part {ref:ObjectRef;offset:number;sizeBytes:number;claim?:ArtifactClaim}
+-interface File {path:string;sha256:string;sizeBytes:number;mode:number;parts:Part[]}
++interface File {path:string;sha256:string;sizeBytes:number;mode:number;parts:Part[];retainedObject?:ObjectRef}
+ export interface LinuxInputPlan {files:File[];bytes:number;filesHash:string}
+ /** Validate complete metadata first; no host materialization and no writable seal.
+  * Each actual broker object and reconstructed file is verified again while streamed. */
+@@ -31,7 +31,18 @@
+     check(index.projectId===input.projectId&&index.totals.bytes<=maxBytes,'linux-project-input-cap');
+     for(const page of index.segments){
+       const segment=decodeProjectMetadata<ProjectInputSegment>(await get(page.ref),'segment');validation.accept(segment);
+-      for(const f of segment.files)add({path:f.path,sha256:f.sha256,sizeBytes:f.sizeBytes,mode:f.mode,
++      // Validation makes every non-final chunk a whole, exclusively covered MiB
++      // object. Only final chunks can share a blob. Group by that object within
++      // this segment, including packed blobs at indices other than writer index 0.
++      // The resulting stream order is bound by filesHash below, not the manifest's
++      // selection order. Required-input validation keeps its original order.
++      const groups=new Map<number,typeof segment.files>();
++      for(const f of segment.files){
++        const object=f.chunks[f.chunks.length-1]?.object??-1,group=groups.get(object)??[];
++        group.push(f);groups.set(object,group);
++      }
++      for(const [object,group] of groups)for(const f of group)add({path:f.path,sha256:f.sha256,sizeBytes:f.sizeBytes,mode:f.mode,
++        retainedObject:object<0?undefined:segment.objects[object],
+         parts:f.chunks.map(p=>({ref:segment.objects[p.object]!,offset:p.offset,sizeBytes:p.sizeBytes}))});
+     }
+     validation.finish(true);check(canonicalData([...validation.required])===canonicalData(input.requiredInputs),'linux-required-inputs');
+@@ -52,15 +63,22 @@
+ export async function streamLinuxInput(prepared:LinuxInputPlan,client:LinuxIsolationClient,identity:string,input:InputApproval,plan:RuntimePlan,
+   context:BuildAttemptContext,read:StorageWorkerConfig['readInput'],scope:ExecutionScope):Promise<void>{
+   const send=async(body:object)=>{scope.assertLease();const response=await client.request(body,scope.signal) as {identity?:string};check(response.identity===identity,'linux-input-session');scope.assertLease();};
++  // Retain only the current group's verified final object (at most 1 MiB).
++  // Intervening whole chunks stream without eviction or a second cache/copy.
++  let cached:{ref:ObjectRef;bytes:Uint8Array}|undefined;
+   for(const f of prepared.files){
++    if(cached?.ref!==f.retainedObject)cached=undefined;
+     await send({op:'file',path:f.path,sha256:f.sha256,sizeBytes:f.sizeBytes,mode:f.mode});
+     const digest=createHash('sha256');let offset=0;
+     for(const part of f.parts){
+-      scope.assertLease();const object=await read(part.ref,{input,plan,attempt:context,claim:part.claim},scope.signal);scope.assertLease();
++      check(!scope.signal.aborted,'linux-input-read-scope');scope.assertLease();
++      const retain=f.retainedObject!==undefined&&sameRef(part.ref,f.retainedObject);
++      const object=retain&&cached?cached.bytes:await read(part.ref,{input,plan,attempt:context,claim:part.claim},scope.signal);scope.assertLease();
+       verifyObject({ref:part.ref,bytes:object},input.projectId);
++      if(retain)cached={ref:f.retainedObject!,bytes:object};
+       check(Number.isSafeInteger(part.offset)&&part.offset>=0&&Number.isSafeInteger(part.sizeBytes)&&part.sizeBytes>0&&part.offset+part.sizeBytes<=object.byteLength,'linux-input-range');
+       const bytes=object.subarray(part.offset,part.offset+part.sizeBytes);digest.update(bytes);
+-      await send({op:'append',offset,data:Buffer.from(bytes).toString('base64')});offset+=bytes.byteLength;
++      await send({op:'append',offset,data:Buffer.from(bytes.buffer,bytes.byteOffset,bytes.byteLength).toString('base64')});offset+=bytes.byteLength;
+     }
+     check(offset===f.sizeBytes&&digest.digest('hex')===f.sha256,'linux-stream-file-hash');await send({op:'end'});
+   }
+--- a/packages/build-runtime/src/liveness.ts
++++ b/packages/build-runtime/src/liveness.ts
+@@ -2,6 +2,8 @@
+ import {statfs} from 'node:fs/promises';
+ import {setTimeout as wait} from 'node:timers/promises';
+ import { performance } from 'node:perf_hooks';
++import {resolve} from 'node:path';
++import {createMacIsolatedContentStore,type MacIsolatedStoreConfig,type MacIsolatedContentStore,type MacCasCensus} from '../../build-storage/src/mac-isolated-store.js';
+ import type { ApprovedIdentity } from '../../worker-enrollment/src/contracts.js';
+ import type { HostPolicy } from './types.js';
+ import type { WorkerRequestPort } from './node-transport.js';
+@@ -27,17 +29,33 @@
+   cacheRoot:string;
+   /** Exact owner-accepted guest image inventory; absent means VM-ineligible. */
+   vm?:MacVmCapabilityConfig;
++  /** Installed pins for the concrete root-private CAS. Missing on a VM means unknown. */
++  macStorage?:MacIsolatedStoreConfig;
+   /** Actual private root-broker accounting; inaccessible storage is never omitted. */
+   linuxIsolation?:{profileHash:string;helperSha256:string;pythonSha256:string};
++}
++function sumStorageBytes(a:number|null,b:number|null):number|null {
++  return a!==null&&b!==null&&Number.isSafeInteger(a)&&a>=0&&Number.isSafeInteger(b)&&b>=0&&Number.isSafeInteger(a+b)?a+b:null;
+ }
+ /** Concrete CPU-only observer. GPU identities reject until a real GPU census port exists.
+  * Each refresh makes a fresh census; each >=1s refresh uses a fresh durable heartbeat.
+  * No replayed heartbeat is treated as a freshness advance. */
+ export class NodeWorkerLiveness implements WorkerLivenessPort {
+   private readonly c:NodeLivenessConfig; private lastHeartbeat = -Infinity;private lastCensus=-Infinity;private refreshing=false;
++  private readonly macStore?:MacIsolatedContentStore;
+   constructor(config:NodeLivenessConfig,private readonly transport:WorkerRequestPort) {
+     this.c = JSON.parse(canonicalData(config)) as NodeLivenessConfig;
+     this.c.authority = snapshotWorkerAuthority(this.c.authority);
++    if(this.c.vm||this.c.macStorage){
++      // The privileged namespace is accounted exactly once by its concrete
++      // service, never as a descendant/ancestor of a controller scan root.
++      const cas='/library/foundry/cas/objects';
++      for(const path of [this.c.cacheRoot,this.c.host.workBase]){
++        const root=resolve(path).toLowerCase();
++        check(root!=='/'&&root!==cas&&!root.startsWith(`${cas}/`)&&!cas.startsWith(`${root}/`),'mac-cas-inventory-overlap');
++      }
++    }
++    this.macStore=this.c.macStorage?createMacIsolatedContentStore(this.c.macStorage):undefined;
+     check(this.c.approvedIdentity.workerId === this.c.authority.workerId,'liveness-worker-pin-mismatch');
+     check(this.c.approvedIdentity.workerClass === 'general' && this.c.approvedIdentity.devices.length === 0,'gpu-observation-not-supported');
+     check(Number.isSafeInteger(this.c.expectedEpoch) && this.c.expectedEpoch > 0 && Number.isSafeInteger(this.c.revision) && this.c.revision > 0 && Number.isSafeInteger(this.c.incarnation) && this.c.incarnation >= 0,'invalid-liveness-binding');
+@@ -84,12 +102,25 @@
+       census.storage.workspaceBytes=storage.workspaceBytes===null||isolated.workspaceBytes===null?null:storage.workspaceBytes+isolated.workspaceBytes;
+       if(activeJobs===0)check(isolated.complete&&isolated.slotFree,'linux-broker-not-admissible');
+     }
++    if(c.vm||c.macStorage){
++      let isolated:Readonly<MacCasCensus>|undefined;
++      try{isolated=await this.macStore?.census(signal);}catch{
++        // Missing service, old pins, timeout, unsafe entries, and scan limits
++        // are unknown. Neither the controller cache nor an older observation
++        // can stand in for this root-private storage.
++      }
++      census.storage.cacheBytes=sumStorageBytes(census.storage.cacheBytes,isolated?.cacheBytes??null);
++      census.storage.complete=census.storage.complete&&isolated?.complete===true&&census.storage.cacheBytes!==null;
++      // The CAS can be on a different volume. No observation gives no usable
++      // free-space evidence; zero here is conservative headroom, not cache size.
++      census.freeBytes=isolated?Math.min(census.freeBytes,isolated.freeBytes):0;
++    }
+     check(!signal.aborted,'census-aborted');
+     const key = hash(`${scope}:census:${stamp.sequence}`);
+     const response = JSON.parse(canonicalData(await this.transport.request('/v1/builds/commands',{expectedEpoch:c.expectedEpoch,command:{operation:'census',key,body:census}},signal))) as {ok?:boolean;source?:unknown};
+     assertBuildResponseSource(response.source,c.authority,c.expectedEpoch);
+     check(response.ok === true,'census-rejected'); await stamp.commit();this.lastCensus=performance.now();
+-    if (activeJobs === 0) check(storage.complete && storage.cacheBytes !== null && storage.cacheBytes <= 20*1024**3,'cache-inventory-or-20gib-admission-denied');
++    if (activeJobs === 0) check(census.storage.complete && census.storage.cacheBytes !== null && census.storage.cacheBytes <= 20*1024**3,'cache-inventory-or-20gib-admission-denied');
+     return Object.freeze({...response.source});
+   }
+ }
+--- a/packages/build-runtime/src/mac-vm-worker.ts
++++ b/packages/build-runtime/src/mac-vm-worker.ts
+@@ -6,7 +6,7 @@
+ import {check} from './plans.js';
+ export interface MacVmWorkerConfig extends MacVmAdapterConfig {
+   transport:NodeBuildTransport;
+-  liveness:Omit<NodeLivenessConfig,'vm'>;
++  liveness:Omit<NodeLivenessConfig,'vm'|'macStorage'>;
+   maxInputBytes:number;
+ }
+ /** Complete inert production composition. The caller supplies actual enrolled
+@@ -17,8 +17,9 @@
+   check(config.transport instanceof NodeBuildTransport,'vm-authenticated-node-transport-required');
+   check(canonicalData(config.liveness.host)===canonicalData(config.binding.approval.host),'vm-liveness-host-binding');
+   check(Number.isSafeInteger(config.maxInputBytes)&&config.maxInputBytes>0&&config.maxInputBytes<=2*1024**3,'vm-input-limit');
+-  // Both census and physical preparation use the exact same owner-pinned image.
+-  const liveness=new NodeWorkerLiveness({...config.liveness,developerDirs:[],vm:config.capability},config.transport);
++  // Census/preparation use the same image; census/publication resolve the same
++  // process-wide concrete CAS store from these exact installed runtime pins.
++  const liveness=new NodeWorkerLiveness({...config.liveness,developerDirs:[],vm:config.capability,macStorage:config.storage},config.transport);
+   const adapter=new MacVmRuntimeAdapter(config);
+   return new BuildWorkerController(config.binding,config.liveness.expectedEpoch,
+     {transport:config.transport,liveness},adapter,config.maxInputBytes,authority);
+--- a/packages/build-storage/native/mac-cas.py
++++ b/packages/build-storage/native/mac-cas.py
+@@ -21,6 +21,9 @@
+ CONFIG = BASE + '/policy.json'
+ MAX_OBJECT = 1048576
+ MAX_FRAME = 1450000
++MAX_SCAN_ENTRIES = 270000  # 200,000 objects plus the bounded shard directories.
++MAX_SCAN_SECONDS = 2
++MAX_SAFE_INTEGER = 2**53-1
+ LIB = None
+ 
+ 
+@@ -133,7 +136,12 @@
+ 
+ 
+ def validate(r):
+-    need(type(r) is dict and r.get('op') in ('put', 'read'), 'operation')
++    need(type(r) is dict and r.get('op') in ('put', 'read', 'census'), 'operation')
++    if r['op'] == 'census':
++        exact(r, ['version', 'op', 'nonce'])
++        need(type(r['version']) is int and r['version'] == 1 and type(r['nonce']) is str and
++             re.fullmatch('[a-f0-9]{32}', r['nonce']), 'census-identity')
++        return None
+     exact(r, ['version', 'op', 'sha256', 'sizeBytes'] + (['data'] if r['op'] == 'put' else []))
+     need(type(r['version']) is int and r['version'] == 1 and type(r['sha256']) is str and
+          re.fullmatch('[a-f0-9]{64}', r['sha256']) and type(r['sizeBytes']) is int and
+@@ -148,15 +156,18 @@
+ 
+ 
+ class Store:
+-    def __init__(self, policy):
++    def __init__(self, policy, runtime):
+         self.policy = policy
++        self.runtime = runtime
+         self.fd = root_fd(BASE+'/objects')  # Must be provisioned; no mkdir of trust root.
+         need(stat.S_IMODE(os.fstat(self.fd).st_mode) == 0o700, 'private-root')
+         self.device = os.fstat(self.fd).st_dev
+         self.bytes, self.count = 0, 0
+         # Include incomplete creates in durable quota reconstruction; never erase
+         # or discount them after a crash. Fail on unknown entries and oversize trees.
+-        self.inventory(self.fd, 0, '')
++        totals = {'bytes': 0, 'count': 0, 'entries': 0}
++        self.inventory(self.fd, 0, '', totals)
++        self.bytes, self.count = totals['bytes'], totals['count']
+ 
+     def child(self, parent, name, create=False):
+         if create:
+@@ -175,28 +186,62 @@
+             os.close(fd)
+             raise
+ 
+-    def inventory(self, fd, depth, prefix):
++    def inventory(self, fd, depth, prefix, totals, deadline=None):
+         # scandir(fd) is streaming, not an unbounded listdir allocation.
++        before = os.fstat(fd)
+         with os.scandir(fd) as entries:
+             n = 0
+             for e in entries:
++                need(deadline is None or time.monotonic() < deadline, 'census-deadline')
++                totals['entries'] += 1
++                need(totals['entries'] <= MAX_SCAN_ENTRIES, 'inventory-bound')
+                 n += 1
+                 need(n <= (1 if depth == 0 else 256 if depth < 3 else 4096), 'shard-bound')
+                 if depth < 3:
+                     need(e.name == 'sha256' if depth == 0 else re.fullmatch('[a-f0-9]{2}', e.name), 'shard-name')
+                     child = self.child(fd, e.name)
+                     try:
+-                        self.inventory(child, depth+1, prefix+(e.name if depth else ''))
++                        self.inventory(child, depth+1, prefix+(e.name if depth else ''), totals, deadline)
+                     finally:
+                         os.close(child)
+                 else:
+                     need(re.fullmatch('sha256-'+prefix+'[a-f0-9]{60}', e.name), 'object-name')
+-                    s = e.stat(follow_symlinks=False)
+-                    need(stat.S_ISREG(s.st_mode) and s.st_uid == 0 and s.st_dev == self.device and
+-                         s.st_nlink == 1 and stat.S_IMODE(s.st_mode) == 0o400 and 0 <= s.st_size <= MAX_OBJECT, 'object-entry')
+-                    self.count += 1
+-                    self.bytes += s.st_size
+-                    need(self.count <= self.policy['maxObjects'] and self.bytes <= self.policy['maxBytes'], 'quota')
++                    obj = os.open(e.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
++                    try:
++                        s = os.fstat(obj)
++                        need(stat.S_ISREG(s.st_mode) and s.st_uid == 0 and s.st_dev == self.device and
++                             s.st_nlink == 1 and stat.S_IMODE(s.st_mode) == 0o400 and 0 <= s.st_size <= MAX_OBJECT, 'object-entry')
++                        no_acl(obj)
++                        totals['count'] += 1
++                        totals['bytes'] += s.st_size
++                        need(totals['count'] <= self.policy['maxObjects'] and totals['bytes'] <= self.policy['maxBytes'], 'quota')
++                    finally:
++                        os.close(obj)
++        after = os.fstat(fd)
++        need((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns, before.st_ctime_ns) ==
++             (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns), 'inventory-changed')
++        need(deadline is None or time.monotonic() < deadline, 'census-deadline')
++
++    def census(self, nonce):
++        # This is a fresh scan, not the quota debit (which can conservatively
++        # include unwritten bytes after a failed create). Requests are serialized
++        # with writes by serve(). A scan never lowers that admission debit.
++        deadline = time.monotonic()+MAX_SCAN_SECONDS
++        fd = root_fd(BASE+'/objects')
++        try:
++            s, held = os.fstat(fd), os.fstat(self.fd)
++            need(stat.S_IMODE(s.st_mode) == 0o700 and (s.st_dev, s.st_ino) ==
++                 (held.st_dev, held.st_ino), 'census-root-changed')
++            totals = {'bytes': 0, 'count': 0, 'entries': 0}
++            self.inventory(fd, 0, '', totals, deadline)
++            space = os.fstatvfs(fd)
++            free = space.f_bavail*space.f_frsize
++            need(0 <= free <= MAX_SAFE_INTEGER and time.monotonic() < deadline, 'census-space-or-deadline')
++            return {'version': 1, 'ok': True, 'nonce': nonce, 'root': BASE+'/objects',
++                    'complete': True, 'cacheBytes': totals['bytes'], 'objectCount': totals['count'],
++                    'freeBytes': free, **self.runtime}
++        finally:
++            os.close(fd)
+ 
+     def read(self, parent, name, digest, size):
+         fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
+@@ -217,6 +262,8 @@
+ 
+     def operation(self, r):
+         data = validate(r)
++        if r['op'] == 'census':
++            return self.census(r['nonce'])
+         digest, size = r['sha256'], r['sizeBytes']
+         parent = os.dup(self.fd)
+         try:
+@@ -279,14 +326,38 @@
+     return policy
+ 
+ 
++def installed_digest(path):
++    fd = root_fd(path, file=True)
++    try:
++        size = os.fstat(fd).st_size
++        need(0 < size <= 64*1048576, 'runtime-size')
++        digest = hashlib.sha256()
++        remaining = size
++        while remaining:
++            data = os.read(fd, min(remaining, 65536))
++            need(data, 'runtime-short')
++            digest.update(data)
++            remaining -= len(data)
++        need(not os.read(fd, 1), 'runtime-grown')
++        return digest.hexdigest()
++    finally:
++        os.close(fd)
++
++
+ def serve():
+     need(os.getuid() == 0 and os.geteuid() == 0, 'root-service-required')
++    need(os.path.abspath(sys.executable) == '/Library/Foundry/bin/cas-python' and
++         os.path.abspath(__file__) == '/Library/Foundry/bin/mac-cas.py', 'installed-service-runtime-required')
+     policy = policy_read()
+     run = root_fd(BASE+'/run')
+     need(stat.S_IMODE(os.fstat(run).st_mode) == 0o755, 'socket-directory')
+     # No stale-socket removal. An existing name requires owner reconciliation;
+     # reboot/restart cannot silently replace another service's endpoint.
+-    store = Store(policy)
++    # Capture the owner-installed identity at service startup; a new client pin
++    # cannot silently treat an older running service as the new implementation.
++    runtime = {'pythonSha256': installed_digest('/Library/Foundry/bin/cas-python'),
++               'helperSha256': installed_digest('/Library/Foundry/bin/mac-cas.py')}
++    store = Store(policy, runtime)
+     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as server:
+         server.bind(SOCKET)
+         os.chown(SOCKET, 0, policy['workerGid'])
+--- a/packages/build-storage/src/index.ts
++++ b/packages/build-storage/src/index.ts
+@@ -17,4 +17,4 @@
+ export type {ReadonlyManagedTreeSeal,MacReadonlySealConfig,MacReadonlyTreeIdentity} from './mac-readonly-seal';
+ 
+ export {createMacIsolatedContentStore,assertMacIsolatedStore} from './mac-isolated-store';
+-export type {MacIsolatedStoreConfig} from './mac-isolated-store';
++export type {MacIsolatedStoreConfig,MacIsolatedContentStore,MacCasCensus} from './mac-isolated-store';
+--- a/packages/build-storage/src/mac-isolated-store.ts
++++ b/packages/build-storage/src/mac-isolated-store.ts
+@@ -1,7 +1,8 @@
+ import {spawn} from 'node:child_process';
+ import {constants} from 'node:fs';
+ import {access,lstat,open} from 'node:fs/promises';
+-import {createHash} from 'node:crypto';
++import {createHash,randomBytes} from 'node:crypto';
++import {performance} from 'node:perf_hooks';
+ import {alive,boundedBytes,canonical,check,freeze,sha256} from './checks';
+ import {shardedLocalRef,validateLocalRef} from './local-refs';
+ import type {LocalContentStore,LocalRef} from './types';
+@@ -11,8 +12,18 @@
+   python:{path:'/Library/Foundry/bin/cas-python';sha256:string};
+   helper:{path:'/Library/Foundry/bin/mac-cas.py';sha256:string};
+ }
++export interface MacCasCensus {
++  /** Actual apparent object bytes, including incomplete creates; not reclaimable space. */
++  readonly complete:true;readonly cacheBytes:number;readonly objectCount:number;readonly freeBytes:number;
++}
++export interface MacIsolatedContentStore extends LocalContentStore {
++  /** Fresh root-authenticated observation; failure has no cached/zero fallback. */
++  census(signal:AbortSignal):Promise<Readonly<MacCasCensus>>;
++}
+ const stores=new WeakSet<LocalContentStore>();
+-let children=0;
++// There is one fixed native endpoint. Reconstructing a factory must not create
++// a second client lane or clear occupancy after a logical deadline.
++let installed:{key:string;store:MacIsolatedContentStore}|undefined;
+ export function assertMacIsolatedStore(store:LocalContentStore):void {
+   check(stores.has(store),'concrete-mac-isolated-store-required');
+ }
+@@ -42,38 +53,79 @@
+ /** Immutable object operations, not a writable-tree callback. Construction never
+  * starts the privileged service. Client has no filesystem path or command input.
+  * The service's root-owned namespace and exact peer UID enforce the boundary. */
+-export function createMacIsolatedContentStore(config:MacIsolatedStoreConfig):LocalContentStore {
++export function createMacIsolatedContentStore(config:MacIsolatedStoreConfig):MacIsolatedContentStore {
+   const python=Object.freeze({...config.python}),helper=Object.freeze({...config.helper});
+   check(python.path==='/Library/Foundry/bin/cas-python'&&helper.path==='/Library/Foundry/bin/mac-cas.py'&&
+     [python.sha256,helper.sha256].every(x=>/^[a-f0-9]{64}$/.test(x)),'cas-installed-pins-required');
++  const key=canonical({python,helper});
++  if(installed){check(installed.key===key,'cas-installed-pins-changed');return installed.store;}
+   let busy=false;
++  const waiting:Array<()=>void>=[];
++  function acquire(signal:AbortSignal):Promise<()=>void> {
++    alive(signal);check(waiting.length<4,'cas-client-queue-full');
++    return new Promise<()=>void>((resolve,reject)=>{
++      const abort=()=>{const i=waiting.indexOf(enter);if(i>=0)waiting.splice(i,1);reject(new Error('build-storage: cas-aborted'));};
++      const enter=()=>{
++        signal.removeEventListener('abort',abort);busy=true;
++        resolve(()=>{busy=false;waiting.shift()?.();});
++      };
++      if(!busy)enter();
++      else{waiting.push(enter);signal.addEventListener('abort',abort,{once:true});}
++    });
++  }
+   async function exchange(request:object,signal:AbortSignal):Promise<Record<string,unknown>> {
+-    alive(signal);check(!busy&&children<4,'cas-client-occupied');busy=true;children++;
+-    let spawned=false;
+-    try{
+-      await pinned(python.path,python.sha256,true,signal);await pinned(helper.path,helper.sha256,false,signal);alive(signal);
+-      const raw=Buffer.from(JSON.stringify(request));check(raw.length<=1450000,'cas-request-bound');
+-      return await new Promise<Record<string,unknown>>((resolve,reject)=>{
+-        const child=spawn(python.path,['-I','-S',helper.path,'client'],{shell:false,env:{LANG:'C',LC_ALL:'C'},stdio:['pipe','pipe','pipe']});
+-        spawned=true;let done=false,total=0;const chunks:Buffer[]=[];
+-        const fail=(code:string)=>{if(!done){done=true;reject(new Error(`build-storage: ${code}`));}child.kill('SIGKILL');};
+-        const abort=()=>fail('cas-aborted');const timer=setTimeout(()=>fail('cas-deadline'),20000);
+-        signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();
+-        child.on('error',()=>fail('cas-client-start'));
+-        child.stdin.on('error',()=>fail('cas-client-input'));
+-        child.stdout.on('data',(b:Buffer)=>{total+=b.length;if(total>1450000)fail('cas-response-bound');else chunks.push(b);});
+-        child.stderr.on('data',()=>{}); // Never echo privileged paths, bytes or errors.
+-        child.on('close',(code)=>{
+-          clearTimeout(timer);signal.removeEventListener('abort',abort);busy=false;children--;
+-          if(done)return;done=true;
+-          try{alive(signal);check(code===0,'cas-client-failed');const value=JSON.parse(Buffer.concat(chunks).toString('utf8'));check(value&&value.version===1&&value.ok===true,'cas-service-refused');resolve(value);}
+-          catch(e){reject(e);}
++    alive(signal);
++    // The deadline includes queueing and pin reads. Logical timeout may return
++    // first, but physical work holds the single lane until pin IO/child close.
++    const lifetime=new AbortController(),abort=()=>lifetime.abort();
++    signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();
++    const timer=setTimeout(abort,20000);
++    let rejectAbort:()=>void=()=>{};
++    const aborted=new Promise<never>((_,reject)=>{
++      rejectAbort=()=>reject(new Error('build-storage: cas-aborted-or-deadline'));
++      lifetime.signal.addEventListener('abort',rejectAbort,{once:true});if(lifetime.signal.aborted)rejectAbort();
++    });
++    const perform=async()=>{
++      const release=await acquire(lifetime.signal);
++      try{
++        await pinned(python.path,python.sha256,true,lifetime.signal);await pinned(helper.path,helper.sha256,false,lifetime.signal);alive(lifetime.signal);
++        const raw=Buffer.from(JSON.stringify(request));check(raw.length<=1450000,'cas-request-bound');
++        return await new Promise<Record<string,unknown>>((resolve,reject)=>{
++          const child=spawn(python.path,['-I','-S',helper.path,'client'],{shell:false,env:{LANG:'C',LC_ALL:'C'},stdio:['pipe','pipe','pipe']});
++          let failure:Error|undefined,total=0;const chunks:Buffer[]=[];
++          const fail=(code:string)=>{if(!failure){failure=new Error(`build-storage: ${code}`);child.kill('SIGKILL');}};
++          const stop=()=>fail('cas-aborted');
++          lifetime.signal.addEventListener('abort',stop,{once:true});if(lifetime.signal.aborted)stop();
++          child.on('error',()=>fail('cas-client-start'));
++          child.stdin.on('error',()=>fail('cas-client-input'));
++          child.stdout.on('data',(b:Buffer)=>{total+=b.length;if(total>1450000)fail('cas-response-bound');else if(!failure)chunks.push(b);});
++          child.stderr.on('data',()=>{}); // Never echo privileged paths, bytes or errors.
++          child.on('close',(code)=>{
++            lifetime.signal.removeEventListener('abort',stop);
++            if(failure){reject(failure);return;}
++            try{alive(lifetime.signal);check(code===0,'cas-client-failed');const value=JSON.parse(Buffer.concat(chunks).toString('utf8'));check(value&&value.version===1&&value.ok===true,'cas-service-refused');resolve(value);}
++            catch(e){reject(e);}
++          });
++          child.stdin.end(raw);
+         });
+-        child.stdin.end(raw);
+-      });
+-    }finally{if(!spawned){busy=false;children--;}}
++      }finally{release();}
++    };
++    try{return await Promise.race([perform(),aborted]);}
++    finally{clearTimeout(timer);signal.removeEventListener('abort',abort);lifetime.signal.removeEventListener('abort',rejectAbort);}
+   }
+-  const store:LocalContentStore=Object.freeze({layout:'sharded-v2' as const,
++  const store:MacIsolatedContentStore=Object.freeze({layout:'sharded-v2' as const,
++    async census(signal:AbortSignal):Promise<Readonly<MacCasCensus>> {
++      const nonce=randomBytes(16).toString('hex'),started=performance.now();
++      const r=await exchange({version:1,op:'census',nonce},signal);alive(signal);
++      check(performance.now()-started<20000&&Object.keys(r).sort().join(',')===
++        'cacheBytes,complete,freeBytes,helperSha256,nonce,objectCount,ok,pythonSha256,root,version'&&
++        r.nonce===nonce&&r.root==='/Library/Foundry/CAS/objects'&&r.complete===true&&
++        r.pythonSha256===python.sha256&&r.helperSha256===helper.sha256,'cas-census-receipt');
++      for(const [value,max] of [[r.cacheBytes,20*1024**3],[r.objectCount,200000],[r.freeBytes,Number.MAX_SAFE_INTEGER]])
++        check(typeof value==='number'&&Number.isSafeInteger(value)&&value>=0&&value<=Number(max),'cas-census-count');
++      check(Number(r.cacheBytes)<=Number(r.objectCount)*1048576,'cas-census-size');
++      return Object.freeze({complete:true as const,cacheBytes:r.cacheBytes as number,objectCount:r.objectCount as number,freeBytes:r.freeBytes as number});
++    },
+     async put(input:Uint8Array,signal:AbortSignal){
+       const bytes=boundedBytes(input,1048576);check(bytes.length>0,'cas-empty-object');
+       const ref=shardedLocalRef(sha256(bytes),bytes.length);
+@@ -86,5 +138,5 @@
+       check(canonical(r.ref)===canonical(ref)&&typeof r.data==='string'&&Object.keys(r).sort().join(',')==='data,ok,ref,version','cas-read-receipt');
+       const bytes=Buffer.from(r.data,'base64');check(bytes.toString('base64')===r.data&&bytes.length===ref.sizeBytes&&sha256(bytes)===ref.sha256,'cas-read-integrity');return new Uint8Array(bytes);
+     }});
+-  stores.add(store);return store;
++  stores.add(store);installed={key,store};return store;
+ }
+--- a/packages/build-storage/src/project-input-io.ts
++++ b/packages/build-storage/src/project-input-io.ts
+@@ -83,7 +83,7 @@
+     async write(bytes:Uint8Array,kind:'objects'|'manifests'):Promise<{claim:ArtifactClaim;local:LocalRef}> {
+       const {route,receipt}=await routing.admit({operation:'publish',kind,sha256:sha256(bytes),sizeBytes:bytes.length,ref:null});
+       const local=await putProjectLocal(bytes,ports.local,signal); await current(route,receipt,signal);
+-      const claim=await publish(bytes,kind,route.scope,receipt,{...route,local:ports.local,seal:ports.seal},signal);
++      const claim=await publish(bytes,kind,route.scope,receipt,route,signal);
+       return {claim,local};
+     },
+     finish:routing.finish,
+--- a/tools/foundry-pilot/build-submission.ts
++++ b/tools/foundry-pilot/build-submission.ts
+@@ -7,7 +7,25 @@
+ interface State {version:1;binding:string;intents:Intent[]}
+ const sha=(x:unknown)=>createHash('sha256').update(canonical(x)).digest('hex');
+ function binding(c:Readonly<OperatorConfig>,credentials:ReturnType<typeof captureOperatorCredentials>){return sha({domain:'build-operator/v1',operator:operatorBinding(c,credentials),enabled:c.buildActionsEnabled===true,profiles:c.allowedBuildProfileHashes??[]});}
+-function validate(state:State|null,b:string):State {if(state===null)return {version:1,binding:b,intents:[]};exact(state,['version','binding','intents']);need(state.version===1&&state.binding===b&&Array.isArray(state.intents)&&state.intents.length<=64,'build-journal-binding',409);const ids=new Set();for(const i of state.intents){exact(i,['requestId','jobId','epoch','selection','body','key','phase','aliases']);id(i.requestId);id(i.jobId);digest(i.selection);digest(i.key);need(!ids.has(i.requestId)&&['pending','submitted','acknowledged'].includes(i.phase),'build-journal-corrupt',409);ids.add(i.requestId);need(Array.isArray(i.aliases)&&i.aliases.length>0&&i.aliases.length<=64&&i.aliases[0]===i.requestId&&new Set(i.aliases).size===i.aliases.length,'build-journal-aliases',409);for(const a of i.aliases){id(a);if(a!==i.requestId){need(!ids.has(a),'build-journal-alias-conflict',409);ids.add(a);}}need(Number.isSafeInteger(i.epoch)&&i.epoch>0&&i.body?.id===i.jobId&&i.body.maxAttempts===1&&i.selection===sha({projectId:i.body.projectId,inputHash:i.body.inputHash,profileHash:i.body.profileHash}),'build-journal-corrupt',409);need(i.key===sha({binding:b,requestId:i.requestId,jobId:i.jobId,epoch:i.epoch,body:i.body}),'build-journal-key-binding',409);}return state;}
++function selectionOf(body:Intent['body']){return {projectId:body.projectId,inputHash:body.inputHash,profileHash:body.profileHash};}
++function receipt(intent:Intent,replayed:boolean){return {ok:true,jobId:intent.jobId,requestId:intent.requestId,replayed,ackRequired:intent.phase!=='acknowledged'};}
++function allowed(c:Readonly<OperatorConfig>,intent:Intent,epoch:number){
++ need(c.buildActionsEnabled===true&&c.allowedBuildProfileHashes?.includes(intent.body.profileHash),'build-actions-gated',403);
++ need(intent.epoch===epoch,'build-pending-epoch-changed',409);
++}
++/** Only the recorded pending command can be retried. Authority deduplication uses
++ * its original key/body/epoch; this path never claims or requeues an attempt. */
++async function dispatchPending(c:Readonly<OperatorConfig>,transport:AuthorityTransport,intent:Intent,credentials:ReturnType<typeof captureOperatorCredentials>,signal?:AbortSignal){
++ assertOperatorCredentials(c,credentials);
++ if(intent.phase!=='pending')return false;
++ let reply:any;
++ try{reply=await transport.request(c.ownerCredentialReference,'/v1/builds/commands',{expectedEpoch:intent.epoch,command:{operation:'submit',key:intent.key,body:intent.body}},65536,false,signal,credentials.owner);}
++ catch{throw new PilotError('build-submit-uncertain-recover-same-selection',503);}
++ assertOperatorCredentials(c,credentials);need(reply?.ok===true,'build-submit-rejected',409);
++ need(reply.source?.environment===c.environment&&reply.source.authorityId===c.authorityId&&reply.source.epoch===intent.epoch,'build-submit-authority-binding',409);
++ intent.phase='submitted';return true;
++}
++function validate(state:State|null,b:string):State {if(state===null)return {version:1,binding:b,intents:[]};exact(state,['version','binding','intents']);need(state.version===1&&state.binding===b&&Array.isArray(state.intents)&&state.intents.length<=64,'build-journal-binding',409);const ids=new Set();for(const i of state.intents){exact(i,['requestId','jobId','epoch','selection','body','key','phase','aliases']);id(i.requestId);id(i.jobId);exact(i.body,['id','projectId','inputHash','profileHash','maxAttempts']);id(i.body.projectId);digest(i.body.inputHash);digest(i.body.profileHash);digest(i.selection);digest(i.key);need(!ids.has(i.requestId)&&['pending','submitted','acknowledged'].includes(i.phase),'build-journal-corrupt',409);ids.add(i.requestId);need(Array.isArray(i.aliases)&&i.aliases.length>0&&i.aliases.length<=64&&i.aliases[0]===i.requestId&&new Set(i.aliases).size===i.aliases.length,'build-journal-aliases',409);for(const a of i.aliases){id(a);if(a!==i.requestId){need(!ids.has(a),'build-journal-alias-conflict',409);ids.add(a);}}need(Number.isSafeInteger(i.epoch)&&i.epoch>0&&i.body?.id===i.jobId&&i.body.maxAttempts===1&&i.selection===sha({projectId:i.body.projectId,inputHash:i.body.inputHash,profileHash:i.body.profileHash}),'build-journal-corrupt',409);need(i.key===sha({binding:b,requestId:i.requestId,jobId:i.jobId,epoch:i.epoch,body:i.body}),'build-journal-key-binding',409);}return state;}
+ /** Durable pending intent precedes dispatch. A lost response/reloaded page recovers
+  * the unacknowledged selection rather than creating a second job. */
+ export async function submitBuild(c:Readonly<OperatorConfig>,transport:AuthorityTransport,input:unknown,signal?:AbortSignal){
+@@ -21,11 +39,44 @@
+   if(!intent){need(state.intents.length<64,'build-intent-capacity',507);const body={id:input.jobId,projectId:input.projectId,inputHash:input.inputHash,profileHash:input.profileHash,maxAttempts:1};intent={requestId:input.requestId,jobId:input.jobId,epoch,selection,body,key:sha({binding:b,requestId:input.requestId,jobId:input.jobId,epoch,body}),phase:'pending',aliases:[input.requestId]};state.intents.push(intent);await journal.save(state);}
+   need(intent.epoch===epoch,'build-pending-epoch-changed',409);
+   if(!intent.aliases.includes(input.requestId)){need(intent.aliases.length<64,'build-recovery-alias-capacity',507);intent.aliases.push(input.requestId);await journal.save(state);}
+-  if(intent.phase==='pending'){
+-   let reply:any;try{reply=await transport.request(c.ownerCredentialReference,'/v1/builds/commands',{expectedEpoch:intent.epoch,command:{operation:'submit',key:intent.key,body:intent.body}},65536,false,signal,credentials.owner);}catch{throw new PilotError('build-submit-uncertain-recover-same-selection',503);}
+-   assertOperatorCredentials(c,credentials);need(reply?.ok===true,'build-submit-rejected',409);intent.phase='submitted';await journal.save(state);
+-  }
+-  return {ok:true,jobId:intent.jobId,requestId:intent.requestId,replayed,ackRequired:intent.phase!=='acknowledged'};
++  if(await dispatchPending(c,transport,intent,credentials,signal))await journal.save(state);
++  assertOperatorCredentials(c,credentials);return receipt(intent,replayed);
+  });
+ }
+-export async function acknowledgeBuild(c:Readonly<OperatorConfig>,input:unknown){exact(input,['requestId','jobId']);id(input.requestId);id(input.jobId);const credentials=captureOperatorCredentials(c),b=binding(c,credentials);return withPrivateState<State,unknown>(c.stateRoot,'build-submissions',async journal=>{const state=validate(await journal.load(),b);assertOperatorCredentials(c,credentials);const i=state.intents.find(i=>i.requestId===input.requestId&&i.jobId===input.jobId);need(i&&i.phase!=='pending','build-ack-not-submitted',409);if(i.phase!=='acknowledged'){i.phase='acknowledged';await journal.save(state);}return {ok:true,jobId:i.jobId};});}
++/** A complete, bounded local intent window, independent of feed/placement.
++ * Private command keys, aliases and credential bindings never leave the host. */
++export async function listBuildIntents(c:Readonly<OperatorConfig>,transport:AuthorityTransport,signal?:AbortSignal){
++ need(c.buildActionsEnabled===true,'build-actions-gated',403);
++ const credentials=captureOperatorCredentials(c),b=binding(c,credentials),{epoch}=await transport.status(c.ownerCredentialReference,signal,credentials.owner);
++ return withPrivateState<State,unknown>(c.stateRoot,'build-submissions',async journal=>{
++  const state=validate(await journal.load(),b);assertOperatorCredentials(c,credentials);
++  return {ok:true,epoch,limit:64,intents:[...state.intents].reverse().map(i=>({requestId:i.requestId,jobId:i.jobId,...selectionOf(i.body),epoch:i.epoch,phase:i.phase,
++   blockedReason:i.epoch!==epoch?'build-pending-epoch-changed':!c.allowedBuildProfileHashes?.includes(i.body.profileHash)?'build-actions-gated':null}))};
++ });
++}
++/** Missing IDs or a changed selection fail closed; there is deliberately no
++ * submitBuild fallback, new intent, alias allocation or repeat option here. */
++export async function recoverBuild(c:Readonly<OperatorConfig>,transport:AuthorityTransport,input:unknown,signal?:AbortSignal){
++ exact(input,['requestId','jobId','projectId','inputHash','profileHash']);id(input.requestId);id(input.jobId);id(input.projectId);digest(input.inputHash);digest(input.profileHash);
++ need(c.buildActionsEnabled===true&&c.allowedBuildProfileHashes?.includes(input.profileHash),'build-actions-gated',403);
++ const credentials=captureOperatorCredentials(c),b=binding(c,credentials),{epoch}=await transport.status(c.ownerCredentialReference,signal,credentials.owner);
++ return withPrivateState<State,unknown>(c.stateRoot,'build-submissions',async journal=>{
++  const state=validate(await journal.load(),b);assertOperatorCredentials(c,credentials);
++  const intent=state.intents.find(i=>i.requestId===input.requestId&&i.jobId===input.jobId);
++  need(intent,'build-recovery-not-found',404);
++  need(intent.selection===sha({projectId:input.projectId,inputHash:input.inputHash,profileHash:input.profileHash}),'build-recovery-selection-conflict',409);
++  allowed(c,intent,epoch);
++  if(await dispatchPending(c,transport,intent,credentials,signal))await journal.save(state);
++  assertOperatorCredentials(c,credentials);return receipt(intent,true);
++ });
++}
++export async function acknowledgeBuild(c:Readonly<OperatorConfig>,transport:AuthorityTransport,input:unknown,signal?:AbortSignal){
++ exact(input,['requestId','jobId']);id(input.requestId);id(input.jobId);
++ const credentials=captureOperatorCredentials(c),b=binding(c,credentials),{epoch}=await transport.status(c.ownerCredentialReference,signal,credentials.owner);
++ return withPrivateState<State,unknown>(c.stateRoot,'build-submissions',async journal=>{
++  const state=validate(await journal.load(),b);assertOperatorCredentials(c,credentials);
++  const i=state.intents.find(i=>i.requestId===input.requestId&&i.jobId===input.jobId);need(i&&i.phase!=='pending','build-ack-not-submitted',409);allowed(c,i,epoch);
++  if(i.phase!=='acknowledged'){i.phase='acknowledged';await journal.save(state);}
++  assertOperatorCredentials(c,credentials);return {ok:true,jobId:i.jobId};
++ });
++}
+--- a/tools/foundry-pilot/operator-server.ts
++++ b/tools/foundry-pilot/operator-server.ts
+@@ -1,4 +1,4 @@
+-import {submitBuild,acknowledgeBuild} from './build-submission';
++import {submitBuild,acknowledgeBuild,listBuildIntents,recoverBuild} from './build-submission';
+ import {createServer,type IncomingMessage,type ServerResponse} from 'node:http';
+ import {readFile} from 'node:fs/promises';
+ import {fileURLToPath,pathToFileURL} from 'node:url';
+@@ -79,7 +79,18 @@
+      const reply=await transport.request(config.ownerCredentialReference,'/v1/builds/commands',{expectedEpoch:epoch,command},65536,false,abort.signal);
+      need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);json(res,reply);return;
+     }
+-    if(req.method==='POST'&&url.pathname==='/api/builds/ack'){const input=await body(req,1024);const reply=await acknowledgeBuild(config,input);need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);json(res,reply);return;}
++    // Existing-intent recovery does not read placement or allocate a fresh job.
++    // Shared session/Origin/Sec-Fetch-Site checks above protect these routes too.
++    if(req.method==='GET'&&url.pathname==='/api/builds/intents'){
++     const reply=await listBuildIntents(config,transport,abort.signal);
++     need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);json(res,reply);return;
++    }
++    if(req.method==='POST'&&url.pathname==='/api/builds/recover'){
++     const input=await body(req,1024);need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);
++     const reply=await recoverBuild(config,transport,input,abort.signal);
++     need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);json(res,reply);return;
++    }
++    if(req.method==='POST'&&url.pathname==='/api/builds/ack'){const input=await body(req,1024);need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);const reply=await acknowledgeBuild(config,transport,input,abort.signal);need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);json(res,reply);return;}
+     if(req.method==='POST'&&url.pathname==='/api/builds/result-log'){const input=await body(req,1024);exact(input,['jobId','logIndex']);id(input.jobId);uint(input.logIndex,0,63);const {epoch}=await transport.status(config.ownerCredentialReference,abort.signal);const bytes=await transport.request(config.ownerCredentialReference,'/v1/builds/result-log',{expectedEpoch:epoch,...input},1048576,true,abort.signal) as Uint8Array;need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);res.writeHead(200,{...security,'content-type':'application/octet-stream','content-length':bytes.length});res.end(bytes);return;}
+     if(req.method==='POST'&&url.pathname==='/api/builds/result-chunk'){const input=await body(req,1024);exact(input,['jobId','outputIndex','chunkIndex']);id(input.jobId);uint(input.outputIndex,0,63);uint(input.chunkIndex,0,127);const {epoch}=await transport.status(config.ownerCredentialReference,abort.signal);const bytes=await transport.request(config.ownerCredentialReference,'/v1/builds/result-chunk',{expectedEpoch:epoch,...input},1048576,true,abort.signal) as Uint8Array;need(sessions.authenticated(req.headers.cookie),'operator-login-required',401);res.writeHead(200,{...security,'content-type':'application/octet-stream','content-length':bytes.length});res.end(bytes);return;}
+     if(req.method==='POST'&&url.pathname==='/api/builds/result'){
+--- a/tools/foundry-pilot/operator/builds.js
++++ b/tools/foundry-pilot/operator/builds.js
+@@ -1,20 +1,81 @@
+ 'use strict';
+ (() => {
+- const $=id=>document.getElementById(id);let view=null,preview=null,pending=null,busy=false,generation=0,ready=false,placementRevision=0;const downloads=new Set();
++ const $=id=>document.getElementById(id);let view=null,preview=null,pending=null,busy=false,generation=0,ready=false,placementRevision=0,recoveryBusy=false,submissionBusy=false,sessionSeen=false;const downloads=new Set();
+  const set=(id,text)=>{$(id).textContent=text;};
+- async function api(path,body){const epoch=generation;const r=await fetch('/api/builds/'+path,{method:body?'POST':'GET',credentials:'same-origin',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});const value=await r.json();if(epoch!==generation)throw Error('operator-session-changed');if(!r.ok)throw Error(value.code||'build-source-unavailable');return value;}
++ async function api(path,body){const epoch=generation;const r=await fetch('/api/builds/'+path,{method:body?'POST':'GET',credentials:'same-origin',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});const value=await r.json();if(epoch!==generation)throw Error('operator-session-changed');if(!r.ok){if(r.status===401){ready=false;clearProtected();}throw Error(value.code||'build-source-unavailable');}return value;}
+  function option(select,value,label){const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o);}
+  function resetPreview(){placementRevision++;preview=null;$('build-submit').disabled=true;set('build-placement','Review placement for this exact project, input and recipe.');}
+  function fill(savedInput=$('build-input').value,savedProfile=$('build-profile').value){const project=$('build-project').value;$('build-input').replaceChildren();$('build-profile').replaceChildren();for(const i of view.inputs.filter(i=>i.project===project))option($('build-input'),i.hash,`${i.hash.slice(0,12)} · ${i.body.reconstructable?'approved reconstructable':'missing/unproven inputs'}`);for(const p of view.profiles.filter(p=>p.project===project))option($('build-profile'),p.hash,`${p.body.kind} · ${p.hash.slice(0,12)}`);if([...$('build-input').options].some(o=>o.value===savedInput))$('build-input').value=savedInput;if([...$('build-profile').options].some(o=>o.value===savedProfile))$('build-profile').value=savedProfile;$('build-preview').disabled=!$('build-input').value||!$('build-profile').value;resetPreview();}
+  function list(id,items,render){const root=$(id);root.replaceChildren();if(!items.length){root.textContent='No records in this bounded authority window.';return;}for(const item of items){const p=document.createElement('p');p.textContent=render(item);root.append(p);}}
+- function clearProtected(){$('build-repeat').checked=false;generation++;placementRevision++;for(const a of downloads)a.abort();downloads.clear();view=null;preview=null;pending=null;for(const id of ['build-project','build-input','build-profile','build-placement','build-workers','build-jobs','build-attempts','build-events','build-result','build-capacity','build-window-status'])$(id).replaceChildren();$('build-preview').disabled=true;$('build-submit').disabled=true;set('build-status','Operator access unavailable. Protected build data cleared; durable submission intent remains on the host.');}
+- window.addEventListener('foundry-operator-session',e=>{ready=e.detail?.state==='ready';if(!ready)clearProtected();else void refresh();});
++ function clearView(){placementRevision++;view=null;preview=null;for(const id of ['build-project','build-input','build-profile','build-placement','build-workers','build-jobs','build-attempts','build-events','build-result','build-capacity','build-window-status'])$(id).replaceChildren();$('build-preview').disabled=true;$('build-submit').disabled=true;}
++ function clearProtected(){$('build-repeat').checked=false;generation++;for(const a of downloads)a.abort();downloads.clear();clearView();pending=null;$('build-intents').replaceChildren();$('build-intents-refresh').disabled=true;$('build-retry-pending').disabled=true;set('build-recovery-status','Sign in to read durable submissions.');set('build-status','Operator access unavailable. Protected build data cleared; durable submission intent remains on the host.');}
++ const sameSelection=(a,b)=>a.projectId===b.projectId&&a.inputHash===b.inputHash&&a.profileHash===b.profileHash;
++ function recoveryControls(){const disabled=!ready||recoveryBusy||submissionBusy;$('build-intents-refresh').disabled=disabled;$('build-retry-pending').disabled=disabled||!pending;for(const b of $('build-intents').querySelectorAll('button'))b.disabled=disabled||b.dataset.blocked==='true';}
++ function renderIntents(intents){
++  const root=$('build-intents');root.replaceChildren();
++  if(!intents.length){root.textContent='No durable submission intents recorded on this operator host. Recovery cannot create one.';return;}
++  for(const intent of intents){
++   const row=document.createElement('p');row.textContent=`${intent.jobId} · request ${intent.requestId} · ${intent.projectId} · input ${intent.inputHash} · recipe ${intent.profileHash} · epoch ${intent.epoch} · ${intent.phase}${intent.blockedReason?' · blocked: '+intent.blockedReason:''} `;
++   const action=intent.phase==='submitted'?'ack':'recover',button=document.createElement('button');button.type='button';button.textContent=intent.phase==='acknowledged'?'Read acknowledged receipt':action==='recover'?'Recover existing submission':'Acknowledge submission receipt';button.dataset.blocked=String(!!intent.blockedReason);button.disabled=!!intent.blockedReason;
++   button.onclick=()=>void actOnIntent(intent,action);row.append(button);
++   root.append(row);
++  }
++ }
++ async function refreshIntents(message=''){
++  if(!ready||recoveryBusy||submissionBusy)return;const epoch=generation;recoveryBusy=true;recoveryControls();
++  try{const result=await api('intents');renderIntents(result.intents);set('build-recovery-status',`${message?message+' ':''}${result.intents.length}/${result.limit} durable intents. Recovery and acknowledgement use stored identity; worker eligibility is not required.`);}
++  catch(e){if(epoch===generation){$('build-intents').replaceChildren();set('build-recovery-status',`${message?message+' ':''}Recovery unavailable: ${e.message}. Existing intents remain on the host.`);}}
++  finally{recoveryBusy=false;recoveryControls();}
++ }
++ async function actOnIntent(intent,action){
++  if(!ready||recoveryBusy||submissionBusy||intent.blockedReason)return;const epoch=generation;let message='';recoveryBusy=true;resetPreview();recoveryControls();
++  try{
++   const identity={requestId:intent.requestId,jobId:intent.jobId};
++   const result=await api(action,action==='recover'?{...identity,projectId:intent.projectId,inputHash:intent.inputHash,profileHash:intent.profileHash}:identity);
++   if(result.jobId!==intent.jobId||(action==='recover'&&result.requestId!==intent.requestId))throw Error('build-recovery-receipt-conflict');
++   const acknowledged=action==='ack'||!result.ackRequired;
++   if(acknowledged&&pending&&sameSelection(pending,intent)){pending=null;$('build-repeat').checked=false;}
++   // Replace the stale action immediately, even if the next read fails.
++   $('build-intents').replaceChildren();message=acknowledged?`Submission ${intent.jobId} acknowledged. This is not a build-success receipt.`:`Recovered submission ${intent.jobId}. Read its stored identity below, then acknowledge the submission receipt.`;
++  }catch(e){message=`Recovery/acknowledgement uncertain or rejected: ${e.message}. Retry uses this same stored identity.`;}
++  finally{recoveryBusy=false;recoveryControls();}
++  if(epoch===generation&&ready){set('build-recovery-status',message);await refreshIntents(message);}
++ }
++ window.addEventListener('foundry-operator-session',e=>{sessionSeen=true;ready=e.detail?.state==='ready';if(!ready)clearProtected();else void refresh();});
+  setInterval(()=>{if(ready&&!busy)void refresh();},15000);
+- async function refresh(){if(busy)return;busy=true;try{view=await api('view');set('build-status',`Authority observed ${new Date(view.observedAt).toLocaleString()}. ${view.actionsEnabled?'Build actions explicitly enabled.':'Build actions gated.'} Candidate validation remains pending.`);set('build-window-status',Object.entries(view.windows||{}).map(([name,w])=>`${name}: ${w.returned}/${w.total}${w.truncated?' (truncated)':''}`).join(' · '));const chosen=$('build-project').value;$('build-project').replaceChildren();for(const p of [...new Set(view.profiles.map(p=>p.project))])option($('build-project'),p,p);if([...$('build-project').options].some(o=>o.value===chosen))$('build-project').value=chosen;fill();list('build-workers',view.workers,w=>`${w.worker}: ${w.body.os} ${w.body.architecture}; host Xcode build IDs ${w.body.xcodeBuilds.join(', ')||'none'}; ${w.body.vm?`guest macOS ${w.body.vm.macos}, Xcode ${w.body.vm.xcodeBuild}, SDKs ${w.body.vm.sdks.join(', ')}, image ${w.body.vm.bootSha256.slice(0,12)} (owner activation checked in placement)`:'guest capability unavailable'}; census received ${new Date(w.observed_ms).toLocaleString()}; active jobs ${w.body.activeJobs}`);list('build-capacity',view.workers,w=>`${w.worker}: ${(w.body.freeBytes/1024**3).toFixed(1)} GiB reported free; managed cache ${w.body.storage?.cacheBytes===null||w.body.storage?.cacheBytes===undefined?'unknown':(w.body.storage.cacheBytes/1024**3).toFixed(1)+' GiB'}; workspaces ${w.body.storage?.workspaceBytes===null||w.body.storage?.workspaceBytes===undefined?'unknown':(w.body.storage.workspaceBytes/1024**3).toFixed(1)+' GiB'}; inventory ${w.body.storage?.complete?'complete':'incomplete'}. Cleanup not approved.`);
++ async function refresh(){if(!ready||busy||submissionBusy)return;void refreshIntents();const epoch=generation;busy=true;try{view=await api('view');set('build-status',`Authority observed ${new Date(view.observedAt).toLocaleString()}. ${view.actionsEnabled?'Build actions explicitly enabled.':'Build actions gated.'} Candidate validation remains pending.`);set('build-window-status',Object.entries(view.windows||{}).map(([name,w])=>`${name}: ${w.returned}/${w.total}${w.truncated?' (truncated)':''}`).join(' · '));const chosen=$('build-project').value;$('build-project').replaceChildren();for(const p of [...new Set(view.profiles.map(p=>p.project))])option($('build-project'),p,p);if([...$('build-project').options].some(o=>o.value===chosen))$('build-project').value=chosen;fill();list('build-workers',view.workers,w=>`${w.worker}: ${w.body.os} ${w.body.architecture}; host Xcode build IDs ${w.body.xcodeBuilds.join(', ')||'none'}; ${w.body.vm?`guest macOS ${w.body.vm.macos}, Xcode ${w.body.vm.xcodeBuild}, SDKs ${w.body.vm.sdks.join(', ')}, image ${w.body.vm.bootSha256.slice(0,12)} (owner activation checked in placement)`:'guest capability unavailable'}; census received ${new Date(w.observed_ms).toLocaleString()}; active jobs ${w.body.activeJobs}`);list('build-capacity',view.workers,w=>`${w.worker}: ${(w.body.freeBytes/1024**3).toFixed(1)} GiB reported free; managed cache ${w.body.storage?.cacheBytes===null||w.body.storage?.cacheBytes===undefined?'unknown':(w.body.storage.cacheBytes/1024**3).toFixed(1)+' GiB'}; workspaces ${w.body.storage?.workspaceBytes===null||w.body.storage?.workspaceBytes===undefined?'unknown':(w.body.storage.workspaceBytes/1024**3).toFixed(1)+' GiB'}; inventory ${w.body.storage?.complete?'complete':'incomplete'}. Cleanup not approved.`);
+  list('build-events',view.events,e=>{const body=JSON.parse(e.body);return `${e.seq} · ${e.kind} · ${e.entity} · ${new Date(e.at_ms).toLocaleString()}${body.placement?' · '+JSON.stringify(body.placement):''}`;});list('build-attempts',view.attempts,a=>`${a.jobId} / ${a.id}: ${a.effectiveState} (recorded ${a.state}); worker ${a.workerId}; epoch ${a.epoch}, generation ${a.generation}, incarnation ${a.incarnation}; lease expiry ${new Date(a.expiresAt).toLocaleString()}; guest capability ${a.vmCapabilityHash?.slice(0,12)||'none'}; stop ${a.stopped?'confirmed':'unconfirmed'}, host slot ${a.slotHeld?'retained':'released'}`);const root=$('build-jobs');root.replaceChildren();for(const j of view.jobs){const p=document.createElement('p');p.textContent=`${j.id} · ${j.effectiveState||j.state} (recorded ${j.state}) · generation ${j.generation} · attempts ${j.attempts} `;if(j.state==='SUCCEEDED'){const b=document.createElement('button');b.textContent='Read verified artifact receipt';b.onclick=async()=>{try{const r=await api('result',{jobId:j.id});showResult(r);}catch(e){set('build-result',e.message);}};p.append(b);}if(view.actionsEnabled&&!['EXPIRED','FENCED'].includes(j.effectiveState)&&['QUEUED','RUNNING','VERIFYING'].includes(j.state)){const b=document.createElement('button');b.textContent='Cancel build';let requestId=null;b.onclick=async()=>{requestId??=crypto.randomUUID();try{await api('cancel',{jobId:j.id,requestId});await refresh();}catch(e){set('build-status',`Cancellation uncertain: ${e.message}; retry preserves its request ID.`);}};p.append(b);}root.append(p);}if(!view.jobs.length)root.textContent='No build jobs in this window.';
+- }catch(e){clearProtected();resetPreview();$('build-preview').disabled=true;set('build-status',`Unavailable: ${e.message}. No installation, execution, or connection is inferred.`);}finally{busy=false;}}
++ }catch(e){if(epoch===generation){clearView();set('build-status',`Authority view unavailable: ${e.message}. Durable submission recovery is read separately.`);}}finally{busy=false;}}
+  function showResult(r){const root=$('build-result');root.replaceChildren();const pre=document.createElement('pre');pre.textContent=JSON.stringify(r,null,2);root.append(pre);[...r.outputs,...r.logs.map((log,index)=>({path:'build-log-'+index+'.log',format:'file',sha256:log.sha256,bytes:log.bytes,chunks:1,logIndex:index}))].forEach((o,index)=>{const b=document.createElement('button');b.textContent='Download verified '+o.path;b.onclick=async()=>{const epoch=generation,abort=new AbortController();downloads.add(abort);b.disabled=true;try{const chunks=[];let size=0;for(let i=0;i<o.chunks;i++){if(epoch!==generation||abort.signal.aborted)throw Error('operator-session-changed');const response=await fetch(o.logIndex===undefined?'/api/builds/result-chunk':'/api/builds/result-log',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(o.logIndex===undefined?{jobId:r.jobId,outputIndex:index,chunkIndex:i}:{jobId:r.jobId,logIndex:o.logIndex}),signal:AbortSignal.any([abort.signal,AbortSignal.timeout(12000)])});if(epoch!==generation)throw Error('operator-session-changed');if(!response.ok)throw Error('artifact-read-unavailable');const bytes=new Uint8Array(await response.arrayBuffer());if(epoch!==generation||abort.signal.aborted)throw Error('operator-session-changed');size+=bytes.length;if(size>o.bytes||size>128*1024*1024)throw Error('artifact-size-limit');chunks.push(bytes);}if(size!==o.bytes)throw Error('artifact-size-mismatch');const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}const digest=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(x=>x.toString(16).padStart(2,'0')).join('');if(epoch!==generation)throw Error('operator-session-changed');if(digest!==o.sha256)throw Error('artifact-integrity-mismatch');const url=URL.createObjectURL(new Blob([bytes],{type:'application/octet-stream'}));const a=document.createElement('a');a.href=url;a.download=o.path.split('/').pop()+(o.format==='tar'?'.tar':'');a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){set('build-status',e.message);}finally{downloads.delete(abort);abort.abort();b.disabled=false;}};root.append(b);});}
+- $('build-refresh').onclick=refresh;$('build-project').onchange=()=>fill('','');$('build-input').onchange=resetPreview;$('build-profile').onchange=resetPreview;
+- $('build-preview').onclick=async()=>{const revision=placementRevision;try{const selection={profileHash:$('build-profile').value,inputHash:$('build-input').value};const r=await api('preview',selection);if(revision!==placementRevision||selection.profileHash!==$('build-profile').value||selection.inputHash!==$('build-input').value)return;preview=selection;list('build-placement',r.candidates,c=>`${c.workerId}: ${c.eligible?'eligible':'deferred'} · ${c.reasons.join(', ')}`);$('build-submit').disabled=!view?.actionsEnabled||!view.allowedProfiles.includes(selection.profileHash)||!r.candidates.some(c=>c.eligible);}catch(e){if(revision!==placementRevision)return;resetPreview();set('build-status',e.message);}};
+- $('build-submit').onclick=async()=>{if(!view?.actionsEnabled||!preview)return;const selection={projectId:$('build-project').value,profileHash:$('build-profile').value,inputHash:$('build-input').value};if(selection.profileHash!==preview.profileHash||selection.inputHash!==preview.inputHash)return;pending??={...selection,repeat:$('build-repeat').checked,jobId:'build-'+crypto.randomUUID(),requestId:crypto.randomUUID()};if(pending.profileHash!==selection.profileHash||pending.inputHash!==selection.inputHash){set('build-status','Resolve the pending submission before changing selection.');return;}try{$('build-submit').disabled=true;const receipt=await api('submit',pending);await api('ack',{requestId:receipt.requestId,jobId:receipt.jobId});pending=null;$('build-repeat').checked=false;await refresh();}catch(e){set('build-status',`Submission uncertain or rejected: ${e.message}. Retry retains exact job and request IDs; keep this page open.`);$('build-submit').disabled=!view?.actionsEnabled||!preview;}};
++ $('build-intents-refresh').onclick=()=>void refreshIntents();$('build-refresh').onclick=refresh;$('build-project').onchange=()=>fill('','');$('build-input').onchange=resetPreview;$('build-profile').onchange=resetPreview;
++ $('build-preview').onclick=async()=>{const revision=placementRevision;try{const selection={profileHash:$('build-profile').value,inputHash:$('build-input').value};const r=await api('preview',selection);if(revision!==placementRevision||selection.profileHash!==$('build-profile').value||selection.inputHash!==$('build-input').value)return;preview=selection;list('build-placement',r.candidates,c=>`${c.workerId}: ${c.eligible?'eligible':'deferred'} · ${c.reasons.join(', ')}`);$('build-submit').disabled=submissionBusy||!!pending||!view?.actionsEnabled||!view.allowedProfiles.includes(selection.profileHash)||!r.candidates.some(c=>c.eligible);}catch(e){if(revision!==placementRevision)return;resetPreview();set('build-status',e.message);}};
++ $('build-submit').onclick=async()=>{
++  if(!ready||submissionBusy||!view?.actionsEnabled||!preview)return;
++  if(recoveryBusy){set('build-status','Wait for the durable submission read or recovery to finish, then submit.');return;}
++  if(pending){set('build-status','Resolve the uncertain submission in Durable submission recovery before submitting again.');return;}
++  const selection={projectId:$('build-project').value,profileHash:$('build-profile').value,inputHash:$('build-input').value};
++  if(selection.profileHash!==preview.profileHash||selection.inputHash!==preview.inputHash)return;
++  pending={...selection,repeat:$('build-repeat').checked,jobId:'build-'+crypto.randomUUID(),requestId:crypto.randomUUID()};
++  await sendPending();
++ };
++ async function sendPending(){
++  if(!ready||submissionBusy||recoveryBusy||!pending)return;
++  const epoch=generation;submissionBusy=true;recoveryControls();
++  try{
++   $('build-submit').disabled=true;const receipt=await api('submit',pending);
++   await api('ack',{requestId:receipt.requestId,jobId:receipt.jobId});
++   pending=null;$('build-repeat').checked=false;set('build-status',`Submission ${receipt.jobId} acknowledged. Build completion remains a separate authority observation.`);
++  }catch(e){if(epoch===generation)set('build-status',`Submission uncertain or rejected: ${e.message}. Retry this page’s original submission, or recover an existing journaled intent below. Both preserve identity.`);}
++  finally{submissionBusy=false;recoveryControls();if(epoch===generation){resetPreview();void refreshIntents();}}
++ }
++ $('build-retry-pending').onclick=()=>void sendPending();
++ // operator.js may have announced the initial session before this deferred
++ // script loaded. Read it once; a newer session event always wins.
++ void (async()=>{
++  try{
++   const response=await fetch('/api/operator/session',{credentials:'same-origin',signal:AbortSignal.timeout(12000)}),session=await response.json();
++   if(sessionSeen)return;ready=response.ok&&session.state==='ready';
++   if(ready)void refresh();else clearProtected();
++  }catch{if(!sessionSeen)clearProtected();}
++ })();
+ })();
+--- a/tools/foundry-pilot/operator/index.html
++++ b/tools/foundry-pilot/operator/index.html
+@@ -27,7 +27,16 @@
+       <section id="fleet" class="panel" aria-labelledby="fleet-title"><div class="section-head"><h2 id="fleet-title">Workers</h2><span class="kicker">Capacity ≠ liveness</span></div><p class="muted">General and edge are source classes. VPS / Mac host-role mapping and Pi identity are unavailable in this DTO; no hostname or OS inference. Edge execution exclusion and reported CPU capacity appear per worker.</p><div id="workers">Source unavailable.</div></section>
+       <section class="panel submit-panel" aria-labelledby="submit-title"><p class="eyebrow">Single immutable workload</p><h2 id="submit-title">Submit pilot</h2><p>epoch-event-summary-v1</p><p class="muted">Input is configured on the host. No template input, URL, authority credential or runtime selection.</p><p id="input-provenance" class="notice">Synthetic-only pilot input. No actual chain observation is claimed; the validated source pin will appear here.</p><p id="submit-gate">Submission disabled: source unavailable.</p><form id="submit-form"><label for="workload-id">Approved workload ID</label><input id="workload-id" type="text" maxlength="64" pattern="[A-Za-z0-9._\-]{1,64}" autocomplete="off" spellcheck="false" required list="workload-options" aria-describedby="workload-help"><datalist id="workload-options"></datalist><p id="workload-help" class="muted">Choose a host-approved workload ID when the list is available. If the bridge omits the optional list, enter an owner-approved ID; nothing is prefilled or inferred.</p><button id="submit" type="submit" disabled>Submit configured pilot</button></form><div id="intent"></div><p id="submit-status" role="status" aria-live="polite">No submission attempted in this page.</p><p class="muted">An uncertain retry keeps the exact request and workload IDs. Keep this page open until resolved; there is no browser persistence.</p></section>
+     </div>
+-    <section id="builds" class="panel" aria-labelledby="build-title"><div class="section-head"><h2 id="build-title">Cloud workspaces &amp; Mac builds</h2><button type="button" id="build-refresh">Read build authority</button></div><p id="build-status" role="status">Not observed. Local candidate; no build or installation assumed.</p><p id="build-window-status" class="muted"></p><label for="build-project">Approved project</label><select id="build-project"></select><label for="build-input">Preserved input revision</label><select id="build-input"></select><label for="build-profile">Approved build recipe</label><select id="build-profile"></select><button type="button" id="build-preview" disabled>Review placement</button><label class="check"><input type="checkbox" id="build-repeat"> Explicitly start another build of this same input and recipe. Otherwise recover its latest submission.</label><button type="button" id="build-submit" disabled>Submit approved build</button><div id="build-placement"></div><h3>Worker toolchains &amp; capacity</h3><div id="build-workers"></div><h3>Jobs &amp; attempts</h3><div id="build-jobs"></div><h3>Attempt fences &amp; stop state</h3><div id="build-attempts"></div><h3>Build decision audit</h3><div id="build-events"></div><div id="build-result"></div></section>
++    <section id="builds" class="panel" aria-labelledby="build-title"><div class="section-head"><h2 id="build-title">Cloud workspaces &amp; Mac builds</h2><button type="button" id="build-refresh">Read build authority</button></div><p id="build-status" role="status">Not observed. Local candidate; no build or installation assumed.</p><p id="build-window-status" class="muted"></p><label for="build-project">Approved project</label><select id="build-project"></select><label for="build-input">Preserved input revision</label><select id="build-input"></select><label for="build-profile">Approved build recipe</label><select id="build-profile"></select><button type="button" id="build-preview" disabled>Review placement</button><label class="check"><input type="checkbox" id="build-repeat"> Explicitly start another build of this same input and recipe. Otherwise recover its latest submission.</label><button type="button" id="build-submit" disabled>Submit approved build</button><div id="build-placement"></div>
++      <h3 id="build-recovery-title">Durable submission recovery</h3>
++      <p>After a lost response or reload, read submissions already recorded on this operator host. No placement review or eligible worker is needed. Recovery can only retry an existing pending command with its original identity; it cannot create another intent or retry an attempt.</p>
++      <button type="button" id="build-intents-refresh" disabled>Read durable submissions</button>
++      <button type="button" id="build-retry-pending" disabled>Retry this page’s original submission</button>
++      <p class="muted">If a request failed before it reached the journal, retry keeps this page’s original request, job and selection. It never generates replacement IDs. After reload, only journaled submissions can be recovered.</p>
++      <p id="build-recovery-status" role="status" aria-live="polite">Sign in to read durable submissions.</p>
++      <div id="build-intents" aria-labelledby="build-recovery-title"></div>
++      <p class="muted">At most 64 intents are retained. Acknowledgement confirms receipt of a submission, not build success. Changed epoch, profile approval or credentials block recovery; they never create a replacement.</p>
++      <h3>Worker toolchains &amp; capacity</h3><div id="build-workers"></div><h3>Jobs &amp; attempts</h3><div id="build-jobs"></div><h3>Attempt fences &amp; stop state</h3><div id="build-attempts"></div><h3>Build decision audit</h3><div id="build-events"></div><div id="build-result"></div></section>
+     <section id="build-storage" class="panel" aria-labelledby="storage-title"><h2 id="storage-title">Build storage</h2><p>50 GiB free after estimated job growth. Managed cache ceiling: 20 GiB per Mac. Successful workspaces become cleanup-eligible after 24 hours; failed workspaces after seven days. Release archives and debug symbols have separate retention.</p><p>Eligibility does not authorize deletion. No automatic cleanup is installed. Worker reports are observations; filesystem ownership, active jobs, and recoverability must be checked before cleanup approval.</p><div id="build-capacity"></div></section>
+     <section id="queue" class="panel" aria-labelledby="queue-title"><div class="section-head"><h2 id="queue-title">Queue &amp; attempts</h2><span class="kicker">Active workloads first</span></div><p class="muted">VERIFYING is staged / awaiting independent acceptance. SUCCEEDED alone does not display bytes. Quarantine remains a separate worker fact, even after success.</p><div id="workloads">Source unavailable.</div><details><summary>Attempt &amp; lease windows</summary><h3>Attempts</h3><div id="attempts">Source unavailable.</div><h3>Leases</h3><div id="leases">Source unavailable.</div></details></section>
+     <section id="placement" class="panel" aria-labelledby="placement-title"><div class="section-head"><h2 id="placement-title">Why this placement?</h2><span class="kicker">Historical decisions</span></div><p class="muted">Requested-feasible placement, not an optimal scheduler. Candidate facts belong to the decision snapshot; they do not describe current worker availability.</p><div id="placements">Source unavailable.</div></section>
+--- a/workers/gate/schema.sql
++++ b/workers/gate/schema.sql
+@@ -16,10 +16,11 @@
+   task_id TEXT,
+   agent_id TEXT,
+   decided_at TEXT NOT NULL,
+-  -- JSON VerifyVerdict when required checks ran (packages/verify, §9 of
+-  -- docs/INTEGRATION-STATUS.md). Null on existing rows and on every row until a
+-  -- deployment configures VERIFY_URL. Databases created before 2026-10-15 lack
+-  -- this column: `ALTER TABLE decisions ADD COLUMN verification TEXT;`
++  -- JSON VerificationReceipt for the admitted proposal, including an explicit
++  -- unchecked outcome when no verifier is configured. Historical rows can be
++  -- null or contain the earlier verdict shape. Databases lacking this column
++  -- need a separately approved migration; CREATE TABLE IF NOT EXISTS does not
++  -- upgrade them: `ALTER TABLE decisions ADD COLUMN verification TEXT;`
+   verification TEXT
+ );
+ CREATE INDEX IF NOT EXISTS idx_decisions_repo ON decisions (namespace, repo);

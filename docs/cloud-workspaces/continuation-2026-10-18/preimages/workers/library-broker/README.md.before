@@ -1,0 +1,17 @@
+# Bounded Library broker host — local Node implementation
+
+`brokerHandler(host)` exposes authenticated HTTPS POST `/v1/broker/read` and owner-only `/v1/broker/revocations` around `packages/storage-broker`. It is disabled unless explicitly enabled by the trusted host. It is a local Node handler, not a deployed Cloudflare Durable Object or GCP service.
+
+The host supplies environment/authority identity, a configured owner principal, digest-to-principal authentication, private broker handles, authoritative grant lookup and fresh authorization observations. Requests cannot provide their actor, grant policy, provider URL or credentials. Readers send only grantId/requestId; the handler checks ownership before privileged refresh and reauthenticates after every asynchronous boundary, including before returning provider bytes. Owner/read body admission is separate. Four outstanding refresh slots remain charged until the underlying promises settle, even when callers time out; revocation remains available independently.
+
+A revocation carries the relay's exact target and evidence identity. It must match this broker's environment/authority, project, immutable grant, authorization generation, policy/hash, compute fence and object identity. The handler uses `grantRevocationBinding(grant)` and returns a bound receipt only after the durable tombstone/reply transaction. Claim revisions do not grant authority. The authenticated owner credential is a host secret reference; no real credential is included here.
+
+## Ordering and storage contract
+
+The HTTP adapter requires the authoritative grant record to be available **before** its delivery target is registered. Private grant issuance, current authorization checks and registration are host responsibilities; there is no public grant-issue endpoint. The core can persist preemptive unknown-ID tombstones, but this lookup-based HTTP adapter does not offer that behavior. Unknown target lookup remains unacknowledged/retryable; it is never reported revoked. Delivery-before-issuance is unsupported by this adapter and must not be used as a rollout ordering plan.
+
+The broker is stateful: grants, consumed budgets, sealed bytes, unresolved reservations and tombstones live in one Node SQLite database. Current tests reopen the file and preserve denial. Neither ephemeral cloud instance disks nor independent replica databases satisfy this contract. A future stateless GCP provider adapter needs an explicitly selected durable grant authority and consistency model. Provider credentials/session capabilities stay server-side; actual GCS generation reads/allocation/transport bounds remain trusted adapter proof gates.
+
+Default lifetime limits are 32 grants,128 retained reads,8MiB reserved bytes and1MiB/read. Unresolved operations retain their budget and capacity. Host activation needs occupancy alerts, a reviewed reconciliation/rollover and full broker/relay/compute recovery plan. Do not prune replay or tombstone history to regain capacity.
+
+Local HTTP tests use real in-memory SQLite and fake ports; the integration harness combines the Node handler with actual compute/catalog workerd services. No installation, provider call, deployment, spend or secret change is performed. Parent current receipts: integration/evidence/library-resilience/.

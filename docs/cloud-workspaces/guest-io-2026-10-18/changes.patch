@@ -1,0 +1,1547 @@
+--- a/docs/cloud-workspaces/MASTER-CHECKLIST.md
++++ b/docs/cloud-workspaces/MASTER-CHECKLIST.md
+@@ -58,11 +58,13 @@
+ 
+ The original Foundry R2–R7 integration route remains separate: this feature route does not close inherited merge-gate HOLD findings or grant merge/deployment approval.
+ 
+-## Current stop — R6 Mac safety source batch, production HOLD
++## Current stop — R6 guest IO implemented and source-reviewed, production HOLD
+ 
+ The `mac-safety-2026-10-18` batch supersedes the previous native execution direction. Native adapter/client launch now rejects locally. Concrete Swift whole-VM containment, branded guest jobs, bounded guest runner and a separate kernel-read-only volume guard exist as source. The optional read-side packaging capability is wired without claiming a mutable-tree seal. Independent static reviews and scoped receipts describe the exact coverage. No compiler, test or runtime evidence exists for this batch.
+ 
+-Production Mac builds remain ineligible. Verified immutable guest staging, stop-gated read-only result intake, production controller/adapter/guest capability wiring, generic writable CAS/materialization isolation, resources and inherited integration HOLD items remain open. All operational acceptance and R7 activation remain unexecuted. See `mac-safety-2026-10-18/README.md` for the ordered M1–M4 continuation.
++The subsequent `guest-io-2026-10-18` batch completes M1/M2 as local source: full snapshot/object/tree verification, protected create-only image assembly, launch-bound input lifetime, actual-stop-gated raw-disk copying and readonly sanitization, independent result-envelope checks, and existing immutable publication composition. Review is six inline source passes by the implementing agent, not independent runtime evidence.
++
++Production Mac builds remain ineligible. M3 production controller/adapter/guest capability wiring, generic writable CAS/materialization isolation, resources and inherited integration HOLD items remain open. M4 operational acceptance and R7 activation remain unexecuted. See `guest-io-2026-10-18/README.md` for the exact supported behavior and stopping point.
+ 
+ No tests, builds, typechecks, runtime imports/probes, trial restores, helpers/VMs/services, installations, provider operations, provisioning, spending, secret changes, commits/pushes/merges, deployments, publication or cleanup were performed. Source/metadata reads, public primary research, source/document edits and local review/hash artifacts are the evidence.
+ 
+@@ -87,9 +89,18 @@
+ - [x] MS4 Encode branded guest-job metadata; implement bounded same-descriptor guest staging/build/log/output/receipt handling.
+ - [x] MS5 Implement root-mounted kernel-read-only volume guard, explicit identity/ACL checks, poisoned uncertainty and separate read-side packaging integration.
+ - [x] MS6 Repair bounded independent source findings and record final diff/hash/review coverage. Compilation/runtime remain unverified.
+-- [ ] M1 Verified immutable snapshot → complete guest job/input staging. **LOCAL ENGINEERING OPEN.**
+-- [ ] M2 After actual VM stop, approved read-only output-disk intake and independent artifact/receipt/lineage verification. **LOCAL ENGINEERING OPEN.**
++- [x] M1 Verified immutable snapshot → complete guest job/input staging. **IMPLEMENTED / SOURCE-REVIEWED / VALIDATION-PENDING.** Concrete offline root helper and guarded client acceptance are supplied; no image was created or staged operationally.
++- [x] M2 After actual VM stop, readonly output-disk intake and independent artifact/receipt/lineage verification. **IMPLEMENTED / SOURCE-REVIEWED / VALIDATION-PENDING.** Real publication composition is supplied; no artifact was uploaded or accepted by an authority.
+ - [ ] M3 Production VM adapter/controller and truthful guest capability wiring; resolve writable isolation/inherited HOLD and re-review. **LOCAL ENGINEERING OPEN.**
+ - [ ] M4 Compile/test/operational acceptance and activation. **SEPARATELY GATED, NOT STARTED.**
+ 
+ The checked source substeps do not mean R4 or the overall end goal is complete. A VM session always reports `not-collected` and retains its durable host slot, including after a clean observed VM stop.
++
++### M1/M2 dependency and evidence detail
++
++- [x] GIO1 Actual context pins inputHash/projectId → immutable manifest/segments → file and packed-object hashes; baseline/preimages preserved.
++- [x] GIO2 GIO1 → branded guest job → exact request/hash → root-only create-only image assembler → concrete guard acceptance and fresh verification through launch/stop.
++- [x] GIO3 GIO2 + observed startup + actual stop → same-inode raw hash → root-owned raw copy → readonly bounded extraction → root-owned sealed result image.
++- [x] GIO4 GIO3 → guest v2 exact lineage/outputs/directories/modes/log checks → private receipt → real broker scope/capacity/writer → independent published-byte verification. No authority-success promotion.
++- [x] GIO5 GIO1–4 → six inline source-review passes and repairs → source hashes/diff, findings register, revised route.
++- [ ] GIO6 Compile and exercise all deferred acceptance cases with matching approvals. **GATED.** Source review is not runtime validation.
+--- a/docs/cloud-workspaces/ROUTE.json
++++ b/docs/cloud-workspaces/ROUTE.json
+@@ -1,6 +1,6 @@
+ {
+   "format": "foundry.cloud-workspaces.route.v1",
+-  "stop": "R6-mac-safety-source-reviewed-HOLD",
++  "stop": "R6-guest-io-source-reviewed-HOLD",
+   "authority": "Cloudflare existing compute authority",
+   "deployments": 0,
+   "testsExecuted": 0,
+@@ -45,10 +45,11 @@
+         "RUNTIME-REVIEW.md",
+         "BUILD-STORAGE-REVIEW.md",
+         "continuation-2026-10-18/CUMULATIVE-REVIEW.md",
+-        "mac-safety-2026-10-18/SOURCE-REVIEW.md"
++        "mac-safety-2026-10-18/SOURCE-REVIEW.md",
++        "guest-io-2026-10-18/SOURCE-REVIEW.md"
+       ],
+       "blockedBy": [
+-        "production VM snapshot staging/output intake/controller integration; direct native launch remains denied",
++        "production VM RuntimeAdapter/controller, guest capability, authority submission and explicit reconciliation; direct native launch remains denied",
+         "generic writable CAS/materialization seal; readonly seal is a separate limited capability",
+         "owner-approved host/account/images/helper binaries/toolchains/identities/resources",
+         "all observed Macs below disk headroom (prior observation, not rechecked)",
+@@ -72,7 +73,8 @@
+         "RESOURCE-PROPOSAL.json",
+         "ACTIVATION-AND-COST.md",
+         "continuation-2026-10-18/CHANGE-RECEIPT.json",
+-        "mac-safety-2026-10-18/SOURCE-REVIEW.md"
++        "mac-safety-2026-10-18/SOURCE-REVIEW.md",
++        "guest-io-2026-10-18/SOURCE-REVIEW.md"
+       ]
+     },
+     {
+@@ -81,7 +83,7 @@
+       "evidence": []
+     }
+   ],
+-  "nextGate": "Continue remaining local engineering/source review before requesting validation. Tests/builds, installations/image provisioning/VM starts, provider operations/spend, secret changes, merge/deploy and cleanup remain separately gated.",
++  "nextGate": "M1/M2 source review complete. M3 production integration and inherited HOLD repairs remain local engineering; M4 validation and R7 activation require matching approvals. Tests/builds, installation, image assembly/mounting/VM starts, cloud operations/spend, secret changes, Git integration/deploy and cleanup remain gated.",
+   "continuation": {
+     "folder": "continuation-2026-10-18",
+     "authorization": "local source implementation/review only",
+@@ -140,7 +142,7 @@
+       }
+     ]
+   },
+-  "nextLocalEngineering": "M1 verified immutable snapshot-to-guest staging, then M2 stop-gated readonly output intake, then M3 production VM adapter/controller and guest capability wiring; writable restore/CAS isolation and inherited integration HOLD remain.",
++  "nextLocalEngineering": "M3 production VM adapter/controller, guest capability and authority submission/reconciliation wiring; resolve writable restore/CAS isolation and inherited integration HOLD. M1/M2 source implementation and review are closed; runtime validation remains pending.",
+   "macSafety": {
+     "folder": "mac-safety-2026-10-18",
+     "state": "source-reviewed-primitives-production-HOLD",
+@@ -155,8 +157,6 @@
+       "kernel-readonly mounted-volume guard and separate read-side packaging capability"
+     ],
+     "notImplemented": [
+-      "verified immutable snapshot to complete guest job/filelist staging",
+-      "stop-gated output-disk mount/extraction and independent result intake",
+       "production VM RuntimeAdapter/controller and guest capability reporting",
+       "generic writable restore/CAS isolation"
+     ],
+@@ -167,7 +167,12 @@
+           "source-reviewed containment primitives"
+         ],
+         "task": "Verified immutable input staging",
+-        "state": "not-implemented"
++        "state": "implemented-source-reviewed-validation-pending",
++        "evidence": [
++          "guest-io-2026-10-18/README.md",
++          "guest-io-2026-10-18/SOURCE-REVIEW.md",
++          "guest-io-2026-10-18/CHANGE-RECEIPT.json"
++        ]
+       },
+       {
+         "id": "M2",
+@@ -176,7 +181,12 @@
+           "actual stopped VM"
+         ],
+         "task": "Read-only result intake through immutable publication/verifier boundary",
+-        "state": "not-implemented"
++        "state": "implemented-source-reviewed-validation-pending",
++        "evidence": [
++          "guest-io-2026-10-18/README.md",
++          "guest-io-2026-10-18/SOURCE-REVIEW.md",
++          "guest-io-2026-10-18/CHANGE-RECEIPT.json"
++        ]
+       },
+       {
+         "id": "M3",
+@@ -198,6 +208,31 @@
+       }
+     ],
+     "nativePlacement": "explicitly-ineligible",
+-    "vmSessionResult": "always-not-collected-retains-quarantine"
++    "vmSessionResult": "session remains not-collected/quarantined; separate branded stop-gated intake and publication APIs supplied, no authority acceptance or slot release"
++  },
++  "guestIO": {
++    "folder": "guest-io-2026-10-18",
++    "state": "implemented-source-reviewed-validation-pending-production-HOLD",
++    "review": "six inline source passes by implementing agent; no independent or executed validation claim",
++    "sourceTasksClosed": [
++      "M1",
++      "M2"
++    ],
++    "testsExecuted": 0,
++    "buildsExecuted": 0,
++    "helpersOrVmsStarted": 0,
++    "operationalChanges": 0,
++    "remaining": [
++      "M3 production adapter/controller, capability and authority submission/reconciliation",
++      "generic writable CAS/materialization isolation",
++      "inherited integration HOLD",
++      "M4 separately approved compile/test/runtime acceptance",
++      "R7 separately approved progressive activation"
++    ],
++    "evidence": [
++      "guest-io-2026-10-18/SOURCE-REVIEW.md",
++      "guest-io-2026-10-18/FINDINGS.json",
++      "guest-io-2026-10-18/CHANGE-RECEIPT.json"
++    ]
+   }
+ }
+--- a/packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md
++++ b/packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md
+@@ -4,6 +4,15 @@
+ > enabled API. Signed recovery-journal review remains available. See
+ > ../../docs/cloud-workspaces/mac-safety-2026-10-18/ARCHITECTURE.md for the separate
+ > experimental whole-VM containment implementation and unresolved production gates.
++
++> Guest IO update (2026-10-18): verified input staging and stop-gated result intake
++> source now exists in `mac-vm-input.ts`, `mac-vm-staging.ts`, `mac-vm-intake.ts` and
++> `native/mac-vm-io.py`. It requires actual guarded readonly images and private
++> plan/job/stop bindings. The supplied root assembler is an offline owner tool,
++> never a worker-accessible privilege service. See
++> ../../docs/cloud-workspaces/guest-io-2026-10-18/README.md for the source contract,
++> six inline review passes and remaining M3/M4 gates. Direct native execution and
++> production Xcode placement remain denied; no runtime validation occurred.
+ 
+ # Mac observer and supervisor evidence protocol — HOLD
+ 
+--- a/packages/build-runtime/README.md
++++ b/packages/build-runtime/README.md
+@@ -95,14 +95,33 @@
+ `start` reject before any callback or process invocation. `reviewRecovery` still reads
+ bounded historical signed journals; a process seal never establishes service closure.
+ 
+-The separate `launchMacVmContainment` source API reserves a durable host slot and
+-requires owner-provisioned images, roots, signed helper and pinned guest job. It observes
+-whole-VM termination only, never build success. Unknown observations and even a clean
+-VM stop retain the slot pending explicit reconciliation and missing result intake.
++The separate `launchMacVmContainment(plan, policy, guestJob, staged, currentFence, signal)`
++source API reserves a durable host slot and requires owner-provisioned images, roots,
++signed helper and a privately verified staged input. A concrete readonly guard spans
++fresh full input verification through whole-VM stop and guard postflight. Unknown
++observations and even a clean stop retain the slot pending explicit reconciliation.
++
++Guest IO source is now supplied: `verifyMacVmInput` → `encodeMacVmGuestJob` →
++`prepareMacVmStaging` → separately owner-invoked `native/mac-vm-io.py` →
++`acceptMacVmStaging` → containment launch. After actual observed startup and stop,
++`prepareMacVmIntake` hashes the stopped backing file; the same owner-operated helper
++copies it, mounts the copy readonly, sanitizes the bounded result envelope, and seals
++a separate collection image. `acceptMacVmIntake` independently checks its complete
++tree, guest result v2, modes, logs, lineage and approved outputs. `publishMacVmIntake`
++composes the existing real storage broker/writer/collector and `verifyPublish` boundary.
++Publication returns a manifest claim; it does not submit or verify it in the authority.
++
++These are source-reviewed experimental APIs, not a production RuntimeAdapter.
++The helper is an explicit root operator tool, never a setuid/network service or
++automatic escalation. Its exact request SHA must be provided at invocation. It
++creates only fixed per-attempt paths, retains partial artifacts/mounts, and never
++overwrites, retries, detaches or cleans up. Installation, invocation, tests and all
++operational work remain gated. See `docs/cloud-workspaces/guest-io-2026-10-18/README.md`
++for the full source contract, limits, review findings and remaining M3/M4 boundaries.
+ 
+ Final source handoff: native-attestor, current-authorization and project-scale readiness
+ remain explicit HOLDs owned by the parent. No default-success attestor/authorization port
+ or large-project readiness claim is supplied. The portable profile limits above remain
+ enforced. Compilation, integration, user journey and deployment require separate approval;
+-this source has not been executed or operationally verified. Assigned edits end with this
+-handoff so the parent can freeze source hashes.
++this source has not been executed or operationally verified. The current scoped
++freeze is recorded in `docs/cloud-workspaces/guest-io-2026-10-18/CHANGE-RECEIPT.json`.
+--- a/packages/build-runtime/native/mac-vm-guest.py
++++ b/packages/build-runtime/native/mac-vm-guest.py
+@@ -308,7 +308,7 @@
+     # Root collection is descriptor-relative, bounded, and never reopens checked
+     # files by pathname. Descendants may still mutate guest data; reject unstable
+     # bytes. Only host VZ whole-VM stop can close their execution lifetime.
+-    output_files, used, visited, metadata_bytes = [], len(log), 0, 0
++    output_files, output_directories, used, visited, metadata_bytes = [], [], len(log), 0, 0
+     for selected in r['outputPaths'] if code == 0 and not limited else []:
+         pending = [(relative(selected), 0)]
+         while pending:
+@@ -320,6 +320,13 @@
+             try:
+                 st = os.fstat(fd)
+                 if stat.S_ISDIR(st.st_mode):
++                    metadata_bytes += len(json.dumps(path).encode()) + 1
++                    require(metadata_bytes <= 900*1024, 'receipt-metadata-budget')
++                    output_directories.append(path)
++                    # Preserve empty approved bundles/directories too. No marker
++                    # file is written; parent creation is descriptor-relative.
++                    created = destination_parent(output_fd, 'files/'+path+'/.unused')
++                    os.close(created)
+                     with os.scandir(fd) as entries:
+                         for entry in entries:
+                             deadline_check(deadline)
+@@ -334,27 +341,29 @@
+                 os.close(fd)
+             # Admit encoded receipt metadata BEFORE copying or retaining a row.
+             # A 64-hex digest and maximum numeric size bound the eventual record.
+-            row_bound = len(json.dumps({'path': path, 'sha256': '0'*64, 'sizeBytes': MAX_RESULT},
++            row_bound = len(json.dumps({'path': path, 'sha256': '0'*64, 'sizeBytes': MAX_RESULT, 'mode': 0o755},
+                                        sort_keys=True, separators=(',', ':')).encode()) + 1
+             require(metadata_bytes+row_bound <= 900*1024, 'receipt-metadata-budget')
+             metadata_bytes += row_bound
+             # Reopening through the anchored no-follow chain is safe even if a
+             # directory changed: the checked/copy descriptor itself sets limits.
++            file_mode = 0o755 if st.st_mode & 0o111 else 0o644
+             actual, size = copy_regular(work_fd, path, output_fd, 'files/'+path,
+-                                        limits['maxOutputBytes']-used, deadline)
++                                        limits['maxOutputBytes']-used, deadline, mode=0o700 if file_mode == 0o755 else 0o600)
+             used += size
+             require(used <= limits['maxOutputBytes'], 'result-total')
+-            output_files.append({'path': path, 'sha256': actual, 'sizeBytes': size})
++            output_files.append({'path': path, 'sha256': actual, 'sizeBytes': size, 'mode': file_mode})
+     deadline_check(deadline)
+     with open(OUTPUT / 'build.log', 'xb') as f:
+         f.write(log)
+         f.flush()
+         os.fsync(f.fileno())
+     deadline_check(deadline)
+-    write_json(OUTPUT / 'result.json', {'version': 1, 'identity': job['identity'], 'attemptId': job['attemptId'],
++    write_json(OUTPUT / 'result.json', {'version': 2, 'identity': job['identity'], 'attemptId': job['attemptId'],
+                'jobId': job['jobId'], 'profileHash': job['profileHash'], 'sourceHash': job['sourceHash'],
+                'guestMacos': r['macos'], 'xcodeBuild': r['xcodeBuild'], 'exitCode': code, 'limited': limited,
+-               'outputs': output_files, 'logSha256': hashlib.sha256(log).hexdigest(), 'logBytes': len(log)})
++               'outputs': output_files, 'directories': output_directories,
++               'logSha256': hashlib.sha256(log).hexdigest(), 'logBytes': len(log)})
+     os.close(work_fd)
+     os.close(output_fd)
+     os.close(input_fd)
+--- a/packages/build-runtime/native/mac-vm-host.swift
++++ b/packages/build-runtime/native/mac-vm-host.swift
+@@ -143,6 +143,11 @@
+     try require(fstatfs(fd, &volume) == 0 && volume.f_owner == 0 &&
+                 (volume.f_flags & UInt32(MNT_LOCAL)) != 0, "root-local-volume-required")
+ }
++private func readonlyVolume(_ fd: Int32) throws {
++    var volume = statfs()
++    try require(fstatfs(fd, &volume) == 0 && volume.f_owner == 0 &&
++        (volume.f_flags & UInt32(MNT_LOCAL | MNT_RDONLY)) == UInt32(MNT_LOCAL | MNT_RDONLY), "input-readonly-volume-required")
++}
+ private func statFD(_ fd: Int32) throws -> stat {
+     var s = stat(); try require(fstat(fd, &s) == 0, "fstat-failed"); return s
+ }
+@@ -229,7 +234,10 @@
+         let hardware = try file(root, "hardware-model.bin", writable: false, limit: 4096)
+         let machine = try file(root, "machine-identifier.bin", writable: false, limit: 4096)
+         input = try directory(c.input)
+-        try require(input.initial.st_dev == root.initial.st_dev, "input-device")
++        // Input is now its own owner-mounted readonly image. It deliberately
++        // differs from the mutable boot/output filesystem; every child remains
++        // on this pinned input device and the TS guard holds its mount identity.
++        try readonlyVolume(input.fd)
+         // Descriptor-relative open, retained until actual VM stop. No pathname
+         // reopen or caller callback may substitute the approved guest job bytes.
+         job = try file(input, "job.json", writable: false, limit: 262144)
+@@ -279,7 +287,10 @@
+         try recheck()
+         try verifyGuestJob()
+     }
+-    func recheck() throws { for pin in pins { try pin.recheck() } }
++    func recheck() throws {
++        for pin in pins { try pin.recheck() }
++        try readonlyVolume(input.fd)
++    }
+     func verifyGuestJob() throws {
+         try require(job.sha256(maximum: 262144) == guestJobSha256, "guest-job-digest-mismatch")
+     }
+--- /dev/null
++++ b/packages/build-runtime/native/mac-vm-io.py
+@@ -0,0 +1,504 @@
++"""Offline owner-invoked Mac VM image assembler. SOURCE ONLY; no installer.
++
++Read one bounded request on stdin. Root must approve the exact request hash before
++invocation. This is NOT a setuid program, daemon, network service or sudo policy.
++No arbitrary commands/destinations, overwrite, replay, retry, detach or deletion.
++On any error retain partial images/mounts and quarantine the attempt for review.
++"""
++import ctypes
++import errno
++import hashlib
++import json
++import os
++from pathlib import Path
++import plistlib
++import re
++import selectors
++import stat
++import subprocess
++import sys
++import time
++
++BASE = Path('/Library/Foundry/VM/attempts')
++GUARD = '/Library/Foundry/bin/mac-tree-guard'
++ENV = {'PATH': '/usr/bin:/bin:/usr/sbin:/sbin', 'LANG': 'C', 'LC_ALL': 'C', 'HOME': '/var/root'}
++MAX_RAW = 16 * 1024**3
++MAX_TREE = 8 * 1024**2
++DEADLINE = None
++LIB = None
++
++
++def need(value, code):
++    if not value:
++        raise ValueError(code)
++
++
++def tick():
++    need(DEADLINE is not None and time.monotonic() < DEADLINE, 'deadline')
++
++
++def canonical(value):
++    return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode('utf-8')
++
++
++def digest(data):
++    return hashlib.sha256(data).hexdigest()
++
++
++def unique_object(pairs):
++    result = {}
++    for key, value in pairs:
++        need(key not in result, 'duplicate-json-key')
++        result[key] = value
++    return result
++
++
++def decode(data):
++    return json.loads(data.decode('utf-8'), object_pairs_hook=unique_object)
++
++
++def read_request():
++    fd = sys.stdin.fileno()
++    mode = os.fstat(fd).st_mode
++    need(stat.S_ISREG(mode) or stat.S_ISFIFO(mode), 'request-file-or-pipe-required')
++    poller = None
++    data = bytearray()
++    try:
++        if stat.S_ISFIFO(mode):
++            os.set_blocking(fd, False)
++            poller = selectors.DefaultSelector()
++            poller.register(fd, selectors.EVENT_READ)
++        while True:
++            tick()
++            if poller is not None and not poller.select(0.1):
++                continue
++            chunk = os.read(fd, min(65536, 524289-len(data)))
++            if not chunk:
++                break
++            data.extend(chunk)
++            need(len(data) <= 524288, 'request-byte-budget')
++        return bytes(data)
++    finally:
++        if poller is not None:
++            poller.close()
++
++
++def no_acl(fd):
++    # Darwin FILESEC_ACL=5, ACL_FIRST_ENTRY=0. Use the OS security API,
++    # never ls text or an xattr heuristic. fstatx's stat buffer is not interpreted.
++    security = LIB.filesec_init()
++    need(security, 'filesec-init')
++    acl = ctypes.c_void_p()
++    try:
++        present = ctypes.c_int()
++        observed = ctypes.create_string_buffer(4096)
++        need(LIB.fstatx_np(fd, observed, security) == 0 and
++             LIB.filesec_query_property(security, 5, ctypes.byref(present)) == 0, 'acl-observation')
++        if not present.value:
++            return
++        need(LIB.filesec_get_property(security, 5, ctypes.byref(acl)) == 0 and acl.value
++             and acl.value != 1, 'acl-read')  # Darwin _FILESEC_REMOVE_ACL
++        entry = ctypes.c_void_p()
++        ctypes.set_errno(0)
++        found = LIB.acl_get_entry(acl, 0, ctypes.byref(entry))
++        need(found == -1 and ctypes.get_errno() == errno.EINVAL, 'acl-present')
++    finally:
++        if acl.value and acl.value != 1:
++            LIB.acl_free(acl)
++        LIB.filesec_free(security)
++
++
++def secure(path, file=False):
++    """Root-controlled, ACL-free namespace, no links at any component."""
++    p = Path(path)
++    need(p.is_absolute() and str(p) == str(path) and '..' not in p.parts, 'absolute-path')
++    fd = os.open('/', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try:
++        for index, part in enumerate(('',) + p.parts[1:]):
++            if part:
++                flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
++                if not (file and index == len(p.parts)-1):
++                    flags |= os.O_DIRECTORY
++                child = os.open(part, flags, dir_fd=fd)
++                os.close(fd)
++                fd = child
++            s = os.fstat(fd)
++            need(s.st_uid == 0 and not s.st_mode & 0o022, 'root-namespace')
++            no_acl(fd)
++            if file and index == len(p.parts)-1:
++                need(stat.S_ISREG(s.st_mode) and s.st_nlink == 1, 'root-file')
++            else:
++                need(stat.S_ISDIR(s.st_mode), 'root-directory')
++        return fd
++    except BaseException:
++        os.close(fd)
++        raise
++
++
++def relative(value):
++    need(isinstance(value, str) and 0 < len(value.encode()) <= 4096 and not value.startswith('/')
++         and len(value.split('/')) <= 64 and all(p not in ('', '.', '..') and len(p.encode()) <= 255
++         and not any(ord(c) < 32 or ord(c) == 127 for c in p) for p in value.split('/')), 'relative-path')
++    return value
++
++
++def beneath(root, path, directory=False):
++    relative(path)
++    fd = os.dup(root)
++    device = os.fstat(fd).st_dev
++    try:
++        parts = path.split('/')
++        for i, part in enumerate(parts):
++            flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
++            if i < len(parts)-1 or directory:
++                flags |= os.O_DIRECTORY
++            child = os.open(part, flags, dir_fd=fd)
++            os.close(fd)
++            fd = child
++            need(os.fstat(fd).st_dev == device, 'nested-mount')
++        return fd
++    except BaseException:
++        os.close(fd)
++        raise
++
++
++def unchanged(a, b):
++    return (a.st_dev, a.st_ino, a.st_uid, a.st_mode, a.st_nlink, a.st_size, a.st_mtime_ns, a.st_ctime_ns) == (
++        b.st_dev, b.st_ino, b.st_uid, b.st_mode, b.st_nlink, b.st_size, b.st_mtime_ns, b.st_ctime_ns)
++
++
++def write_new(path, data):
++    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
++    try:
++        view = memoryview(data)
++        while view:
++            tick()
++            n = os.write(fd, view)
++            need(n > 0, 'write-short')
++            view = view[n:]
++        os.fchmod(fd, 0o444)
++        os.fsync(fd)
++    finally:
++        os.close(fd)
++    sync_dir(path.parent)
++
++
++def sync_dir(path):
++    fd = secure(path)
++    try:
++        os.fsync(fd)
++    finally:
++        os.close(fd)
++
++
++def mkdir_parent(root, relative_path):
++    path = root
++    for part in relative(relative_path).split('/')[:-1]:
++        path = path / part
++        try:
++            path.mkdir(mode=0o700)
++        except FileExistsError:
++            pass
++        fd = secure(path)
++        os.close(fd)
++    return root / relative_path
++
++
++def copy_fd(src, destination, maximum, expected=None, executable=False):
++    tick()
++    before = os.fstat(src)
++    need(stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and 0 <= before.st_size <= maximum, 'copy-file-budget')
++    dest = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
++    h, size = hashlib.sha256(), 0
++    try:
++        while size < before.st_size:
++            tick()
++            chunk = os.read(src, min(1048576, before.st_size-size))
++            need(chunk, 'copy-short')
++            size += len(chunk)
++            h.update(chunk)
++            view = memoryview(chunk)
++            while view:
++                tick()
++                n = os.write(dest, view)
++                need(n > 0, 'copy-write-short')
++                view = view[n:]
++        need(not os.read(src, 1) and unchanged(before, os.fstat(src)), 'copy-changed')
++        actual = h.hexdigest()
++        if expected is not None:
++            need((actual, size) == expected, 'copy-digest')
++        os.fchmod(dest, 0o555 if executable else 0o444)
++        os.fsync(dest)
++        return actual, size
++    finally:
++        os.close(dest)
++
++
++def hash_fd(fd, maximum):
++    before = os.fstat(fd)
++    need(stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and 0 < before.st_size <= maximum, 'hash-budget')
++    os.lseek(fd, 0, os.SEEK_SET)
++    h, count = hashlib.sha256(), 0
++    while count < before.st_size:
++        tick()
++        data = os.read(fd, min(1048576, before.st_size-count))
++        need(data, 'hash-short')
++        h.update(data)
++        count += len(data)
++    need(not os.read(fd, 1) and unchanged(before, os.fstat(fd)), 'hash-changed')
++    return h.hexdigest()
++
++
++def command(argv, maximum=131072):
++    tick()
++    fd = secure(argv[0], file=True)
++    need(os.fstat(fd).st_mode & 0o111 and not os.fstat(fd).st_mode & 0o6000, 'executable')
++    os.close(fd)
++    p = subprocess.Popen(argv, env=ENV, cwd='/', stdin=subprocess.DEVNULL,
++                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
++    content = bytearray()
++    selector = selectors.DefaultSelector()
++    selector.register(p.stdout, selectors.EVENT_READ)
++    os.set_blocking(p.stdout.fileno(), False)
++    try:
++        while selector.get_map():
++            tick()
++            for key, _ in selector.select(0.1):
++                data = os.read(key.fd, min(65536, maximum+1-len(content)))
++                if not data:
++                    selector.unregister(key.fileobj)
++                else:
++                    content.extend(data)
++                    need(len(content) <= maximum, 'command-output-budget')
++        need(p.wait(timeout=max(0.1, DEADLINE-time.monotonic())) == 0, 'command-failed')
++        return bytes(content)
++    finally:
++        selector.close()
++        if p.poll() is None:
++            p.kill()  # Observation failure; mounts/children remain quarantined.
++        p.stdout.close()
++
++
++def describe(path, mount):
++    row = decode(command([GUARD, '--describe-readonly-v1', GUARD, str(path), str(mount)]))
++    need(row['event'] == 'observed' and row['readonly'] is True and row['mountOwner'] == 0, 'readonly-description')
++    return {key: row[key] for key in ('path', 'mountPoint', 'filesystem', 'fsid', 'mountSource', 'volumeUuid', 'rootDevice', 'rootInode')}
++
++
++def freeze_tree(root):
++    # This is a newly created root-only namespace. Never chmod original content.
++    for parent, dirs, files in os.walk(root, topdown=False, followlinks=False):
++        tick()
++        for name in files:
++            fd = secure(Path(parent)/name, file=True)
++            try:
++                os.fchmod(fd, 0o555 if os.fstat(fd).st_mode & 0o111 else 0o444)
++                os.fsync(fd)
++            finally:
++                os.close(fd)
++        fd = secure(parent)
++        try:
++            os.fchmod(fd, 0o555)
++            os.fsync(fd)
++        finally:
++            os.close(fd)
++
++
++def attach(image, mount, raw=False):
++    mount.mkdir(mode=0o755)  # Exclusive; never reuse an existing mountpoint.
++    args = ['/usr/bin/hdiutil', 'attach', str(image), '-readonly', '-nobrowse', '-noautoopen',
++            '-owners', 'on', '-mountpoint', str(mount), '-plist']
++    if raw:
++        args += ['-imagekey', 'diskimage-class=CRawDiskImage']
++    data = plistlib.loads(command(args))
++    entities = data.get('system-entities', [])
++    mounted = [e for e in entities if 'mount-point' in e]
++    need(len(mounted) == 1 and mounted[0]['mount-point'] == str(mount)
++         and os.path.ismount(mount) and os.statvfs(mount).f_flag & os.ST_RDONLY, 'attached-volume')
++
++
++def image_tree(work, tree, mount):
++    freeze_tree(tree)
++    image = work / 'sealed.dmg'
++    command(['/usr/bin/hdiutil', 'create', '-srcfolder', str(tree), '-format', 'UDRO', '-fs', 'HFS+',
++             '-uid', '0', '-gid', '0', '-mode', '0555', '-noscrub', '-nocrossdev', str(image)])
++    fd = secure(image, file=True)
++    try:
++        os.fchmod(fd, 0o444)
++        os.fsync(fd)
++        image_hash = hash_fd(fd, 4*1024**3)
++    finally:
++        os.close(fd)
++    attach(image, mount)
++    tree_identity = describe(mount, mount)
++    return image_hash, tree_identity
++
++
++def stage(r, request_hash, attempt, work):
++    job = r['job']
++    need(job['attemptId'] == r['attemptId'] and digest(canonical(job)) == r['jobSha256'], 'job-binding')
++    need(0 < len(job['files']) <= 1024 and len(canonical(job)) <= 262144, 'job-budget')
++    need(sum(f['sizeBytes'] for f in job['files'])+len(canonical(job))+4096 <= 2*1024**3, 'staged-tree-byte-budget')
++    source = r['source']
++    need(source['path'].startswith('/Library/Foundry/VM/sources/') and describe(source['path'], source['mountPoint']) == source, 'source-identity')
++    tree = work / 'tree'
++    tree.mkdir(mode=0o700)
++    write_new(tree/'job.json', canonical(job))
++    write_new(tree/'provenance.json', canonical({'version': 1, 'kind': 'stage', 'requestSha256': request_hash, 'jobSha256': r['jobSha256']}))
++    root = secure(source['path'])
++    try:
++        total, names = 0, set()
++        for file in job['files']:
++            p = relative(file['path'])
++            need(p.casefold() not in names and type(file['sizeBytes']) is int and 0 <= file['sizeBytes'] <= 64*1024**2, 'source-file')
++            names.add(p.casefold())
++            total += file['sizeBytes']
++            need(total <= 2*1024**3, 'source-budget')
++            fd = beneath(root, p)
++            try:
++                copy_fd(fd, mkdir_parent(tree, 'source/'+p), file['sizeBytes'], (file['sha256'], file['sizeBytes']))
++            finally:
++                os.close(fd)
++    finally:
++        os.close(root)
++    need(describe(source['path'], source['mountPoint']) == source, 'source-postflight')
++    return image_tree(work, tree, attempt/'input')
++
++
++def intake(r, request_hash, attempt, work):
++    output = r['output']
++    need(output['path'] == str(attempt/'outputs.raw') and type(output['sizeBytes']) is int
++         and 0 < output['sizeBytes'] <= MAX_RAW, 'raw-output-path-budget')
++    # Ancestors are root-controlled; leaf belongs to the dedicated VM helper UID.
++    fd = os.open(output['path'], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
++    try:
++        s = os.fstat(fd)
++        no_acl(fd)
++        need(str(s.st_dev) == output['device'] and str(s.st_ino) == output['inode']
++             and s.st_uid == output['uid'] and stat.S_IMODE(s.st_mode) == 0o600 and s.st_size == output['sizeBytes'], 'stopped-output-identity')
++        raw_hash, _ = copy_fd(fd, work/'stopped.raw', MAX_RAW, (r['rawSha256'], output['sizeBytes']))
++    finally:
++        os.close(fd)
++    # Never mount the live writable backing disk. This root-owned byte-for-byte
++    # copy is immutable to the VM account and its digest is bound to stop intake.
++    mounted = work/'raw'
++    sync_dir(work)
++    attach(work/'stopped.raw', mounted, raw=True)
++    root = os.open(mounted, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    tree = work/'tree'
++    tree.mkdir(mode=0o700)
++    try:
++        names = set()
++        with os.scandir(root) as entries:
++            for e in entries:
++                need(len(names) < 16, 'raw-root-count')
++                names.add(e.name)
++        # These OS metadata names are outside the result envelope. Never traverse,
++        # copy or execute their contents. All other undeclared root names refuse.
++        required = {'files', 'result.json', 'build.log'}
++        metadata_dirs = {'.fseventsd', '.Trashes', '.Spotlight-V100', '.TemporaryItems', '.DocumentRevisions-V100'}
++        metadata_files = {'.metadata_never_index', '.DS_Store'}
++        need(required <= names and names <= required | metadata_dirs | metadata_files, 'raw-root-shape')
++        for name in names-required:
++            info = os.stat(name, dir_fd=root, follow_symlinks=False)
++            need(info.st_dev == os.fstat(root).st_dev and
++                 (stat.S_ISDIR(info.st_mode) if name in metadata_dirs else stat.S_ISREG(info.st_mode) and info.st_nlink == 1), 'raw-metadata-type')
++        pending = [('files', 0), ('result.json', 0), ('build.log', 0)]
++        total, count = 0, 0
++        while pending:
++            p, depth = pending.pop()
++            tick()
++            count += 1
++            need(count <= 20000 and depth <= 64, 'intake-entry-budget')
++            fd = beneath(root, p)
++            try:
++                s = os.fstat(fd)
++                target = 'payload/'+p[6:] if p.startswith('files/') else (
++                    'payload' if p == 'files' else 'payload/.foundry-vm.log' if p == 'build.log' else p)
++                if stat.S_ISDIR(s.st_mode):
++                    need(p == 'files' or p.startswith('files/'), 'unexpected-directory')
++                    # A placeholder path creates just the parents; no placeholder file.
++                    mkdir_parent(tree, target+'/.unused')
++                    with os.scandir(fd) as entries:
++                        for e in entries:
++                            need(len(pending)+count < 20000, 'intake-queue-budget')
++                            pending.append((relative(p+'/'+e.name), depth+1))
++                else:
++                    need(p != 'files' and stat.S_ISREG(s.st_mode), 'intake-type')
++                    _, size = copy_fd(fd, mkdir_parent(tree, target), min(MAX_TREE-total, 1048576 if p == 'result.json' else MAX_TREE),
++                                      executable=p.startswith('files/') and bool(s.st_mode & 0o111))
++                    total += size
++                    need(total <= MAX_TREE, 'intake-byte-budget')
++            finally:
++                os.close(fd)
++    finally:
++        os.close(root)
++    write_new(tree/'provenance.json', canonical({'version': 1, 'kind': 'intake', 'requestSha256': request_hash,
++        'jobSha256': r['jobSha256'], 'rawSha256': raw_hash, 'output': output}))
++    # Rehash the protected raw copy after extraction; no unprivileged writer can
++    # alter it or rename the root-owned ancestors between these observations.
++    fd = secure(work/'stopped.raw', file=True)
++    try:
++        need(hash_fd(fd, MAX_RAW) == raw_hash, 'raw-postflight')
++    finally:
++        os.close(fd)
++    return image_tree(work, tree, attempt/'intake')
++
++
++def main():
++    global DEADLINE, LIB
++    need(os.uname().sysname == 'Darwin' and os.getuid() == 0 and os.geteuid() == 0, 'owner-root-only')
++    need(len(sys.argv) == 2 and re.fullmatch('[a-f0-9]{64}', sys.argv[1]), 'explicit-owner-request-hash-required')
++    DEADLINE = time.monotonic()+1800
++    LIB = ctypes.CDLL('/usr/lib/libSystem.B.dylib', use_errno=True)
++    LIB.filesec_init.restype = ctypes.c_void_p
++    LIB.filesec_free.argtypes = [ctypes.c_void_p]
++    LIB.filesec_free.restype = None
++    LIB.fstatx_np.argtypes = [ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p]
++    LIB.filesec_query_property.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
++    LIB.filesec_get_property.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
++    LIB.acl_get_entry.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
++    LIB.acl_free.argtypes = [ctypes.c_void_p]
++    os.umask(0o077)
++    raw = read_request()
++    need(0 < len(raw) <= 524288 and digest(raw) == sys.argv[1], 'request-hash-budget')
++    r = decode(raw)
++    common = {'version', 'kind', 'attemptId', 'guardSha256', 'jobSha256'}
++    need(r['kind'] in ('stage', 'intake') and r['version'] == 1 and set(r) == common | (
++        {'source', 'job'} if r['kind'] == 'stage' else {'output', 'rawSha256'}), 'request-shape')
++    need(re.fullmatch('[A-Za-z0-9][A-Za-z0-9._-]{0,63}', r['attemptId']), 'attempt-id')
++    fd = secure(GUARD, file=True)
++    try:
++        need(hash_fd(fd, 32*1048576) == r['guardSha256'], 'guard-pin')
++    finally:
++        os.close(fd)
++    attempt = BASE/r['attemptId']
++    fd = secure(attempt)
++    try:
++        fs = os.fstatvfs(fd)
++        extra = (r['output']['sizeBytes']+64*1048576) if r['kind'] == 'intake' else (
++            sum(f['sizeBytes'] for f in r['job']['files'])*3+256*1048576)
++        need(fs.f_bavail*fs.f_frsize >= 50*1024**3+extra, 'disk-headroom')
++    finally:
++        os.close(fd)
++    # Persistent one-shot reservation BEFORE copying/mounting. Failed requests may
++    # not be retried against the same attempt by silently overwriting evidence.
++    work = attempt/('io-'+r['kind'])
++    work.mkdir(mode=0o700)
++    sync_dir(attempt)
++    write_new(work/'request.json', raw)
++    image_hash, tree = (stage if r['kind'] == 'stage' else intake)(r, digest(raw), attempt, work)
++    receipt = canonical({'version': 1, 'kind': r['kind'], 'requestSha256': digest(raw), 'imageSha256': image_hash, 'tree': tree})
++    write_new(work/'receipt.json', receipt)
++    sync_dir(work)
++    freeze_tree(work/'tree')
++    # Keep raw mount and intermediate evidence. Cleanup is an independent gate.
++    sys.stdout.buffer.write(receipt+b'\n')
++
++
++if __name__ == '__main__':
++    try:
++        main()
++    except BaseException:
++        sys.stderr.write('mac-vm-io: refused; retain attempt and mounts for owner review\n')
++        sys.exit(1)
+--- a/packages/build-runtime/src/controller.ts
++++ b/packages/build-runtime/src/controller.ts
+@@ -41,6 +41,7 @@
+   readonly compute:Readonly<ComputeBinding>;
+   readonly source:Readonly<BuildResponseSource>;
+   readonly serverProfileHash:string;readonly localRecipeHash:string;
++  readonly inputHash:string;readonly projectId:string;
+ }
+ const attemptContexts = new WeakSet<object>();
+ /** Only controller-validated claim contexts are accepted by the storage composition. */
+@@ -170,6 +171,7 @@
+       const fence:BuildFence = Object.freeze({attemptId:a.id,epoch:a.epoch,generation:a.generation,incarnation:a.incarnation,capability:a.capability});
+       const context:BuildAttemptContext = Object.freeze({
+         serverProfileHash:this.binding.serverProfileHash,localRecipeHash:this.binding.localRecipeHash,
++        inputHash:job.inputHash,projectId:job.projectId,
+         source:Object.freeze({...reply.source}),
+         compute:Object.freeze({authorityId:reply.source.authorityId,workerId:this.authority.workerId,
+           workloadId:job.id,leaseId:a.id,attemptId:a.id,epoch:fence.epoch,generation:fence.generation,incarnation:fence.incarnation,
+--- a/packages/build-runtime/src/index.ts
++++ b/packages/build-runtime/src/index.ts
+@@ -25,3 +25,9 @@
+ export type {MacVmHostConfiguration,MacVmHostPolicy,MacVmStopEvidence,MacVmSession} from './mac-vm.js';
+ export {encodeMacVmGuestJob,macVmIdentity,MAC_VM_JOB_MAX_BYTES} from './mac-vm-job.js';
+ export type {MacVmGuestJob,MacVmInputFile} from './mac-vm-job.js';
++export {verifyMacVmInput} from './mac-vm-input.js';
++export type {VerifiedMacVmInput,VerifyMacVmInputRequest} from './mac-vm-input.js';
++export {prepareMacVmStaging,acceptMacVmStaging} from './mac-vm-staging.js';
++export type {MacVmIoRequest,StagedMacVmInput} from './mac-vm-staging.js';
++export {prepareMacVmIntake,acceptMacVmIntake,publishMacVmIntake} from './mac-vm-intake.js';
++export type {VerifiedMacVmResult} from './mac-vm-intake.js';
+--- /dev/null
++++ b/packages/build-runtime/src/mac-vm-input.ts
+@@ -0,0 +1,147 @@
++import {createHash} from 'node:crypto';
++import {join} from 'node:path';
++import {lstat} from 'node:fs/promises';
++import type {BuildJob,InputApproval,ObjectRef} from '../../build-jobs/src/contracts.js';
++import * as v from '../../build-jobs/src/validation.js';
++import {inspectFile,inspectDirectory,readFileChunks,siblingNames,rootCopy} from '../../build-storage/src/filesystem.js';
++import {ProjectInputPaths,ProjectInputValidation,decodeProjectMetadata,type ProjectInputSnapshot,type ProjectInputSegment} from '../../build-storage/src/project-input-format.js';
++import {validateLocalRef} from '../../build-storage/src/local-refs.js';
++import type {InputSnapshot} from '../../build-storage/src/snapshots.js';
++import {macReadonlyTreeIdentity,type ReadonlyManagedTreeSeal,type MacReadonlyTreeIdentity} from '../../build-storage/src/mac-readonly-seal.js';
++import {assertBuildAttemptContext,type BuildAttemptContext} from './controller.js';
++import {canonicalData} from './parent-profile.js';
++import {approvalFor,check,hash,localPath} from './plans.js';
++import {sameRef,verifyObject} from './receipts.js';
++import type {RuntimePlan} from './types.js';
++import type {MacVmInputFile} from './mac-vm-job.js';
++
++export interface VerifiedMacVmInput {
++  readonly snapshotHash:string;readonly inputHash:string;readonly projectId:string;
++  readonly root:Readonly<MacReadonlyTreeIdentity>;readonly files:readonly Readonly<MacVmInputFile>[];
++  readonly fileCount:number;readonly sizeBytes:number;
++}
++interface InputBinding {plan:RuntimePlan;context:BuildAttemptContext;input:InputApproval;job:BuildJob;seal:ReadonlyManagedTreeSeal}
++const verifiedInputs=new WeakMap<VerifiedMacVmInput,InputBinding>();
++export function assertVerifiedMacVmInput(receipt:VerifiedMacVmInput,plan:RuntimePlan):Readonly<InputBinding> {
++  const binding=verifiedInputs.get(receipt);check(binding && binding.plan===plan,'mac-vm-unverified-input');
++  assertBuildAttemptContext(binding.context);
++  check(canonicalData(macReadonlyTreeIdentity(binding.seal))===canonicalData(receipt.root),'mac-vm-input-guard-binding');
++  return binding;
++}
++export interface VerifyMacVmInputRequest {
++  plan:RuntimePlan;context:BuildAttemptContext;input:InputApproval;job:BuildJob;
++  manifest:{ref:ObjectRef;bytes:Uint8Array};seal:ReadonlyManagedTreeSeal;
++  /** Real bounded pinned reader; every returned metadata byte/hash/ref is verified
++   * here. Caller cannot replace root-approved metadata by returning different bytes. */
++  readMetadata(ref:ObjectRef,context:BuildAttemptContext,signal:AbortSignal):Promise<Uint8Array>;
++}
++/** Full approved metadata plus actual immutable source-tree verification. Does NOT
++ * create/mount images, copy a mutable checkout, install a helper or launch a VM.
++ * Only a concrete kernel-readonly factory guard can mint this private receipt. */
++export async function verifyMacVmInput(request:VerifyMacVmInputRequest,signal:AbortSignal):Promise<VerifiedMacVmInput> {
++  const plan=request.plan,a=approvalFor(plan),context=request.context,seal=request.seal,readMetadata=request.readMetadata;assertBuildAttemptContext(context);
++  check(plan.kind==='xcode-build-v1' && a.recipe.kind==='xcode-build-v1','mac-vm-input-kind');
++  const input=JSON.parse(canonicalData(request.input)) as InputApproval,job=JSON.parse(canonicalData(request.job)) as BuildJob;
++  v.input(input);v.job(job);
++  check(input.reconstructable && input.missingInputs.length===0 && input.projectId===job.projectId &&
++    hash(canonicalData(input))===job.inputHash && context.inputHash===job.inputHash && context.projectId===input.projectId && input.manifest.sha256===input.snapshotHash,'mac-vm-approved-input-binding');
++  check(job.id===plan.jobId && job.profileHash===context.serverProfileHash && context.localRecipeHash===plan.profileHash &&
++    context.compute.workloadId===job.id && context.compute.attemptId===plan.attemptId && context.compute.leaseId===plan.attemptId &&
++    context.source.epoch===context.compute.epoch && context.source.authorityId===context.compute.authorityId,'mac-vm-input-claim-binding');
++  check(request.manifest.bytes instanceof Uint8Array && request.manifest.bytes.byteLength===input.manifest.sizeBytes,'mac-vm-manifest-byte-budget');
++  const manifest={ref:JSON.parse(canonicalData(request.manifest.ref)) as ObjectRef,bytes:Uint8Array.from(request.manifest.bytes)};
++  check(sameRef(input.manifest,manifest.ref),'mac-vm-manifest-ref');verifyObject(manifest,input.projectId);
++  const tree=macReadonlyTreeIdentity(seal),root=rootCopy({path:tree.path,uid:0});
++  const files:MacVmInputFile[]=[],required:string[]=[],paths=new ProjectInputPaths();
++  const groups:{objects:ObjectRef[];files:{path:string;chunks:{object:number;offset:number;sizeBytes:number}[]}[]}[]=[];
++  let total=0;
++  const add=(f:MacVmInputFile)=>{
++    localPath(f.path);v.digest(f.sha256);v.uint(f.sizeBytes,0,64*1048576);
++    check([0o600,0o644,0o700,0o755].includes(f.mode),'mac-vm-input-mode-unsupported');
++    paths.add(f.path);total+=f.sizeBytes;check(files.length<1024 && total<=2*1024**3,'mac-vm-input-budget');
++    files.push(Object.freeze({path:f.path,sha256:f.sha256,sizeBytes:f.sizeBytes,mode:f.mode}));
++  };
++  const raw=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(manifest.bytes)) as InputSnapshot|ProjectInputSnapshot;
++  if(raw.version===2){
++    const snapshot=decodeProjectMetadata<ProjectInputSnapshot>(manifest.bytes,'root'),validation=new ProjectInputValidation(snapshot);
++    check(snapshot.segments.reduce((n,p)=>n+p.ref.sizeBytes,manifest.bytes.byteLength)<=16*1048576,'mac-vm-total-metadata-budget');
++    check(snapshot.projectId===input.projectId && snapshot.totals.files<=1024 && snapshot.totals.bytes<=2*1024**3 &&
++      snapshot.totals.missing===0 && canonicalData(snapshot.git)===canonicalData(input.git),'mac-vm-root-metadata');
++    for(const page of snapshot.segments){
++      check(!signal.aborted,'mac-vm-input-aborted');
++      const observed=await readMetadata(page.ref,context,signal);
++      check(observed instanceof Uint8Array && observed.byteLength===page.ref.sizeBytes,'mac-vm-metadata-byte-budget');
++      const bytes=Uint8Array.from(observed);
++      verifyObject({ref:page.ref,bytes},input.projectId);
++      const segment=decodeProjectMetadata<ProjectInputSegment>(bytes,'segment');validation.accept(segment);
++      segment.files.forEach(add);required.push(...segment.requiredInputs);
++      groups.push({objects:segment.objects,files:segment.files});
++    }
++    validation.finish(true);
++  }else{
++    v.exact(raw,['version','projectId','files','requiredInputs','missingInputs','git','historyEvidence']);
++    check(raw.version===1 && raw.projectId===input.projectId && Array.isArray(raw.files) && raw.files.length>0 && raw.files.length<=128 &&
++      Array.isArray(raw.requiredInputs) && Array.isArray(raw.missingInputs) && raw.missingInputs.length===0 &&
++      canonicalData(raw.git)===canonicalData(input.git),'mac-vm-legacy-metadata');
++    if(raw.git.historyPreserved)validateLocalRef(raw.historyEvidence);
++    else check(raw.historyEvidence===null,'mac-vm-unattested-history-evidence');
++    for(const file of raw.files){
++      v.exact(file,['path','classification','retention','sha256','sizeBytes','chunks','localChunks','mode']);
++      check(['source-input','source-history'].includes(file.classification) && file.retention==='retain' &&
++        Array.isArray(file.chunks) && Array.isArray(file.localChunks) && file.chunks.length===Math.ceil(file.sizeBytes/1048576) &&
++        file.chunks.length===file.localChunks.length && file.chunks.length<=64,'mac-vm-legacy-file');
++      let bytes=0;
++      file.chunks.forEach((chunk,index)=>{
++        v.claim(chunk);validateLocalRef(file.localChunks[index]);
++        check(chunk.ref.projectId===input.projectId && chunk.ref.objectKey===`projects/${input.projectId}/objects/${chunk.ref.sha256}` &&
++          chunk.ref.sizeBytes===Math.min(1048576,file.sizeBytes-index*1048576) &&
++          file.localChunks[index].sha256===chunk.ref.sha256 && file.localChunks[index].sizeBytes===chunk.ref.sizeBytes,'mac-vm-legacy-chunks');
++        bytes+=chunk.ref.sizeBytes;
++      });
++      check(bytes===file.sizeBytes,'mac-vm-legacy-file-size');add(file);
++      groups.push({objects:file.chunks.map(c=>c.ref),files:[{path:file.path,chunks:file.chunks.map((c,i)=>({object:i,offset:0,sizeBytes:c.ref.sizeBytes}))}]});
++    }
++    required.push(...raw.requiredInputs);
++  }
++  check(files.length>0 && required.length<=128 && canonicalData(required)===canonicalData(input.requiredInputs),'mac-vm-required-set-binding');
++  check(input.requiredInputs.every(p=>files.some(f=>f.path===p)),'mac-vm-input-incomplete');
++  // The guard protects every actual file for the whole scan and byte verification.
++  await seal.withReadonlyTrees([root.path],async()=>{
++    check(!signal.aborted,'mac-vm-input-aborted');
++    const expected=new Set(files.map(f=>f.path)),dirs=new Set<string>();
++    for(const f of files){const parts=f.path.split('/');for(let i=1;i<parts.length;i++)dirs.add(parts.slice(0,i).join('/'));}
++    const pending=[''];let entries=0,observedFiles=0;
++    while(pending.length){
++      const parent=pending.pop()!,base=parent?join(root.path,parent):root.path;
++      for(const name of await siblingNames(base,signal,20000)){
++        check(++entries<=20000,'mac-vm-input-entry-budget');const path=parent?`${parent}/${name}`:name;
++        const s=await lstat(join(root.path,path));
++        if(s.isDirectory()){check(dirs.has(path),'mac-vm-undeclared-directory');await inspectDirectory(root,path,signal,false);pending.push(path);}
++        else{check(expected.has(path),'mac-vm-undeclared-input');await inspectFile(root,path,signal,false);observedFiles++;}
++      }
++    }
++    check(observedFiles===files.length,'mac-vm-actual-input-set');
++    const byPath=new Map(files.map(f=>[f.path,f]));
++    for(const group of groups){
++      // At most 128 one-MiB objects per segment; never buffer the whole input.
++      const blobs=group.objects.map(ref=>Buffer.alloc(ref.sizeBytes));
++      for(const entry of group.files){
++        const file=byPath.get(entry.path)!;
++        const stat=await inspectFile(root,file.path,signal,false),digest=createHash('sha256');
++        check(stat.size===file.sizeBytes,'mac-vm-source-size');
++        await readFileChunks(root,file.path,stat,1048576,async(bytes,index)=>{
++          digest.update(bytes);const range=entry.chunks[index];
++          check(range && range.sizeBytes===bytes.byteLength,'mac-vm-source-range');
++          blobs[range.object].set(bytes,range.offset);
++        },signal,false);
++        check(digest.digest('hex')===file.sha256,'mac-vm-source-content');
++      }
++      group.objects.forEach((ref,i)=>check(createHash('sha256').update(blobs[i]).digest('hex')===ref.sha256,'mac-vm-source-object-content'));
++    }
++  },signal);
++  check(!signal.aborted,'mac-vm-input-aborted');
++  Object.freeze(input.git);Object.freeze(input.requiredInputs);Object.freeze(input.missingInputs);Object.freeze(input.manifest);Object.freeze(input);Object.freeze(job);
++  const receipt:VerifiedMacVmInput=Object.freeze({snapshotHash:input.snapshotHash,inputHash:job.inputHash,projectId:input.projectId,
++    root:tree,files:Object.freeze(files),fileCount:files.length,sizeBytes:total});
++  verifiedInputs.set(receipt,Object.freeze({plan,context,input,job,seal}));return receipt;
++}
+--- /dev/null
++++ b/packages/build-runtime/src/mac-vm-intake.ts
+@@ -0,0 +1,173 @@
++import {createHash} from 'node:crypto';
++import {constants} from 'node:fs';
++import {open,lstat} from 'node:fs/promises';
++import {join} from 'node:path';
++import * as v from '../../build-jobs/src/validation.js';
++import {macReadonlyTreeIdentity,type ReadonlyManagedTreeSeal} from '../../build-storage/src/mac-readonly-seal.js';
++import {relative,uniquePaths} from '../../build-storage/src/checks.js';
++import {inspectFile} from '../../build-storage/src/filesystem.js';
++import {collectOutputs,writeResultManifest,validateFileSelections} from '../../build-storage/src/packaging.js';
++import type {ApprovedFile,GrantScope,LocalRef,PackagingPorts} from '../../build-storage/src/types.js';
++import {canonical} from './host.js';
++import {assertParentBinding,canonicalData,type ParentProfileBinding} from './parent-profile.js';
++import {assertVerifiedMacVmInput} from './mac-vm-input.js';
++import {macVmGuestInput,type MacVmGuestJob} from './mac-vm-job.js';
++import {macVmStoppedBinding,type MacVmStopEvidence} from './mac-vm.js';
++import {ioHash,type MacVmIoRequest} from './mac-vm-staging.js';
++import {parentDirectories,readMacVmMetadata,verifyMacVmTree,type TreeFile} from './mac-vm-tree.js';
++import {check,hash} from './plans.js';
++import {verifyObject,verifyPublish,type BoundObject,type PublishReceipt} from './receipts.js';
++import type {RuntimePlan} from './types.js';
++
++const MAX_RAW=16*1024**3;
++interface IntakeBinding {plan:RuntimePlan;job:MacVmGuestJob;stop:MacVmStopEvidence;rawSha256:string}
++const requests=new WeakMap<MacVmIoRequest,IntakeBinding>();
++const requested=new WeakSet<MacVmStopEvidence>();
++const publishedRequests=new WeakSet<MacVmIoRequest>();
++const intakes=new WeakMap<VerifiedMacVmResult,IntakeBinding&{seal:ReadonlyManagedTreeSeal;request:MacVmIoRequest;published:boolean}>();
++export interface VerifiedMacVmResult {
++  readonly kind:'verified-stopped-guest-output';readonly root:string;readonly rawSha256:string;
++  readonly requestSha256:string;readonly guestResultSha256:string;
++  /** Local byte/lineage verification only; never authority acceptance. */
++  readonly authorityStatus:'not-submitted';
++}
++/** Hash the exact stopped backing file, before any owner-operated mount/copy. The
++ * real stop brand, plan, guest job and inode must all agree. One request per stop;
++ * uncertain/interrupted processing requires explicit retained-state reconciliation. */
++export async function prepareMacVmIntake(plan:RuntimePlan,job:MacVmGuestJob,stop:MacVmStopEvidence,
++  guardSha256:string,signal:AbortSignal):Promise<MacVmIoRequest>{
++  const binding=macVmStoppedBinding(stop,plan,job),o=binding.output;
++  check(binding.executionStarted,'mac-vm-result-without-observed-start');
++  v.digest(guardSha256);check(o.sizeBytes<=MAX_RAW&&!signal.aborted,'mac-vm-intake-size-or-abort');
++  check(!requested.has(stop),'mac-vm-intake-already-requested');requested.add(stop);
++  await canonical(o.path,o.uid,'file');
++  const f=await open(o.path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
++  let rawSha256:string;
++  try{
++    const before=await f.stat({bigint:true});
++    check(before.isFile()&&before.nlink===1n&&before.uid===BigInt(o.uid)&&(before.mode&0o7777n)===0o600n&&
++      String(before.dev)===o.device&&String(before.ino)===o.inode&&before.size===BigInt(o.sizeBytes),'mac-vm-stopped-disk-binding');
++    const h=createHash('sha256'),buffer=Buffer.alloc(1048576);let offset=0;
++    while(offset<o.sizeBytes){
++      check(!signal.aborted,'mac-vm-intake-aborted');
++      const {bytesRead}=await f.read(buffer,0,Math.min(buffer.length,o.sizeBytes-offset),offset);
++      check(bytesRead>0,'mac-vm-intake-short');h.update(buffer.subarray(0,bytesRead));offset+=bytesRead;
++    }
++    const after=await f.stat({bigint:true}),named=await lstat(o.path,{bigint:true});
++    check([after,named].every(s=>s.dev===before.dev&&s.ino===before.ino&&s.uid===before.uid&&s.mode===before.mode&&s.nlink===before.nlink&&
++      s.size===before.size&&s.mtimeNs===before.mtimeNs&&s.ctimeNs===before.ctimeNs),'mac-vm-output-mutated');
++    rawSha256=h.digest('hex');
++  }finally{await f.close();}
++  check(!signal.aborted,'mac-vm-intake-aborted');
++  const request=JSON.stringify({version:1,kind:'intake',attemptId:plan.attemptId,guardSha256,jobSha256:binding.guestJobSha256,output:o,rawSha256});
++  const receipt=Object.freeze({kind:'intake' as const,request,sha256:hash(request)});
++  requests.set(receipt,{plan,job,stop,rawSha256});return receipt;
++}
++
++interface GuestResult {
++  version:2;identity:string;attemptId:string;jobId:string;profileHash:string;sourceHash:string;
++  guestMacos:string;xcodeBuild:string;exitCode:number;limited:boolean;
++  outputs:(TreeFile&{mode:number})[];directories:string[];logSha256:string;logBytes:number;
++}
++const bundle=(path:string)=>/\.(app|dSYM|xcarchive)$/.test(path);
++/** This must run INSIDE the concrete readonly guard, before any publication. */
++async function verifyIntake(binding:IntakeBinding,request:MacVmIoRequest,root:string,signal:AbortSignal):Promise<string>{
++  const {plan,job,stop}=binding,stopped=macVmStoppedBinding(stop,plan,job);
++  assertVerifiedMacVmInput(macVmGuestInput(job,plan),plan);
++  const bytes=await readMacVmMetadata(root,'result.json',1048576,signal);
++  const result=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)) as GuestResult;
++  v.exact(result,['version','identity','attemptId','jobId','profileHash','sourceHash','guestMacos','xcodeBuild','exitCode','limited','outputs','directories','logSha256','logBytes']);
++  check(result.version===2&&result.identity===job.identity&&result.attemptId===job.attemptId&&result.jobId===job.jobId&&
++    result.profileHash===job.profileHash&&result.sourceHash===job.sourceHash&&result.guestMacos===job.recipe.macos&&
++    result.xcodeBuild===job.recipe.xcodeBuild&&result.exitCode===0&&result.limited===false,'mac-vm-guest-success-lineage');
++  check(Array.isArray(result.outputs)&&Array.isArray(result.directories)&&result.outputs.length+result.directories.length<=19990,'mac-vm-result-count');
++  v.digest(result.logSha256);v.uint(result.logBytes,0,job.limits.maxOutputBytes);
++  const selected=job.recipe.outputPaths;uniquePaths([...selected,'.foundry-vm.log']);
++  const allowed=(p:string)=>selected.some(s=>p===s||(bundle(s)&&p.startsWith(`${s}/`)));
++  const files:TreeFile[]=[];let total=result.logBytes;
++  for(const file of result.outputs){
++    v.exact(file,['path','sha256','sizeBytes','mode']);relative(file.path);v.digest(file.sha256);v.uint(file.sizeBytes,0,job.limits.maxOutputBytes);
++    check(allowed(file.path)&&[0o644,0o755].includes(file.mode),'mac-vm-unapproved-output');
++    total+=file.sizeBytes;check(total<=job.limits.maxOutputBytes,'mac-vm-result-total');
++    files.push({path:`payload/${file.path}`,sha256:file.sha256,sizeBytes:file.sizeBytes});
++  }
++  const declaredDirs=new Set<string>();
++  for(const dir of result.directories){relative(dir);check(allowed(dir)&&!declaredDirs.has(dir),'mac-vm-output-directory');declaredDirs.add(dir);}
++  for(const path of selected)check(bundle(path)?declaredDirs.has(path)&&!result.outputs.some(f=>f.path===path):
++    result.outputs.some(f=>f.path===path)&&!declaredDirs.has(path),'mac-vm-required-output-missing-or-type');
++  const provenance=canonicalData({version:1,kind:'intake',requestSha256:request.sha256,jobSha256:stopped.guestJobSha256,
++    rawSha256:binding.rawSha256,output:stopped.output});
++  files.push({path:'payload/.foundry-vm.log',sha256:result.logSha256,sizeBytes:result.logBytes},
++    {path:'result.json',sha256:ioHash(bytes),sizeBytes:bytes.byteLength},
++    {path:'provenance.json',sha256:hash(provenance),sizeBytes:Buffer.byteLength(provenance)});
++  const directories=new Set([...parentDirectories(files),...result.directories.map(d=>`payload/${d}`)]);
++  // Include implicit parents of empty bundles; reject other unexplained trees.
++  for(const d of [...directories])for(const p of parentDirectories([{path:`${d}/_`}]))directories.add(p);
++  await verifyMacVmTree(root,files,[...directories],signal);
++  for(const file of result.outputs){
++    const stat=await inspectFile({path:root,uid:0},`payload/${file.path}`,signal,false);
++    check((stat.mode&0o7777)===(file.mode===0o755?0o555:0o444),'mac-vm-output-mode');
++  }
++  return ioHash(bytes);
++}
++
++export async function acceptMacVmIntake(plan:RuntimePlan,job:MacVmGuestJob,stop:MacVmStopEvidence,request:MacVmIoRequest,
++  seal:ReadonlyManagedTreeSeal,signal:AbortSignal):Promise<VerifiedMacVmResult>{
++  const binding=requests.get(request);check(binding?.plan===plan&&binding.job===job&&binding.stop===stop,'mac-vm-intake-request-binding');
++  const root=`/Library/Foundry/VM/attempts/${plan.attemptId}/intake`,tree=macReadonlyTreeIdentity(seal);
++  check(tree.path===root&&tree.mountPoint===root,'mac-vm-intake-mount-binding');
++  const guestResultSha256=await seal.withReadonlyTrees([root],()=>verifyIntake(binding,request,root,signal),signal);
++  const receipt=Object.freeze({kind:'verified-stopped-guest-output' as const,root,rawSha256:binding.rawSha256,
++    requestSha256:request.sha256,guestResultSha256,authorityStatus:'not-submitted' as const});
++  intakes.set(receipt,{...binding,request,seal,published:false});return receipt;
++}
++
++/** Real storage composition, invoked separately after matching operational
++ * approval. The existing broker/capacity/fence and create-only writer remain the
++ * publication authority. No fabricated generations or no-op writable seal. */
++async function publishIntake(receipt:VerifiedMacVmResult,profile:ParentProfileBinding,
++  scope:GrantScope,outputs:readonly ApprovedFile[],base:PackagingPorts,signal:AbortSignal):Promise<PublishReceipt>{
++  const known=intakes.get(receipt);check(known&&!known.published&&!publishedRequests.has(known.request),'mac-vm-unverified-or-replayed-intake');
++  assertParentBinding(profile);
++  const {plan,job}=known,binding=assertVerifiedMacVmInput(macVmGuestInput(job,plan),plan),context=binding.context;
++  check(profile.localRecipeHash===plan.profileHash&&profile.serverProfileHash===context.serverProfileHash&&
++    scope.projectId===context.projectId&&canonicalData(scope.compute)===canonicalData(context.compute),'mac-vm-publication-scope');
++  const selections=JSON.parse(canonicalData(outputs)) as ApprovedFile[];validateFileSelections(selections,'outputs');
++  check(selections.length===plan.outputPaths.length&&plan.outputPaths.every(p=>selections.some(s=>s.path===p)),'mac-vm-publication-selection');
++  // Latch BEFORE awaits. Failed or ambiguous publication is retained, never retried
++  // automatically against another namespace or a new reservation.
++  known.published=true;publishedRequests.add(known.request);
++  const refs=new Map<string,LocalRef>();
++  const ports:PackagingPorts={...base,readSeal:{withReadonlyTrees:async(roots,run,sig)=>{
++    check(roots.length===1&&roots[0]===join(receipt.root,'payload'),'mac-vm-intake-collection-root');
++    return known.seal.withReadonlyTrees([receipt.root],async()=>{
++      check(await verifyIntake(known,known.request,receipt.root,sig)===receipt.guestResultSha256,'mac-vm-intake-replaced');
++      return run();
++    },sig);
++  }},local:{put:async(bytes,sig)=>{const local=await base.local.put(bytes,sig);refs.set(`${local.sha256}:${local.sizeBytes}`,local);return local;},
++    read:(ref,sig)=>base.local.read(ref,sig)}};
++  const collected=await collectOutputs({root:{path:join(receipt.root,'payload'),uid:0},profile:profile.profile,scope,
++    outputs:selections,logs:[{path:'.foundry-vm.log',classification:'build-log'}]},ports,signal);
++  const staged=await writeResultManifest({jobId:binding.job.id,attemptId:plan.attemptId,inputHash:context.inputHash,
++    profileHash:context.serverProfileHash,exitCode:0,collected},ports,signal);
++  const objects:BoundObject[]=[];
++  for(const claim of [...staged.manifest.outputs.flatMap(o=>o.chunks),...staged.manifest.logs]){
++    const local=refs.get(`${claim.ref.sha256}:${claim.ref.sizeBytes}`);check(local,'mac-vm-publication-local-ref');
++    const bytes=await base.local.read(local,signal);verifyObject({ref:claim.ref,bytes},context.projectId);objects.push({claim,bytes});
++  }
++  const bytes=await base.local.read(staged.local,signal),result={manifest:{claim:staged.artifact,bytes},objects};
++  verifyPublish(result,binding.job,plan,profile.profile.limits.maxOutputBytes);
++  check(!signal.aborted,'mac-vm-publish-aborted');return result;
++}
++
++export async function publishMacVmIntake(receipt:VerifiedMacVmResult,profile:ParentProfileBinding,
++  scope:GrantScope,outputs:readonly ApprovedFile[],base:PackagingPorts,signal:AbortSignal):Promise<PublishReceipt>{
++  const lifetime=new AbortController(),abort=()=>lifetime.abort();
++  signal.addEventListener('abort',abort,{once:true});if(signal.aborted)lifetime.abort();
++  try{return await publishIntake(receipt,profile,scope,outputs,base,lifetime.signal);}
++  finally{
++    // A guard failure can reject before a callback finishes. Cancel its concrete
++    // storage/read operations too; retain any already admitted partial writes.
++    lifetime.abort();signal.removeEventListener('abort',abort);
++  }
++}
+--- a/packages/build-runtime/src/mac-vm-job.ts
++++ b/packages/build-runtime/src/mac-vm-job.ts
+@@ -1,5 +1,4 @@
+-import type { InputApproval } from '../../build-jobs/src/contracts.js';
+-import { assertBuildAttemptContext, type BuildAttemptContext } from './controller.js';
++import {assertVerifiedMacVmInput,type VerifiedMacVmInput} from './mac-vm-input.js';
+ import { approvalFor, check, hash, localPath } from './plans.js';
+ import { canonicalData } from './parent-profile.js';
+ import type { RuntimePlan } from './types.js';
+@@ -13,22 +12,24 @@
+     configuration:'Debug'|'Release';xcodeBuild:string;macos:string;outputPaths:readonly string[]};
+   limits:{cpu:number;timeoutMs:number;maxOutputBytes:number};files:readonly MacVmInputFile[];
+ }
+-const guestJobs=new WeakMap<MacVmGuestJob,RuntimePlan>();
++const guestJobs=new WeakMap<MacVmGuestJob,{plan:RuntimePlan;input:VerifiedMacVmInput}>();
+ export function assertMacVmGuestJob(job:MacVmGuestJob,plan:RuntimePlan):void {
+-  check(guestJobs.get(job) === plan,'mac-vm-unbranded-guest-job');
++  check(guestJobs.get(job)?.plan === plan,'mac-vm-unbranded-guest-job');
++}
++export function macVmGuestInput(job:MacVmGuestJob,plan:RuntimePlan):VerifiedMacVmInput {
++  assertMacVmGuestJob(job,plan);return guestJobs.get(job)!.input;
+ }
+ export const macVmIdentity = (plan:RuntimePlan):string => {
+   approvalFor(plan);
+   return `vm:${hash(JSON.stringify([plan.jobId,plan.attemptId,plan.profileHash]))}`;
+ };
+-/** Encode only an explicitly selected guest job. This neither verifies the manifest
++/** Encode only a privately verified complete immutable snapshot. This neither stages
+  * nor creates/mounts an image, installs a service, runs a VM or approves placement.
+- * Caller must use the independently verified approved snapshot's complete file list.
+  * No host path, credentials or launch capability are serialized into the guest. */
+-export function encodeMacVmGuestJob(plan:RuntimePlan,context:BuildAttemptContext,input:InputApproval,
+-  selectedFiles:readonly MacVmInputFile[]):Readonly<{job:MacVmGuestJob;bytes:Uint8Array;sha256:string}> {
++export function encodeMacVmGuestJob(plan:RuntimePlan,verified:VerifiedMacVmInput):Readonly<{job:MacVmGuestJob;bytes:Uint8Array;sha256:string}> {
+   const a = approvalFor(plan),r=a.recipe;
+-  assertBuildAttemptContext(context);
++  const binding=assertVerifiedMacVmInput(verified,plan),{context,input}=binding;
++  const selectedFiles=verified.files;
+   check(r.kind === 'xcode-build-v1' && plan.kind === r.kind,'mac-vm-xcode-only');
+   check(context.localRecipeHash === plan.profileHash && context.compute.workloadId === plan.jobId &&
+     context.compute.attemptId === plan.attemptId && context.compute.leaseId === plan.attemptId,'mac-vm-claim-binding');
+@@ -63,7 +64,7 @@
+     recipe:{developerDir:r.developerDir,project:r.project,scheme:r.scheme,sdk:r.sdk,destination:r.destination,configuration:r.configuration,
+       xcodeBuild:r.xcodeBuild,macos:r.macos,outputPaths:Object.freeze([...r.outputPaths])},
+     limits:{cpu:plan.cpu,timeoutMs:plan.timeoutMs,maxOutputBytes:a.limits.maxOutputBytes},files:Object.freeze(files)};
+-  Object.freeze(job.recipe);Object.freeze(job.limits);Object.freeze(job);guestJobs.set(job,plan);
++  Object.freeze(job.recipe);Object.freeze(job.limits);Object.freeze(job);guestJobs.set(job,{plan,input:verified});
+   const bytes=Buffer.from(canonicalData(job));check(bytes.byteLength <= MAC_VM_JOB_MAX_BYTES,'mac-vm-job-byte-budget');
+   return Object.freeze({job,bytes,sha256:hash(bytes.toString('utf8'))});
+ }
+--- /dev/null
++++ b/packages/build-runtime/src/mac-vm-staging.ts
+@@ -0,0 +1,53 @@
++import {createHash} from 'node:crypto';
++import {macReadonlyTreeIdentity,type ReadonlyManagedTreeSeal} from '../../build-storage/src/mac-readonly-seal.js';
++import {assertVerifiedMacVmInput} from './mac-vm-input.js';
++import {assertMacVmGuestJob,macVmGuestInput,type MacVmGuestJob} from './mac-vm-job.js';
++import {canonicalData} from './parent-profile.js';
++import {check,hash} from './plans.js';
++import {parentDirectories,verifyMacVmTree,type TreeFile} from './mac-vm-tree.js';
++import type {RuntimePlan} from './types.js';
++
++export interface MacVmIoRequest {readonly kind:'stage'|'intake';readonly request:string;readonly sha256:string}
++export interface StagedMacVmInput {readonly path:string;readonly requestSha256:string;readonly guestJobSha256:string}
++const requests=new WeakMap<MacVmIoRequest,{plan:RuntimePlan;job:MacVmGuestJob}>();
++const staged=new WeakMap<StagedMacVmInput,{plan:RuntimePlan;job:MacVmGuestJob;seal:ReadonlyManagedTreeSeal;files:TreeFile[]}>();
++export const ioHash=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
++/** Prepare data ONLY. Root operator must separately approve and invoke the supplied
++ * mac-vm-io.py source. No sudo, helper installation, copy or mount at this boundary. */
++export function prepareMacVmStaging(plan:RuntimePlan,job:MacVmGuestJob,guardSha256:string):MacVmIoRequest {
++  assertMacVmGuestJob(job,plan);const verified=macVmGuestInput(job,plan);assertVerifiedMacVmInput(verified,plan);
++  check(/^[a-f0-9]{64}$/.test(guardSha256),'mac-vm-guard-pin');
++  check(verified.root.path.startsWith('/Library/Foundry/VM/sources/'),'mac-vm-owner-source-root-required');
++  check(verified.sizeBytes+Buffer.byteLength(canonicalData(job))+4096<=2*1024**3,'mac-vm-staged-tree-byte-budget');
++  const request=JSON.stringify({version:1,kind:'stage',attemptId:plan.attemptId,guardSha256,
++    job:JSON.parse(canonicalData(job)),jobSha256:hash(canonicalData(job)),source:verified.root});
++  check(Buffer.byteLength(request)<=524288,'mac-vm-io-request-budget');
++  const receipt=Object.freeze({kind:'stage' as const,request,sha256:hash(request)});requests.set(receipt,{plan,job});return receipt;
++}
++/** Observe actual mounted bytes. A helper's stdout, receipt, or claimed successful
++ * copy is insufficient. The seal pins the real readonly volume and root inode. */
++export async function acceptMacVmStaging(plan:RuntimePlan,job:MacVmGuestJob,request:MacVmIoRequest,
++  seal:ReadonlyManagedTreeSeal,signal:AbortSignal):Promise<StagedMacVmInput>{
++  const known=requests.get(request);check(known?.plan===plan&&known.job===job,'mac-vm-stage-request-binding');
++  const path=`/Library/Foundry/VM/attempts/${plan.attemptId}/input`,tree=macReadonlyTreeIdentity(seal);
++  check(tree.path===path&&tree.mountPoint===path,'mac-vm-stage-mount-binding');
++  const jobText=canonicalData(job),provenance=canonicalData({version:1,kind:'stage',requestSha256:request.sha256,jobSha256:hash(jobText)});
++  const files:TreeFile[]=[{path:'job.json',sha256:hash(jobText),sizeBytes:Buffer.byteLength(jobText)},
++    {path:'provenance.json',sha256:hash(provenance),sizeBytes:Buffer.byteLength(provenance)},
++    ...job.files.map(f=>({path:`source/${f.path}`,sha256:f.sha256,sizeBytes:f.sizeBytes}))];
++  await seal.withReadonlyTrees([path],()=>verifyMacVmTree(path,files,parentDirectories(files),signal),signal);
++  const receipt=Object.freeze({path,requestSha256:request.sha256,guestJobSha256:hash(jobText)});
++  staged.set(receipt,{plan,job,seal,files});return receipt;
++}
++/** Fresh full verification and held readonly guard span physical launch through
++ * whole-VM stop. A receipt does not turn a prior observation into eternal proof. */
++export async function withStagedMacVmInput<T>(receipt:StagedMacVmInput,plan:RuntimePlan,job:MacVmGuestJob,
++  run:()=>Promise<T>,signal:AbortSignal):Promise<T>{
++  const binding=staged.get(receipt);check(binding?.plan===plan&&binding.job===job,'mac-vm-unverified-staging');
++  check(binding.seal.operationLimitMs>=plan.timeoutMs+120000,'mac-vm-stage-guard-lifetime-too-short');
++  assertVerifiedMacVmInput(macVmGuestInput(job,plan),plan);
++  return binding.seal.withReadonlyTrees([receipt.path],async()=>{
++    await verifyMacVmTree(receipt.path,binding.files,parentDirectories(binding.files),signal);
++    check(!signal.aborted,'mac-vm-stage-aborted');return run();
++  },signal);
++}
+--- /dev/null
++++ b/packages/build-runtime/src/mac-vm-tree.ts
+@@ -0,0 +1,41 @@
++import {createHash} from 'node:crypto';
++import {lstat} from 'node:fs/promises';
++import {join} from 'node:path';
++import {inspectDirectory,inspectFile,readFileChunks,siblingNames} from '../../build-storage/src/filesystem.js';
++import {relative,uniquePaths} from '../../build-storage/src/checks.js';
++import {check} from './plans.js';
++
++export interface TreeFile {path:string;sha256:string;sizeBytes:number}
++/** Caller holds the concrete kernel-readonly seal. Exact files AND directories;
++ * bounded names, no alias/link/mount/special files, same-descriptor byte hashes. */
++export async function verifyMacVmTree(path:string,files:readonly TreeFile[],directories:readonly string[],signal:AbortSignal):Promise<void> {
++  check(files.length<=20000 && directories.length<=20000,'mac-vm-tree-count');
++  uniquePaths(files.map(f=>f.path));const wanted=new Set(files.map(f=>f.path)),dirs=new Set(directories);
++  check(dirs.size===directories.length,'mac-vm-directory-duplicates');
++  for(const dir of dirs){relative(dir);check(!wanted.has(dir),'mac-vm-tree-overlap');}
++  const root={path,uid:0},pending=[''];let count=0,seen=0,seenDirs=0;
++  while(pending.length){
++    const parent=pending.pop()!;
++    for(const name of await siblingNames(join(path,parent),signal,20000)){
++      check(++count<=20000,'mac-vm-tree-entry-budget');const p=parent?`${parent}/${name}`:name;
++      const s=await lstat(join(path,p));
++      if(s.isDirectory()){check(dirs.has(p),'mac-vm-extra-directory');await inspectDirectory(root,p,signal,false);pending.push(p);seenDirs++;}
++      else{check(wanted.has(p),'mac-vm-extra-file');await inspectFile(root,p,signal,false);seen++;}
++    }
++  }
++  check(seen===files.length && seenDirs===dirs.size,'mac-vm-incomplete-tree');
++  for(const file of files){
++    const stat=await inspectFile(root,file.path,signal,false),h=createHash('sha256');
++    check(Number.isSafeInteger(file.sizeBytes)&&file.sizeBytes>=0&&stat.size===file.sizeBytes,'mac-vm-tree-size');
++    await readFileChunks(root,file.path,stat,1048576,async bytes=>{h.update(bytes);},signal,false);
++    check(h.digest('hex')===file.sha256,'mac-vm-tree-digest');
++  }
++}
++export function parentDirectories(files:readonly {path:string}[]):string[]{
++  const dirs=new Set<string>();for(const file of files){const parts=file.path.split('/');for(let i=1;i<parts.length;i++)dirs.add(parts.slice(0,i).join('/'));}return [...dirs];
++}
++export async function readMacVmMetadata(root:string,path:string,limit:number,signal:AbortSignal):Promise<Uint8Array>{
++  const tree={path:root,uid:0},stat=await inspectFile(tree,path,signal,false);
++  check(stat.size>0&&stat.size<=limit,'mac-vm-metadata-limit');const parts:Uint8Array[]=[];
++  await readFileChunks(tree,path,stat,65536,async b=>{parts.push(b);},signal,false);return Buffer.concat(parts);
++}
+--- a/packages/build-runtime/src/mac-vm.ts
++++ b/packages/build-runtime/src/mac-vm.ts
+@@ -7,9 +7,10 @@
+ import { performance } from 'node:perf_hooks';
+ import { canonical, HostJournal, validateHost } from './host.js';
+ import { absolute, approvalFor, check } from './plans.js';
+-import { macVmIdentity, assertMacVmGuestJob, MAC_VM_JOB_MAX_BYTES, type MacVmGuestJob } from './mac-vm-job.js';
++import { macVmIdentity, assertMacVmGuestJob, macVmGuestInput, MAC_VM_JOB_MAX_BYTES, type MacVmGuestJob } from './mac-vm-job.js';
+ import { canonicalData } from './parent-profile.js';
+ import type { RuntimePlan } from './types.js';
++import {withStagedMacVmInput,type StagedMacVmInput} from './mac-vm-staging.js';
+ 
+ export interface MacVmHostConfiguration {
+   version:1;identity:string;jobId:string;attemptId:string;profileHash:string;guestJobSha256:string;
+@@ -26,6 +27,34 @@
+   /** VM stop is containment evidence ONLY; this never attests a successful build. */
+   result:'not-collected';
+ }
++export interface MacVmOutputIdentity {
++  readonly path:string;readonly device:string;readonly inode:string;readonly sizeBytes:number;readonly uid:number;
++}
++export interface MacVmStoppedBinding {
++  readonly plan:RuntimePlan;readonly guestJob:MacVmGuestJob;readonly output:MacVmOutputIdentity;
++  readonly guestJobSha256:string;readonly helperSha256:string;
++  readonly executionStarted:boolean;
++}
++const stoppedSessions=new WeakMap<MacVmStopEvidence,MacVmStoppedBinding>();
++/** Stop evidence cannot be reconstructed from JSON, a signature-free assertion,
++ * a matching identity string, a PID check or a previous process incarnation. */
++export function macVmStoppedBinding(evidence:MacVmStopEvidence,plan:RuntimePlan,guestJob:MacVmGuestJob):MacVmStoppedBinding {
++  const binding=stoppedSessions.get(evidence);
++  check(binding && binding.plan===plan && binding.guestJob===guestJob && evidence.stopped &&
++    evidence.basis==='virtual-machine-stopped','mac-vm-untrusted-stop-evidence');
++  assertMacVmGuestJob(guestJob,plan);return binding;
++}
++async function outputIdentity(path:string,uid:number,maximum:number):Promise<MacVmOutputIdentity> {
++  await canonical(path,uid,'file');
++  const f=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
++  try {
++    const s=await f.stat({bigint:true}),named=await lstat(path,{bigint:true});
++    check(s.isFile() && s.uid===BigInt(uid) && s.nlink===1n && (s.mode&0o7777n)===0o600n && s.size>0n && s.size<=BigInt(maximum) &&
++      named.dev===s.dev && named.ino===s.ino && named.size===s.size && named.uid===s.uid && named.mode===s.mode,'mac-vm-output-identity');
++    return Object.freeze({path,device:String(s.dev),inode:String(s.ino),sizeBytes:Number(s.size),uid});
++  }finally{await f.close();}
++}
++
+ export interface MacVmSession {
+   readonly identity:string;
+   /** Never reject and never infer stop from a PID/EOF/exit code alone. */
+@@ -65,7 +94,7 @@
+  * synchronously check cancellation using the same authority observation as
+  * the controller. The Swift helper anchors each one-use permit to its OWN clock.
+  * Caller retains the host reservation on any unknown state, including client loss. */
+-export async function launchMacVmContainment(plan:RuntimePlan,policy:MacVmHostPolicy,
++async function launchMacVmUnsealed(plan:RuntimePlan,policy:MacVmHostPolicy,
+   guestJob:MacVmGuestJob,currentFence:()=>Readonly<{remainingMs:number}>,signal:AbortSignal):Promise<MacVmSession> {
+   const approved=approvalFor(plan);assertMacVmGuestJob(guestJob,plan);
+   check(process.platform==='darwin' && process.arch==='arm64' && plan.kind==='xcode-build-v1','mac-vm-arm64-only');
+@@ -82,13 +111,20 @@
+   check(c.version===1 && c.identity===identity && c.jobId===plan.jobId && c.attemptId===plan.attemptId && c.profileHash===plan.profileHash,'mac-vm-config-binding');
+   check(c.helperUID===approved.host.uid && process.getuid?.()===c.helperUID && c.cpuCount===plan.cpu && c.memoryBytes===plan.ramMib*1048576 && c.maxRunSeconds*1000===plan.timeoutMs && Number.isSafeInteger(c.maxRunSeconds) && c.maxRunSeconds>=1 && c.maxRunSeconds<=3600,'mac-vm-config-limits');
+   for(const path of [c.bootDisk,c.outputDisk,c.auxiliaryStorage,c.hardwareModel,c.machineIdentifier,c.inputDirectory])absolute(path);
+-  for(const n of [c.maxBootBytes,c.maxOutputBytes])check(Number.isSafeInteger(n) && n>0 && n<=2*1024**4,'mac-vm-disk-limit');
++  const imageBase=`/Library/Foundry/VM/attempts/${plan.attemptId}`;
++  check(c.bootDisk===`${imageBase}/boot.raw` && c.outputDisk===`${imageBase}/outputs.raw` &&
++    c.auxiliaryStorage===`${imageBase}/auxiliary.bin` && c.hardwareModel===`${imageBase}/hardware-model.bin` &&
++    c.machineIdentifier===`${imageBase}/machine-identifier.bin` && c.inputDirectory===`${imageBase}/input`,'mac-vm-fixed-artifact-paths');
++  check(c.helperUID>=501&&c.memoryBytes>=2*1024**3&&c.memoryBytes<=64*1024**3,'mac-vm-native-host-limits');
++  for(const [n,maximum] of [[c.maxBootBytes,128*1024**3],[c.maxOutputBytes,8*1024**3]])
++    check(Number.isSafeInteger(n)&&n>=1048576&&n<=maximum&&n%512===0,'mac-vm-disk-limit');
+   const encoded=JSON.stringify(c);check(Buffer.byteLength(encoded)<=16384,'mac-vm-config-budget');
+   await validateHost(plan);currentFence();check(!signal.aborted,'mac-vm-cancelled');
+   const imageVolume=await statfs(dirname(c.bootDisk));currentFence();
+   check(imageVolume.bavail*imageVolume.bsize>=Math.max(50*1024**3,approved.limits.minFreeBytes),'mac-vm-image-disk-headroom');
+   check(freemem()>=c.memoryBytes+1024**3,'mac-vm-host-memory-headroom');
+   await pinHelper(owner.executable,owner.sha256);currentFence();check(!signal.aborted,'mac-vm-cancelled');
++  const output=await outputIdentity(c.outputDisk,c.helperUID,c.maxOutputBytes);currentFence();check(!signal.aborted,'mac-vm-cancelled');
+   // Marker before the only process launch. Persistence failure never starts helper.
+   const reservation=await new HostJournal(approved.host).reserve(plan);
+   await reservation.recordIdentity(identity);currentFence();check(!signal.aborted,'mac-vm-cancelled');
+@@ -178,7 +214,16 @@
+       await reservation.finish({stopped:confirmed,basis:confirmed?'host-containment-inspect':'unknown',identity},'quarantined');
+       // A timed-out observation is terminal for this client; later clean closure
+       // can be reconciled from durable evidence, never silently upgrade it here.
+-      if(confirmed && !observationResolved){observationResolved=true;phase='stopped';resolve({identity,stopped:true,basis:'virtual-machine-stopped',result:'not-collected'});}
++      if(confirmed && !observationResolved){
++        const after=await outputIdentity(c.outputDisk,c.helperUID,c.maxOutputBytes);
++        check(canonicalData(after)===canonicalData(output),'mac-vm-output-replaced');
++        // A late filesystem observation may have crossed the unknown deadline.
++        if(observationResolved){settleUnknown();return;}
++        const proof:MacVmStopEvidence=Object.freeze({identity,stopped:true,basis:'virtual-machine-stopped',result:'not-collected'});
++        macVmGuestInput(guestJob,plan); // retain the verified snapshot/job chain
++        stoppedSessions.set(proof,Object.freeze({plan,guestJob,output,guestJobSha256:c.guestJobSha256,helperSha256:owner.sha256,executionStarted:started}));
++        observationResolved=true;phase='stopped';resolve(proof);
++      }
+       else settleUnknown();
+     }catch{settleUnknown();}
+     finally{if(stopDeadline)clearTimeout(stopDeadline);}
+@@ -191,3 +236,30 @@
+     finally{if(timer)clearTimeout(timer);}
+   }});
+ }
++
++/** Only the staged-input API can reach the concrete launcher. The public settled
++ * promise includes guard postflight; a guard timeout/fault remains unknown even
++ * if a later helper event happens to report stopped. */
++export async function launchMacVmContainment(plan:RuntimePlan,policy:MacVmHostPolicy,
++  guestJob:MacVmGuestJob,staged:StagedMacVmInput,currentFence:()=>Readonly<{remainingMs:number}>,signal:AbortSignal):Promise<MacVmSession>{
++  check(staged.path===policy.configuration.inputDirectory&&staged.guestJobSha256===policy.configuration.guestJobSha256,'mac-vm-staged-config');
++  let inner:MacVmSession|undefined,resolveReady!:(s:MacVmSession)=>void,rejectReady!:(e:unknown)=>void;
++  let guardFailed=false;
++  const lifetime=new AbortController(),onAbort=()=>lifetime.abort();
++  signal.addEventListener('abort',onAbort,{once:true});if(signal.aborted)lifetime.abort();
++  const ready=new Promise<MacVmSession>((resolve,reject)=>{resolveReady=resolve;rejectReady=reject;});
++  const identity=macVmIdentity(plan);
++  const settled=withStagedMacVmInput(staged,plan,guestJob,async()=>{
++    inner=await launchMacVmUnsealed(plan,policy,guestJob,currentFence,lifetime.signal);
++    resolveReady(inner);return inner.settled;
++  },lifetime.signal).catch(error=>{
++    guardFailed=true;lifetime.abort();
++    rejectReady(error);
++    // Request containment stop but never turn a late result into accepted proof.
++    if(inner)void inner.stop().catch(()=>undefined);
++    return unknown(identity);
++  }).finally(()=>signal.removeEventListener('abort',onAbort));
++  await ready;
++  return Object.freeze({identity,settled,state:()=>guardFailed?Object.freeze({phase:'unknown' as const,result:'not-collected' as const}):inner!.state(),
++    stop:async()=>{await inner!.stop();return settled;}});
++}
+--- a/packages/build-storage/native/mac-tree-guard.c
++++ b/packages/build-storage/native/mac-tree-guard.c
+@@ -268,6 +268,20 @@
+     need(fflush(stdout) == 0);
+ }
+ int main(int argc, char **argv) {
++    /* Owner-only observation for the offline image assembler. This does NOT
++     * grant a read capability: the unprivileged client still pins and holds its
++     * own readonly-v1 session. No mutations or privilege escalation here. */
++    if (argc == 5 && !strcmp(argv[1], "--describe-readonly-v1")) {
++        need(getuid() == 0 && geteuid() == 0 && !issetugid());
++        verify_executable(argv[2]); canonical(argv[3]); canonical(argv[4]);
++        need(beneath(argv[3], argv[4]));
++        int mounted = secure_open(argv[4], 0), root = secure_open(argv[3], 0);
++        struct identity id; observe(root, mounted, argv[3], &id);
++        need(!strcmp(id.fs.f_mntonname, argv[4]));
++        mount_table(&id, argv[4]); unsigned entries = 0; scan(root, &id, 0, &entries);
++        frame("observed", "00000000000000000000000000000000", argv[3], &id);
++        need(close(root) == 0 && close(mounted) == 0); return 0;
++    }
+     need(argc == 13 && !strcmp(argv[1], "--readonly-v1"));
+     need(getuid() != 0 && getuid() == geteuid() && getgid() == getegid() && !issetugid());
+     need(signal(SIGPIPE, SIG_IGN) != SIG_ERR);
+--- a/packages/build-storage/src/mac-readonly-seal.ts
++++ b/packages/build-storage/src/mac-readonly-seal.ts
+@@ -11,6 +11,7 @@
+  * Restore, CAS put, and live mutable workspaces require a different implementation. */
+ export interface ReadonlyManagedTreeSeal extends ManagedReadonlyTreeSeal {
+   readonly kind:'mac-kernel-readonly-v1';
++  readonly operationLimitMs:number;
+   /** A failed instance is never reusable, even after a child eventually exits. */
+   state():Readonly<{poisoned:boolean; active:boolean; childPid:number|null;
+     childClosed:boolean; callbackPending:boolean; verificationPending:boolean}>;
+@@ -37,6 +38,14 @@
+   readonly maxOperationMs?:number;
+ }
+ 
++const concreteSeals=new WeakMap<ReadonlyManagedTreeSeal,MacReadonlyTreeIdentity>();
++/** Only factory-created guards expose a pinned identity. This is not a live
++ * observation; withReadonlyTrees must still complete for each actual operation. */
++export function macReadonlyTreeIdentity(seal:ReadonlyManagedTreeSeal):MacReadonlyTreeIdentity {
++  const tree=concreteSeals.get(seal);requireThat(tree,'untrusted-concrete-guard');
++  return tree;
++}
++
+ const error=(code:string)=>new Error(`build-storage: mac-readonly-${code}`);
+ function requireThat(ok:unknown,code:string):asserts ok {if(!ok) throw error(code);}
+ function path(value:string) {
+@@ -58,7 +67,8 @@
+  * mounts, images, unmount, executable discovery or caller-supplied guard verdict. */
+ export function createMacReadonlyTreeSeal(config:MacReadonlySealConfig):ReadonlyManagedTreeSeal {
+   const helper=Object.freeze({...config.helper});
+-  const tree=Object.freeze({...config.tree,fsid:Object.freeze([...config.tree.fsid])});
++  const tree:Readonly<MacReadonlyTreeIdentity>=Object.freeze({...config.tree,
++    fsid:Object.freeze([config.tree.fsid[0],config.tree.fsid[1]] as [number,number])});
+   const maxOperationMs=config.maxOperationMs??300_000;
+   path(helper.path); path(tree.path); path(tree.mountPoint); path(tree.mountSource);
+   requireThat(tree.path===tree.mountPoint||tree.path.startsWith(`${tree.mountPoint}/`),'root-outside-mount');
+@@ -69,7 +79,7 @@
+     tree.volumeUuid!=='00000000-0000-0000-0000-000000000000','volume-uuid');
+   decimal(tree.rootDevice); decimal(tree.rootInode);
+   requireThat(/^[a-f0-9]{64}$/.test(helper.sha256),'helper-sha256');
+-  requireThat(Number.isSafeInteger(maxOperationMs)&&maxOperationMs>=1000&&maxOperationMs<=1_800_000,'deadline');
++  requireThat(Number.isSafeInteger(maxOperationMs)&&maxOperationMs>=1000&&maxOperationMs<=3_900_000,'deadline');
+   let poisoned=false, active=false, child:ChildProcessWithoutNullStreams|undefined;
+   let childClosed=true, callbackPending=false, verificationPending=false;
+ 
+@@ -111,8 +121,9 @@
+     } finally {await fd.close();}
+   }
+ 
+-  return Object.freeze({
++  const seal:ReadonlyManagedTreeSeal=Object.freeze({
+     kind:'mac-kernel-readonly-v1' as const,
++    operationLimitMs:maxOperationMs,
+     state:()=>Object.freeze({poisoned,active,childPid:child?.pid??null,childClosed,callbackPending,verificationPending}),
+     async withReadonlyTrees<T>(roots:readonly string[],run:()=>Promise<T>,signal:AbortSignal):Promise<T> {
+       requireThat(!poisoned&&!active,'poisoned-or-busy');
+@@ -228,4 +239,6 @@
+       }
+     },
+   });
+-}
++  concreteSeals.set(seal,Object.freeze({...tree,fsid:Object.freeze([tree.fsid[0],tree.fsid[1]] as const)}));
++  return seal;
++}

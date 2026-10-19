@@ -1,0 +1,887 @@
+{
+  "schema": "foundry.r1.findings.v1",
+  "observedAt": "2026-10-18T03:10:11.213649+00:00",
+  "disposition": "HOLD",
+  "method": "Static document/source/metadata review only; original review IDs retained, not reclassified as repairs. No product code execution.",
+  "originalCount": 12,
+  "validatorBlockerCount": 5,
+  "items": [
+    {
+      "id": "CR-1",
+      "severity": "HIGH",
+      "originalFinding": {
+        "id": "CR-1",
+        "severity": "HIGH",
+        "lineage": "candidate",
+        "path": "workers/compute/src/authority.ts",
+        "line": 181,
+        "issue": "Poll leases a summary whose embedded workload ID the runtime will reject",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "SOURCE_CHANGE_OBSERVED_ACCEPTANCE_UNRESOLVED",
+      "sourceObservation": "Poll now calls executeEventSummaryForWorkload(specification, id) before claim; source addresses original mismatched-ID predicate. Full consumer/repair acceptance not independently established.",
+      "currentSourceEvidence": "workers/compute/src/authority.ts:184; packages/epoch-jobs/src/index.ts:132",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "CR-2",
+      "severity": "MEDIUM",
+      "originalFinding": {
+        "id": "CR-2",
+        "severity": "MEDIUM",
+        "lineage": "candidate",
+        "path": "tools/foundry-pilot/worker-host.ts",
+        "line": 197,
+        "issue": "Executor general path does not check configured authority/environment pins",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "SOURCE_CHANGE_OBSERVED_ACCEPTANCE_UNRESOLVED",
+      "sourceObservation": "HostConfig adds environment/authorityId; journal binding includes pins; supervisor calls pinned status before boundedStep and passes pins. Old state/journal compatibility deliberately fail-closed; full live response binding and migration remain unaccepted.",
+      "currentSourceEvidence": "packages/worker-client/src/index.ts:5-9,128; tools/foundry-pilot/worker-host.ts:244-256",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "CR-3",
+      "severity": "MEDIUM",
+      "originalFinding": {
+        "id": "CR-3",
+        "severity": "MEDIUM",
+        "lineage": "candidate",
+        "path": "packages/compute-authority/src/durable/authority.ts",
+        "line": 109,
+        "issue": "Present falsy GPU values pass as CPU-only",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "SOURCE_CHANGE_OBSERVED_ACCEPTANCE_UNRESOLVED",
+      "sourceObservation": "GPU validation now branches on !== undefined, addressing truthiness omission in the original predicate; no executed admission evidence accepted.",
+      "currentSourceEvidence": "packages/compute-authority/src/durable/authority.ts:109-110",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "L1",
+      "severity": "HIGH",
+      "originalFinding": {
+        "id": "L1",
+        "severity": "HIGH",
+        "lineage": "candidate",
+        "path": "workers/compute/src/library-feed.ts",
+        "line": 45,
+        "issue": "VERIFYING fence observations use running expiry",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "SOURCE_CHANGE_OBSERVED_ACCEPTANCE_UNRESOLVED",
+      "sourceObservation": "VERIFYING selects verify_deadline and requires a safe future expiry; source addresses the reported lifetime mismatch, without runtime fence proof.",
+      "currentSourceEvidence": "workers/compute/src/library-feed.ts:45-50",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "L2",
+      "severity": "HIGH",
+      "originalFinding": {
+        "id": "L2",
+        "severity": "HIGH",
+        "lineage": "candidate",
+        "path": "packages/library-jobs/src/index.ts",
+        "line": 20,
+        "issue": "Legitimate incarnation0 rejected by jobs/evidence",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "SOURCE_CHANGE_OBSERVED_ACCEPTANCE_UNRESOLVED",
+      "sourceObservation": "Incarnation minimum is now zero; epoch minimum one and generation minimum zero retained. Full downstream evidence-path acceptance not established by this excerpt.",
+      "currentSourceEvidence": "packages/library-jobs/src/index.ts:23",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "L3",
+      "severity": "MEDIUM",
+      "originalFinding": {
+        "id": "L3",
+        "severity": "MEDIUM",
+        "lineage": "candidate",
+        "path": "packages/library-revocation/src/http.ts",
+        "line": 20,
+        "issue": "Logical timeout does not bound actual unresolved host operations",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "SOURCE_CHANGE_OBSERVED_ACCEPTANCE_UNRESOLVED",
+      "sourceObservation": "Per-instance MAX_INFLIGHT=4 reserves work until underlying settlement and shares deadline/abort with body. Never-settling work can exhaust all slots; cancellation and per-process aggregate bounds remain unverified.",
+      "currentSourceEvidence": "packages/library-revocation/src/http.ts:20-52",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "G1",
+      "severity": "HIGH",
+      "originalFinding": {
+        "id": "G1",
+        "severity": "HIGH",
+        "lineage": "inherited-baseline",
+        "path": "workers/gate/src/decide.ts",
+        "line": 265,
+        "issue": "Admission paths/content use mutable branch instead of proposal SHA",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "OPEN_HOLD",
+      "sourceObservation": "Pinned proposal reads observed; V01 incomplete production enumeration, V02 unavailable-to-absence conversions and V05 entry binding remain blockers. Independent review keeps OPEN/HOLD.",
+      "currentSourceEvidence": "workers/gate/src/decide.ts; packages/artifacts-port/src/cloudflare.ts:32-86; packages/artifacts-port/src/git.ts:115-158",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "G2",
+      "severity": "HIGH",
+      "originalFinding": {
+        "id": "G2",
+        "severity": "HIGH",
+        "lineage": "inherited-baseline",
+        "path": "packages/artifacts-port/src/git.ts",
+        "line": 243,
+        "issue": "Local merger fetch/merge not pinned to approved forkHeadSha",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "OPEN_HOLD",
+      "sourceObservation": "Exact proposal resolution/parent guards observed; V03 empty-base root path, V04 replay and V05 production entry identity remain blockers. Independent review keeps OPEN/HOLD.",
+      "currentSourceEvidence": "packages/artifacts-port/src/git.ts:390-411; workers/gate/src/merge.ts:106-122,165-182",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "G3",
+      "severity": "HIGH",
+      "originalFinding": {
+        "id": "G3",
+        "severity": "HIGH",
+        "lineage": "inherited-intentional-policy-gap",
+        "path": "packages/verify/src/index.ts",
+        "line": 135,
+        "issue": "Checked-positive verification not required by enforcement",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "OPEN_HOLD",
+      "sourceObservation": "blocksMerge still requires enforce && checked && !ok; unchecked remains nonblocking. Required-positive policy is an owner decision, still unresolved.",
+      "currentSourceEvidence": "packages/verify/src/index.ts:133-141",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "G4",
+      "severity": "MEDIUM",
+      "originalFinding": {
+        "id": "G4",
+        "severity": "MEDIUM",
+        "lineage": "inherited-baseline",
+        "path": "workers/gate/src/pipeline.ts",
+        "line": 89,
+        "issue": "Incomplete verification request and no persisted verify/content binding",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "OPEN_HOLD",
+      "sourceObservation": "Request now includes destination branch and deletion paths. Durable request/result/content binding is not established; receipt/schema/compatibility remains open.",
+      "currentSourceEvidence": "workers/gate/src/pipeline.ts:85-100; packages/verify/src/index.ts:VerifyRequest",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "D1",
+      "severity": "LOW",
+      "originalFinding": {
+        "id": "D1",
+        "severity": "LOW",
+        "lineage": "candidate-documentation",
+        "path": "packages/epoch-dispatch/API.md",
+        "line": 27,
+        "issue": "Chain schema version documented incorrectly",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "SOURCE_CHANGE_OBSERVED_ACCEPTANCE_UNRESOLVED",
+      "sourceObservation": "Docs now distinguish pipeline schema 2, inbox schema 2 and chain schema 3. Original prose corrected at inspected bytes; no blanket integration closure.",
+      "currentSourceEvidence": "packages/epoch-dispatch/API.md:27-30",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "D2",
+      "severity": "MEDIUM",
+      "originalFinding": {
+        "id": "D2",
+        "severity": "MEDIUM",
+        "lineage": "baseline-documentation",
+        "path": "README.md",
+        "line": 62,
+        "issue": "Node22+ prose broader than locked runner engine range",
+        "state": "OPEN",
+        "repaired": false
+      },
+      "currentDisposition": "SOURCE_CHANGE_OBSERVED_ACCEPTANCE_UNRESOLVED",
+      "sourceObservation": "README now gives ^22.12.0 || ^24.0.0 || >=26.0.0 and excludes Node23. Original broad Node22+ prose corrected; no compatibility execution performed.",
+      "currentSourceEvidence": "README.md:62-68",
+      "closureClaimed": false,
+      "originalEvidence": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "unresolvedEvidence": "Independent acceptance of current byte-bound full producer/consumer contract; any compiler/runtime validation requires separate authorization."
+    },
+    {
+      "id": "V01",
+      "parents": [
+        "G1"
+      ],
+      "severity": "HIGH",
+      "currentDisposition": "OPEN_HOLD",
+      "issue": "Incomplete production paths: additions/deletions suppress intersection edits; caps do not establish completeness.",
+      "evidence": "/Users/mohameddiomande/Developer/foundry-integration/validation/reviews/2026-10-17-batch-01-g1-g2/REVIEW.md#v01",
+      "sourceEvidence": "packages/artifacts-port/src/cloudflare.ts:32-86",
+      "reproduced": false,
+      "closureClaimed": false
+    },
+    {
+      "id": "V02",
+      "parents": [
+        "G1"
+      ],
+      "severity": "HIGH",
+      "currentDisposition": "OPEN_HOLD",
+      "issue": "Storage unavailable can be classified as missing/empty history or deletion; positive absence needed.",
+      "evidence": "/Users/mohameddiomande/Developer/foundry-integration/validation/reviews/2026-10-17-batch-01-g1-g2/REVIEW.md#v02",
+      "sourceEvidence": "packages/artifacts-port/src/git.ts:115-158; workers/gate/src/decide.ts:175-203",
+      "reproduced": false,
+      "closureClaimed": false
+    },
+    {
+      "id": "V03",
+      "parents": [
+        "G2"
+      ],
+      "severity": "HIGH",
+      "currentDisposition": "OPEN_HOLD",
+      "issue": "No valid documented empty-base root proposal path for demanded landed parent contract.",
+      "evidence": "/Users/mohameddiomande/Developer/foundry-integration/validation/reviews/2026-10-17-batch-01-g1-g2/REVIEW.md#v03",
+      "sourceEvidence": "packages/artifacts-port/src/git.ts:397-405",
+      "reproduced": false,
+      "closureClaimed": false
+    },
+    {
+      "id": "V04",
+      "parents": [
+        "G2"
+      ],
+      "severity": "MEDIUM",
+      "currentDisposition": "OPEN_HOLD",
+      "issue": "Crash-after-push before decision persistence replay contradicts new parent guard.",
+      "evidence": "/Users/mohameddiomande/Developer/foundry-integration/validation/reviews/2026-10-17-batch-01-g1-g2/REVIEW.md#v04",
+      "sourceEvidence": "packages/artifacts-port/src/git.ts:390-411; workers/gate/src/pipeline.ts:50-58",
+      "reproduced": false,
+      "closureClaimed": false
+    },
+    {
+      "id": "V05",
+      "parents": [
+        "G1",
+        "G2"
+      ],
+      "severity": "HIGH",
+      "currentDisposition": "OPEN_HOLD",
+      "issue": "Production first-parent/path presence cannot bind exact bytes, modes and entry kinds; string transport cannot guarantee arbitrary blobs.",
+      "evidence": "/Users/mohameddiomande/Developer/foundry-integration/validation/reviews/2026-10-17-batch-01-g1-g2/REVIEW.md#v05",
+      "sourceEvidence": "workers/gate/src/merge.ts:106-122,165-182; packages/artifacts-port/src/port.ts",
+      "reproduced": false,
+      "closureClaimed": false
+    },
+    {
+      "id": "CAT-01",
+      "severity": "READINESS_GAP",
+      "currentDisposition": "UNRESOLVED",
+      "issue": "Browse catalog is source-copy evidence, not build/dependency/data closure or canonical authority.",
+      "sourceEvidence": "tools/foundry-library-bridge/README.md; build_catalog.py:build",
+      "requiredEvidence": "Per-project declared inputs, excluded/held input disposition, approved dependency closure and actual gated validation.",
+      "closureClaimed": false
+    },
+    {
+      "id": "CAT-02",
+      "severity": "READINESS_GAP",
+      "currentDisposition": "UNRESOLVED",
+      "issue": "Name-only identity and overlapping parent/nested views cannot establish unique apps or merge ownership.",
+      "sourceEvidence": "catalog-r3/catalog.json projects[].identityConfidence; build_catalog.py:identities",
+      "requiredEvidence": "Owner-reviewed project identity, version choice and exact destination scope; no auto-overlay or safe-delete claim.",
+      "closureClaimed": false
+    },
+    {
+      "id": "CAT-03",
+      "severity": "READINESS_GAP",
+      "currentDisposition": "UNRESOLVED",
+      "issue": "Catalog descriptor prepared but not published; client/relay/pull/browser have no operational acceptance.",
+      "sourceEvidence": "tools/foundry-library-bridge/sync_catalog.py:sync; ROUTE.md",
+      "requiredEvidence": "Approved activation/publication with actual immutable receipts, then separately authorized bounded operational acceptance.",
+      "closureClaimed": false
+    },
+    {
+      "id": "CAP-01",
+      "severity": "READINESS_GAP",
+      "currentDisposition": "UNRESOLVED",
+      "issue": "Current free disk and bounded cache sizes do not establish reclaimable capacity or build headroom.",
+      "sourceEvidence": "R1-CAPACITY.json",
+      "requiredEvidence": "Per-workload disk budget including dependencies/toolchain/output/cache plus separately approved ownership/activity and cleanup decisions.",
+      "closureClaimed": false
+    },
+    {
+      "id": "CAT-04",
+      "severity": "REVIEW_IDENTITY_GAP",
+      "currentDisposition": "UNRESOLVED",
+      "issue": "Four canonical bridge sources differ from earlier SOURCE-HASHES.json; prior source review/package acceptance cannot be transferred to current bytes.",
+      "evidence": "bridgePriorReviewHashComparison in this file; exact prior receipt path in evidence list",
+      "affectedPaths": [
+        "tools/foundry-library-bridge/README.md",
+        "tools/foundry-library-bridge/bridge.py",
+        "tools/foundry-library-bridge/cloud.py",
+        "tools/foundry-library-bridge/web/app.js"
+      ],
+      "requiredEvidence": "Fresh independent byte-bound review of current scope and a matching packaging receipt before any acceptance or activation; preserve concurrent changes. No repair attributed to R1.",
+      "closureClaimed": false
+    }
+  ],
+  "claimPrecedence": "Independent batch01 G1/G2 HOLD overrides implementer repair/execution claims for acceptance. Historical evidence remains attributed and unexecuted here.",
+  "additionalClaimSource": {
+    "path": "/Users/mohameddiomande/Developer/foundry-integration/HANDOFF-TO-IMPLEMENTER-2026-10-17/evidence/r2-repairs/2026-10-17-batch-02/FINDINGS-DISPOSITION.md",
+    "meaning": "Implementer claims REPAIRED + EXECUTED for eight source findings; historical declarations, not current acceptance or reproduced results. G3 owner decision, G4 partial.",
+    "sourceReviewDoesNotResolveHistoricalPermission": true
+  },
+  "evidence": [
+    {
+      "path": "/Users/mohameddiomande/Developer/foundry-integration/source/docs/cloud-workspaces/BASELINE.json",
+      "sha256": "5ceb272267482590857225b2f0c906a7f17b572fa7ba3405b17869f4b6dfb089",
+      "bytes": 41571
+    },
+    {
+      "path": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINDINGS.json",
+      "sha256": "ed8acb4721b597f266b4d7143eed09badd8dfac1fe3f1614004bbaa3dd1589b8",
+      "bytes": 3584
+    },
+    {
+      "path": "/Users/mohameddiomande/Developer/foundry-integration/evidence/r2-integration/FINAL-REVIEW.md",
+      "sha256": "5d7efc0aa2360d1c00d92f129fbf9203c39288c13fb670cfc04d0614ec209b21",
+      "bytes": 2898
+    },
+    {
+      "path": "/Users/mohameddiomande/Developer/foundry-integration/validation/reviews/2026-10-17-batch-01-g1-g2/REVIEW.md",
+      "sha256": "3f2d7f65dc64f0a6a5e0940741cc67f84997d936638b8c6460766037d20614c4",
+      "bytes": 13104
+    },
+    {
+      "path": "/Users/mohameddiomande/Developer/foundry-integration/validation/reviews/2026-10-17-batch-01-g1-g2/REVIEWED-BYTES.json",
+      "sha256": "5ce094f0ee5334b74fb313530063bf4246ed776e3f0b36bbd156935497b4e600",
+      "bytes": 3332
+    },
+    {
+      "path": "/Users/mohameddiomande/Developer/foundry-integration/validation/reconciliation-2026-10-17/CURRENT-SITUATION.md",
+      "sha256": "858e92db4509c8d63c082be251881acdab04c0159f0750eccc6f371893ec2455",
+      "bytes": 6437
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-15/ran-command-inventory-review-package-contents/foundry-project-library-2026-10-17/review/SOURCE-REVIEW.md",
+      "sha256": "255e83864dc0b28db931de4419f4558065d525f7be9c29fdd9304d0068d64044",
+      "bytes": 7312
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-15/ran-command-inventory-review-package-contents/foundry-project-library-2026-10-17/review/SOURCE-HASHES.json",
+      "sha256": "e7f7e11c4b46f976ce61a7c40ebbc038d9871dec879e4c85f0799b4767a2b107",
+      "bytes": 2158
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-15/ran-command-inventory-review-package-contents/foundry-project-library-2026-10-17/catalog-r3/catalog.json",
+      "sha256": "471fa566c1f1f12d84f3d419219d04394de3d289bb40e99f6bd9a0194ada63ac",
+      "bytes": 279264
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-15/ran-command-inventory-review-package-contents/foundry-project-library-2026-10-17/catalog-r3/ASSEMBLY-RECEIPT.json",
+      "sha256": "c02f9190af624d61963ff9d1d67fd874f0397f51445c0784bd76664cde8e3822",
+      "bytes": 314
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-15/ran-command-inventory-review-package-contents/fleet-gcp-copy-2026-10-17/SOURCE-CATALOG.json",
+      "sha256": "be8cf71c16bc70378822c29e2084a98cc9be33c2082977d4371d0d5aaec7b61a",
+      "bytes": 54762
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-15/ran-command-inventory-review-package-contents/fleet-gcp-copy-2026-10-17/RUN.json",
+      "sha256": "654789a17b712089be6e585559c0d54fe2b0b686b6402eedad0cf11003717dcb",
+      "bytes": 55383
+    }
+  ],
+  "currentSourceBytes": [
+    {
+      "path": "README.md",
+      "sha256": "f132d45b7a9d2eda349e6f2f57baba1f8eae745f8c21601065eb5cc98e006f2e",
+      "bytes": 8069,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "package.json",
+      "sha256": "5a333c0c2709ba25e165968272e964723646c97d38442b028e51c0475515a25b",
+      "bytes": 1066,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "37f6912c43f5bbb1fdc660d96a70508159603fbd94d8ef518c3a6f5152cb95f1",
+      "bytes": 147957,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/epoch-dispatch/API.md",
+      "sha256": "bef6ad9fac5d6fd25ae68acba1e25cbabbba467e8232901c2525367ec884ebc2",
+      "bytes": 4261,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/epoch-jobs/src/index.ts",
+      "sha256": "34085f1b449c8d239a13a0b34e3658d1058a4ba427302c9300517e943530828b",
+      "bytes": 10891,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "workers/compute/src/authority.ts",
+      "sha256": "8f0e69f83935273038c3aac73fd55c2c07dbd83eb28d188a4769e493be23d41f",
+      "bytes": 30530,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/compute-authority/src/durable/authority.ts",
+      "sha256": "f54cb892d367566c09716a65f31b106da007bfb88273dd16848d75c00fdcfbc2",
+      "bytes": 32865,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/worker-client/src/index.ts",
+      "sha256": "3348e36fc2b11b4af5d89d4bab2429c2a85e62d00ae73b43e675b3cc6684b5d0",
+      "bytes": 18740,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "tools/foundry-pilot/worker-host.ts",
+      "sha256": "eede7971b05189a79f377e9755d730db002d564e19be52fc524e0c24dd9f42d5",
+      "bytes": 20942,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "tools/foundry-pilot/transport.ts",
+      "sha256": "0b70788b07f815dbfc26e555e7b834d479e16d0f0e35dd4ed623ae0eb66157be",
+      "bytes": 5704,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "workers/compute/src/library-feed.ts",
+      "sha256": "860741273208122926a9da78e461e331534e241055d3cf5dbe52516cdce0b4ca",
+      "bytes": 4898,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/library-jobs/src/index.ts",
+      "sha256": "dfb53a654a2c510eab08642ebc8be3283f2edb5a31a373ef01865c96d5d60bad",
+      "bytes": 12666,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/library-revocation/src/http.ts",
+      "sha256": "4bda5d9025c3b1a16cf8147b01bf64a77a26c97d91ce1ded3b87e9a5b46eddd1",
+      "bytes": 5270,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/verify/src/index.ts",
+      "sha256": "2c69ececab4dea396de2ca865fb5eb0b3644eea9f5aa19adecbb17510db00dc7",
+      "bytes": 4927,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "workers/gate/src/pipeline.ts",
+      "sha256": "badb55df712a4abf10a32ac6dad9a54498e878c257fcdec6d2f792eddc87de71",
+      "bytes": 8002,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "workers/gate/src/decide.ts",
+      "sha256": "1873b2b01732d927e36f1e290d1f181addcaa8da9d166ff947a2da904c9549bf",
+      "bytes": 12434,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "workers/gate/src/merge.ts",
+      "sha256": "ab61c4d509a14eeb18b10c5ae6e181f2424fa2607fc1408d4eddf48745da09d1",
+      "bytes": 6617,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/artifacts-port/src/port.ts",
+      "sha256": "944eb961832ef05db7ef2c1e842317d380d1b51f1e26e66bd81225685da70a24",
+      "bytes": 3463,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/artifacts-port/src/git.ts",
+      "sha256": "01c0c48c2ec203eaf31e398adfcd7d289bbb078c5e1b7cd6b543a24fae95c052",
+      "bytes": 15583,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "packages/artifacts-port/src/cloudflare.ts",
+      "sha256": "1a568f820723e0aca4d327f5d3440c1216ce2b6a1909cd4d0daedb0ec80c181e",
+      "bytes": 6982,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "tools/foundry-library-bridge/README.md",
+      "sha256": "f3298350e92249e81a77708207a8a1d0fd606e9a476487c1aa64a960d48d626a",
+      "bytes": 18358,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "tools/foundry-library-bridge/build_catalog.py",
+      "sha256": "a8a3052aac33eec16c134205b28b832ec7b24cd6019bfcd2aa26b4025946eb1c",
+      "bytes": 9877,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "tools/foundry-library-bridge/common.py",
+      "sha256": "161b487bca92f19cd20af57f63c9911aea76f4e30935b1409e76cfd54d9771f5",
+      "bytes": 4014,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "tools/foundry-library-bridge/pull.py",
+      "sha256": "f4abb5121cffa3e46aa27188beac2b5fd88857550b81da267addad9dce0beedc",
+      "bytes": 8034,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "tools/foundry-library-bridge/cloud.py",
+      "sha256": "60ca20efdd305b1c321f47916274ac23f2d562ff7646894c79aee36ec32c114e",
+      "bytes": 8752,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    },
+    {
+      "path": "tools/foundry-library-bridge/sync_catalog.py",
+      "sha256": "2e19e55491fd94b6b23163787caed5f5242df1778037f24f8d729d06f6f56abe",
+      "bytes": 4917,
+      "reviewExtent": "targeted static excerpts / contract inspection; not whole-repository validation"
+    }
+  ],
+  "targetedBaselineComparison": [
+    {
+      "path": "README.md",
+      "baselineSha256": null,
+      "currentSha256": "f132d45b7a9d2eda349e6f2f57baba1f8eae745f8c21601065eb5cc98e006f2e",
+      "matchesRecordedFileHash": null,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "package.json",
+      "baselineSha256": null,
+      "currentSha256": "5a333c0c2709ba25e165968272e964723646c97d38442b028e51c0475515a25b",
+      "matchesRecordedFileHash": null,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "package-lock.json",
+      "baselineSha256": null,
+      "currentSha256": "37f6912c43f5bbb1fdc660d96a70508159603fbd94d8ef518c3a6f5152cb95f1",
+      "matchesRecordedFileHash": null,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/epoch-dispatch/API.md",
+      "baselineSha256": "bef6ad9fac5d6fd25ae68acba1e25cbabbba467e8232901c2525367ec884ebc2",
+      "currentSha256": "bef6ad9fac5d6fd25ae68acba1e25cbabbba467e8232901c2525367ec884ebc2",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/epoch-jobs/src/index.ts",
+      "baselineSha256": "34085f1b449c8d239a13a0b34e3658d1058a4ba427302c9300517e943530828b",
+      "currentSha256": "34085f1b449c8d239a13a0b34e3658d1058a4ba427302c9300517e943530828b",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "workers/compute/src/authority.ts",
+      "baselineSha256": "8f0e69f83935273038c3aac73fd55c2c07dbd83eb28d188a4769e493be23d41f",
+      "currentSha256": "8f0e69f83935273038c3aac73fd55c2c07dbd83eb28d188a4769e493be23d41f",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/compute-authority/src/durable/authority.ts",
+      "baselineSha256": "f54cb892d367566c09716a65f31b106da007bfb88273dd16848d75c00fdcfbc2",
+      "currentSha256": "f54cb892d367566c09716a65f31b106da007bfb88273dd16848d75c00fdcfbc2",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/worker-client/src/index.ts",
+      "baselineSha256": "3348e36fc2b11b4af5d89d4bab2429c2a85e62d00ae73b43e675b3cc6684b5d0",
+      "currentSha256": "3348e36fc2b11b4af5d89d4bab2429c2a85e62d00ae73b43e675b3cc6684b5d0",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "tools/foundry-pilot/worker-host.ts",
+      "baselineSha256": "eede7971b05189a79f377e9755d730db002d564e19be52fc524e0c24dd9f42d5",
+      "currentSha256": "eede7971b05189a79f377e9755d730db002d564e19be52fc524e0c24dd9f42d5",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "tools/foundry-pilot/transport.ts",
+      "baselineSha256": "0b70788b07f815dbfc26e555e7b834d479e16d0f0e35dd4ed623ae0eb66157be",
+      "currentSha256": "0b70788b07f815dbfc26e555e7b834d479e16d0f0e35dd4ed623ae0eb66157be",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "workers/compute/src/library-feed.ts",
+      "baselineSha256": "860741273208122926a9da78e461e331534e241055d3cf5dbe52516cdce0b4ca",
+      "currentSha256": "860741273208122926a9da78e461e331534e241055d3cf5dbe52516cdce0b4ca",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/library-jobs/src/index.ts",
+      "baselineSha256": "dfb53a654a2c510eab08642ebc8be3283f2edb5a31a373ef01865c96d5d60bad",
+      "currentSha256": "dfb53a654a2c510eab08642ebc8be3283f2edb5a31a373ef01865c96d5d60bad",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/library-revocation/src/http.ts",
+      "baselineSha256": "4bda5d9025c3b1a16cf8147b01bf64a77a26c97d91ce1ded3b87e9a5b46eddd1",
+      "currentSha256": "4bda5d9025c3b1a16cf8147b01bf64a77a26c97d91ce1ded3b87e9a5b46eddd1",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/verify/src/index.ts",
+      "baselineSha256": "2c69ececab4dea396de2ca865fb5eb0b3644eea9f5aa19adecbb17510db00dc7",
+      "currentSha256": "2c69ececab4dea396de2ca865fb5eb0b3644eea9f5aa19adecbb17510db00dc7",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "workers/gate/src/pipeline.ts",
+      "baselineSha256": null,
+      "currentSha256": "badb55df712a4abf10a32ac6dad9a54498e878c257fcdec6d2f792eddc87de71",
+      "matchesRecordedFileHash": null,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "workers/gate/src/decide.ts",
+      "baselineSha256": null,
+      "currentSha256": "1873b2b01732d927e36f1e290d1f181addcaa8da9d166ff947a2da904c9549bf",
+      "matchesRecordedFileHash": null,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "workers/gate/src/merge.ts",
+      "baselineSha256": null,
+      "currentSha256": "ab61c4d509a14eeb18b10c5ae6e181f2424fa2607fc1408d4eddf48745da09d1",
+      "matchesRecordedFileHash": null,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/artifacts-port/src/port.ts",
+      "baselineSha256": "944eb961832ef05db7ef2c1e842317d380d1b51f1e26e66bd81225685da70a24",
+      "currentSha256": "944eb961832ef05db7ef2c1e842317d380d1b51f1e26e66bd81225685da70a24",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/artifacts-port/src/git.ts",
+      "baselineSha256": "01c0c48c2ec203eaf31e398adfcd7d289bbb078c5e1b7cd6b543a24fae95c052",
+      "currentSha256": "01c0c48c2ec203eaf31e398adfcd7d289bbb078c5e1b7cd6b543a24fae95c052",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "packages/artifacts-port/src/cloudflare.ts",
+      "baselineSha256": "1a568f820723e0aca4d327f5d3440c1216ce2b6a1909cd4d0daedb0ec80c181e",
+      "currentSha256": "1a568f820723e0aca4d327f5d3440c1216ce2b6a1909cd4d0daedb0ec80c181e",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "tools/foundry-library-bridge/README.md",
+      "baselineSha256": "1da1590edc942f53b20e1f509c6dc37c877d6de0a80defea07afafc043f04aa2",
+      "currentSha256": "f3298350e92249e81a77708207a8a1d0fd606e9a476487c1aa64a960d48d626a",
+      "matchesRecordedFileHash": false,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "tools/foundry-library-bridge/build_catalog.py",
+      "baselineSha256": "a8a3052aac33eec16c134205b28b832ec7b24cd6019bfcd2aa26b4025946eb1c",
+      "currentSha256": "a8a3052aac33eec16c134205b28b832ec7b24cd6019bfcd2aa26b4025946eb1c",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "tools/foundry-library-bridge/common.py",
+      "baselineSha256": "161b487bca92f19cd20af57f63c9911aea76f4e30935b1409e76cfd54d9771f5",
+      "currentSha256": "161b487bca92f19cd20af57f63c9911aea76f4e30935b1409e76cfd54d9771f5",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "tools/foundry-library-bridge/pull.py",
+      "baselineSha256": "f4abb5121cffa3e46aa27188beac2b5fd88857550b81da267addad9dce0beedc",
+      "currentSha256": "f4abb5121cffa3e46aa27188beac2b5fd88857550b81da267addad9dce0beedc",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "tools/foundry-library-bridge/cloud.py",
+      "baselineSha256": "e9ca6cf56c4c07794de5df62d123217893242a0b3d6981153acee9d43265ca5b",
+      "currentSha256": "60ca20efdd305b1c321f47916274ac23f2d562ff7646894c79aee36ec32c114e",
+      "matchesRecordedFileHash": false,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    },
+    {
+      "path": "tools/foundry-library-bridge/sync_catalog.py",
+      "baselineSha256": "2e19e55491fd94b6b23163787caed5f5242df1778037f24f8d729d06f6f56abe",
+      "currentSha256": "2e19e55491fd94b6b23163787caed5f5242df1778037f24f8d729d06f6f56abe",
+      "matchesRecordedFileHash": true,
+      "meaning": "Equality is byte evidence only; differences may predate R1 or belong to concurrent work."
+    }
+  ],
+  "bridgePriorReviewHashComparison": [
+    {
+      "path": "tools/foundry-library-bridge/README.md",
+      "priorReviewedSha256": "1da1590edc942f53b20e1f509c6dc37c877d6de0a80defea07afafc043f04aa2",
+      "currentSha256": "f3298350e92249e81a77708207a8a1d0fd606e9a476487c1aa64a960d48d626a",
+      "matchesPriorReviewedBytes": false,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/bridge.py",
+      "priorReviewedSha256": "f16b799fdda0721b0640b0404160e4a8eadd1ec33bd9e5fdff6f391c5080c5d5",
+      "currentSha256": "2654f610fa743c9048064b5f48e9c8d9f45d1bf84d4e30b3536f8e904eb57ee9",
+      "matchesPriorReviewedBytes": false,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/build_catalog.py",
+      "priorReviewedSha256": "a8a3052aac33eec16c134205b28b832ec7b24cd6019bfcd2aa26b4025946eb1c",
+      "currentSha256": "a8a3052aac33eec16c134205b28b832ec7b24cd6019bfcd2aa26b4025946eb1c",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/cloud.py",
+      "priorReviewedSha256": "e9ca6cf56c4c07794de5df62d123217893242a0b3d6981153acee9d43265ca5b",
+      "currentSha256": "60ca20efdd305b1c321f47916274ac23f2d562ff7646894c79aee36ec32c114e",
+      "matchesPriorReviewedBytes": false,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/common.py",
+      "priorReviewedSha256": "161b487bca92f19cd20af57f63c9911aea76f4e30935b1409e76cfd54d9771f5",
+      "currentSha256": "161b487bca92f19cd20af57f63c9911aea76f4e30935b1409e76cfd54d9771f5",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/package_catalog.py",
+      "priorReviewedSha256": "382993a18d9b6862803c3ca05b8f095f2a42b93d50d736bbba5b2d643747a823",
+      "currentSha256": "382993a18d9b6862803c3ca05b8f095f2a42b93d50d736bbba5b2d643747a823",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/pull.py",
+      "priorReviewedSha256": "f4abb5121cffa3e46aa27188beac2b5fd88857550b81da267addad9dce0beedc",
+      "currentSha256": "f4abb5121cffa3e46aa27188beac2b5fd88857550b81da267addad9dce0beedc",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/ssh_reader.py",
+      "priorReviewedSha256": "802b249e167be8ca691830156abc06523d4739de58915860145d624b50565798",
+      "currentSha256": "802b249e167be8ca691830156abc06523d4739de58915860145d624b50565798",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/sync_catalog.py",
+      "priorReviewedSha256": "2e19e55491fd94b6b23163787caed5f5242df1778037f24f8d729d06f6f56abe",
+      "currentSha256": "2e19e55491fd94b6b23163787caed5f5242df1778037f24f8d729d06f6f56abe",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/web/app.js",
+      "priorReviewedSha256": "de89d56799d508de13a3d7e83623157f8456ac0c3604e320bb19a74a1a6f1c1d",
+      "currentSha256": "1cb3c8221bd62e6e4d2e16184773a6007ecc50697635baac34f2bde14e9f1a47",
+      "matchesPriorReviewedBytes": false,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/web/index.html",
+      "priorReviewedSha256": "39e9e8f3733e06e4b34f1634590ce107b39b2547c054dc165a806d4f579c76b6",
+      "currentSha256": "39e9e8f3733e06e4b34f1634590ce107b39b2547c054dc165a806d4f579c76b6",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-library-bridge/web/style.css",
+      "priorReviewedSha256": "b6894a5bdb966abc6b05fbd48d54ff5526d3525e7dd3237253ae9d7d5ce86af1",
+      "currentSha256": "b6894a5bdb966abc6b05fbd48d54ff5526d3525e7dd3237253ae9d7d5ce86af1",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    },
+    {
+      "path": "tools/foundry-pilot/operator/index.html",
+      "priorReviewedSha256": "b14d0bcbb0e5f03a5a7dad29a65bc9c2b56aecb244373a090d2cdd4bbd6d6c4d",
+      "currentSha256": "b14d0bcbb0e5f03a5a7dad29a65bc9c2b56aecb244373a090d2cdd4bbd6d6c4d",
+      "matchesPriorReviewedBytes": true,
+      "meaning": "Identity only; not an executed success result or fresh full-file review."
+    }
+  ],
+  "reviewRegisterLimit": "Targeted static reinspection; not an independent closure review for CR/L findings. Original and later review dispositions are preserved. Source hash reads do not imply whole-file behavioral review.",
+  "laterSourceObservationAt": "2026-10-18T03:13:24.890949+00:00",
+  "laterSourceDriftFromInitialTargetedHashes": [
+    {
+      "path": "workers/compute/src/authority.ts",
+      "initialObservedSha256": "8f0e69f83935273038c3aac73fd55c2c07dbd83eb28d188a4769e493be23d41f",
+      "laterObservedSha256": "6630f486a9afe5499a89e0642e2880bda8fbef14004feeb144743776ecf8afc9",
+      "meaning": "Concurrent change; neither overwritten nor attributed; initial review observations are bounded to their recorded bytes."
+    },
+    {
+      "path": "tools/foundry-pilot/transport.ts",
+      "initialObservedSha256": "0b70788b07f815dbfc26e555e7b834d479e16d0f0e35dd4ed623ae0eb66157be",
+      "laterObservedSha256": "0868e2db82d6972ebd0fc0bb2a51e4e02fff849b2e4dae7937915f6219d899b6",
+      "meaning": "Concurrent change; neither overwritten nor attributed; initial review observations are bounded to their recorded bytes."
+    }
+  ],
+  "snapshotLimit": "Sequential file reads in a shared dirty checkout, not an atomic filesystem snapshot. Review identity gaps and later source drift are explicit; no claim of a globally frozen current tree."
+}

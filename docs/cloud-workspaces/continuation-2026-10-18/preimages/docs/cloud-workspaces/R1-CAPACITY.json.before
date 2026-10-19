@@ -1,0 +1,277 @@
+{
+  "schema": "foundry.r1.capacity.v1",
+  "observationLocalDate": "2026-10-17 America/New_York",
+  "observationUTC": "2026-10-18T03:06:27Z",
+  "method": "Read-only local shell / BatchMode SSH metadata only; no product execution or Xcode commands.",
+  "allowedCommands": [
+    "date -u",
+    "sw_vers",
+    "df -k / /System/Volumes/Data",
+    "PlistBuddy Print CFBundleShortVersionString and CFBundleVersion for standard Xcode/Xcode-beta Info.plist only",
+    "du -sk only the four explicitly listed cache/DerivedData/Archives paths if non-symlink directories"
+  ],
+  "sshSafety": {
+    "hosts": [
+      "mac4",
+      "mac5"
+    ],
+    "batchMode": true,
+    "connectTimeoutSeconds": 8,
+    "strictHostKeyChecking": true,
+    "updateHostKeys": false,
+    "controlMaster": false,
+    "forwardingsCleared": true,
+    "credentialsReadOrChanged": false
+  },
+  "scopeLimits": [
+    "No full disk traversal",
+    "No source directory traversal or hydration",
+    "No SpaceFS or other agent directory reads",
+    "No general Library/Caches scan",
+    "No Xcode invocation, initialization, SDK query or license acceptance",
+    "No cache removal/move or safe-delete determination",
+    "No OS/CLI/toolchain/CPU/RAM qualification beyond listed metadata"
+  ],
+  "apfsInterpretation": "Root and Data df rows share available blocks; do not sum them. Used/capacity fields reflect APFS semantics and concurrent observations, not exclusive physical allocations. Free space may change immediately.",
+  "hosts": [
+    {
+      "host": "local",
+      "identityEvidence": "local operator machine; Mac1 label from existing bridge route, hardware identity not re-proven",
+      "observedAt": "2026-10-18T03:06:27Z",
+      "commandsSucceeded": true,
+      "macOS": {
+        "version": "26.5.1",
+        "build": "25F80"
+      },
+      "dataVolume": {
+        "filesystem": "/dev/disk3s5",
+        "mount": "/System/Volumes/Data",
+        "units": "1024-byte blocks",
+        "totalBlocks": 482797652,
+        "usedBlocks": 430837756,
+        "availableBlocks": 6735648,
+        "reportedCapacityPercent": 99,
+        "availableBytes": 6897303552,
+        "availableGiBApprox": 6.424
+      },
+      "xcode": {
+        "plist": "/Applications/Xcode.app/Contents/Info.plist",
+        "CFBundleShortVersionString": "26.5",
+        "CFBundleVersion": "24943",
+        "metadataOnly": true,
+        "selectedDeveloperDirectory": null,
+        "sdkInventory": null,
+        "licenseFirstLaunchState": null,
+        "compatibilityQualified": false,
+        "betaPlistObserved": false,
+        "betaMeaning": "No standard /Applications/Xcode-beta.app/Contents/Info.plist output; no exhaustive application search."
+      },
+      "boundedDirectoryMeasurements": [
+        {
+          "path": "/Users/mohameddiomande/Library/Caches/FoundryLibrary",
+          "duKiB": null,
+          "state": "NOT_MEASURED_MISSING_OR_SYMLINK",
+          "ownership": "external-or-unknown; FoundryLibrary intended application namespace only",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Caches/com.apple.dt.Xcode",
+          "duKiB": 736,
+          "state": "MEASURED",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Developer/Xcode/DerivedData",
+          "duKiB": 154568,
+          "state": "MEASURED",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Developer/Xcode/Archives",
+          "duKiB": 0,
+          "state": "MEASURED",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        }
+      ],
+      "buildHeadroomAccepted": false,
+      "buildHeadroomReason": "Only free disk, OS and Xcode plist metadata observed; no per-project dependencies, caches, SDK/output/parallel-work budget or reserve established."
+    },
+    {
+      "host": "mac4",
+      "identityEvidence": "existing SSH alias mac4; not independently hardware-inventoried",
+      "observedAt": "2026-10-18T03:06:27Z",
+      "commandsSucceeded": true,
+      "macOS": {
+        "version": "26.3",
+        "build": "25D125"
+      },
+      "dataVolume": {
+        "filesystem": "/dev/disk3s5",
+        "mount": "/System/Volumes/Data",
+        "units": "1024-byte blocks",
+        "totalBlocks": 482797652,
+        "usedBlocks": 419223288,
+        "availableBlocks": 17316584,
+        "reportedCapacityPercent": 97,
+        "availableBytes": 17732182016,
+        "availableGiBApprox": 16.514
+      },
+      "xcode": {
+        "plist": "/Applications/Xcode.app/Contents/Info.plist",
+        "CFBundleShortVersionString": "26.2",
+        "CFBundleVersion": "24553",
+        "metadataOnly": true,
+        "selectedDeveloperDirectory": null,
+        "sdkInventory": null,
+        "licenseFirstLaunchState": null,
+        "compatibilityQualified": false,
+        "betaPlistObserved": false,
+        "betaMeaning": "No standard /Applications/Xcode-beta.app/Contents/Info.plist output; no exhaustive application search."
+      },
+      "boundedDirectoryMeasurements": [
+        {
+          "path": "/Users/mohameddiomande/Library/Caches/FoundryLibrary",
+          "duKiB": null,
+          "state": "NOT_MEASURED_MISSING_OR_SYMLINK",
+          "ownership": "external-or-unknown; FoundryLibrary intended application namespace only",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Caches/com.apple.dt.Xcode",
+          "duKiB": null,
+          "state": "NOT_MEASURED_MISSING_OR_SYMLINK",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Developer/Xcode/DerivedData",
+          "duKiB": null,
+          "state": "NOT_MEASURED_MISSING_OR_SYMLINK",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Developer/Xcode/Archives",
+          "duKiB": 133088,
+          "state": "MEASURED",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        }
+      ],
+      "buildHeadroomAccepted": false,
+      "buildHeadroomReason": "Only free disk, OS and Xcode plist metadata observed; no per-project dependencies, caches, SDK/output/parallel-work budget or reserve established."
+    },
+    {
+      "host": "mac5",
+      "identityEvidence": "existing SSH alias mac5; not independently hardware-inventoried",
+      "observedAt": "2026-10-18T03:06:27Z",
+      "commandsSucceeded": true,
+      "macOS": {
+        "version": "27.0",
+        "build": "26A5368g"
+      },
+      "dataVolume": {
+        "filesystem": "/dev/disk3s5",
+        "mount": "/System/Volumes/Data",
+        "units": "1024-byte blocks",
+        "totalBlocks": 482797652,
+        "usedBlocks": 378799840,
+        "availableBlocks": 18448704,
+        "reportedCapacityPercent": 96,
+        "availableBytes": 18891472896,
+        "availableGiBApprox": 17.594
+      },
+      "xcode": {
+        "plist": "/Applications/Xcode.app/Contents/Info.plist",
+        "CFBundleShortVersionString": "26.3",
+        "CFBundleVersion": "24587",
+        "metadataOnly": true,
+        "selectedDeveloperDirectory": null,
+        "sdkInventory": null,
+        "licenseFirstLaunchState": null,
+        "compatibilityQualified": false,
+        "betaPlistObserved": false,
+        "betaMeaning": "No standard /Applications/Xcode-beta.app/Contents/Info.plist output; no exhaustive application search."
+      },
+      "boundedDirectoryMeasurements": [
+        {
+          "path": "/Users/mohameddiomande/Library/Caches/FoundryLibrary",
+          "duKiB": null,
+          "state": "NOT_MEASURED_MISSING_OR_SYMLINK",
+          "ownership": "external-or-unknown; FoundryLibrary intended application namespace only",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Caches/com.apple.dt.Xcode",
+          "duKiB": null,
+          "state": "NOT_MEASURED_MISSING_OR_SYMLINK",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Developer/Xcode/DerivedData",
+          "duKiB": 21296,
+          "state": "MEASURED",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        },
+        {
+          "path": "/Users/mohameddiomande/Library/Developer/Xcode/Archives",
+          "duKiB": null,
+          "state": "NOT_MEASURED_MISSING_OR_SYMLINK",
+          "ownership": "shared developer/Xcode data; ownership unknown",
+          "activeState": "UNKNOWN",
+          "safeToDelete": false,
+          "reclaimableBytesAccepted": 0,
+          "interpretation": "du allocation estimate, not proof of independent APFS physical reclaimability, inactivity, retention consent or backup completeness."
+        }
+      ],
+      "buildHeadroomAccepted": false,
+      "buildHeadroomReason": "Only free disk, OS and Xcode plist metadata observed; no per-project dependencies, caches, SDK/output/parallel-work budget or reserve established."
+    }
+  ],
+  "reclaimableBytesAccepted": 0,
+  "capacityConclusion": "All three Data volumes report limited remaining headroom (99%,97%,96% used in df output). No build capacity, cleanup safety or deploy readiness accepted.",
+  "gatedActions": [
+    "Any builds/tests/typecheck/imports or runtime qualification",
+    "Any cache cleanup or active-data modification",
+    "Any install, service start or source hydration",
+    "Any cloud read/write/spend/provisioning or credential change"
+  ]
+}

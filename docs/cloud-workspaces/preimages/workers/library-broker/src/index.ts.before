@@ -1,0 +1,72 @@
+import {createHash} from 'node:crypto';
+import {authenticate} from '../../compute/src/transport-auth';
+import {boundedJson,exact,HttpFailure,jsonResponse} from '../../compute/src/http';
+import {canonical} from '../../../packages/library-jobs/src/data';
+import {applies,eventCheck,type Delivery,type DeliveryReceipt} from '../../../packages/library-revocation/src/index';
+import {validateGrant,grantRevocationBinding,type Broker,type ReadGrant} from '../../../packages/storage-broker/src/index';
+export interface BrokerHost {
+ environment:string;authorityId:string;ownerPrincipal:string;enabled?:boolean;authConfig:string;
+ broker:Broker;
+ /** Trusted host lookup, never a worker-submitted grant. */
+ grant(grantId:string):ReadGrant;
+ /** Refresh real authority observations before a read/replay; provider adapter refreshes after I/O too. */
+ refresh(grant:ReadGrant,signal:AbortSignal):Promise<void>;
+}
+/** Local Node host handler. This is not a Cloudflare DO or an installed GCP service. */
+export function brokerHandler(host:BrokerHost){
+ let owners=0,readers=0,outstandingRefresh=0;
+ return async(request:Request):Promise<Response>=>{
+  if(host.enabled!==true)return jsonResponse({ok:false,code:'broker-disabled'},503);
+  let admitted:'owner'|'reader'|undefined;
+  try{
+   const url=new URL(request.url);if(url.protocol!=='https:'||url.search)throw new HttpFailure(400,'invalid-origin');
+   if(request.method!=='POST')throw new HttpFailure(405,'post-required');
+   if(!['/v1/broker/read','/v1/broker/revocations'].includes(url.pathname))throw new HttpFailure(404,'not-found');
+   let actor;try{actor=authenticate(request,host.authConfig,host.environment);}catch{throw new HttpFailure(401,'unauthorized');}
+   const owner=url.pathname.endsWith('/revocations');
+   if(owner?(actor.role!=='owner'||actor.principal!==host.ownerPrincipal):actor.role!=='executor')throw new HttpFailure(403,'role-forbidden');
+   if(owner?owners>=2:readers>=4)throw new HttpFailure(429,'broker-admission-full');
+   if(owner){owners++;admitted='owner';}else{readers++;admitted='reader';}
+   const body=await boundedJson(request,32768);
+   if(host.enabled!==true)throw new HttpFailure(503,'broker-disabled');
+   let current;try{current=authenticate(request,host.authConfig,host.environment);}catch{throw new HttpFailure(401,'unauthorized');}
+   if(current.role!==actor.role||current.principal!==actor.principal)throw new HttpFailure(403,'identity-changed');
+   if(owner){
+    exact(body,['delivery']);
+    const d=JSON.parse(canonical(body.delivery)) as Delivery;
+    exact(d,['version','deliveryId','revision','target','event','evidenceId','key']);
+    if(d.version!==1||!Number.isSafeInteger(d.revision)||d.revision<1||typeof d.key!=='string'||!/^[a-f0-9]{64}(?![\s\S])/.test(d.key)||d.deliveryId!==d.key)throw new HttpFailure(400,'invalid-delivery');
+    const t=d.target;exact(t,['version','targetId','kind','environment','authorityId','projectId','resourceId','generation','binding']);eventCheck(d.event);
+    if(t.version!==1||t.kind!=='broker'||t.authorityId!==host.authorityId||t.environment!==host.environment||!applies(d.event,t))throw new HttpFailure(409,'target-binding');
+    const evidence=createHash('sha256').update(canonical({source:t.binding.compute.authorityId,event:d.event})).digest('hex');
+    if(evidence!==d.evidenceId)throw new HttpFailure(409,'evidence-binding');
+    const grant=validateGrant(host.grant(t.resourceId));
+    const b=t.binding;
+    if(t.projectId!==grant.projectId||t.generation!==grant.authorizationGeneration||b.projectId!==grant.projectId||b.policyVersion!==grant.policyVersion||b.policyHash!==grant.policyHash||canonical(b.compute)!==canonical(grant.compute)||b.content.objectKey!==grant.object.objectKey||b.content.objectGeneration!==grant.object.generation||b.content.objectHash!==grant.object.sha256||b.content.bytes!==grant.object.sizeBytes)throw new HttpFailure(409,'grant-binding');
+    const result=host.broker.admin.revokeGrant({key:d.key,grantId:grant.grantId,expectedBinding:grantRevocationBinding(grant),evidenceId:d.evidenceId,reason:'compute-revocation'});
+    const receipt:DeliveryReceipt={version:1,deliveryId:d.deliveryId,targetId:t.targetId,evidenceId:d.evidenceId,status:result.status};return jsonResponse(receipt);
+   }
+   exact(body,['grantId','requestId']);
+   if(![body.grantId,body.requestId].every(v=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,95}(?![\s\S])/.test(v)))throw new HttpFailure(400,'invalid-read');
+   const grant=validateGrant(host.grant(body.grantId));
+   if(grant.principalRef!==actor.principal)throw new HttpFailure(403,'grant-principal');
+   if(outstandingRefresh>=4)throw new HttpFailure(429,'broker-refresh-full');
+   outstandingRefresh++;
+   const refreshAbort=new AbortController(),refreshTimer=setTimeout(()=>refreshAbort.abort(),5000);
+   const refresh=Promise.resolve().then(()=>host.refresh(grant,refreshAbort.signal)).finally(()=>{outstandingRefresh--;});
+   try{await Promise.race([refresh,new Promise<never>((_,reject)=>refreshAbort.signal.addEventListener('abort',()=>reject(new Error('refresh deadline')),{once:true}))]);}finally{refreshAbort.abort();clearTimeout(refreshTimer);}
+   if(host.enabled!==true)throw new HttpFailure(503,'broker-disabled');
+   // A current credential is required even if authority refresh yielded or this is cached replay.
+   const again=authenticate(request,host.authConfig,host.environment);
+   if(again.principal!==actor.principal||again.role!=='executor')throw new HttpFailure(403,'identity-changed');
+   const bytes=await host.broker.reader.read(actor.principal,body);
+   if(host.enabled!==true)throw new HttpFailure(503,'broker-disabled');
+   const finished=authenticate(request,host.authConfig,host.environment);if(finished.principal!==actor.principal||finished.role!=='executor')throw new HttpFailure(403,'identity-changed');
+   return new Response(bytes,{headers:{'content-type':'application/octet-stream','cache-control':'no-store','x-content-type-options':'nosniff'}});
+  }catch(error){
+   if(error instanceof HttpFailure)return jsonResponse({ok:false,code:error.code},error.status);
+   // Domain failures are fail-closed; no provider details or credentials leave this boundary.
+   return jsonResponse({ok:false,code:'broker-unavailable'},503);
+  }finally{if(admitted==='owner')owners--;if(admitted==='reader')readers--;}
+ };
+}

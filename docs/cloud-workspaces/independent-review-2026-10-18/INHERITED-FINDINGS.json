@@ -1,0 +1,270 @@
+{
+  "version": 1,
+  "method": "Historical dispositions carried explicitly; new independent findings tracked separately. Source acceptance never implies runtime acceptance.",
+  "items": [
+    {
+      "id": "CR-1",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Poll leases a summary whose embedded workload ID the runtime will reject",
+      "state": "prior-source-fix-observed-validation-pending",
+      "evidence": "workers/compute/src/authority.ts:184; packages/epoch-jobs/src/index.ts:132",
+      "attribution": "pre-existing source, not repaired in this batch",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "CR-2",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Executor general path does not check configured authority/environment pins",
+      "state": "source-repaired-validation-pending",
+      "evidence": "packages/worker-client/src/index.ts: ensureAuthority inside boundedStep",
+      "attribution": "This batch adds the actual check inside the direct client; earlier wrapper/journal pinning was insufficient.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "CR-3",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Present falsy GPU values pass as CPU-only",
+      "state": "prior-source-fix-observed-validation-pending",
+      "evidence": "packages/compute-authority/src/durable/authority.ts:109-110",
+      "attribution": "pre-existing source, not repaired in this batch",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "L1",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "VERIFYING fence observations use running expiry",
+      "state": "prior-source-fix-observed-validation-pending",
+      "evidence": "workers/compute/src/library-feed.ts:45-50",
+      "attribution": "pre-existing source, not repaired in this batch",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "L2",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Legitimate incarnation0 rejected by jobs/evidence",
+      "state": "prior-source-fix-observed-validation-pending",
+      "evidence": "packages/library-jobs/src/index.ts:23",
+      "attribution": "pre-existing source, not repaired in this batch",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "L3",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Logical timeout does not bound actual unresolved host operations",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "G1",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Admission paths/content use mutable branch instead of proposal SHA",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "G2",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Local merger fetch/merge not pinned to approved forkHeadSha",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "G3",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Checked-positive verification not required by enforcement",
+      "state": "mechanism-implemented-owner-policy-pending",
+      "evidence": "VERIFY_REQUIRE_CHECKED and persisted policy; no configuration change made",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "G4",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Incomplete verification request and no persisted verify/content binding",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "D1",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Chain schema version documented incorrectly",
+      "state": "prior-source-fix-observed-validation-pending",
+      "evidence": "packages/epoch-dispatch/API.md:27-30",
+      "attribution": "pre-existing source, not repaired in this batch",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "D2",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Node22+ prose broader than locked runner engine range",
+      "state": "prior-source-fix-observed-validation-pending",
+      "evidence": "README.md:62-68",
+      "attribution": "pre-existing source, not repaired in this batch",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "V01",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Incomplete production paths: additions/deletions suppress intersection edits; caps do not establish completeness.",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "V02",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Storage unavailable can be classified as missing/empty history or deletion; positive absence needed.",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "V03",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "No valid documented empty-base root proposal path for demanded landed parent contract.",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "V04",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Crash-after-push before decision persistence replay contradicts new parent guard.",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "V05",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Production first-parent/path presence cannot bind exact bytes, modes and entry kinds; string transport cannot guarantee arbitrary blobs.",
+      "state": "source-repaired-validation-pending",
+      "evidence": "SOURCE-REVIEW.md; CHANGE-RECEIPT.json",
+      "limits": "Bounded supported subset; no independent acceptance, tests, compilation or deployment.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "CAT-01",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Browse catalog is source-copy evidence, not build/dependency/data closure or canonical authority.",
+      "state": "open-readiness-or-independent-review-gate",
+      "evidence": "tools/foundry-library-bridge/README.md; build_catalog.py:build",
+      "limits": "No per-project content approval, publication, new capacity observation or independent catalog review was performed.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "CAT-02",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Name-only identity and overlapping parent/nested views cannot establish unique apps or merge ownership.",
+      "state": "open-readiness-or-independent-review-gate",
+      "evidence": "catalog-r3/catalog.json projects[].identityConfidence; build_catalog.py:identities",
+      "limits": "No per-project content approval, publication, new capacity observation or independent catalog review was performed.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "CAT-03",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Catalog descriptor prepared but not published; client/relay/pull/browser have no operational acceptance.",
+      "state": "open-readiness-or-independent-review-gate",
+      "evidence": "tools/foundry-library-bridge/sync_catalog.py:sync; ROUTE.md",
+      "limits": "No per-project content approval, publication, new capacity observation or independent catalog review was performed.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "CAP-01",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Current free disk and bounded cache sizes do not establish reclaimable capacity or build headroom.",
+      "state": "open-readiness-or-independent-review-gate",
+      "evidence": "R1-CAPACITY.json",
+      "limits": "No per-project content approval, publication, new capacity observation or independent catalog review was performed.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "CAT-04",
+      "priorRegister": "../R1-FINDINGS.json",
+      "issue": "Four canonical bridge sources differ from earlier SOURCE-HASHES.json; prior source review/package acceptance cannot be transferred to current bytes.",
+      "state": "open-readiness-or-independent-review-gate",
+      "evidence": "bridgePriorReviewHashComparison in this file; exact prior receipt path in evidence list",
+      "limits": "No per-project content approval, publication, new capacity observation or independent catalog review was performed.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "W-CAS",
+      "state": "implemented-source-reviewed-validation-pending",
+      "issue": "Mac VM CAS required generic writable seal",
+      "evidence": "mac-isolated-store.ts; native/mac-cas.py; mac-vm-adapter.ts; mac-vm-intake.ts",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "W-LINUX",
+      "state": "superseded-for-bounded-pilot-validation-pending",
+      "issue": "Generic Linux mutable workspace materialization still requires a real isolation implementation; no generic ManagedTreeSeal supplied.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated",
+      "evidence": "../linux-isolation-2026-10-18/CHANGE-RECEIPT.json",
+      "limits": "One owner-mediated attempt; no automatic reuse or generic mutable seal."
+    },
+    {
+      "id": "W-RESOURCES",
+      "state": "approval-and-provisioning-pending",
+      "issue": "Actual approved accounts/runtime/helpers/images/scoped providers/schema/headroom; no fabricated installation pins.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "W-VALIDATION",
+      "state": "gated-not-started",
+      "issue": "Compilation, tests, operational acceptance and integration merge remain gated. Independent bounded source review is now authorized and in progress.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "K11-CANARY",
+      "state": "external-open-reported",
+      "issue": "First natural complete automatic MotionMix watcher-to-retrieval trace remains unobserved in rollout report.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    },
+    {
+      "id": "K11-FABRIC",
+      "state": "not-enrolled-no-authority-grant",
+      "issue": "External taskkill/receipt recovery is not Foundry durable lease and containment attestation; no Windows executor added.",
+      "lineageRegister": "../writable-integration-2026-10-18/FINDINGS.json",
+      "reviewThisBatch": "not-yet-adjudicated"
+    }
+  ]
+}

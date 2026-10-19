@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-18T08:41:30.225150+00:00",
+  "sourceFilesRead": 112,
+  "sourceDrift": [],
+  "patchHashMatches": true,
+  "meaning": "byte identity of reviewed artifacts only; no product execution/testing"
+}

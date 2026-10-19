@@ -1,0 +1,408 @@
+{
+  "format": "foundry.cloud-workspaces.source-state.v1",
+  "stateSha256": "3201b8744f5800cef3d4e9e4330d60c198c0657901de73ed83406457a7695773",
+  "files": [
+    {
+      "path": "packages/build-jobs/README.md",
+      "sha256": "7914e7a959f188c0ea7ee5bfe8daf10dbf780a8bfd5605a14293eb5d3624342b",
+      "bytes": 7468,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-jobs/package.json",
+      "sha256": "d3e0a72e04b80fd2724d0dc9b9f7c4a2c7dc1016583f69f968130cc7dbc0b953",
+      "bytes": 107,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-jobs/src/authority.ts",
+      "sha256": "56d0e788f919f023a19890558d5e35c0437b927a0f9178c5531c1758abacd919",
+      "bytes": 31658,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-jobs/src/broker-reader.ts",
+      "sha256": "b7348180fd80db16fbddc91c179123454b5d3bb446994d389895cd58665be26d",
+      "bytes": 1950,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-jobs/src/contracts.ts",
+      "sha256": "d2f5e728a1b69f090d17b0390063104bbe37b7060734977fa9389b1a8baf8916",
+      "bytes": 3589,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-jobs/src/index.ts",
+      "sha256": "cf57955abc3480c123b1c80647f9bb13e3590698be498b0d8ef890e0d5260d5f",
+      "bytes": 151,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-jobs/src/schema.ts",
+      "sha256": "37f091a9174fefb8d7586c0a1bfc1638bac1b95371249cf4c4791fc5cab32fe4",
+      "bytes": 6652,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-jobs/src/validation.ts",
+      "sha256": "651403373c15460425862b4cbb93bd9c82923b7e365c3822f766a8f8a1f9ab35",
+      "bytes": 7441,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/README.md",
+      "sha256": "3ee38744391cb29cd616af287856be1fdd0f6a922c54fbf1e20882d53a1bea3b",
+      "bytes": 6675,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/package.json",
+      "sha256": "9c663ea66a64344aa2bad4e9dfc5e3e3cad8d4caff78f5f1e3ba82c372200e60",
+      "bytes": 222,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/adapters.ts",
+      "sha256": "3c55cca0859c4a600b6994ac79e3aeeb7b96393bbef737e7e6a196430ef39c2c",
+      "bytes": 12728,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/controller.ts",
+      "sha256": "486a1e4b55fd9b9a29e93acf25e92bdc0d03dc775c61ea8fcc8e1eeb5cd56a27",
+      "bytes": 17291,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/discovery.ts",
+      "sha256": "61e7e210ac54008e0a209273ed1b40a51af06c68b197d3a681eff8c76409ff16",
+      "bytes": 4669,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/host.ts",
+      "sha256": "ef5830fee318729039061712040c9bdf421771b2526388db6ff24d382c9a6767",
+      "bytes": 10082,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/index.ts",
+      "sha256": "a3c45eb04801423aab0bc3c7c25dcb74e257a4a0e9541d6f92baacc860981d55",
+      "bytes": 1463,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/liveness.ts",
+      "sha256": "2672ced0619760433c3a69c0eced0109553d9e85f4fbb99db8d93e0c2751ee8e",
+      "bytes": 5034,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/node-transport.ts",
+      "sha256": "a0f0e3ffd36cb73fd83ee4c754a044140676be6a33e2d448924827ca39d8d803",
+      "bytes": 5224,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/parent-profile.ts",
+      "sha256": "9fcb2cefb308a1212b025d82eb1c4b1099487f9bf78f532746a871661ef9f163",
+      "bytes": 5354,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/plans.ts",
+      "sha256": "0e60572734cd16b0c6e6944ed727854d54fc50531d4942c10a991b19cd8fc283",
+      "bytes": 7844,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/process.ts",
+      "sha256": "5e80a391976333728885b8b84b6e64573f27d49e3269a85d691804dc923c09d7",
+      "bytes": 2470,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/receipts.ts",
+      "sha256": "54e1594eda36943bb7836cc36206b4a136dfb70991e952dbf9d4d5872ac1f0af",
+      "bytes": 7315,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/storage-integration.ts",
+      "sha256": "eedbfa4ed40bc275cc9176de5ddf010bfad177e58aa322920ed27e5ae19eb819",
+      "bytes": 9650,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/storage-inventory.ts",
+      "sha256": "01b58d47cbe0ce1ef880e2b64db5f34c3eaf7755559047916672ffb3fdfcb2a0",
+      "bytes": 4990,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/supervisor.ts",
+      "sha256": "d8f6459f7cd2c3d94d73f6c1ba908f781c1545557d24b30334f26f76ba9fcd87",
+      "bytes": 6063,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-runtime/src/types.ts",
+      "sha256": "1601f455b0e867a1939bbc9f88cd6cd6ff9a9271fae78e03a4e7bd459c21062c",
+      "bytes": 3052,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/package.json",
+      "sha256": "e05eacadb484648caaa5c61bb4e4e6d9b353d0729b3f9c06823703fd7a7981b3",
+      "bytes": 110,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/checks.ts",
+      "sha256": "f2f6e16cff143d2c279e5b235908e363cbdc971afc6e14563eff34eb0881e04b",
+      "bytes": 3256,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/filesystem.ts",
+      "sha256": "6f47fc615ebea31e275aaf867fee11958e4bfd4debbbf692ff44b81092347c2c",
+      "bytes": 5285,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/gcs-writer.ts",
+      "sha256": "cbbff95fee97dad069ea234abf3aa3aa74b9857af4194e32a9721822fb961a2e",
+      "bytes": 6542,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/index.ts",
+      "sha256": "c190f0240c993f416d0ef3293ae804968a2c4ecd7c9b3e1d5dcb0679573b2b58",
+      "bytes": 632,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/local-store.ts",
+      "sha256": "b1b2e55fa5ca61593cd29279bff5da41f7e5dfdfecc1e85a356c0fc90ad75297",
+      "bytes": 3148,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/packaging.ts",
+      "sha256": "6787dbcdd5f1f510e4f4301e7d9c5cfd680197d558b44134d4aa96731f06d523",
+      "bytes": 9638,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/publication.ts",
+      "sha256": "cfb1f497fbd5b3b2c85bee1454fa47433e287d1e2311c26b36217e9f46e36f7c",
+      "bytes": 4548,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/snapshots.ts",
+      "sha256": "962f9b1ea1228856d8a7c1b3289f224e7aaf5fb14d0b98b622e26798cc6a6ded",
+      "bytes": 15400,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/tar.ts",
+      "sha256": "dc719d8b8bae1ccadd842f701fac20fdc225e08af661ea18d01a9f71f7b31a68",
+      "bytes": 6344,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/src/types.ts",
+      "sha256": "54656f7fb01ebdd092f188a46374e3da750b92149731f3226cf9978dcd39b102",
+      "bytes": 4830,
+      "mode": "0o644"
+    },
+    {
+      "path": "packages/build-storage/tsconfig.json",
+      "sha256": "f1f25c4affde0a0fdaa556580bd07a4f09659110fcbefafc75395679631a8ff2",
+      "bytes": 195,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/README.md",
+      "sha256": "b2080a427ba19c90b57659304b712e2378c0c51a44f1af2b26d5d9fb6b245739",
+      "bytes": 37192,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/bounded_http.py",
+      "sha256": "0d856d530ed63d2d6be51d62b7d9a6f70371026af6f50f2bc3d79226f2723cff",
+      "bytes": 15938,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/bridge.py",
+      "sha256": "2477c22e5c17d5612475cf97ce8cc9db32f2b8dc11221ee827b41ae6ba248fc6",
+      "bytes": 14073,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/broker_reader.py",
+      "sha256": "d52524f434561f3322bb385d089cd00aed88b6273cd5d58cdfc4ce284e3a4ba6",
+      "bytes": 7605,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/build_catalog.py",
+      "sha256": "a8a3052aac33eec16c134205b28b832ec7b24cd6019bfcd2aa26b4025946eb1c",
+      "bytes": 9877,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/cache_budget.py",
+      "sha256": "2d407fa763df884b42776caee6b2ff679d9d49abe00a1cf083152ab4bace3b16",
+      "bytes": 8697,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/chunk_package.py",
+      "sha256": "43f68d610bec7eb44e4b1edeb2853f6d7ac9da4082e45b00e247674be8abc6f8",
+      "bytes": 14906,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/chunk_reader.py",
+      "sha256": "ffb3a39df243306f0636f59f6ecf4c1083d313fb27966d43ea0b3e8e78dd1623",
+      "bytes": 7756,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/cloud.py",
+      "sha256": "e4f54b2e85902bdfba32882fbc106d82cc35f632b2a49be8f257ad8c67caf98e",
+      "bytes": 8931,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/common.py",
+      "sha256": "161b487bca92f19cd20af57f63c9911aea76f4e30935b1409e76cfd54d9771f5",
+      "bytes": 4014,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/package_catalog.py",
+      "sha256": "382993a18d9b6862803c3ca05b8f095f2a42b93d50d736bbba5b2d643747a823",
+      "bytes": 1593,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/pull.py",
+      "sha256": "e68a28ab38e46825b311712d561116cc71a86ef79e169c13b3212babea3cbe53",
+      "bytes": 8124,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/readiness.py",
+      "sha256": "90d44bee6b0d0f9e50ec8eddf0d8d9c6819ec2a1052276eb1dbf250ecf940e47",
+      "bytes": 3727,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/snapshot.py",
+      "sha256": "2be53dd6f0807c3d8dda54d9601f1419e6881aaab5e6dc0a24ebfbcd45de9b11",
+      "bytes": 11043,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/snapshot_policy.py",
+      "sha256": "be44bea38ce6552b2b812a73b56cb548697bc49c41534a9f3da5ec06d73199a8",
+      "bytes": 4983,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/ssh_reader.py",
+      "sha256": "802b249e167be8ca691830156abc06523d4739de58915860145d624b50565798",
+      "bytes": 1388,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/sync_catalog.py",
+      "sha256": "53cf83a5774c854e25d4769d7fd0a39c63037666aa9f7d69f27556bc7a507cf0",
+      "bytes": 5464,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/web/app.js",
+      "sha256": "61ecf5e4c40206ff8dc7a0bfaf6d5e287c2dc33aa4f72dfcea6c44f58c031be0",
+      "bytes": 8211,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/web/index.html",
+      "sha256": "9d43ea0bbf6b3b1c45425cbf1513a93fdf95d9fa3930da7a7166d29170c16621",
+      "bytes": 1203,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-library-bridge/web/style.css",
+      "sha256": "b6894a5bdb966abc6b05fbd48d54ff5526d3525e7dd3237253ae9d7d5ce86af1",
+      "bytes": 2115,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-pilot/build-submission.ts",
+      "sha256": "5e0ba3b9a062463af93b84f8aefabc8263375fd39bd65077a0429bb78b41b30f",
+      "bytes": 5654,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-pilot/operator-config.ts",
+      "sha256": "2c0a1dffaa3dd78f6a0c4adc290222c38b518858a6996b75febcd04152180858",
+      "bytes": 4653,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-pilot/operator-server.ts",
+      "sha256": "a3f597c76fe400b8fc873a295fb0f3972b6df19853b33605d5e58b8c32a57271",
+      "bytes": 16737,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-pilot/operator/builds.js",
+      "sha256": "b6f0684696257086b3ec236b925ec0fd3d70216dc8336b48b82021797b55440d",
+      "bytes": 10271,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-pilot/operator/index.html",
+      "sha256": "b803c79d62d39d64c98277180a194deae99454ce5ad3a62d08cd727785d62c00",
+      "bytes": 10263,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-pilot/operator/operator.js",
+      "sha256": "8cecf2ee99610a9ceee37ad8147171f69d6e688fa2a99fea4a6e3393717bf20f",
+      "bytes": 34320,
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/foundry-pilot/transport.ts",
+      "sha256": "c98a2541ea1714f15cdd23b9263c998096662c9f77cf9226092dbc6a91e2bfb8",
+      "bytes": 5854,
+      "mode": "0o644"
+    },
+    {
+      "path": "workers/compute/src/authority.ts",
+      "sha256": "0bf3aa14f32747ff6fe364331c11c36c8cf87fe8f859d8cda3cd96b3f414f7a8",
+      "bytes": 34954,
+      "mode": "0o644"
+    },
+    {
+      "path": "workers/library-broker/src/build-observer.ts",
+      "sha256": "f8081c966eee3db6a4240fb13c8198753f095e21bc5a713b53bb6111121b4842",
+      "bytes": 2312,
+      "mode": "0o644"
+    },
+    {
+      "path": "workers/library-broker/src/index.ts",
+      "sha256": "cec968afe4b0352d57266bab9c24bb2ba8ab25c4346c9da4187b8b9bfb376d56",
+      "bytes": 6890,
+      "mode": "0o644"
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+import {createHash} from 'node:crypto';
+import type {Stats} from 'node:fs';
+import {join} from 'node:path';
+import * as v from '../../build-jobs/src/validation';
+import {alive, check, CHUNK_BYTES, exactRef, freeze, scopeCopy, sha256, snapshot} from './checks';
+import {inspectDirectory, inspectFile, readFileChunks, rootCopy, verifyRoot} from './filesystem';
+import {shardedLocalRef, validateLocalRef} from './local-refs';
+import {projectPublisher, projectReader, putProjectLocal, readProjectLocal} from './project-input-io';
+import {addInputCounts, copyInputList, decodeProjectMetadata, emptyInputCounts, inputRequestFields, PROJECT_INPUT_LIMITS as L,
+  projectMetadataBytes, ProjectInputPaths, ProjectInputValidation, validateProjectGit, validateProjectRoot, validateProjectSegment} from './project-input-format';
+import type {ProjectInputFile, ProjectInputSegment, ProjectInputSegmentRef, ProjectInputSnapshot} from './project-input-format';
+import type {ProjectInputPackagingPorts, ProjectInputReadPorts} from './project-input-io';
+import {ProjectInputTree} from './project-input-tree';
+import {restoreSnapshotFile} from './restore-file';
+import type {InputSnapshotRequest, SnapshotImportRequest} from './snapshots';
+import type {ApprovedFile, ArtifactClaim, InputApproval, LocalContentStore, LocalRef, ManagedRoot, ManagedTreeSeal, ObjectRef} from './types';
+
+export type ProjectInputSnapshotRequest=InputSnapshotRequest;
+export interface PackagedProjectInput {
+  snapshot:ProjectInputSnapshot;snapshotLocal:LocalRef;manifest:ArtifactClaim;
+  /** No truncation: >128 required paths needs a parent contract change before
+   * approval. Even a representable candidate ALWAYS has reconstructable:false. */
+  approval:InputApproval|null;inputHash:string|null;
+}
+interface SelectedFile {file:ApprovedFile;stat:Stats}
+interface SegmentPlan {files:SelectedFile[];requiredInputs:string[];objects:number;smallBytes:number}
+const plan=():SegmentPlan=>({files:[],requiredInputs:[],objects:0,smallBytes:0});
+
+/** Explicit owner-selected files only. No Git command, recursive discovery, assets
+ * closure, completeness approval, secret reading policy, or history attestation. */
+export async function packageProjectInputSnapshot(request:ProjectInputSnapshotRequest,ports:ProjectInputPackagingPorts,signal:AbortSignal):Promise<PackagedProjectInput> {
+  const fields=inputRequestFields(request,['root','scope','files','requiredInputs','git']);
+  const root=rootCopy(snapshot(fields.root) as ManagedRoot), scope=scopeCopy(snapshot(fields.scope) as InputSnapshotRequest['scope']);
+  const files=copyInputList(fields.files as ApprovedFile[],L.maxFiles), requiredInputs=copyInputList(fields.requiredInputs as string[],L.maxRequiredInputs);
+  const suppliedGit=snapshot(fields.git) as InputSnapshotRequest['git']; v.exact(suppliedGit,['remote','revision']);
+  const git={...suppliedGit,historyPreserved:false}; validateProjectGit(git);
+  check(files.length>0,'empty-snapshot-selection');
+  const paths=new ProjectInputPaths(), selected=new Set<string>(), required=new Set<string>();
+  for(const f of files) {
+    v.exact(f,['path','classification']); check(['source-input','source-history'].includes(f.classification),'classification-required');
+    check(!selected.has(f.path),'duplicate-project-file'); paths.add(f.path); selected.add(f.path);
+  }
+  for(const path of requiredInputs) {check(!required.has(path),'duplicate-required-input'); paths.add(path,true); required.add(path);}
+  const missingInputs=requiredInputs.filter(p=>!selected.has(p));
+  const publisher=projectPublisher(scope,ports,signal); // Validates explicit namespace set and local layout before disk reads.
+  return ports.seal.withExclusiveTrees([root.path],async()=>{
+    const tree=new ProjectInputTree(signal), plans:SegmentPlan[]=[plan()]; let total=0,objectCount=0;
+    for(const file of files) {
+      const stat=await tree.inspect(root,file.path); v.uint(stat.size,0,L.maxChunksPerFile*CHUNK_BYTES);
+      const small=stat.size>0&&stat.size<=L.smallFileBytes;
+      let page=plans[plans.length-1], extra=small?(page.smallBytes?0:1):Math.ceil(stat.size/CHUNK_BYTES);
+      if(page.files.length===L.maxFilesPerSegment||page.objects+extra>L.maxChunksPerSegment) {
+        page=plan(); plans.push(page); extra=small?1:Math.ceil(stat.size/CHUNK_BYTES);
+      }
+      page.files.push({file,stat}); page.objects+=extra; if(small) page.smallBytes+=stat.size;
+      total+=stat.size; objectCount+=extra;
+      check(page.smallBytes<=CHUNK_BYTES&&plans.length<=L.maxSegments&&objectCount<=L.maxChunks&&total<=L.maxBytes,'project-input-budget');
+    }
+    for(let i=0;i<requiredInputs.length;i++) {
+      const pageIndex=Math.floor(i/L.maxRequiredPerSegment); if(!plans[pageIndex]) plans.push(plan());
+      plans[pageIndex].requiredInputs.push(requiredInputs[i]);
+    }
+    check(plans.length<=L.maxSegments,'project-input-segment-budget');
+    const segments:ProjectInputSegmentRef[]=[], totals=emptyInputCounts();
+    for(let index=0;index<plans.length;index++) {
+      const p=plans[index], segment:ProjectInputSegment={version:2,kind:'input-segment',projectId:scope.projectId,index,
+        objects:[],files:[],requiredInputs:p.requiredInputs,missingInputs:p.requiredInputs.filter(path=>!selected.has(path))};
+      const packed=p.smallBytes?new Uint8Array(p.smallBytes):null; let packedOffset=0;
+      // Keep only this page's small bytes in memory. Larger files stream a MiB at
+      // a time. A small-file range refers to object zero, published after reading.
+      const largeObjects:ObjectRef[]=[];
+      for(const {file,stat} of p.files) {
+        const entry:ProjectInputFile={...file,retention:'retain',sha256:'',sizeBytes:stat.size,mode:stat.mode&0o777,chunks:[]}, digest=createHash('sha256');
+        if(stat.size>0&&stat.size<=L.smallFileBytes) {
+          check(packed,'project-packed-buffer-required'); const offset=packedOffset;
+          await readFileChunks(root,file.path,stat,CHUNK_BYTES,async bytes=>{digest.update(bytes); packed.set(bytes,packedOffset); packedOffset+=bytes.length;},signal,false);
+          entry.chunks.push({object:0,offset,sizeBytes:stat.size});
+        } else {
+          await readFileChunks(root,file.path,stat,CHUNK_BYTES,async bytes=>{
+            digest.update(bytes); const stored=await publisher.write(bytes,'objects');
+            entry.chunks.push({object:largeObjects.length+(packed?1:0),offset:0,sizeBytes:bytes.length}); largeObjects.push(stored.claim.ref);
+          },signal,false);
+        }
+        entry.sha256=digest.digest('hex'); segment.files.push(entry);
+      }
+      if(packed) {check(packedOffset===packed.length,'project-packed-byte-count'); segment.objects.push((await publisher.write(packed,'objects')).claim.ref);}
+      segment.objects.push(...largeObjects); check(segment.objects.length===p.objects,'project-object-plan-mismatch');
+      const counts=validateProjectSegment(segment,scope.projectId,index), bytes=projectMetadataBytes(segment,'segment');
+      const stored=await publisher.write(bytes,'manifests'); segments.push({ref:stored.claim.ref,...counts}); addInputCounts(totals,counts);
+    }
+    const manifest:ProjectInputSnapshot={version:2,kind:'segmented-input',projectId:scope.projectId,segments,totals,git,historyEvidence:null};
+    validateProjectRoot(manifest);
+    check(totals.bytes===total&&totals.chunks===objectCount,'project-plan-totals');
+    const encoded=projectMetadataBytes(manifest,'root'), stored=await publisher.write(encoded,'manifests'); await publisher.finish();
+    let approval:InputApproval|null=null;
+    if(requiredInputs.length<=128) {
+      approval={projectId:scope.projectId,snapshotHash:sha256(encoded),manifest:stored.claim.ref,git,requiredInputs,missingInputs,reconstructable:false}; v.input(approval);
+    }
+    return freeze({snapshot:manifest,snapshotLocal:stored.local,manifest:stored.claim,approval,inputHash:approval?v.hash(approval):null});
+  },signal);
+}
+
+/** Pinned root -> bounded metadata pages -> data objects. Current grants are issued
+ * by the selected real broker; no serialized grant IDs or namespaces are trusted. */
+export async function populateProjectInputSnapshot(request:SnapshotImportRequest,ports:ProjectInputReadPorts,signal:AbortSignal,maxInputBytes=L.maxBytes):Promise<{snapshot:ProjectInputSnapshot;local:LocalRef}> {
+  const r=snapshot(request) as SnapshotImportRequest, scope=scopeCopy(r.scope); v.digest(r.snapshotHash);
+  const ref=exactRef(r.manifest,scope.projectId,'manifests'); check(ref.sha256===r.snapshotHash&&ref.sizeBytes<=L.maxRootBytes,'snapshot-manifest-digest-binding');
+  const reader=projectReader(r,ports,signal), bytes=await reader.read(ref), root=decodeProjectMetadata<ProjectInputSnapshot>(bytes,'root');
+  check(root.projectId===scope.projectId,'snapshot-project'); const validation=new ProjectInputValidation(root);
+  v.uint(maxInputBytes,0,L.maxBytes); check(root.totals.bytes<=maxInputBytes,'approved-input-byte-budget');
+  // Validate ALL metadata and global path/required-input relationships before any
+  // source object reads. Only bounded descriptors for one page are held at a time.
+  for(const page of root.segments) {
+    const encoded=await reader.read(page.ref), segment=decodeProjectMetadata<ProjectInputSegment>(encoded,'segment');
+    validation.accept(segment); await putProjectLocal(encoded,ports.local,signal);
+  }
+  validation.finish(true);
+  for(const page of root.segments) {
+    const segment=decodeProjectMetadata<ProjectInputSegment>(await readProjectLocal(page.ref,ports.local,signal),'segment');
+    for(const object of segment.objects) await putProjectLocal(await reader.read(object),ports.local,signal);
+    await verifySegmentFiles(segment,ports.local,signal);
+  }
+  const local=await putProjectLocal(bytes,ports.local,signal); await reader.finish();
+  return freeze({snapshot:root,local});
+}
+
+async function verifySegmentFiles(segment:ProjectInputSegment,local:LocalContentStore,signal:AbortSignal) {
+  const source=segmentLocal(segment,local);
+  for(const file of segment.files) {
+    const digest=createHash('sha256'); let size=0;
+    for(const range of file.chunks) {
+      const bytes=await readProjectLocal(segment.objects[range.object],source,signal);
+      digest.update(bytes.subarray(range.offset,range.offset+range.sizeBytes)); size+=range.sizeBytes;
+    }
+    check(size===file.sizeBytes&&digest.digest('hex')===file.sha256,'project-whole-file-digest');
+  }
+}
+
+/** The writer puts this page's packed blob at index zero. Keep at most that one
+ * MiB while verifying/restoring its many ranges; all other objects stream. */
+function segmentLocal(segment:ProjectInputSegment,local:LocalContentStore):LocalContentStore {
+  const first=segment.objects[0]; let cached:Uint8Array|undefined;
+  return {layout:local.layout,put:(bytes,signal)=>local.put(bytes,signal),read:async(ref,signal)=>{
+    alive(signal);
+    if(first&&ref.sha256===first.sha256&&ref.sizeBytes===first.sizeBytes&&ref.relativePath===shardedLocalRef(first.sha256,first.sizeBytes).relativePath) {
+      if(!cached) cached=await readProjectLocal(first,local,signal); return cached;
+    }
+    return local.read(ref,signal);
+  }};
+}
+
+/** Local byte recovery only. Incomplete required-input sets fail before destination
+ * creation. Failure retains partial evidence; the parent must quarantine it. */
+export async function materializeProjectInputSnapshot(snapshotRef:LocalRef,destination:ManagedRoot,local:LocalContentStore,
+  seal:ManagedTreeSeal,signal:AbortSignal,maxInputBytes=L.maxBytes):Promise<{snapshotHash:string;files:number;bytes:number}> {
+  const ref=snapshot(snapshotRef) as LocalRef; validateLocalRef(ref,true); check(local.layout==='sharded-v2','project-input-sharded-local-store-required');
+  const bytes=await readProjectLocal(ref,local,signal), manifest=decodeProjectMetadata<ProjectInputSnapshot>(bytes,'root'), root=rootCopy(destination);
+  const validation=new ProjectInputValidation(manifest);
+  v.uint(maxInputBytes,0,L.maxBytes); check(manifest.totals.bytes<=maxInputBytes,'approved-input-byte-budget');
+  for(const page of manifest.segments) validation.accept(decodeProjectMetadata<ProjectInputSegment>(await readProjectLocal(page.ref,local,signal),'segment'));
+  validation.finish(true);
+  return seal.withExclusiveTrees([root.path],async()=>{
+    await verifyRoot(root,signal); const tree=new ProjectInputTree(signal);
+    for(const page of manifest.segments) {
+      const segment=decodeProjectMetadata<ProjectInputSegment>(await readProjectLocal(page.ref,local,signal),'segment');
+      const source=segmentLocal(segment,local);
+      for(const file of segment.files) {
+        const localChunks=file.chunks.map(range=>({ref:shardedLocalRef(segment.objects[range.object].sha256,segment.objects[range.object].sizeBytes),offset:range.offset,sizeBytes:range.sizeBytes}));
+        await restoreSnapshotFile({...file,localChunks},root,source,signal,tree,L.maxDirectoryEntries);
+      }
+    }
+    alive(signal); return freeze({snapshotHash:ref.sha256,files:manifest.totals.files,bytes:manifest.totals.bytes});
+  },signal);
+}
+
+/** Independent actual-byte verification, not an importer/materializer receipt.
+ * Caller MUST bind returned hash/project to the authority-approved input. The
+ * trusted seal excludes writers for the complete metadata/CAS/tree inspection. */
+export async function verifyLocalProjectInputSnapshot(snapshotRef:LocalRef,destination:ManagedRoot,local:LocalContentStore,
+  seal:ManagedTreeSeal,signal:AbortSignal,maxInputBytes=L.maxBytes):Promise<{snapshotHash:string;projectId:string;files:number;bytes:number;git:InputApproval['git'];requiredInputs:string[];missingInputs:string[]}> {
+  const ref=snapshot(snapshotRef) as LocalRef; validateLocalRef(ref,true); check(local.layout==='sharded-v2','project-input-sharded-local-store-required');
+  const root=rootCopy(destination);
+  return seal.withExclusiveTrees([root.path],async()=>{
+    await verifyRoot(root,signal);
+    const encoded=await readProjectLocal(ref,local,signal), manifest=decodeProjectMetadata<ProjectInputSnapshot>(encoded,'root');
+    const validation=new ProjectInputValidation(manifest), directories=new Set<string>();
+    v.uint(maxInputBytes,0,L.maxBytes); check(manifest.totals.bytes<=maxInputBytes,'approved-input-byte-budget');
+    for(const page of manifest.segments) {
+      const segment=decodeProjectMetadata<ProjectInputSegment>(await readProjectLocal(page.ref,local,signal),'segment'); validation.accept(segment);
+      for(const file of segment.files) {
+        const parts=file.path.split('/'); for(let i=1;i<parts.length;i++) directories.add(parts.slice(0,i).join('/'));
+        check(directories.size<=L.maxPathComponents,'project-directory-count-budget');
+      }
+    }
+    validation.finish(true);
+    const tree=new ProjectInputTree(signal), pending=['']; let observedFiles=0;
+    while(pending.length) {
+      const relative=pending.pop()!, parent=relative?join(root.path,relative):root.path;
+      for(const name of await tree.names(parent)) {
+        const path=relative?`${relative}/${name}`:name;
+        if(directories.has(path)) {await inspectDirectory(root,path,signal,false); pending.push(path);}
+        else {check(validation.selected.has(path),'undeclared-project-input-entry'); await inspectFile(root,path,signal,false); observedFiles++;}
+      }
+    }
+    check(observedFiles===manifest.totals.files,'restored-project-file-count');
+    let files=0,bytes=0;
+    for(const page of manifest.segments) {
+      const segment=decodeProjectMetadata<ProjectInputSegment>(await readProjectLocal(page.ref,local,signal),'segment');
+      await verifySegmentFiles(segment,local,signal);
+      for(const file of segment.files) {
+        const stat=await inspectFile(root,file.path,signal,false), digest=createHash('sha256');
+        check(stat.size===file.sizeBytes&&(stat.mode&0o777)===(file.mode&0o755),'restored-project-file-metadata');
+        await readFileChunks(root,file.path,stat,CHUNK_BYTES,async chunk=>{digest.update(chunk);},signal,false);
+        check(digest.digest('hex')===file.sha256,'restored-project-file-digest'); files++; bytes+=stat.size;
+      }
+    }
+    check(files===manifest.totals.files&&bytes===manifest.totals.bytes,'restored-project-totals'); alive(signal);
+    return freeze({snapshotHash:ref.sha256,projectId:manifest.projectId,files,bytes,git:manifest.git,
+      requiredInputs:Array.from(validation.required),missingInputs:Array.from(validation.missing)});
+  },signal);
+}

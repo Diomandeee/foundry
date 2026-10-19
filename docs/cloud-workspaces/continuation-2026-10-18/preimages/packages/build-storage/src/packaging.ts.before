@@ -1,0 +1,129 @@
+import {createHash} from 'node:crypto';
+import type {Stats} from 'node:fs';
+import * as v from '../../build-jobs/src/validation';
+import {alive, canonical, check, CHUNK_BYTES, freeze, jsonBytes, PILOT_LIMITS, scopeCopy, sha256, snapshot, uniquePaths} from './checks';
+import {inspectFile, readFileChunks, rootCopy} from './filesystem';
+import {current, publish, reserve} from './publication';
+import {isBundlePath, MAX_BUNDLE_ENTRIES, planBundle, streamBundle} from './tar';
+import type {BundlePlan} from './tar';
+import type {ApprovedFile, ArtifactClaim, CollectedOutputs, CollectOutputsRequest, OutputLineage, PackagingPorts, ResultManifest, StagedResult, WriteResultRequest} from './types';
+
+type ArtifactPlan={format:'file';sizeBytes:number;stat:Stats}|{format:'tar';sizeBytes:number;tar:BundlePlan};
+
+const collections=new WeakMap<CollectedOutputs,{ports:PackagingPorts; budget:number; manifestStarted:boolean}>();
+export function validateFileSelections(files:ApprovedFile[],mode:'outputs'|'inputs') {
+  check(Array.isArray(files)&&files.length<=128,'file-count'); uniquePaths(files.map(f=>f.path));
+  for(const file of files) {
+    v.exact(file,['path','classification']);
+    check((mode==='inputs'?['source-input','source-history']:['build-output','signed-archive','debug-symbols','build-log']).includes(file.classification),'classification-required');
+    const lower=file.path.toLowerCase();
+    if(mode==='outputs') {
+      if(/(?:\.dsym(?:\/|$)|\.bcsymbolmap$|\.pdb$)/.test(lower)) check(file.classification==='debug-symbols','debug-symbol-retention-classification-required');
+      else if(/(?:\.ipa|\.xcarchive|\.app)(?:\/|$)/.test(lower)) check(file.classification==='signed-archive','signed-archive-retention-classification-required');
+    }
+  }
+}
+
+/** Explicit invocation only. Host selects roots, approved profile, authenticated scope,
+ * stopped/exclusive-tree evidence and private providers. Does not execute a recipe. */
+export async function collectOutputs(request:CollectOutputsRequest,ports:PackagingPorts,signal:AbortSignal):Promise<CollectedOutputs> {
+  const r=snapshot(request) as CollectOutputsRequest, root=rootCopy(r.root), scope=scopeCopy(r.scope);
+  v.profile(r.profile); check(r.profile.projectId===scope.projectId,'profile-project');
+  // Keep this wired collector bounded even if generic parent primitives later widen.
+  v.uint(r.profile.limits.maxOutputBytes,1,PILOT_LIMITS.maxOutputBytes);
+  check(r.profile.outputPaths.length<=PILOT_LIMITS.maxRequiredOutputs,'pilot-required-output-limit-24');
+  const files=[...r.outputs,...r.logs]; validateFileSelections(files,'outputs');
+  check(r.outputs.length<=PILOT_LIMITS.maxRequiredOutputs&&r.logs.length<=64,'selection-count');
+  // Exact required set, before entering the seal or calling capacity/providers.
+  // Check both directions explicitly; output order may differ from profile order.
+  uniquePaths(r.profile.outputPaths);
+  const required=new Set(r.profile.outputPaths), selected=new Set(r.outputs.map(f=>f.path));
+  check(selected.size===required.size&&r.profile.outputPaths.every(path=>selected.has(path)),'required-output-selection-incomplete');
+  check(r.outputs.every(f=>required.has(f.path)&&f.classification!=='build-log'),'unapproved-output');
+  check(r.logs.every(f=>f.classification==='build-log'),'log-classification');
+  return ports.seal.withExclusiveTrees([root.path],async()=>{
+    const plans:ArtifactPlan[]=[]; let total=0,count=0,entries=0;
+    // Preflight ALL files before cloud writes: no partial publish for known size/type errors.
+    let logChunks=0;
+    for(let i=0;i<files.length;i++) {
+      let plan:ArtifactPlan;
+      if(i<r.outputs.length&&isBundlePath(files[i].path)) {
+        const tar=await planBundle(root,files[i].path,r.profile.limits.maxOutputBytes-total,MAX_BUNDLE_ENTRIES-entries,signal);
+        plan={format:'tar',sizeBytes:tar.sizeBytes,tar}; entries+=tar.entries.length;
+      } else {
+        const stat=await inspectFile(root,files[i].path,signal); plan={format:'file',sizeBytes:stat.size,stat}; entries++;
+      }
+      check(entries<=MAX_BUNDLE_ENTRIES,'combined-tree-entry-budget-20000');
+      plans.push(plan); total+=plan.sizeBytes; count+=Math.ceil(plan.sizeBytes/CHUNK_BYTES);
+      check(total<=r.profile.limits.maxOutputBytes,'profile-output-byte-budget');
+      check(count<=PILOT_LIMITS.maxResultChunks,'output-and-log-chunk-budget-31');
+      if(i>=r.outputs.length) logChunks+=Math.ceil(plan.sizeBytes/CHUNK_BYTES);
+    }
+    check(total<=r.profile.limits.maxOutputBytes,'profile-output-byte-budget');
+    check(count<=PILOT_LIMITS.maxResultChunks,'output-and-log-chunk-budget-31');
+    check(logChunks<=64,'parent-log-claim-budget-64');
+    const grants=count+1, bytes=total+CHUNK_BYTES;
+    check(grants<=PILOT_LIMITS.maxNamespaceGrants&&bytes<=PILOT_LIMITS.maxNamespaceBytes,'pilot-namespace-request-limit');
+    // Authoritative admission still MUST refuse if existing grants, stored/read bytes
+    // or other reservations leave insufficient capacity. No namespace bypass/fallback.
+    const reservation=await reserve(scope,grants,bytes,ports,signal);
+    const lineage:OutputLineage[]=[], outputs:ResultManifest['outputs']=[], logs:ArtifactClaim[]=[];
+    for(let i=0;i<files.length;i++) {
+      const file=files[i], plan=plans[i], chunks:ArtifactClaim[]=[], digest=createHash('sha256');
+      let pending=new Uint8Array(CHUNK_BYTES),used=0,produced=0;
+      const flush=async()=>{
+        if(!used) return; const bytes=pending.subarray(0,used);
+        digest.update(bytes);
+        await ports.local.put(bytes,signal); await current(ports,reservation,signal);
+        chunks.push(await publish(bytes,'objects',scope,reservation,ports,signal));
+        pending=new Uint8Array(CHUNK_BYTES); used=0;
+      };
+      const append=async(bytes:Uint8Array)=>{
+        alive(signal); produced+=bytes.length; check(produced<=plan.sizeBytes,'artifact-size-grew');
+        for(let offset=0;offset<bytes.length;) {
+          const n=Math.min(CHUNK_BYTES-used,bytes.length-offset);
+          pending.set(bytes.subarray(offset,offset+n),used); used+=n; offset+=n;
+          if(used===CHUNK_BYTES) await flush();
+        }
+      };
+      if(plan.format==='tar') await streamBundle(plan.tar,append,signal);
+      else await readFileChunks(root,file.path,plan.stat,CHUNK_BYTES,async bytes=>append(bytes),signal);
+      check(produced===plan.sizeBytes,'artifact-size-mismatch'); await flush();
+      check(chunks.length===Math.ceil(plan.sizeBytes/CHUNK_BYTES),'artifact-chunk-count');
+      const entry:OutputLineage={path:file.path,format:plan.format,classification:file.classification,retention:'retain',sha256:digest.digest('hex'),sizeBytes:plan.sizeBytes,chunks};
+      // A real empty file still passes inode/EOF checks. The chunk callback never
+      // runs, so it retains SHA-256(empty)/[] without any zero-byte publication.
+      lineage.push(entry);
+      if(i<r.outputs.length) outputs.push({path:entry.path,format:entry.format,sha256:entry.sha256,sizeBytes:entry.sizeBytes,chunks});
+      else logs.push(...chunks);
+    }
+    const profileHash=v.hash(r.profile);
+    const lineageLocal=await ports.local.put(jsonBytes({version:1,projectId:scope.projectId,compute:scope.compute,profileHash,files:lineage}),signal);
+    await current(ports,reservation,signal);
+    const collected=freeze({outputs,logs,lineage,totalBytes:total,chunkCount:count,reservation,scope,profileHash,lineageLocal});
+    collections.set(collected,{ports,budget:r.profile.limits.maxOutputBytes,manifestStarted:false}); return collected;
+  },signal);
+}
+
+/** Creates a bounded local staging object BEFORE the remote manifest write. Returns a
+ * stage-command artifact claim, not authority acceptance, verification or deployment. */
+export async function writeResultManifest(request:WriteResultRequest,ports:PackagingPorts,signal:AbortSignal):Promise<StagedResult> {
+  const c=request.collected, known=collections.get(c);
+  check(known&&known.ports===ports,'untrusted-or-foreign-collection');
+  const r=snapshot({jobId:request.jobId,attemptId:request.attemptId,inputHash:request.inputHash,profileHash:request.profileHash,exitCode:request.exitCode}) as Omit<WriteResultRequest,'collected'>;
+  check(r.profileHash===c.profileHash&&r.jobId===c.scope.compute.workloadId&&r.attemptId===c.scope.compute.attemptId,'result-lineage');
+  const manifest:ResultManifest={version:1,...r,outputs:c.outputs,logs:c.logs}; v.result(manifest);
+  check(c.totalBytes<=known.budget&&c.totalBytes<=PILOT_LIMITS.maxOutputBytes&&
+    c.chunkCount<=PILOT_LIMITS.maxResultChunks&&c.outputs.length<=PILOT_LIMITS.maxRequiredOutputs,'result-budget');
+  const bytes=jsonBytes(manifest); alive(signal);
+  check(!known.manifestStarted,'manifest-publication-already-attempted-reconcile-retained-evidence');
+  known.manifestStarted=true; // Reserve synchronously; parallel/repeated staging cannot overspend admission.
+  const local=await ports.local.put(bytes,signal);
+  const artifact=await publish(bytes,'manifests',c.scope,c.reservation,ports,signal);
+  check(artifact.ref.sha256===sha256(bytes)&&canonical(manifest)===Buffer.from(bytes).toString('utf8'),'manifest-byte-binding');
+  const receiptLocal=await ports.local.put(jsonBytes({version:1,kind:'build-result-lineage',jobId:r.jobId,attemptId:r.attemptId,
+    inputHash:r.inputHash,profileHash:r.profileHash,compute:c.scope.compute,manifest:artifact,manifestLocal:local,
+    fileLineageLocal:c.lineageLocal,reservation:c.reservation,retention:'retain'}),signal);
+  await current(ports,c.reservation,signal);
+  return freeze({manifest,artifact,local,lineageLocal:c.lineageLocal,receiptLocal});
+}

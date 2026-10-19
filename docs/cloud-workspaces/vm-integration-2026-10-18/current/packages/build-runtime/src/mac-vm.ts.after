@@ -1,0 +1,270 @@
+import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { constants } from 'node:fs';
+import { access, lstat, open, statfs } from 'node:fs/promises';
+import { freemem } from 'node:os';
+import { dirname } from 'node:path';
+import { createHash } from 'node:crypto';
+import { performance } from 'node:perf_hooks';
+import { canonical, HostJournal, validateHost,assertJournalReservation,type JournalReservation } from './host.js';
+import { absolute, approvalFor, check } from './plans.js';
+import { macVmIdentity, assertMacVmGuestJob, macVmGuestInput, MAC_VM_JOB_MAX_BYTES, type MacVmGuestJob } from './mac-vm-job.js';
+import { canonicalData } from './parent-profile.js';
+import type { RuntimePlan } from './types.js';
+import {withStagedMacVmInput,type StagedMacVmInput} from './mac-vm-staging.js';
+
+export interface MacVmHostConfiguration {
+  version:2;bootSha256:string;identity:string;jobId:string;attemptId:string;profileHash:string;guestJobSha256:string;
+  bootDisk:string;outputDisk:string;auxiliaryStorage:string;hardwareModel:string;machineIdentifier:string;inputDirectory:string;
+  helperUID:number;cpuCount:number;memoryBytes:number;maxBootBytes:number;maxOutputBytes:number;maxRunSeconds:number;
+}
+export interface MacVmHostPolicy {
+  /** Root-provisioned signed executable, entitlement and public hash. No installer. */
+  executable:string;sha256:string;
+  configuration:MacVmHostConfiguration;
+}
+export interface MacVmStopEvidence {
+  identity:string;stopped:boolean;basis:'virtual-machine-stopped'|'unknown';
+  /** VM stop is containment evidence ONLY; this never attests a successful build. */
+  result:'not-collected';
+}
+export interface MacVmOutputIdentity {
+  readonly path:string;readonly device:string;readonly inode:string;readonly sizeBytes:number;readonly uid:number;
+}
+export interface MacVmStoppedBinding {
+  readonly plan:RuntimePlan;readonly guestJob:MacVmGuestJob;readonly output:MacVmOutputIdentity;
+  readonly guestJobSha256:string;readonly helperSha256:string;
+  readonly executionStarted:boolean;
+}
+const stoppedSessions=new WeakMap<MacVmStopEvidence,MacVmStoppedBinding>();
+/** Stop evidence cannot be reconstructed from JSON, a signature-free assertion,
+ * a matching identity string, a PID check or a previous process incarnation. */
+export function macVmStoppedBinding(evidence:MacVmStopEvidence,plan:RuntimePlan,guestJob:MacVmGuestJob):MacVmStoppedBinding {
+  const binding=stoppedSessions.get(evidence);
+  check(binding && binding.plan===plan && binding.guestJob===guestJob && evidence.stopped &&
+    evidence.basis==='virtual-machine-stopped','mac-vm-untrusted-stop-evidence');
+  assertMacVmGuestJob(guestJob,plan);return binding;
+}
+async function outputIdentity(path:string,uid:number,maximum:number):Promise<MacVmOutputIdentity> {
+  await canonical(path,uid,'file');
+  const f=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
+  try {
+    const s=await f.stat({bigint:true}),named=await lstat(path,{bigint:true});
+    check(s.isFile() && s.uid===BigInt(uid) && s.nlink===1n && (s.mode&0o7777n)===0o600n && s.size>0n && s.size<=BigInt(maximum) &&
+      named.dev===s.dev && named.ino===s.ino && named.size===s.size && named.uid===s.uid && named.mode===s.mode,'mac-vm-output-identity');
+    return Object.freeze({path,device:String(s.dev),inode:String(s.ino),sizeBytes:Number(s.size),uid});
+  }finally{await f.close();}
+}
+
+export interface MacVmSession {
+  readonly identity:string;
+  /** Never reject and never infer stop from a PID/EOF/exit code alone. */
+  readonly settled:Promise<MacVmStopEvidence>;
+  stop():Promise<MacVmStopEvidence>;
+  state():Readonly<{phase:'starting'|'running'|'stopping'|'stopped'|'unknown';result:'not-collected'}>;
+}
+const unknown=(identity:string):MacVmStopEvidence=>({identity,stopped:false,basis:'unknown',result:'not-collected'});
+
+async function pinHelper(path:string,expected:string):Promise<void> {
+  absolute(path);check(/^[0-9a-f]{64}$/.test(expected),'mac-vm-helper-pin');
+  check(process.getuid?.() !== 0 && process.getuid?.() === process.geteuid?.(),'mac-vm-unprivileged-helper-client');
+  await canonical(path,0,'file');
+  for(let current=path;;current=dirname(current)) {
+    let writable=false;
+    try{await access(current,constants.W_OK);writable=true;}catch(e){check(['EACCES','EPERM','EROFS'].includes((e as NodeJS.ErrnoException).code ?? ''),'mac-vm-helper-access-unknown');}
+    check(!writable,'mac-vm-helper-writable');if(current==='/')break;
+  }
+  const f=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
+  try {
+    const before=await f.stat();
+    check(before.uid===0 && before.nlink===1 && before.isFile() && before.size>0 && before.size<=32*1048576 && (before.mode&0o6022)===0 && (before.mode&0o111)!==0,'mac-vm-helper-file');
+    const magic=Buffer.alloc(4),header=await f.read(magic,0,4,0);
+    check(header.bytesRead===4 && [0xfeedface,0xcefaedfe,0xfeedfacf,0xcffaedfe,0xcafebabe,0xbebafeca,0xcafebabf,0xbfbafeca].includes(magic.readUInt32BE(0)),'mac-vm-native-helper-required');
+    const digest=createHash('sha256');let at=0;
+    while(at<before.size){const bytes=Buffer.alloc(Math.min(1048576,before.size-at));const read=await f.read(bytes,0,bytes.length,at);check(read.bytesRead>0,'mac-vm-helper-short');digest.update(bytes.subarray(0,read.bytesRead));at+=read.bytesRead;}
+    const after=await f.stat(),named=await lstat(path);
+    check(before.dev===after.dev && before.ino===after.ino && before.size===after.size && before.mtimeMs===after.mtimeMs && before.ctimeMs===after.ctimeMs && named.dev===before.dev && named.ino===before.ino && named.size===before.size && named.ctimeMs===before.ctimeMs && digest.digest('hex')===expected,'mac-vm-helper-changed');
+  } finally {await f.close();}
+}
+
+/** Concrete containment primitive used by MacVmRuntimeAdapter; this function alone is not a build adapter.
+ * It does not claim/renew jobs, prepare images, install/start services, mount outputs,
+ * collect results or approve placement. Standalone calls quarantine their slot;
+ * a branded supervisor reservation records stop here and is finalized by its owner. Owner
+ * supplies provisioned artifacts and activation separately. No work at import time.
+ * currentFence must return the current continuous-time lease/deadline runway and
+ * synchronously check cancellation using the same authority observation as
+ * the controller. The Swift helper anchors each one-use permit to its OWN clock.
+ * Caller retains the host reservation on any unknown state, including client loss. */
+async function launchMacVmUnsealed(plan:RuntimePlan,policy:MacVmHostPolicy,
+  guestJob:MacVmGuestJob,currentFence:()=>Readonly<{remainingMs:number}>,signal:AbortSignal,sharedReservation?:JournalReservation):Promise<MacVmSession> {
+  const approved=approvalFor(plan);assertMacVmGuestJob(guestJob,plan);
+  check(process.platform==='darwin' && process.arch==='arm64' && plan.kind==='xcode-build-v1','mac-vm-arm64-only');
+  check(approved.host.allowActivation===true,'owner-activation-gated');
+  check(!signal.aborted,'mac-vm-cancelled');currentFence();
+  // Plain data only; never share mutable caller configuration with the helper.
+  const owner=JSON.parse(canonicalData(policy)) as MacVmHostPolicy;
+  const c=owner.configuration;
+  const identity=macVmIdentity(plan);
+  check(/^[0-9a-f]{64}$/.test(c.bootSha256),'mac-vm-boot-pin');
+  const guestEncoded=canonicalData(guestJob);check(Buffer.byteLength(guestEncoded)<=MAC_VM_JOB_MAX_BYTES,'mac-vm-job-byte-budget');
+  const guest=JSON.parse(guestEncoded) as MacVmGuestJob;
+  check(guest.version===2 && guest.identity===identity && guest.jobId===plan.jobId && guest.attemptId===plan.attemptId && guest.profileHash===plan.profileHash &&
+    createHash('sha256').update(canonicalData(guest)).digest('hex')===c.guestJobSha256,'mac-vm-guest-job-digest');
+  check(c.version===2 && c.identity===identity && c.jobId===plan.jobId && c.attemptId===plan.attemptId && c.profileHash===plan.profileHash,'mac-vm-config-binding');
+  check(c.helperUID===approved.host.uid && process.getuid?.()===c.helperUID && c.cpuCount===plan.cpu && c.memoryBytes===plan.ramMib*1048576 && c.maxRunSeconds*1000===plan.timeoutMs && Number.isSafeInteger(c.maxRunSeconds) && c.maxRunSeconds>=1 && c.maxRunSeconds<=3600,'mac-vm-config-limits');
+  for(const path of [c.bootDisk,c.outputDisk,c.auxiliaryStorage,c.hardwareModel,c.machineIdentifier,c.inputDirectory])absolute(path);
+  const imageBase=`/Library/Foundry/VM/attempts/${plan.attemptId}`;
+  check(c.bootDisk===`${imageBase}/boot.raw` && c.outputDisk===`${imageBase}/outputs.raw` &&
+    c.auxiliaryStorage===`${imageBase}/auxiliary.bin` && c.hardwareModel===`${imageBase}/hardware-model.bin` &&
+    c.machineIdentifier===`${imageBase}/machine-identifier.bin` && c.inputDirectory===`${imageBase}/input`,'mac-vm-fixed-artifact-paths');
+  check(c.helperUID>=501&&c.memoryBytes>=2*1024**3&&c.memoryBytes<=64*1024**3,'mac-vm-native-host-limits');
+  for(const [n,maximum] of [[c.maxBootBytes,128*1024**3],[c.maxOutputBytes,8*1024**3]])
+    check(Number.isSafeInteger(n)&&n>=1048576&&n<=maximum&&n%512===0,'mac-vm-disk-limit');
+  const encoded=JSON.stringify(c);check(Buffer.byteLength(encoded)<=16384,'mac-vm-config-budget');
+  await validateHost(plan);currentFence();check(!signal.aborted,'mac-vm-cancelled');
+  const imageVolume=await statfs(dirname(c.bootDisk));currentFence();
+  check(imageVolume.bavail*imageVolume.bsize>=Math.max(50*1024**3,approved.limits.minFreeBytes),'mac-vm-image-disk-headroom');
+  check(freemem()>=c.memoryBytes+1024**3,'mac-vm-host-memory-headroom');
+  await pinHelper(owner.executable,owner.sha256);currentFence();check(!signal.aborted,'mac-vm-cancelled');
+  const output=await outputIdentity(c.outputDisk,c.helperUID,c.maxOutputBytes);currentFence();check(!signal.aborted,'mac-vm-cancelled');
+  // Marker before the only process launch. Persistence failure never starts helper.
+  if(sharedReservation)assertJournalReservation(sharedReservation,plan);
+  const reservation=sharedReservation??await new HostJournal(approved.host).reserve(plan);
+  await reservation.recordIdentity(identity);currentFence();check(!signal.aborted,'mac-vm-cancelled');
+  const child:ChildProcessWithoutNullStreams=spawn(owner.executable,[],{env:{PATH:'/usr/bin:/bin',LANG:'C',LC_ALL:'C'},stdio:['pipe','pipe','pipe']});
+  let phase:'starting'|'running'|'stopping'|'stopped'|'unknown'='starting';
+  let closed=false,invalid=false,terminal=false,started=false,stopRequested=false,observationResolved=false,permitIssued=false,pending=Buffer.alloc(0),total=0;
+  let resolve!:(proof:MacVmStopEvidence)=>void;
+  const settled=new Promise<MacVmStopEvidence>(done=>{resolve=done;});
+  let stopDeadline:ReturnType<typeof setTimeout>|undefined;
+  const settleUnknown=()=>{markUnknown();if(!observationResolved){observationResolved=true;resolve(unknown(identity));}};
+  const seen=new Set<string>();
+  let challengeAt=0,challengeCount=0,generation=0;
+  const markUnknown=()=>{invalid=true;phase='unknown';};
+  const send=(message:object)=>{
+    if(closed || child.stdin.destroyed || child.stdin.writableEnded)return;
+    const bytes=JSON.stringify(message)+'\n';
+    if(child.stdin.writableLength+Buffer.byteLength(bytes)>65536){markUnknown();child.stdin.destroy();return;}
+    child.stdin.write(bytes);
+  };
+  const requestStop=()=>{
+    if(closed || terminal || stopRequested)return;
+    stopRequested=true;if(!invalid)phase='stopping';
+    send({event:'stop',identity});child.stdin.end();
+    stopDeadline=setTimeout(settleUnknown,10000);
+  };
+  const fail=()=>{markUnknown();requestStop();};
+  const onAbort=()=>requestStop();
+  signal.addEventListener('abort',onAbort,{once:true});
+  child.stdin.on('error',fail);
+  child.on('error',fail);
+  let startup:ReturnType<typeof setTimeout>|undefined=setTimeout(fail,310000);
+  // This timer bounds observation only. It never kills the helper or proves stop.
+  const maximum=setTimeout(requestStop,Math.min(c.maxRunSeconds*1000,3600000)+15000);
+  child.stderr.on('data',(bytes:Buffer)=>{if(bytes.length)fail();});
+  const accept=(line:Buffer)=>{
+    check(line.length>0 && line.length<=2048,'mac-vm-event-size');
+    const row=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(line)) as Record<string,unknown>;
+    check(row && !Array.isArray(row) && row.identity===identity && typeof row.event==='string','mac-vm-event-binding');
+    if(row.event==='challenge'){
+      check(!terminal && Object.keys(row).sort().join(',')==='createdContinuousNs,deadlineContinuousNs,event,generation,identity,nonce' && typeof row.nonce==='string' && /^[a-f0-9]{64}$/.test(row.nonce),'mac-vm-challenge');
+      check(Number.isSafeInteger(row.generation) && row.generation===generation+1 &&
+        typeof row.createdContinuousNs==='string' && /^(0|[1-9][0-9]{0,19})$/.test(row.createdContinuousNs) &&
+        typeof row.deadlineContinuousNs==='string' && /^(0|[1-9][0-9]{0,19})$/.test(row.deadlineContinuousNs) &&
+        BigInt(row.deadlineContinuousNs)-BigInt(row.createdContinuousNs)===1000000000n,'mac-vm-challenge-generation');
+      generation=row.generation as number;
+      // Store only the immediately preceding challenge: the helper rejects replays,
+      // while a bounded client never retains 7200 nonces or refreshes lease time.
+      check(!seen.has(row.nonce),'mac-vm-challenge-replay');seen.clear();seen.add(row.nonce);
+      const now=performance.now();
+      if(now-challengeAt<50)challengeCount++;else challengeCount=0;
+      challengeAt=now;check(challengeCount<4,'mac-vm-challenge-rate');
+      if(signal.aborted || phase==='stopping' || invalid){requestStop();return;}
+      const remaining=currentFence().remainingMs;
+      check(Number.isFinite(remaining) && remaining>=1,'mac-vm-current-lease-runway');
+      const validForMs=Math.min(1000,Math.floor(remaining));
+      permitIssued=true;send({event:'permit',identity,nonce:row.nonce,validForMs});
+    } else if(row.event==='started'){
+      check(!terminal && !started && permitIssued && Object.keys(row).length===2,'mac-vm-start-order');
+      started=true;if(startup){clearTimeout(startup);startup=undefined;}
+      if(phase==='starting')phase='running';
+    } else if(row.event==='stopped'){
+      check(!terminal && Object.keys(row).length===2,'mac-vm-stop-order');terminal=true;
+      // Keep the launch channel sealed. Proof requires helper's terminal close too.
+      stopRequested=true;child.stdin.end();
+      if(!stopDeadline)stopDeadline=setTimeout(settleUnknown,10000);
+    } else throw new Error('mac-vm-invalid-event');
+  };
+  child.stdout.on('error',fail);
+  child.stdout.on('end',()=>{if(!terminal)fail();});
+  child.stderr.on('error',fail);
+  child.stdout.on('data',(data:Buffer)=>{
+    try{
+      total+=data.byteLength;check(total<=4*1048576 && pending.byteLength+data.byteLength<=65536,'mac-vm-channel-budget');
+      pending=Buffer.concat([pending,data]);let end:number;
+      while((end=pending.indexOf(10))>=0){const line=pending.subarray(0,end);pending=pending.subarray(end+1);accept(line);}
+      check(pending.length<=2048,'mac-vm-frame-budget');
+    }catch{fail();}
+  });
+  child.on('close',async(code,terminationSignal)=>{
+    closed=true;clearTimeout(maximum);if(startup)clearTimeout(startup);
+    if(!stopDeadline)stopDeadline=setTimeout(settleUnknown,10000);
+    signal.removeEventListener('abort',onAbort);
+    const confirmed=!invalid && terminal && code===0 && terminationSignal===null && pending.byteLength===0;
+    try {
+      // Persist the observation before minting stop evidence. This primitive
+      // never releases a slot; the integrated supervisor owns finalization.
+      const observation={stopped:confirmed,basis:confirmed?'host-containment-inspect' as const:'unknown' as const,identity};
+      if(sharedReservation)await reservation.observeStop(observation);
+      else await reservation.finish(observation,'quarantined');
+      // A timed-out observation is terminal for this client; later clean closure
+      // can be reconciled from durable evidence, never silently upgrade it here.
+      if(confirmed && !observationResolved){
+        const after=await outputIdentity(c.outputDisk,c.helperUID,c.maxOutputBytes);
+        check(canonicalData(after)===canonicalData(output),'mac-vm-output-replaced');
+        // A late filesystem observation may have crossed the unknown deadline.
+        if(observationResolved){settleUnknown();return;}
+        const proof:MacVmStopEvidence=Object.freeze({identity,stopped:true,basis:'virtual-machine-stopped',result:'not-collected'});
+        macVmGuestInput(guestJob,plan); // retain the verified snapshot/job chain
+        stoppedSessions.set(proof,Object.freeze({plan,guestJob,output,guestJobSha256:c.guestJobSha256,helperSha256:owner.sha256,executionStarted:started}));
+        observationResolved=true;phase='stopped';resolve(proof);
+      }
+      else settleUnknown();
+    }catch{settleUnknown();}
+    finally{if(stopDeadline)clearTimeout(stopDeadline);}
+  });
+  send(c);
+  if(signal.aborted)requestStop();
+  return Object.freeze({identity,settled,state:()=>Object.freeze({phase,result:'not-collected' as const}),stop:async()=>{
+    requestStop();let timer:ReturnType<typeof setTimeout>|undefined;
+    try{return await Promise.race([settled,new Promise<MacVmStopEvidence>(done=>{timer=setTimeout(()=>{settleUnknown();done(unknown(identity));},10000);})]);}
+    finally{if(timer)clearTimeout(timer);}
+  }});
+}
+
+/** Only the staged-input API can reach the concrete launcher. The public settled
+ * promise includes guard postflight; a guard timeout/fault remains unknown even
+ * if a later helper event happens to report stopped. */
+export async function launchMacVmContainment(plan:RuntimePlan,policy:MacVmHostPolicy,
+  guestJob:MacVmGuestJob,staged:StagedMacVmInput,currentFence:()=>Readonly<{remainingMs:number}>,signal:AbortSignal,sharedReservation?:JournalReservation):Promise<MacVmSession>{
+  check(staged.path===policy.configuration.inputDirectory&&staged.guestJobSha256===policy.configuration.guestJobSha256,'mac-vm-staged-config');
+  let inner:MacVmSession|undefined,resolveReady!:(s:MacVmSession)=>void,rejectReady!:(e:unknown)=>void;
+  let guardFailed=false;
+  const lifetime=new AbortController(),onAbort=()=>lifetime.abort();
+  signal.addEventListener('abort',onAbort,{once:true});if(signal.aborted)lifetime.abort();
+  const ready=new Promise<MacVmSession>((resolve,reject)=>{resolveReady=resolve;rejectReady=reject;});
+  const identity=macVmIdentity(plan);
+  const settled=withStagedMacVmInput(staged,plan,guestJob,async()=>{
+    inner=await launchMacVmUnsealed(plan,policy,guestJob,currentFence,lifetime.signal,sharedReservation);
+    resolveReady(inner);return inner.settled;
+  },lifetime.signal).catch(error=>{
+    guardFailed=true;lifetime.abort();
+    rejectReady(error);
+    // Request containment stop but never turn a late result into accepted proof.
+    if(inner)void inner.stop().catch(()=>undefined);
+    return unknown(identity);
+  }).finally(()=>signal.removeEventListener('abort',onAbort));
+  await ready;
+  return Object.freeze({identity,settled,state:()=>guardFailed?Object.freeze({phase:'unknown' as const,result:'not-collected' as const}):inner!.state(),
+    stop:async()=>{await inner!.stop();return settled;}});
+}

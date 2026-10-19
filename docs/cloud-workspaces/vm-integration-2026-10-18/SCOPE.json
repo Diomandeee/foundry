@@ -1,0 +1,502 @@
+{
+  "kind": "source-byte-inventory-not-executable-verification",
+  "files": [
+    {
+      "path": "docs/cloud-workspaces/MASTER-CHECKLIST.md",
+      "beforeSha256": "f64099d453f96174e14efd186b45e52d78a5bd31f6aef2fe98dd5b5c7da38e20",
+      "sha256": "888053574d37e79b356e3f2642f5348d9142084d079ab6f7676fa5856f6dde2e",
+      "bytes": 12376,
+      "changed": true
+    },
+    {
+      "path": "docs/cloud-workspaces/ROUTE.json",
+      "beforeSha256": "c7b8b71655f6da5e3c7d6f8e023f096821b25c53def5dcb927ed0303e927f5cb",
+      "sha256": "f0092060319294c74315e551e6c703efc4e4039e259b1c7a9a4043bc2fed09d7",
+      "bytes": 9905,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/README.md",
+      "beforeSha256": "7914e7a959f188c0ea7ee5bfe8daf10dbf780a8bfd5605a14293eb5d3624342b",
+      "sha256": "7914e7a959f188c0ea7ee5bfe8daf10dbf780a8bfd5605a14293eb5d3624342b",
+      "bytes": 7468,
+      "changed": false
+    },
+    {
+      "path": "packages/build-jobs/src/authority.ts",
+      "beforeSha256": "88db40abbd5e9c11a2a00433d7863426d38a1712421da20039018a56ce624242",
+      "sha256": "e6e4f9afafa80f185eb4ea39c5133399bd2fbed02e858af4f89cacfe2119e165",
+      "bytes": 35069,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/broker-reader.ts",
+      "beforeSha256": "b7348180fd80db16fbddc91c179123454b5d3bb446994d389895cd58665be26d",
+      "sha256": "b7348180fd80db16fbddc91c179123454b5d3bb446994d389895cd58665be26d",
+      "bytes": 1950,
+      "changed": false
+    },
+    {
+      "path": "packages/build-jobs/src/contracts.ts",
+      "beforeSha256": "d2f5e728a1b69f090d17b0390063104bbe37b7060734977fa9389b1a8baf8916",
+      "sha256": "4811a00c70b4195e214560a6ffc7fd2e35e29cfefd8d72a3db5758b3b989c0dd",
+      "bytes": 3821,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/index.ts",
+      "beforeSha256": "cf57955abc3480c123b1c80647f9bb13e3590698be498b0d8ef890e0d5260d5f",
+      "sha256": "d983ea498284ec60fcd8e991b4b117d6c71c3f00facbf426386697e0ca197342",
+      "bytes": 270,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/mac-vm-capability.ts",
+      "beforeSha256": null,
+      "sha256": "4b8ab8624985f8f6b2a725d456a6cee17a288c71fa7e42e2ca179c61bba8b2f1",
+      "bytes": 1465,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/schema.ts",
+      "beforeSha256": "37f091a9174fefb8d7586c0a1bfc1638bac1b95371249cf4c4791fc5cab32fe4",
+      "sha256": "88b40047a40eea81fdf55b169abfbb60823a240480fad08e3322ecd573bd06ae",
+      "bytes": 7224,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/validation.ts",
+      "beforeSha256": "651403373c15460425862b4cbb93bd9c82923b7e365c3822f766a8f8a1f9ab35",
+      "sha256": "9b998991c25157a07762751608fdf62f03753054c9dcf0626d512c8805e907bc",
+      "bytes": 7663,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md",
+      "beforeSha256": "f13a74c891a6d4830d66fc78bd12d8fec307de1c55c421f61d3202269d98ec8b",
+      "sha256": "4dab6e6bd4ad7d7b99faaaf47d59039c1d3cfc1aef097e06bfd3f4e2f899119f",
+      "bytes": 14546,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/README.md",
+      "beforeSha256": "73d582ea6f0ff514c6cc235fa79e44b8600b2de5e8594f7e07e4a486274dce6f",
+      "sha256": "e7ab6a663e54074b783ae4895ff57b1f169ad8f52f0bbf2bf0bfa915b95da11e",
+      "bytes": 9311,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/native/mac-vm-guest.py",
+      "beforeSha256": "f12b0f3b95be5998e972f6355531ef0b629f12a0e9e2f25d228157f8a23d045e",
+      "sha256": "cff6a97f10bfdc22861fd28eb1051fdd959ed16f1d66fe7dd6d54cefc5fb8c4c",
+      "bytes": 20501,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/native/mac-vm-host.swift",
+      "beforeSha256": "bc104a5b3129e4f05615db7e3227fd690bda2fe4aa9ef8c50e0fee95233958b5",
+      "sha256": "cf1d497743930966d88ec8967654c2a81cd7d63e3c9bd76003bd524bd9fef3a1",
+      "bytes": 33851,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/native/mac-vm-io.py",
+      "beforeSha256": "275584ee624f5a5ba267b8db2f9fc904310b72c11fb1e066ff4fd8613f40b2cb",
+      "sha256": "611409d55fd2731a9627eb3674598fcf4445907441649b3df502a1738c03b644",
+      "bytes": 21020,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/adapters.ts",
+      "beforeSha256": "0a9761f6c7d242f39384c5f46b89151e7025f51a7aaae291bf44eb799c7f21bb",
+      "sha256": "0a9761f6c7d242f39384c5f46b89151e7025f51a7aaae291bf44eb799c7f21bb",
+      "bytes": 10165,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/controller.ts",
+      "beforeSha256": "11b43459846b2959c0d95c13d382594b9238ba26d525c32118b688806414af38",
+      "sha256": "312cb57c1bb15286412a4d9351777e3d68ec26c75fa21b9a53dfe5e7bc4a3a18",
+      "bytes": 18821,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/discovery.ts",
+      "beforeSha256": "61e7e210ac54008e0a209273ed1b40a51af06c68b197d3a681eff8c76409ff16",
+      "sha256": "61e7e210ac54008e0a209273ed1b40a51af06c68b197d3a681eff8c76409ff16",
+      "bytes": 4669,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/host.ts",
+      "beforeSha256": "ef5830fee318729039061712040c9bdf421771b2526388db6ff24d382c9a6767",
+      "sha256": "f9a3eaf932f987ccca2e360d2c20fa443f3d84e9b911cc2d1f0edb39df749b0c",
+      "bytes": 10707,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/index.ts",
+      "beforeSha256": "56c683117515ad0fede56eea54581fe7e84b42d5c4b78b490bf5f95e31c74bc0",
+      "sha256": "418c10a4c452f340b01afbfef6934c19d5e49da0dcf14e512aedd2f1be6bf3cb",
+      "bytes": 2908,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/liveness.ts",
+      "beforeSha256": "2672ced0619760433c3a69c0eced0109553d9e85f4fbb99db8d93e0c2751ee8e",
+      "sha256": "ba9a02680f0968e02cdc00d0c48279fff6376050f18696adc4df74afce2fa238",
+      "bytes": 6383,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-attestation.ts",
+      "beforeSha256": "1a06f9434755b2cf2f15e6822b2bd239a61f17bbbb5db26bab55e9586a8ea5b2",
+      "sha256": "1a06f9434755b2cf2f15e6822b2bd239a61f17bbbb5db26bab55e9586a8ea5b2",
+      "bytes": 13392,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-adapter.ts",
+      "beforeSha256": null,
+      "sha256": "2d6c18c5f1e29495a94ba6545fca1fe85402cb2760da7a982ed91f4d4368f009",
+      "bytes": 10273,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-capability.ts",
+      "beforeSha256": null,
+      "sha256": "73370854c6ab2835c587f86ffd094fea714d710d6c573cecb700277f8c59e362",
+      "bytes": 1607,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-input.ts",
+      "beforeSha256": "ffc9ed9e83beeac2e607fb03463d03153052bcf22ab1f4fb4eff94ab28299fc9",
+      "sha256": "ffc9ed9e83beeac2e607fb03463d03153052bcf22ab1f4fb4eff94ab28299fc9",
+      "bytes": 11273,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-intake.ts",
+      "beforeSha256": "57ccb589eb16abe1875749ae37fa1a07fe9738e8e84b01ce4ac95d7faf169591",
+      "sha256": "f7c6a99868e3c918c058183ec655c23aeabf4d860427a8270978226abaf339a1",
+      "bytes": 13194,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-job.ts",
+      "beforeSha256": "c4f15a30a7f03cb9cc9be47d2424dab98f69c731766ef21cc78641b9b9f0e9e0",
+      "sha256": "3f8f07c2aa0223765a7c63cc302e41097d84c6a13c0877475fa76ad8865b3eb5",
+      "bytes": 5617,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-mailbox.ts",
+      "beforeSha256": null,
+      "sha256": "17f584a16718189eb2e1c6de5406ed48357e3b13b2b4838a4ed0a803d3e43bdf",
+      "bytes": 4230,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-staging.ts",
+      "beforeSha256": "38a00a3870f040f994afb2db986c365ff0111097cd2b72b69b2ce34dc0dfbc81",
+      "sha256": "38a00a3870f040f994afb2db986c365ff0111097cd2b72b69b2ce34dc0dfbc81",
+      "bytes": 4316,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-tree.ts",
+      "beforeSha256": "eb7c0533796c430f9b264b22eb82e50ea11a183a6e866d87c44025f173a93a07",
+      "sha256": "eb7c0533796c430f9b264b22eb82e50ea11a183a6e866d87c44025f173a93a07",
+      "bytes": 2781,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-worker.ts",
+      "beforeSha256": null,
+      "sha256": "38db59ca77fffcbda3cd9e8e068017c44a2d56dc23abf3d9bbe48412e3e3aebf",
+      "bytes": 1712,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm.ts",
+      "beforeSha256": "1764e6cadf281005af7d7ba36b087a984d045b7918ed7625b786cbec6d55921f",
+      "sha256": "8ac627f54d53a411110812ce257f74ba786c809790473f883b5d074cdddb5f7b",
+      "bytes": 19277,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/node-transport.ts",
+      "beforeSha256": "a0f0e3ffd36cb73fd83ee4c754a044140676be6a33e2d448924827ca39d8d803",
+      "sha256": "a0f0e3ffd36cb73fd83ee4c754a044140676be6a33e2d448924827ca39d8d803",
+      "bytes": 5224,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/parent-profile.ts",
+      "beforeSha256": "9fcb2cefb308a1212b025d82eb1c4b1099487f9bf78f532746a871661ef9f163",
+      "sha256": "9fcb2cefb308a1212b025d82eb1c4b1099487f9bf78f532746a871661ef9f163",
+      "bytes": 5354,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/plans.ts",
+      "beforeSha256": "0e60572734cd16b0c6e6944ed727854d54fc50531d4942c10a991b19cd8fc283",
+      "sha256": "0e60572734cd16b0c6e6944ed727854d54fc50531d4942c10a991b19cd8fc283",
+      "bytes": 7844,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/process.ts",
+      "beforeSha256": "5e80a391976333728885b8b84b6e64573f27d49e3269a85d691804dc923c09d7",
+      "sha256": "5e80a391976333728885b8b84b6e64573f27d49e3269a85d691804dc923c09d7",
+      "bytes": 2470,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/receipts.ts",
+      "beforeSha256": "b1105f8e8852404f7ddd7638a92010ea5ca2498195e28845ef3d56a0a66886d3",
+      "sha256": "b1105f8e8852404f7ddd7638a92010ea5ca2498195e28845ef3d56a0a66886d3",
+      "bytes": 9361,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/storage-integration.ts",
+      "beforeSha256": "24a3acf8cacfa1d2f569232db4f0249dd0f7e5c8893dc949215d4b885030fc14",
+      "sha256": "24a3acf8cacfa1d2f569232db4f0249dd0f7e5c8893dc949215d4b885030fc14",
+      "bytes": 13412,
+      "changed": false
+    },
+    {
+      "path": "packages/build-runtime/src/storage-inventory.ts",
+      "beforeSha256": "01b58d47cbe0ce1ef880e2b64db5f34c3eaf7755559047916672ffb3fdfcb2a0",
+      "sha256": "20c18d64f2001e915c10cc37224ef98afe47863e76c1abbddedfe51f136c5fbe",
+      "bytes": 5439,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/supervisor.ts",
+      "beforeSha256": "d8f6459f7cd2c3d94d73f6c1ba908f781c1545557d24b30334f26f76ba9fcd87",
+      "sha256": "2035c4457f363da090c9c901979200711126916bc764b21e4dd5d1064bd0af5e",
+      "bytes": 6674,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/types.ts",
+      "beforeSha256": "1601f455b0e867a1939bbc9f88cd6cd6ff9a9271fae78e03a4e7bd459c21062c",
+      "sha256": "9983c1bcd3efca96915434e77d9481a41e5235f9852a4c9efae0eb7241b5c21a",
+      "bytes": 3313,
+      "changed": true
+    },
+    {
+      "path": "tools/foundry-pilot/CONTRACT.md",
+      "beforeSha256": "d11cb0f17184974539d07aa48650a4b842e9f28b4c4da6da60540337bd9086b6",
+      "sha256": "d11cb0f17184974539d07aa48650a4b842e9f28b4c4da6da60540337bd9086b6",
+      "bytes": 11726,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/README.md",
+      "beforeSha256": "dd49b9e10076bdc26f84b8af86a98817e652faa4a31841ec8ebaade04afcb023",
+      "sha256": "dd49b9e10076bdc26f84b8af86a98817e652faa4a31841ec8ebaade04afcb023",
+      "bytes": 22701,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/build-submission.ts",
+      "beforeSha256": "5e0ba3b9a062463af93b84f8aefabc8263375fd39bd65077a0429bb78b41b30f",
+      "sha256": "5e0ba3b9a062463af93b84f8aefabc8263375fd39bd65077a0429bb78b41b30f",
+      "bytes": 5654,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/discover-authority.ts",
+      "beforeSha256": "8e298274f9ac74d0d795758c73299d11c77d7db1be9162e9786000e9ab9a8581",
+      "sha256": "8e298274f9ac74d0d795758c73299d11c77d7db1be9162e9786000e9ab9a8581",
+      "bytes": 1048,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/operator-auth.ts",
+      "beforeSha256": "3d2a7959eee054dd1ae4be9eaab658ccbfa656193b1fa4cfe893c7dc33c7335f",
+      "sha256": "3d2a7959eee054dd1ae4be9eaab658ccbfa656193b1fa4cfe893c7dc33c7335f",
+      "bytes": 2505,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/operator-config.ts",
+      "beforeSha256": "2c0a1dffaa3dd78f6a0c4adc290222c38b518858a6996b75febcd04152180858",
+      "sha256": "2c0a1dffaa3dd78f6a0c4adc290222c38b518858a6996b75febcd04152180858",
+      "bytes": 4653,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/operator-server.ts",
+      "beforeSha256": "a3f597c76fe400b8fc873a295fb0f3972b6df19853b33605d5e58b8c32a57271",
+      "sha256": "a3f597c76fe400b8fc873a295fb0f3972b6df19853b33605d5e58b8c32a57271",
+      "bytes": 16737,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/operator/builds.js",
+      "beforeSha256": "b6f0684696257086b3ec236b925ec0fd3d70216dc8336b48b82021797b55440d",
+      "sha256": "b0c5aed67686524009cf854b2de6615735cbeb060a66d8b833aefea33c0a7c6b",
+      "bytes": 10564,
+      "changed": true
+    },
+    {
+      "path": "tools/foundry-pilot/operator/operator.js",
+      "beforeSha256": "8cecf2ee99610a9ceee37ad8147171f69d6e688fa2a99fea4a6e3393717bf20f",
+      "sha256": "8cecf2ee99610a9ceee37ad8147171f69d6e688fa2a99fea4a6e3393717bf20f",
+      "bytes": 34320,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/owner-host.ts",
+      "beforeSha256": "bfce73c4823b8ca6c3d46cee6d64b93fb2e0420941b4eb2f4af5d1c08c96b9e2",
+      "sha256": "bfce73c4823b8ca6c3d46cee6d64b93fb2e0420941b4eb2f4af5d1c08c96b9e2",
+      "bytes": 7161,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/package-image.ts",
+      "beforeSha256": "9c1050af1612e2bae2cb76e860ff0ffbba880d2cf5eaa6da58ca14fed4d27eac",
+      "sha256": "9c1050af1612e2bae2cb76e860ff0ffbba880d2cf5eaa6da58ca14fed4d27eac",
+      "bytes": 1865,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/pilot-job.ts",
+      "beforeSha256": "835dadb41601f3a119de8d578a20b79a1d3ae727142eda28bb066c38ad003156",
+      "sha256": "835dadb41601f3a119de8d578a20b79a1d3ae727142eda28bb066c38ad003156",
+      "bytes": 2063,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/private-state.ts",
+      "beforeSha256": "6d1182c6caae2ac3e1e2efe0d2436373155ba1100e62632c5b718677d40fc5be",
+      "sha256": "6d1182c6caae2ac3e1e2efe0d2436373155ba1100e62632c5b718677d40fc5be",
+      "bytes": 4549,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/submission.ts",
+      "beforeSha256": "035e6a3dbd5b8e2d19789933ca8149041ee70aea51f4419dae82d3b6ec54bc51",
+      "sha256": "035e6a3dbd5b8e2d19789933ca8149041ee70aea51f4419dae82d3b6ec54bc51",
+      "bytes": 4416,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/transport.ts",
+      "beforeSha256": "c98a2541ea1714f15cdd23b9263c998096662c9f77cf9226092dbc6a91e2bfb8",
+      "sha256": "c98a2541ea1714f15cdd23b9263c998096662c9f77cf9226092dbc6a91e2bfb8",
+      "bytes": 5854,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/verifier-config.ts",
+      "beforeSha256": "fd925d6b3153fa697a89f083ff899a6d58285fae7b205f5d9126d6d057e6b669",
+      "sha256": "fd925d6b3153fa697a89f083ff899a6d58285fae7b205f5d9126d6d057e6b669",
+      "bytes": 3631,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/verifier-host.ts",
+      "beforeSha256": "08a1c61dc261d4b6d808dd2075d6da27a6cd731d231dba5e8637d6996e68f981",
+      "sha256": "08a1c61dc261d4b6d808dd2075d6da27a6cd731d231dba5e8637d6996e68f981",
+      "bytes": 20391,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/worker-config.ts",
+      "beforeSha256": "47114108089fe6b0c0b84b40aff42516b440c19b5a5149a6f48b76b0d2ce3fc2",
+      "sha256": "47114108089fe6b0c0b84b40aff42516b440c19b5a5149a6f48b76b0d2ce3fc2",
+      "bytes": 7507,
+      "changed": false
+    },
+    {
+      "path": "tools/foundry-pilot/worker-host.ts",
+      "beforeSha256": "eede7971b05189a79f377e9755d730db002d564e19be52fc524e0c24dd9f42d5",
+      "sha256": "eede7971b05189a79f377e9755d730db002d564e19be52fc524e0c24dd9f42d5",
+      "bytes": 20942,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/README.md",
+      "beforeSha256": "ba62df879f097cca0a86752b463521daceec59d9197f1ad8005fb5dff263b9b8",
+      "sha256": "ba62df879f097cca0a86752b463521daceec59d9197f1ad8005fb5dff263b9b8",
+      "bytes": 10506,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/src/artifact-store.ts",
+      "beforeSha256": "947d69485ee0146383571a6ae590d69f59261f4e481764e7ac9360fefc5fc0a0",
+      "sha256": "947d69485ee0146383571a6ae590d69f59261f4e481764e7ac9360fefc5fc0a0",
+      "bytes": 6210,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/src/authority.ts",
+      "beforeSha256": "368f7f1c536bab163bdccaea7304b462b4ddaf5bbf40f6c525f0b4b6cfd11544",
+      "sha256": "368f7f1c536bab163bdccaea7304b462b4ddaf5bbf40f6c525f0b4b6cfd11544",
+      "bytes": 35464,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/src/http.ts",
+      "beforeSha256": "4798ffc71d02aeca5c09b7656afad18577653b73372f2c8e1a21f78f9cf63ee3",
+      "sha256": "4798ffc71d02aeca5c09b7656afad18577653b73372f2c8e1a21f78f9cf63ee3",
+      "bytes": 2908,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/src/index.ts",
+      "beforeSha256": "15e3dbd8bfb80c7127f37141b9c57b91b95756e074077ddc2eeddac282e129d4",
+      "sha256": "15e3dbd8bfb80c7127f37141b9c57b91b95756e074077ddc2eeddac282e129d4",
+      "bytes": 782,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/src/library-feed.ts",
+      "beforeSha256": "860741273208122926a9da78e461e331534e241055d3cf5dbe52516cdce0b4ca",
+      "sha256": "860741273208122926a9da78e461e331534e241055d3cf5dbe52516cdce0b4ca",
+      "bytes": 4898,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/src/operator-feed.ts",
+      "beforeSha256": "5b873bdd6b679c4052280013ca6d7d39fa08d505b9e3979cda8fdf477a28076d",
+      "sha256": "5b873bdd6b679c4052280013ca6d7d39fa08d505b9e3979cda8fdf477a28076d",
+      "bytes": 24863,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/src/transport-auth.ts",
+      "beforeSha256": "de3f968c9ac775e2b89c0411ac2436a93abeb5d63427f00331553a5b17b55292",
+      "sha256": "de3f968c9ac775e2b89c0411ac2436a93abeb5d63427f00331553a5b17b55292",
+      "bytes": 2960,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/test-support/authority-fixture.ts",
+      "beforeSha256": "c63ee35b506b09177844fdc6cf97f3c89431622e3733160cbfa5501813a593ec",
+      "sha256": "c63ee35b506b09177844fdc6cf97f3c89431622e3733160cbfa5501813a593ec",
+      "bytes": 3874,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/test-support/client.ts",
+      "beforeSha256": "fca0ade4387205d142b27e07f2767dcde58bcefcfda120cfa3b81be4b1f1cf57",
+      "sha256": "fca0ade4387205d142b27e07f2767dcde58bcefcfda120cfa3b81be4b1f1cf57",
+      "bytes": 2583,
+      "changed": false
+    },
+    {
+      "path": "workers/compute/test-support/runtime.ts",
+      "beforeSha256": "34c32862365399bc98989b9720942f691076f6d681a146b0f62f7af97d6c8043",
+      "sha256": "34c32862365399bc98989b9720942f691076f6d681a146b0f62f7af97d6c8043",
+      "bytes": 1328,
+      "changed": false
+    }
+  ]
+}

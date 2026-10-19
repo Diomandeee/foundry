@@ -1,0 +1,16 @@
+{
+  "command": [
+    "xcrun",
+    "swiftc",
+    "-module-cache-path",
+    "docs/cloud-workspaces/validation-2026-10-18/compiler-cache",
+    "-import-objc-header",
+    "packages/build-runtime/native/mac-es-observer.h",
+    "packages/build-runtime/native/mac-vm-host.swift",
+    "docs/cloud-workspaces/validation-2026-10-18/native-build/mac-es-observer.o",
+    "-lEndpointSecurity",
+    "-o",
+    "docs/cloud-workspaces/validation-2026-10-18/native-build/mac-vm-host"
+  ],
+  "exit": 0
+}

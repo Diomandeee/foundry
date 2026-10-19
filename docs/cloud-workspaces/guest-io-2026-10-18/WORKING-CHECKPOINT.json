@@ -1,0 +1,35 @@
+{
+  "state": "IN_PROGRESS_NOT_REVIEWED",
+  "at": "2026-10-18T14:40:11.998098+00:00",
+  "files": [
+    {
+      "path": "packages/build-runtime/src/mac-vm-input.ts",
+      "bytes": 9998,
+      "sha256": "ae4893a55a25e56b331e52cd12b5e052aced00de387c263065b0a6eb2bea1c15"
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-job.ts",
+      "bytes": 4997,
+      "sha256": "c4f15a30a7f03cb9cc9be47d2424dab98f69c731766ef21cc78641b9b9f0e9e0"
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm.ts",
+      "bytes": 16651,
+      "sha256": "c73227a86280e32c499af92cee558dd3119345fac0be82b2d3f067939cc5a21e"
+    },
+    {
+      "path": "packages/build-runtime/src/controller.ts",
+      "bytes": 17481,
+      "sha256": "11b43459846b2959c0d95c13d382594b9238ba26d525c32118b688806414af38"
+    },
+    {
+      "path": "packages/build-storage/src/mac-readonly-seal.ts",
+      "bytes": 14996,
+      "sha256": "89bfa6218c0921906b51b1fe94c6f7de31607ec2356f3ad319af410648d91a41"
+    }
+  ],
+  "tests": 0,
+  "operationalChanges": 0,
+  "backgroundAgents": 0,
+  "next": "Finish M1 concrete staging and data-object consistency, M2 stop-gated intake, then full source review/route/freeze"
+}

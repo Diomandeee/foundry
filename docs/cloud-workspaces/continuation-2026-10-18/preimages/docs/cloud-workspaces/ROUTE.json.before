@@ -1,0 +1,80 @@
+{
+  "format": "foundry.cloud-workspaces.route.v1",
+  "stop": "R6-local-source-review-HOLD",
+  "authority": "Cloudflare existing compute authority",
+  "deployments": 0,
+  "testsExecuted": 0,
+  "buildsExecuted": 0,
+  "servicesStarted": 0,
+  "newCloudResources": 0,
+  "stages": [
+    {
+      "id": "R1",
+      "state": "source-reviewed",
+      "evidence": [
+        "BASELINE.json",
+        "R1-REVIEW.md",
+        "R1-FINDINGS.json",
+        "R1-PROJECT-READINESS.json",
+        "R1-CAPACITY.json"
+      ]
+    },
+    {
+      "id": "R2",
+      "state": "implemented-validation-pending",
+      "evidence": [
+        "LIBRARY-REVIEW.md"
+      ],
+      "blockedBy": [
+        "real scoped identity/provider mapping",
+        "approved published chunks/namespaces",
+        "activation approval"
+      ]
+    },
+    {
+      "id": "R3",
+      "state": "implemented-source-reviewed-validation-pending",
+      "evidence": [
+        "SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R4",
+      "state": "implemented-with-explicit-HOLD",
+      "evidence": [
+        "RUNTIME-REVIEW.md",
+        "BUILD-STORAGE-REVIEW.md"
+      ],
+      "blockedBy": [
+        "supported native descendant attestor",
+        "real current authorization/revocation wiring and namespace capacity",
+        "dedicated account/roots/toolchains",
+        "project-scale input snapshots beyond bounded pilot",
+        "all observed Macs below disk headroom"
+      ]
+    },
+    {
+      "id": "R5",
+      "state": "implemented-source-reviewed-validation-pending",
+      "evidence": [
+        "SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R6",
+      "state": "source-reviewed-HOLD",
+      "evidence": [
+        "SOURCE-REVIEW.md",
+        "DEFERRED-VALIDATION.md",
+        "RESOURCE-PROPOSAL.json",
+        "ACTIVATION-AND-COST.md"
+      ]
+    },
+    {
+      "id": "R7",
+      "state": "not-started-gated",
+      "evidence": []
+    }
+  ],
+  "nextGate": "Review concrete candidate and unresolved prerequisite designs before authorizing validation; installation/provision/spend/secret/merge/deploy/cleanup separately gated."
+}

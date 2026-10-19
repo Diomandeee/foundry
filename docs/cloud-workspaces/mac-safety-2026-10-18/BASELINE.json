@@ -1,0 +1,213 @@
+{
+  "format": "foundry.mac-safety.baseline.v1",
+  "branch": "codex/foundry-integration-20261016",
+  "head": "cf27ac662730bb98a509af8d1d1ebea4342eef7a",
+  "capturedAt": "2026-10-18T13:45:32.421184+00:00",
+  "files": [
+    {
+      "path": "docs/cloud-workspaces/MASTER-CHECKLIST.md",
+      "sha256": "433ba5cd1e62b2a5fff4ca46fb26e363089a4183eedff27d151e64fa2f5965f0",
+      "bytes": 7353
+    },
+    {
+      "path": "docs/cloud-workspaces/ROUTE.json",
+      "sha256": "f6e9268b1c64a46d9cae691d9939e77fe3e10ab50d2180cd43b20798f2788362",
+      "bytes": 4352
+    },
+    {
+      "path": "packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md",
+      "sha256": "50ef562db837b8bacea2e84ee7a98d9c927734b1162595187eb72bf896df1bbb",
+      "bytes": 12957
+    },
+    {
+      "path": "packages/build-runtime/README.md",
+      "sha256": "9785c7ca1f956122168cf89042f6b64d963bbebed4f9b6ae18e3ad8bba1e36d8",
+      "bytes": 7425
+    },
+    {
+      "path": "packages/build-runtime/native/mac-es-observer.c",
+      "sha256": "2ebf7d7bd4a7ea884d49706d937f80fdcd8abeaf5664fb2697360d4607c39a31",
+      "bytes": 7492
+    },
+    {
+      "path": "packages/build-runtime/native/mac-es-observer.h",
+      "sha256": "4d94bc41df27b9d5977691aade74dda6420349f0048ae593e008ed5db493eb7e",
+      "bytes": 1371
+    },
+    {
+      "path": "packages/build-runtime/package.json",
+      "sha256": "9c663ea66a64344aa2bad4e9dfc5e3e3cad8d4caff78f5f1e3ba82c372200e60",
+      "bytes": 222
+    },
+    {
+      "path": "packages/build-runtime/src/adapters.ts",
+      "sha256": "93574ed19d7ebadb700d6215ca7bda7dae0b49566431156b285b4a05b1739146",
+      "bytes": 12364
+    },
+    {
+      "path": "packages/build-runtime/src/controller.ts",
+      "sha256": "319f430ba8caa2d2e6f35a533587d9b308d783cdd7c7aebb0a08515df786bdbf",
+      "bytes": 17369
+    },
+    {
+      "path": "packages/build-runtime/src/discovery.ts",
+      "sha256": "61e7e210ac54008e0a209273ed1b40a51af06c68b197d3a681eff8c76409ff16",
+      "bytes": 4669
+    },
+    {
+      "path": "packages/build-runtime/src/host.ts",
+      "sha256": "ef5830fee318729039061712040c9bdf421771b2526388db6ff24d382c9a6767",
+      "bytes": 10082
+    },
+    {
+      "path": "packages/build-runtime/src/index.ts",
+      "sha256": "17674f3e33ee1ef64e2b31f1ae93b10f91b327d2c033ad30f3ceb3d9b1fd0008",
+      "bytes": 1785
+    },
+    {
+      "path": "packages/build-runtime/src/liveness.ts",
+      "sha256": "2672ced0619760433c3a69c0eced0109553d9e85f4fbb99db8d93e0c2751ee8e",
+      "bytes": 5034
+    },
+    {
+      "path": "packages/build-runtime/src/mac-attestation.ts",
+      "sha256": "51e49cd4cc9c37afdec6ad69e01d0815871e921f465acbe28b40abb2ec204a14",
+      "bytes": 17778
+    },
+    {
+      "path": "packages/build-runtime/src/node-transport.ts",
+      "sha256": "a0f0e3ffd36cb73fd83ee4c754a044140676be6a33e2d448924827ca39d8d803",
+      "bytes": 5224
+    },
+    {
+      "path": "packages/build-runtime/src/parent-profile.ts",
+      "sha256": "9fcb2cefb308a1212b025d82eb1c4b1099487f9bf78f532746a871661ef9f163",
+      "bytes": 5354
+    },
+    {
+      "path": "packages/build-runtime/src/plans.ts",
+      "sha256": "0e60572734cd16b0c6e6944ed727854d54fc50531d4942c10a991b19cd8fc283",
+      "bytes": 7844
+    },
+    {
+      "path": "packages/build-runtime/src/process.ts",
+      "sha256": "5e80a391976333728885b8b84b6e64573f27d49e3269a85d691804dc923c09d7",
+      "bytes": 2470
+    },
+    {
+      "path": "packages/build-runtime/src/receipts.ts",
+      "sha256": "b1105f8e8852404f7ddd7638a92010ea5ca2498195e28845ef3d56a0a66886d3",
+      "bytes": 9361
+    },
+    {
+      "path": "packages/build-runtime/src/storage-integration.ts",
+      "sha256": "24a3acf8cacfa1d2f569232db4f0249dd0f7e5c8893dc949215d4b885030fc14",
+      "bytes": 13412
+    },
+    {
+      "path": "packages/build-runtime/src/storage-inventory.ts",
+      "sha256": "01b58d47cbe0ce1ef880e2b64db5f34c3eaf7755559047916672ffb3fdfcb2a0",
+      "bytes": 4990
+    },
+    {
+      "path": "packages/build-runtime/src/supervisor.ts",
+      "sha256": "d8f6459f7cd2c3d94d73f6c1ba908f781c1545557d24b30334f26f76ba9fcd87",
+      "bytes": 6063
+    },
+    {
+      "path": "packages/build-runtime/src/types.ts",
+      "sha256": "1601f455b0e867a1939bbc9f88cd6cd6ff9a9271fae78e03a4e7bd459c21062c",
+      "bytes": 3052
+    },
+    {
+      "path": "packages/build-storage/package.json",
+      "sha256": "e05eacadb484648caaa5c61bb4e4e6d9b353d0729b3f9c06823703fd7a7981b3",
+      "bytes": 110
+    },
+    {
+      "path": "packages/build-storage/src/checks.ts",
+      "sha256": "f2f6e16cff143d2c279e5b235908e363cbdc971afc6e14563eff34eb0881e04b",
+      "bytes": 3256
+    },
+    {
+      "path": "packages/build-storage/src/filesystem.ts",
+      "sha256": "b5e75e35a20009a5c622f586408cc4ec59c1507bea6c29e6d61f435b489689b3",
+      "bytes": 5399
+    },
+    {
+      "path": "packages/build-storage/src/gcs-writer.ts",
+      "sha256": "cbbff95fee97dad069ea234abf3aa3aa74b9857af4194e32a9721822fb961a2e",
+      "bytes": 6542
+    },
+    {
+      "path": "packages/build-storage/src/index.ts",
+      "sha256": "79874d325b70eec88d5f77cbe4a3f23be7a2fcfbcd1ddc5cb6e019abd1b7ed78",
+      "bytes": 1391
+    },
+    {
+      "path": "packages/build-storage/src/local-refs.ts",
+      "sha256": "834f0d87dae23ced8fa62a1b172953eca3fe62fc3b2639a4edb87d4b26c1a7f7",
+      "bytes": 749
+    },
+    {
+      "path": "packages/build-storage/src/local-store.ts",
+      "sha256": "83d8e75db4580d006364fcc9c48cfa8d006b3ec42ace0bc446c180341fa27500",
+      "bytes": 3843
+    },
+    {
+      "path": "packages/build-storage/src/packaging.ts",
+      "sha256": "4cf09dde219f571cab1f30dbdae962be429295b130819a0c6e88a259b91751b4",
+      "bytes": 10185
+    },
+    {
+      "path": "packages/build-storage/src/project-input-format.ts",
+      "sha256": "dd8da3430457a0809314b9e0dd75d8bd5c4957ad7bc85825bd15ecb8aa8e7c1c",
+      "bytes": 12385
+    },
+    {
+      "path": "packages/build-storage/src/project-input-io.ts",
+      "sha256": "f9293e88a0d0d19f0199261540a807e41d59557127bc6b5068ddb9df7e491b86",
+      "bytes": 8130
+    },
+    {
+      "path": "packages/build-storage/src/project-input-tree.ts",
+      "sha256": "3efbce345f16b8d1b431a098336d11036f9dde83444a4a511661ddf9fb6dd000",
+      "bytes": 1757
+    },
+    {
+      "path": "packages/build-storage/src/project-inputs.ts",
+      "sha256": "5e4b16cf33eb94f0461b6b0e167374a951da96afe4a78c53ddd0dae9cfaa6372",
+      "bytes": 16470
+    },
+    {
+      "path": "packages/build-storage/src/publication.ts",
+      "sha256": "3a2718eb6354806f381c71f282c7105693f031d54d3e87954ae7e88ec6a9a7e3",
+      "bytes": 4709
+    },
+    {
+      "path": "packages/build-storage/src/restore-file.ts",
+      "sha256": "8fb8e63bf559298e851bc58ffb357d9bc6adbabb94e9846867049186317dbdc9",
+      "bytes": 3148
+    },
+    {
+      "path": "packages/build-storage/src/snapshots.ts",
+      "sha256": "871a85b5ee8f239b25c65fbc44e4df7c68d7d5c688c301c7817ccf45da5b10be",
+      "bytes": 16009
+    },
+    {
+      "path": "packages/build-storage/src/tar.ts",
+      "sha256": "dc719d8b8bae1ccadd842f701fac20fdc225e08af661ea18d01a9f71f7b31a68",
+      "bytes": 6344
+    },
+    {
+      "path": "packages/build-storage/src/types.ts",
+      "sha256": "5d3c5fe821b8a211e97a2f7ed4475fb2728ff5ba55af23430f1c43ee7a673b7b",
+      "bytes": 5462
+    },
+    {
+      "path": "packages/build-storage/tsconfig.json",
+      "sha256": "f1f25c4affde0a0fdaa556580bd07a4f09659110fcbefafc75395679631a8ff2",
+      "bytes": 195
+    }
+  ]
+}

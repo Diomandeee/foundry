@@ -1,0 +1,237 @@
+{
+  "format": "foundry.vm-integration.source-review.v1",
+  "recordedAt": "2026-10-18T15:51:53.550965+00:00",
+  "repository": "/Users/mohameddiomande/Developer/foundry-integration/source",
+  "branch": "codex/foundry-integration-20261016",
+  "head": "cf27ac662730bb98a509af8d1d1ebea4342eef7a",
+  "status": "implemented-source-reviewed-validation-pending",
+  "review": "six inline source passes and counterexamples by implementing agent; not independent/executed",
+  "scopedFiles": 71,
+  "changedFiles": 28,
+  "changedProductFiles": 24,
+  "newProductFiles": 5,
+  "changedExistingDocs": 4,
+  "changes": [
+    {
+      "path": "docs/cloud-workspaces/MASTER-CHECKLIST.md",
+      "beforeSha256": "f64099d453f96174e14efd186b45e52d78a5bd31f6aef2fe98dd5b5c7da38e20",
+      "sha256": "888053574d37e79b356e3f2642f5348d9142084d079ab6f7676fa5856f6dde2e",
+      "bytes": 12376,
+      "changed": true
+    },
+    {
+      "path": "docs/cloud-workspaces/ROUTE.json",
+      "beforeSha256": "c7b8b71655f6da5e3c7d6f8e023f096821b25c53def5dcb927ed0303e927f5cb",
+      "sha256": "f0092060319294c74315e551e6c703efc4e4039e259b1c7a9a4043bc2fed09d7",
+      "bytes": 9905,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/authority.ts",
+      "beforeSha256": "88db40abbd5e9c11a2a00433d7863426d38a1712421da20039018a56ce624242",
+      "sha256": "e6e4f9afafa80f185eb4ea39c5133399bd2fbed02e858af4f89cacfe2119e165",
+      "bytes": 35069,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/contracts.ts",
+      "beforeSha256": "d2f5e728a1b69f090d17b0390063104bbe37b7060734977fa9389b1a8baf8916",
+      "sha256": "4811a00c70b4195e214560a6ffc7fd2e35e29cfefd8d72a3db5758b3b989c0dd",
+      "bytes": 3821,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/index.ts",
+      "beforeSha256": "cf57955abc3480c123b1c80647f9bb13e3590698be498b0d8ef890e0d5260d5f",
+      "sha256": "d983ea498284ec60fcd8e991b4b117d6c71c3f00facbf426386697e0ca197342",
+      "bytes": 270,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/mac-vm-capability.ts",
+      "beforeSha256": null,
+      "sha256": "4b8ab8624985f8f6b2a725d456a6cee17a288c71fa7e42e2ca179c61bba8b2f1",
+      "bytes": 1465,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/schema.ts",
+      "beforeSha256": "37f091a9174fefb8d7586c0a1bfc1638bac1b95371249cf4c4791fc5cab32fe4",
+      "sha256": "88b40047a40eea81fdf55b169abfbb60823a240480fad08e3322ecd573bd06ae",
+      "bytes": 7224,
+      "changed": true
+    },
+    {
+      "path": "packages/build-jobs/src/validation.ts",
+      "beforeSha256": "651403373c15460425862b4cbb93bd9c82923b7e365c3822f766a8f8a1f9ab35",
+      "sha256": "9b998991c25157a07762751608fdf62f03753054c9dcf0626d512c8805e907bc",
+      "bytes": 7663,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md",
+      "beforeSha256": "f13a74c891a6d4830d66fc78bd12d8fec307de1c55c421f61d3202269d98ec8b",
+      "sha256": "4dab6e6bd4ad7d7b99faaaf47d59039c1d3cfc1aef097e06bfd3f4e2f899119f",
+      "bytes": 14546,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/README.md",
+      "beforeSha256": "73d582ea6f0ff514c6cc235fa79e44b8600b2de5e8594f7e07e4a486274dce6f",
+      "sha256": "e7ab6a663e54074b783ae4895ff57b1f169ad8f52f0bbf2bf0bfa915b95da11e",
+      "bytes": 9311,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/native/mac-vm-guest.py",
+      "beforeSha256": "f12b0f3b95be5998e972f6355531ef0b629f12a0e9e2f25d228157f8a23d045e",
+      "sha256": "cff6a97f10bfdc22861fd28eb1051fdd959ed16f1d66fe7dd6d54cefc5fb8c4c",
+      "bytes": 20501,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/native/mac-vm-host.swift",
+      "beforeSha256": "bc104a5b3129e4f05615db7e3227fd690bda2fe4aa9ef8c50e0fee95233958b5",
+      "sha256": "cf1d497743930966d88ec8967654c2a81cd7d63e3c9bd76003bd524bd9fef3a1",
+      "bytes": 33851,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/native/mac-vm-io.py",
+      "beforeSha256": "275584ee624f5a5ba267b8db2f9fc904310b72c11fb1e066ff4fd8613f40b2cb",
+      "sha256": "611409d55fd2731a9627eb3674598fcf4445907441649b3df502a1738c03b644",
+      "bytes": 21020,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/controller.ts",
+      "beforeSha256": "11b43459846b2959c0d95c13d382594b9238ba26d525c32118b688806414af38",
+      "sha256": "312cb57c1bb15286412a4d9351777e3d68ec26c75fa21b9a53dfe5e7bc4a3a18",
+      "bytes": 18821,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/host.ts",
+      "beforeSha256": "ef5830fee318729039061712040c9bdf421771b2526388db6ff24d382c9a6767",
+      "sha256": "f9a3eaf932f987ccca2e360d2c20fa443f3d84e9b911cc2d1f0edb39df749b0c",
+      "bytes": 10707,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/index.ts",
+      "beforeSha256": "56c683117515ad0fede56eea54581fe7e84b42d5c4b78b490bf5f95e31c74bc0",
+      "sha256": "418c10a4c452f340b01afbfef6934c19d5e49da0dcf14e512aedd2f1be6bf3cb",
+      "bytes": 2908,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/liveness.ts",
+      "beforeSha256": "2672ced0619760433c3a69c0eced0109553d9e85f4fbb99db8d93e0c2751ee8e",
+      "sha256": "ba9a02680f0968e02cdc00d0c48279fff6376050f18696adc4df74afce2fa238",
+      "bytes": 6383,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-adapter.ts",
+      "beforeSha256": null,
+      "sha256": "2d6c18c5f1e29495a94ba6545fca1fe85402cb2760da7a982ed91f4d4368f009",
+      "bytes": 10273,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-capability.ts",
+      "beforeSha256": null,
+      "sha256": "73370854c6ab2835c587f86ffd094fea714d710d6c573cecb700277f8c59e362",
+      "bytes": 1607,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-intake.ts",
+      "beforeSha256": "57ccb589eb16abe1875749ae37fa1a07fe9738e8e84b01ce4ac95d7faf169591",
+      "sha256": "f7c6a99868e3c918c058183ec655c23aeabf4d860427a8270978226abaf339a1",
+      "bytes": 13194,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-job.ts",
+      "beforeSha256": "c4f15a30a7f03cb9cc9be47d2424dab98f69c731766ef21cc78641b9b9f0e9e0",
+      "sha256": "3f8f07c2aa0223765a7c63cc302e41097d84c6a13c0877475fa76ad8865b3eb5",
+      "bytes": 5617,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-mailbox.ts",
+      "beforeSha256": null,
+      "sha256": "17f584a16718189eb2e1c6de5406ed48357e3b13b2b4838a4ed0a803d3e43bdf",
+      "bytes": 4230,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm-worker.ts",
+      "beforeSha256": null,
+      "sha256": "38db59ca77fffcbda3cd9e8e068017c44a2d56dc23abf3d9bbe48412e3e3aebf",
+      "bytes": 1712,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/mac-vm.ts",
+      "beforeSha256": "1764e6cadf281005af7d7ba36b087a984d045b7918ed7625b786cbec6d55921f",
+      "sha256": "8ac627f54d53a411110812ce257f74ba786c809790473f883b5d074cdddb5f7b",
+      "bytes": 19277,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/storage-inventory.ts",
+      "beforeSha256": "01b58d47cbe0ce1ef880e2b64db5f34c3eaf7755559047916672ffb3fdfcb2a0",
+      "sha256": "20c18d64f2001e915c10cc37224ef98afe47863e76c1abbddedfe51f136c5fbe",
+      "bytes": 5439,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/supervisor.ts",
+      "beforeSha256": "d8f6459f7cd2c3d94d73f6c1ba908f781c1545557d24b30334f26f76ba9fcd87",
+      "sha256": "2035c4457f363da090c9c901979200711126916bc764b21e4dd5d1064bd0af5e",
+      "bytes": 6674,
+      "changed": true
+    },
+    {
+      "path": "packages/build-runtime/src/types.ts",
+      "beforeSha256": "1601f455b0e867a1939bbc9f88cd6cd6ff9a9271fae78e03a4e7bd459c21062c",
+      "sha256": "9983c1bcd3efca96915434e77d9481a41e5235f9852a4c9efae0eb7241b5c21a",
+      "bytes": 3313,
+      "changed": true
+    },
+    {
+      "path": "tools/foundry-pilot/operator/builds.js",
+      "beforeSha256": "b6f0684696257086b3ec236b925ec0fd3d70216dc8336b48b82021797b55440d",
+      "sha256": "b0c5aed67686524009cf854b2de6615735cbeb060a66d8b833aefea33c0a7c6b",
+      "bytes": 10564,
+      "changed": true
+    }
+  ],
+  "scopeSha256": "43623b2ed775c6acded86f6319910c65c20667d494b650dc24f0fff78b6df1fc",
+  "patchSha256": "96a4587621370c5bf9a0710101c19d3f657331b5e2303b91b4275f32b3667bf8",
+  "patchBytes": 126333,
+  "relativeImportTargetInventory": {
+    "method": "text/path enumeration only; no compiler or product imports",
+    "missing": []
+  },
+  "previousM1M2FreezeHashes": {
+    "SCOPE.json": "5b256fd8d06249e1909167461d7ba55bb97f78f1fc7fec7649dfd3a472c1681f",
+    "changes.patch": "87e03ab7fac5e9df3ab32d8f4fc1bd287b62d5253c31fc79bdea75138a8e3caf"
+  },
+  "testsAuthored": 0,
+  "testsExecuted": 0,
+  "compilationsTypechecksBuilds": 0,
+  "runtimeProbes": 0,
+  "helperVmOrServiceStarts": 0,
+  "operationalChanges": 0,
+  "gitCommitPushMerge": 0,
+  "remaining": [
+    "inherited generic writable CAS/materialization isolation and cumulative integration HOLD",
+    "approved actual image/source/helper/account/broker/resource prerequisites",
+    "M4 validation approval and execution",
+    "R7 activation approvals and execution"
+  ],
+  "nextGate": "No tests or operational changes until separately approved."
+}

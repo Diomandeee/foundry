@@ -1,0 +1,228 @@
+import { join } from 'node:path';
+import { performance } from 'node:perf_hooks';
+import type { BuildCommand, BuildFence, BuildJob, InputApproval, BuildProfile } from '../../build-jobs/src/contracts.js';
+import type { ComputeBinding } from '../../library-jobs/src/types.js';
+import type { RuntimeAdapter, RuntimePlan, SupervisorResult } from './types.js';
+import { HostJournal } from './host.js';
+import { assertParentBinding, canonicalData, type ParentProfileBinding } from './parent-profile.js';
+import { buildPlan, check, hash } from './plans.js';
+import { LongJobSupervisor } from './supervisor.js';
+import { verifyRestore, verifyPublish, type RestoreReceipt, type PublishReceipt } from './receipts.js';
+import type { WorkerLivenessPort } from './liveness.js';
+export interface BuildTransport {
+  /** Host fixes HTTPS origin, auth, enrollment, response byte limits and redirect policy. */
+  request(path:'/v1/builds/commands',body:{expectedEpoch:number;command:BuildCommand},signal:AbortSignal):Promise<unknown>;
+  request(path:'/v1/builds/next',body:{expectedEpoch:number;profileHash:string},signal:AbortSignal):Promise<unknown>;
+}
+export interface BuildWorkerPorts {
+  transport:BuildTransport;
+  liveness:WorkerLivenessPort;
+  /** Restores a COPY of approved inputs, preserves originals/history, no remote argv. */
+  restoreInput(input:InputApproval,plan:RuntimePlan,signal:AbortSignal):Promise<RestoreReceipt>;
+  /** Real broker writes only via parent host port; returns actual bound refs AND bytes. */
+  publishResult(job:BuildJob,plan:RuntimePlan,result:SupervisorResult,context:BuildAttemptContext,signal:AbortSignal):Promise<PublishReceipt>;
+}
+export interface WorkerAuthorityBinding {environment:string;authorityId:string;workerId:string}
+export interface BuildResponseSource {environment:string;authorityId:string;epoch:number}
+export function snapshotWorkerAuthority(authority:WorkerAuthorityBinding):Readonly<WorkerAuthorityBinding> {
+  check(typeof authority.environment === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(authority.environment) &&
+    typeof authority.authorityId === 'string' && authority.authorityId.length > 0 && authority.authorityId.length <= 256 && !/[\x00-\x1f\x7f]/.test(authority.authorityId) &&
+    typeof authority.workerId === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(authority.workerId),'explicit-environment-authority-worker-pins-required');
+  return Object.freeze({environment:authority.environment,authorityId:authority.authorityId,workerId:authority.workerId});
+}
+/** Accept only the wrapper's actual source. Bare domain-core responses fail closed. */
+export function assertBuildResponseSource(source:unknown,authority:Readonly<WorkerAuthorityBinding>,expectedEpoch:number):asserts source is BuildResponseSource {
+  const observed = JSON.parse(canonicalData(source)) as Partial<BuildResponseSource>;
+  check(observed && typeof observed === 'object' && !Array.isArray(observed) && Object.keys(observed).length === 3 &&
+    Object.hasOwn(observed,'environment') && Object.hasOwn(observed,'authorityId') && Object.hasOwn(observed,'epoch') &&
+    observed.environment === authority.environment && observed.authorityId === authority.authorityId && observed.epoch === expectedEpoch,'build-response-source-mismatch');
+}
+export interface BuildAttemptContext {
+  readonly compute:Readonly<ComputeBinding>;
+  readonly source:Readonly<BuildResponseSource>;
+  readonly serverProfileHash:string;readonly localRecipeHash:string;
+}
+const attemptContexts = new WeakSet<object>();
+/** Only controller-validated claim contexts are accepted by the storage composition. */
+export function assertBuildAttemptContext(context:BuildAttemptContext):void {
+  check(attemptContexts.has(context),'untrusted-build-attempt-context');
+}
+export interface WorkerControllerResult {
+  state:'staged-awaiting-verifier'|'stopped-without-result'|'owner-reconciliation-required';
+  runtime?:SupervisorResult;
+}
+export type WorkerPollResult = WorkerControllerResult|{state:'idle'};
+interface ClaimReply {
+  ok:true; attempt:BuildFence & {id:string;jobId:string;workerId:string;profileHash:string};
+  profile:BuildProfile; input:InputApproval; job:BuildJob; source:BuildResponseSource;
+}
+/** Inert until run()/pollOnce() is explicitly called. No network/provisioning at import.
+ * Restart/uncertain HTTP never reclaims, reruns, replays a capability or clears a slot. */
+export class BuildWorkerController {
+  private occupied = false;
+  private readonly authority:Readonly<WorkerAuthorityBinding>;
+  constructor(private readonly binding:ParentProfileBinding, private readonly expectedEpoch:number,
+    private readonly ports:BuildWorkerPorts, private readonly adapter:RuntimeAdapter,
+    private readonly maxInputBytes:number, authority:WorkerAuthorityBinding) {
+    assertParentBinding(binding);
+    check(Number.isSafeInteger(expectedEpoch) && expectedEpoch > 0 && Number.isSafeInteger(maxInputBytes) && maxInputBytes > 0,'invalid-worker-policy');
+    this.authority = snapshotWorkerAuthority(authority);
+  }
+  async run(localJob:BuildJob, claimKey:string, cancel?:AbortSignal):Promise<WorkerControllerResult> {
+    check(!this.occupied,'worker-controller-occupied');this.occupied = true;
+    try {return await this.runJob(localJob,claimKey,cancel);}
+    finally {this.occupied = false;}
+  }
+  /** One explicit read/claim cycle. Null is honest idle; failures never become idle.
+   * No autonomous loop/timer is created by construction or after this call. */
+  async pollOnce(claimKey:string, cancel?:AbortSignal):Promise<WorkerPollResult> {
+    check(!this.occupied,'worker-controller-occupied');this.occupied = true;
+    const abort = new AbortController(), stop = () => abort.abort();
+    cancel?.addEventListener('abort',stop,{once:true});
+    let rejectStop!:(reason:Error)=>void;
+    const stopped = new Promise<never>((_,reject) => {rejectStop = reject;});
+    const onAbort = () => rejectStop(new Error('poll-aborted'));
+    abort.signal.addEventListener('abort',onAbort,{once:true});
+    const timer = setTimeout(stop,10000), deadlineAt = performance.now()+10000;
+    const fence = () => check(!cancel?.aborted && !abort.signal.aborted && performance.now() < deadlineAt,'poll-deadline');
+    const lookup = (async ():Promise<BuildJob|null> => {
+      assertParentBinding(this.binding);fence();
+      check(/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(claimKey),'invalid-claim-key');
+      const journal = new HostJournal(this.binding.approval.host);
+      check(!(await journal.inventory()).slotPresent,'existing-worker-slot-quarantined');fence();
+      const livenessSource = await this.ports.liveness.refreshLiveness(0,abort.signal);fence();
+      assertBuildResponseSource(livenessSource,this.authority,this.expectedEpoch);
+      const response = await this.ports.transport.request('/v1/builds/next',{expectedEpoch:this.expectedEpoch,profileHash:this.binding.serverProfileHash},abort.signal);fence();
+      const reply = JSON.parse(canonicalData(response)) as {ok?:unknown;job?:BuildJob|null;source?:unknown};
+      assertBuildResponseSource(reply.source,this.authority,this.expectedEpoch);
+      check(reply.ok === true && Object.keys(reply).length === 3 && Object.hasOwn(reply,'job'),'next-response-invalid');
+      if (reply.job === null) return null;
+      check(reply.job && reply.job.profileHash === this.binding.serverProfileHash && reply.job.projectId === this.binding.profile.projectId,'next-job-binding-mismatch');
+      return reply.job;
+    })();
+    // Keep this controller occupied until an ignored cancellation actually settles.
+    // On successful lookup, occupancy instead spans the complete runJob call below.
+    let lookupSettled = false;
+    void lookup.then(() => {lookupSettled = true;},() => {lookupSettled = true;});
+    try {
+      const job = await Promise.race([lookup,stopped]);fence();
+      clearTimeout(timer);abort.signal.removeEventListener('abort',onAbort);
+      if (job === null) return {state:'idle'};
+      return await this.runJob(job,claimKey,cancel);
+    } catch {return {state:'owner-reconciliation-required'};}
+    finally {
+      clearTimeout(timer);cancel?.removeEventListener('abort',stop);abort.signal.removeEventListener('abort',onAbort);abort.abort();
+      if (lookupSettled) this.occupied = false;
+      else void lookup.then(() => {this.occupied = false;},() => {this.occupied = false;});
+    }
+  }
+  private async runJob(localJob:BuildJob, claimKey:string, cancel?:AbortSignal):Promise<WorkerControllerResult> {
+    assertParentBinding(this.binding);
+    const job = JSON.parse(canonicalData(localJob)) as BuildJob;
+    check(job.profileHash === this.binding.serverProfileHash && job.projectId === this.binding.profile.projectId && /^[0-9a-f]{64}$/.test(job.inputHash) && /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(job.id),'local-job-binding-mismatch');
+    check(!cancel?.aborted,'cancelled-before-claim');
+    const journal = new HostJournal(this.binding.approval.host);
+    // Persists both independently pinned hashes before the first HTTP call.
+    const ledger = await journal.controllerIntent(claimKey,this.binding.serverProfileHash,this.binding.localRecipeHash);
+    const send = async (command:BuildCommand, parentSignal?:AbortSignal):Promise<Record<string,unknown>> => {
+      const requestHash = hash(canonicalData({expectedEpoch:this.expectedEpoch,command}));
+      await ledger.record({operation:command.operation,key:command.key,status:'intent',requestHash});
+      const abort = new AbortController(); const stop = () => abort.abort();
+      parentSignal?.addEventListener('abort',stop,{once:true});
+      let timer:ReturnType<typeof setTimeout>|undefined;
+      try {
+        check(!parentSignal?.aborted,'request-aborted');
+        const received = await Promise.race([this.ports.transport.request('/v1/builds/commands',{expectedEpoch:this.expectedEpoch,command},abort.signal),new Promise<never>((_,reject) => {
+          timer = setTimeout(() => { abort.abort(); reject(new Error('request-deadline')); },10000);
+        })]);
+        const response = JSON.parse(canonicalData(received)) as Record<string,unknown>;
+        check(response && typeof response === 'object' && !Array.isArray(response),'build-command-rejected');
+        assertBuildResponseSource(response.source,this.authority,this.expectedEpoch);
+        check(response.ok === true,'build-command-rejected');
+        await ledger.record({operation:command.operation,key:command.key,status:'ack'});
+        return response as Record<string,unknown>;
+      } finally { if (timer) clearTimeout(timer); parentSignal?.removeEventListener('abort',stop); abort.abort(); }
+    };
+    let runtime:SupervisorResult|undefined, staged = false, stoppedAck = false, stopReported = false;
+    try {
+      check(!(await journal.inventory()).entries.some(e => e.name === 'host-slot.json'),'existing-host-slot-quarantined');
+      const live = new AbortController(), stopLive = () => live.abort();
+      cancel?.addEventListener('abort',stopLive,{once:true});
+      const liveTimer = setTimeout(stopLive,10000);
+      try {
+        check(!cancel?.aborted,'claim-cancelled');
+        const livenessSource = await Promise.race([this.ports.liveness.refreshLiveness(0,live.signal),new Promise<never>((_,reject) => {
+          if (live.signal.aborted) reject(new Error('liveness-aborted'));
+          else live.signal.addEventListener('abort',() => reject(new Error('liveness-aborted')),{once:true});
+        })]);
+        assertBuildResponseSource(livenessSource,this.authority,this.expectedEpoch);
+      } finally { clearTimeout(liveTimer); cancel?.removeEventListener('abort',stopLive); live.abort(); }
+      const claimStarted = performance.now();
+      const reply = await send({operation:'claim',key:claimKey,body:{jobId:job.id}},cancel) as unknown as ClaimReply;
+      const a = reply.attempt, input = JSON.parse(canonicalData(reply.input)) as InputApproval;
+      check(canonicalData(reply.job) === canonicalData(job) && hash(canonicalData(reply.profile)) === this.binding.serverProfileHash &&
+        canonicalData(reply.profile) === canonicalData(this.binding.profile) && hash(canonicalData(input)) === job.inputHash &&
+        input.projectId === job.projectId && input.reconstructable && input.missingInputs.length === 0,'claimed-lineage-mismatch');
+      check(a.profileHash === this.binding.serverProfileHash && a.jobId === job.id && a.workerId === this.authority.workerId && a.epoch === this.expectedEpoch &&
+        /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(a.id) && /^[0-9a-f]{64}$/.test(a.capability) &&
+        Number.isSafeInteger(a.generation) && a.generation >= 0 && Number.isSafeInteger(a.incarnation) && a.incarnation >= 0,'claimed-fence-invalid');
+      // Capability stays in this closure and transport only, never journal/public receipt.
+      const fence:BuildFence = Object.freeze({attemptId:a.id,epoch:a.epoch,generation:a.generation,incarnation:a.incarnation,capability:a.capability});
+      const context:BuildAttemptContext = Object.freeze({
+        serverProfileHash:this.binding.serverProfileHash,localRecipeHash:this.binding.localRecipeHash,
+        source:Object.freeze({...reply.source}),
+        compute:Object.freeze({authorityId:reply.source.authorityId,workerId:this.authority.workerId,
+          workloadId:job.id,leaseId:a.id,attemptId:a.id,epoch:fence.epoch,generation:fence.generation,incarnation:fence.incarnation,
+          // Hash the UTF8 capability STRING, not hex-decoded bytes. Context carries only the digest.
+          capabilityDigest:hash(fence.capability)}),
+      });
+      attemptContexts.add(context);
+      const h = this.binding.approval.host;
+      const plan = buildPlan(this.binding.approval,{attemptId:a.id,jobId:job.id,inputRoot:join(h.inputBase,a.id),workRoot:join(h.workBase,a.id)});
+      check(plan.profileHash === this.binding.localRecipeHash,'local-runtime-digest-mismatch');
+      let sequence = 0;
+      const key = (operation:string,n=0) => hash(`${claimKey}:${a.id}:${operation}:${n}`);
+      const supervisor = new LongJobSupervisor(journal,{renew:async (_plan,ttl,signal) => {
+        check(ttl === 60000,'unsupported-lease-ttl');
+        const livenessSource = await this.ports.liveness.refreshLiveness(1,signal);
+        assertBuildResponseSource(livenessSource,this.authority,this.expectedEpoch);
+        const next = ++sequence, response = await send({operation:'renew',key:key('renew',next),body:{...fence,sequence:next}},signal);
+        check(response.sequence === next && typeof response.expiresAt === 'number','renewal-response-invalid');
+        // Overall monotonic deadline starts before claim; server cap cannot extend it.
+        return {valid:true,cancel:false};
+      }},this.adapter);
+      runtime = await supervisor.run(plan,cancel,{
+        deadlineAt:claimStarted+plan.timeoutMs,
+        prepare:async scope => {
+          await ledger.record({operation:'restore',key:key('restore'),status:'intent'});
+          const receipt = await this.ports.restoreInput(input,plan,scope.signal);
+          await verifyRestore(receipt,input,job,plan,h.uid,this.maxInputBytes,scope.signal); scope.assertLease();
+          await ledger.record({operation:'restore',key:key('restore'),status:'ack'});
+        },
+        afterStop:async (result,scope) => {
+          const proofHash = hash(canonicalData({attemptId:plan.attemptId,serverProfileHash:this.binding.serverProfileHash,localRecipeHash:this.binding.localRecipeHash,stop:result.stop}));
+          // Even uncertain stop is explicitly reported; confirmed=false retains server slot.
+          await send({operation:'stopped',key:key('stopped'),body:{...fence,proofHash,confirmed:result.stop.stopped,outcome:result.outcome}});
+          stoppedAck = result.stop.stopped; stopReported = true;
+          if (result.outcome !== 'completed' || !result.stop.stopped) return;
+          scope.assertLease();
+          await ledger.record({operation:'publish',key:key('publish'),status:'intent'});
+          const receipt = await this.ports.publishResult(job,plan,result,context,scope.signal);
+          const manifest = verifyPublish(receipt,job,plan,this.binding.approval.limits.maxOutputBytes); scope.assertLease();
+          await ledger.record({operation:'publish',key:key('publish'),status:'ack'});
+          const response = await send({operation:'stage',key:key('stage'),body:{...fence,manifest}},scope.signal);
+          check(response.staged === true && response.verified === false,'stage-ack-invalid');
+          staged = true;
+        },
+      });
+      if (!stopReported) {
+        const proofHash = hash(canonicalData({attemptId:plan.attemptId,serverProfileHash:this.binding.serverProfileHash,localRecipeHash:this.binding.localRecipeHash,stop:runtime.stop}));
+        await send({operation:'stopped',key:key('stopped-fallback'),body:{...fence,proofHash,confirmed:runtime.stop.stopped,outcome:runtime.outcome}});
+        stoppedAck = runtime.stop.stopped;
+      }
+      if (runtime.outcome === 'quarantined' || !stoppedAck) return {state:'owner-reconciliation-required',runtime};
+      await ledger.finish();
+      return {state:staged ? 'staged-awaiting-verifier' : 'stopped-without-result',runtime};
+    } catch { return {state:'owner-reconciliation-required',...(runtime ? {runtime} : {})}; }
+  }
+}

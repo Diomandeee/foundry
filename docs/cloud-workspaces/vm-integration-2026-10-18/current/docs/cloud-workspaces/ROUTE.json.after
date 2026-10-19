@@ -1,0 +1,277 @@
+{
+  "format": "foundry.cloud-workspaces.route.v1",
+  "stop": "R6-M3-vm-integration-source-reviewed-HOLD",
+  "authority": "Cloudflare existing compute authority",
+  "deployments": 0,
+  "testsExecuted": 0,
+  "buildsExecuted": 0,
+  "servicesStarted": 0,
+  "newCloudResources": 0,
+  "stages": [
+    {
+      "id": "R1",
+      "state": "source-reviewed",
+      "evidence": [
+        "BASELINE.json",
+        "R1-REVIEW.md",
+        "R1-FINDINGS.json",
+        "R1-PROJECT-READINESS.json",
+        "R1-CAPACITY.json"
+      ]
+    },
+    {
+      "id": "R2",
+      "state": "implemented-validation-pending",
+      "evidence": [
+        "LIBRARY-REVIEW.md"
+      ],
+      "blockedBy": [
+        "real scoped identity/provider mapping",
+        "approved published chunks/namespaces",
+        "activation approval"
+      ]
+    },
+    {
+      "id": "R3",
+      "state": "implemented-source-reviewed-validation-pending",
+      "evidence": [
+        "SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R4",
+      "state": "implemented-with-explicit-HOLD",
+      "evidence": [
+        "RUNTIME-REVIEW.md",
+        "BUILD-STORAGE-REVIEW.md",
+        "continuation-2026-10-18/CUMULATIVE-REVIEW.md",
+        "mac-safety-2026-10-18/SOURCE-REVIEW.md",
+        "guest-io-2026-10-18/SOURCE-REVIEW.md",
+        "vm-integration-2026-10-18/SOURCE-REVIEW.md"
+      ],
+      "blockedBy": [
+        "generic writable CAS/materialization seal; readonly seal is a separate limited capability",
+        "owner-approved host/account/images/helper binaries/toolchains/identities/resources",
+        "all observed Macs below disk headroom (prior observation, not rechecked)",
+        "asset/dependency/history completeness; authority required paths above128",
+        "runtime validation and activation approvals",
+        "operator-mediated stage/intake and provisioned image/source dependencies; no unattended root service",
+        "M3 compilation and operational acceptance pending"
+      ]
+    },
+    {
+      "id": "R5",
+      "state": "implemented-source-reviewed-validation-pending",
+      "evidence": [
+        "SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R6",
+      "state": "source-reviewed-HOLD",
+      "evidence": [
+        "SOURCE-REVIEW.md",
+        "DEFERRED-VALIDATION.md",
+        "RESOURCE-PROPOSAL.json",
+        "ACTIVATION-AND-COST.md",
+        "continuation-2026-10-18/CHANGE-RECEIPT.json",
+        "mac-safety-2026-10-18/SOURCE-REVIEW.md",
+        "guest-io-2026-10-18/SOURCE-REVIEW.md",
+        "vm-integration-2026-10-18/SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R7",
+      "state": "not-started-gated",
+      "evidence": []
+    }
+  ],
+  "nextGate": "M3 local implementation/source review is complete. Resolve inherited writable-storage/integration prerequisites; M4 compilation and operational acceptance require separate approval. R7 activation and every installation/provisioning/deployment/spending/secret/cleanup action remain separately gated.",
+  "continuation": {
+    "folder": "continuation-2026-10-18",
+    "authorization": "local source implementation/review only",
+    "work": [
+      {
+        "id": "C1",
+        "task": "Broker online authority, revocation, capacity and post-claim concrete provider wiring",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "continuation-2026-10-18/BROKER-REVIEW.md",
+          "continuation-2026-10-18/BROKER-REVIEW-FINAL.md"
+        ]
+      },
+      {
+        "id": "C2",
+        "dependsOn": [
+          "C1"
+        ],
+        "task": "Segmented project inputs, bounded namespace recovery, post-claim restoration and actual working-tree verification",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "continuation-2026-10-18/PROJECT-INPUTS.md",
+          "continuation-2026-10-18/INPUTS-REVIEW-ROUND2.md"
+        ]
+      },
+      {
+        "id": "C3",
+        "dependsOn": [
+          "C2"
+        ],
+        "task": "Mac native evidence and full termination attestation",
+        "state": "partial-implemented-full-containment-blocked",
+        "evidence": [
+          "continuation-2026-10-18/MAC-ATTESTATION.md"
+        ],
+        "blockedBy": [
+          "privileged supervisor not supplied",
+          "launchd/XPC/shared-service containment unproved",
+          "current-fence physical launch handling incomplete"
+        ],
+        "nativePlacement": "explicitly-ineligible"
+      },
+      {
+        "id": "C4",
+        "dependsOn": [
+          "C1",
+          "C2",
+          "C3"
+        ],
+        "task": "Cumulative source review and scoped receipt",
+        "state": "source-reviewed-HOLD",
+        "evidence": [
+          "continuation-2026-10-18/CUMULATIVE-REVIEW.md",
+          "continuation-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      }
+    ]
+  },
+  "nextLocalEngineering": "Inherited generic writable CAS/materialization isolation and cumulative integration HOLD. No remaining adapter/controller/guest-capability wiring task is deferred within M3; unattended root I/O/image provisioning is explicitly unsupported by this operator-mediated pilot.",
+  "macSafety": {
+    "folder": "mac-safety-2026-10-18",
+    "state": "source-reviewed-primitives-production-HOLD",
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "helpersOrVmsStarted": 0,
+    "operationalChanges": 0,
+    "implemented": [
+      "native local launch denial in adapter and ES client",
+      "concrete Swift VZ lifecycle with nonce/generation/continuous authority budget fencing and whole-VM stop observation",
+      "branded guest job encoder and bounded standard-account guest runner source",
+      "kernel-readonly mounted-volume guard and separate read-side packaging capability"
+    ],
+    "notImplemented": [
+      "generic writable restore/CAS isolation"
+    ],
+    "nextTasks": [
+      {
+        "id": "M1",
+        "dependsOn": [
+          "source-reviewed containment primitives"
+        ],
+        "task": "Verified immutable input staging",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "guest-io-2026-10-18/README.md",
+          "guest-io-2026-10-18/SOURCE-REVIEW.md",
+          "guest-io-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      },
+      {
+        "id": "M2",
+        "dependsOn": [
+          "M1",
+          "actual stopped VM"
+        ],
+        "task": "Read-only result intake through immutable publication/verifier boundary",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "guest-io-2026-10-18/README.md",
+          "guest-io-2026-10-18/SOURCE-REVIEW.md",
+          "guest-io-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      },
+      {
+        "id": "M3",
+        "dependsOn": [
+          "M1",
+          "M2"
+        ],
+        "task": "Production adapter/controller/guest capabilities plus cumulative source review",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "vm-integration-2026-10-18/README.md",
+          "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+          "vm-integration-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      },
+      {
+        "id": "M4",
+        "dependsOn": [
+          "M3",
+          "explicit matching approvals"
+        ],
+        "task": "Compilation, deferred acceptance and progressive activation",
+        "state": "gated-not-started"
+      }
+    ],
+    "nativePlacement": "explicitly-ineligible",
+    "vmSessionResult": "Standalone containment reports not-collected and quarantines. Integrated adapter requires actual accepted stop-gated intake before success; controller publishes/stages for independent verification and supervisor finalizes only safe local state."
+  },
+  "guestIO": {
+    "folder": "guest-io-2026-10-18",
+    "state": "implemented-source-reviewed-validation-pending-production-HOLD",
+    "review": "six inline source passes by implementing agent; no independent or executed validation claim",
+    "sourceTasksClosed": [
+      "M1",
+      "M2"
+    ],
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "helpersOrVmsStarted": 0,
+    "operationalChanges": 0,
+    "remaining": [
+      "generic writable CAS/materialization isolation",
+      "inherited integration HOLD",
+      "M4 separately approved compile/test/runtime acceptance",
+      "R7 separately approved progressive activation"
+    ],
+    "evidence": [
+      "guest-io-2026-10-18/SOURCE-REVIEW.md",
+      "guest-io-2026-10-18/FINDINGS.json",
+      "guest-io-2026-10-18/CHANGE-RECEIPT.json"
+    ],
+    "integrationEvidence": "vm-integration-2026-10-18/SOURCE-REVIEW.md"
+  },
+  "vmIntegration": {
+    "folder": "vm-integration-2026-10-18",
+    "state": "implemented-source-reviewed-validation-pending",
+    "sourceTasksClosed": [
+      "M3.1",
+      "M3.2",
+      "M3.3",
+      "M3.4",
+      "M3.5"
+    ],
+    "review": "six inline source passes by implementing agent; no independent or executed validation",
+    "testsAuthored": 0,
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "helpersOrVmsStarted": 0,
+    "operationalChanges": 0,
+    "ioMode": "explicit owner-mediated stage/intake; no unattended privileged service",
+    "nativePlacement": "denied",
+    "vmPlacement": "requires separate owner VM activation command plus all capability/worker/profile/resource/freshness gates",
+    "evidence": [
+      "vm-integration-2026-10-18/README.md",
+      "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+      "vm-integration-2026-10-18/FINDINGS.json",
+      "vm-integration-2026-10-18/CHANGE-RECEIPT.json"
+    ],
+    "remaining": [
+      "inherited generic writable CAS/materialization isolation and cumulative integration HOLD",
+      "actual approved accounts/images/helpers/source seals/scoped storage/capacity",
+      "M4 separately approved compilation/tests/operational acceptance",
+      "R7 separately approved progressive activation"
+    ]
+  }
+}

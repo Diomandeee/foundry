@@ -1,0 +1,80 @@
+import type {ArtifactClaim, BuildProfile, InputApproval, ObjectRef, ResultManifest} from '../../build-jobs/src/contracts';
+import type {ComputeBinding, CurrentAuthorization, ReadGrant} from '../../storage-broker/src/types';
+import type {GcsHostConfig} from '../../library-gcs/src/index';
+export type {ArtifactClaim, BuildProfile, InputApproval, ObjectRef, ResultManifest, ComputeBinding, ReadGrant};
+
+/** Host-only interfaces. Never expose writer, issuer, seal or reservation ports to workers. */
+export interface TrustedWriter {
+  /** Create-only immutable write followed by generation-pinned actual-byte verification. */
+  /** Optional only for source compatibility; concrete admitted hosts require the
+   * exact explicit receipt. Never resolve an ambient "current reservation". */
+  write(projectId: string, kind: 'objects'|'manifests', bytes: Uint8Array, signal: AbortSignal, reservation?:PublicationReservation): Promise<ObjectRef>;
+}
+export interface GcsWritePorts {
+  getAccessToken(credentialRef: string, signal: AbortSignal): Promise<string>;
+  /** Native streaming fetch; no buffering, redirects, implicit retry, cookies or logging. */
+  fetch(url: string, init: {method:'GET'|'POST'; redirect:'manual'; cache:'no-store'; credentials:'omit';
+    signal:AbortSignal; headers:Record<string,string>; body?:Uint8Array}): Promise<Response>;
+}
+export type GcsWriterConfig = GcsHostConfig;
+export interface GrantScope {projectId:string; principalRef:string; compute:ComputeBinding; namespaceRef:string}
+export interface TrustedGrantIssuer {
+  /** Return the ACTUAL broker admin.issue receipt in the approved durable namespace. */
+  /** Admitted host implementations require the explicit scope-bound reservation. */
+  issue(ref: ObjectRef, scope: GrantScope, signal: AbortSignal, reservation?:PublicationReservation): Promise<ReadGrant>;
+  /** Fresh authoritative observation; includes revocation, policy, fence and lease checks. */
+  observeCurrent(grant: ReadGrant, signal: AbortSignal): Promise<CurrentAuthorization>;
+  now(): number;
+}
+export interface PublicationNeed {projectId:string; namespaceRef:string; artifacts:number; bytes:number}
+export interface PublicationReservation extends PublicationNeed {reservationId:string}
+export interface TrustedPublicationCapacity {
+  /** Instance MUST be host-bound to the authenticated principal and compute fence
+   * used by the scope; neither namespace nor project alone establishes authority. */
+  /** Persist admission BEFORE writes, including manifest overhead. Reject if namespace
+   * durability/quotas cannot cover this request. No automatic namespace creation. */
+  /** Admitted hosts require a stable operation key, reuse the original debit after
+   * lost replies, and reject a different exact need under the same key. */
+  reserve(need: PublicationNeed, signal: AbortSignal, operationKey?:string): Promise<PublicationReservation>;
+  /** Recheck the reservation/fence, including after every awaited provider operation. */
+  assertCurrent(receipt: PublicationReservation, signal: AbortSignal): Promise<void>;
+}
+export interface ManagedTreeSeal {
+  /** Host must exclude every concurrent writer/renamer, including same UID, ancestors,
+   * mounts and descendants, for the whole callback. Roots must already be provisioned.
+   * Portable Node lstat/O_NOFOLLOW alone cannot implement this containment guarantee. */
+  withExclusiveTrees<T>(roots: readonly string[], run: () => Promise<T>, signal: AbortSignal): Promise<T>;
+}
+export interface ManagedRoot {path:string; uid:number}
+export interface LocalRef {kind:'local-cas'; sha256:string; sizeBytes:number; relativePath:string}
+export interface LocalContentStore {
+  /** Project input v2 requires the bounded sharded layout; omission means legacy. */
+  readonly layout?:'flat-v1'|'sharded-v2';
+  put(bytes:Uint8Array, signal:AbortSignal):Promise<LocalRef>;
+  read(ref:LocalRef, signal:AbortSignal):Promise<Uint8Array>;
+}
+export type ArtifactClassification = 'build-output'|'signed-archive'|'debug-symbols'|'build-log'|'source-input'|'source-history';
+export interface ApprovedFile {path:string; classification:ArtifactClassification}
+export interface FileLineage {path:string; classification:ArtifactClassification; retention:'retain'; sha256:string; sizeBytes:number; chunks:ArtifactClaim[]}
+export type ArtifactFormat='file'|'tar';
+export interface OutputLineage extends FileLineage {format:ArtifactFormat}
+export interface PackagingPorts {
+  writer:TrustedWriter; issuer:TrustedGrantIssuer; capacity:TrustedPublicationCapacity;
+  seal:ManagedTreeSeal; local:LocalContentStore;
+}
+export interface CollectedOutputs {
+  outputs:ResultManifest['outputs']; logs:ArtifactClaim[]; lineage:OutputLineage[];
+  totalBytes:number; chunkCount:number; reservation:PublicationReservation;
+  scope:GrantScope; profileHash:string; lineageLocal:LocalRef;
+}
+export interface CollectOutputsRequest {
+  root:ManagedRoot; profile:BuildProfile; scope:GrantScope;
+  /** Exact approved paths. Only .app/.dSYM/.xcarchive paths package as directory
+   * trees; all other selections must be regular files. No glob expansion. */
+  outputs:ApprovedFile[]; logs:ApprovedFile[];
+}
+export interface WriteResultRequest {
+  jobId:string; attemptId:string; inputHash:string; profileHash:string; exitCode:number;
+  collected:CollectedOutputs;
+}
+export interface StagedResult {manifest:ResultManifest; artifact:ArtifactClaim; local:LocalRef; lineageLocal:LocalRef; receiptLocal:LocalRef}

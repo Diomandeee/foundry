@@ -1,0 +1,19 @@
+{
+  "name": "@foundry/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@foundry/evidence": "*",
+    "@foundry/lkg-client": "*",
+    "@foundry/stores": "*",
+    "hono": "^4"
+  },
+  "devDependencies": {
+    "@foundry/gate-ts": "*"
+  }
+}

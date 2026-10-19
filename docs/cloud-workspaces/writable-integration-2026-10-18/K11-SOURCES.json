@@ -1,0 +1,71 @@
+{
+  "authority": "external Craft rollout report, not Foundry execution approval",
+  "sources": [
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/ROLLOUT-MAP.md",
+      "sha256": "f2f0bbf580536f56202aca268fc1d5e0192518dbe1ec5b6c2684637788501ac6",
+      "bytes": 15555,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/receipts/VERIFICATION.md",
+      "sha256": "15ad70f96e5926124d284a2b9a61ccba243a3eb7f09b58894243b0066247755e",
+      "bytes": 6250,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/source-manifest.json",
+      "sha256": "6ecb5f1ee2ade46faa94b830a8b2edb6e5c9757b620b863ce219d9356a8b0d55",
+      "bytes": 2828,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/runner/package_job.py",
+      "sha256": "5c6e6c8ac697cf080874f5193f6506e9b9e7b8dcf654a60c99f6d0bf734892a4",
+      "bytes": 3446,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/runner/worker.py",
+      "sha256": "3ea4ca01dc1e51b802816ebf486cff41429448fbe8db0e713738c57c0d2372b0",
+      "bytes": 17034,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/runner/craft_queue_client.py",
+      "sha256": "484c74b9d6556225e78b8e0efa5c40425cb3d00d6e98b26f73971c2be0fda759",
+      "bytes": 4313,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/receipts/photo-comparison.json",
+      "sha256": "6a1203b6e3f7d91095bf50409bd6ea6112a9e0207840012e54a25e21e02fa2c4",
+      "bytes": 1183,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/receipts/film-comparison.json",
+      "sha256": "0e30606bbf618c383c3feea00d052cdc0ae7e1e5edeb3a3f14bf3d1f2d63439f",
+      "bytes": 766,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/receipts/reboot-acceptance.json",
+      "sha256": "04ede9d89bc46e0fd9d14fa621232c913321fd912ffe7f1635d5a46f5fb8c004",
+      "bytes": 829,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/work/k11-artcraft/receipts/gui-smoke.json",
+      "sha256": "c698c0c2f97f161c631dd1366cb2cedda3aaff158a09418320bde697cf4184d9",
+      "bytes": 2817,
+      "evidence": "local source or reported receipt; not rerun"
+    },
+    {
+      "path": "/Users/mohameddiomande/Documents/Codex/2026-10-17/memory-retrieval-final-check/fleet-console/README.md",
+      "sha256": "17047b3b97deeb54127c70027aab29d448c0a54656f076f66db42e2fbd445b5d",
+      "bytes": 1554,
+      "evidence": "local documentation"
+    }
+  ]
+}

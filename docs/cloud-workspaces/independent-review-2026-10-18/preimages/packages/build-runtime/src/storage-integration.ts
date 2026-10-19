@@ -1,0 +1,159 @@
+import { constants } from 'node:fs';
+import { open, mkdir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { collectOutputs, writeResultManifest, materializeLocalSnapshot, populateProjectInputSnapshot, materializeProjectInputSnapshot } from '../../build-storage/src/index.js';
+import type {ProjectInputRouting,ProjectInputReadNamespace} from '../../build-storage/src/project-input-io.js';
+import type { InputSnapshot } from '../../build-storage/src/snapshots.js';
+import type { PackagingPorts, LocalRef, ApprovedFile, GrantScope, ManagedTreeSeal } from '../../build-storage/src/types.js';
+import type { ArtifactClaim, ObjectRef, InputApproval, BuildJob } from '../../build-jobs/src/contracts.js';
+import type { RuntimePlan, RuntimeAdapter } from './types.js';
+import { BuildWorkerController, assertBuildAttemptContext, assertBuildResponseSource, snapshotWorkerAuthority, type BuildTransport, type BuildWorkerPorts, type BuildAttemptContext, type WorkerAuthorityBinding } from './controller.js';
+import type { WorkerLivenessPort } from './liveness.js';
+import type { ParentProfileBinding } from './parent-profile.js';
+import { assertParentBinding, canonicalData } from './parent-profile.js';
+import { check, hash } from './plans.js';
+import { canonical } from './host.js';
+import { sameRef, verifyObject, type BoundObject } from './receipts.js';
+export interface ResolvedProjectInputPorts {scope:GrantScope;routing:ProjectInputRouting<ProjectInputReadNamespace>}
+export interface StorageWorkerConfig {
+  binding:ParentProfileBinding; transport:BuildTransport; liveness:WorkerLivenessPort;
+  packaging:Pick<PackagingPorts,'local'> & {seal:ManagedTreeSeal} & Partial<Pick<PackagingPorts,'writer'|'issuer'|'capacity'>>;
+  authority:WorkerAuthorityBinding;
+  /** Authenticated, bounded, generation-pinned reader. No arbitrary URL is accepted. */
+  readInput(ref:ObjectRef,context:{input:InputApproval;plan:RuntimePlan;claim?:ArtifactClaim;attempt?:BuildAttemptContext},signal:AbortSignal):Promise<Uint8Array>;
+  /** Explicit v2 input mode; finite OWNER-approved namespaces, actual scoped
+   * broker ports and sharded-v2 local CAS. No implicit namespace rollover. */
+  projectInputs?:{maxBytes:number;
+    resolve(input:InputApproval,plan:RuntimePlan,context:BuildAttemptContext,signal:AbortSignal):Promise<ResolvedProjectInputPorts>};
+  /** Real namespace/principal policy scope for the supplied actual claim compute.
+   * No owner-authenticated /builds/fence lookup is needed or performed here. */
+  resultScope?(job:BuildJob,plan:RuntimePlan,context:BuildAttemptContext,signal:AbortSignal):Promise<GrantScope>;
+  resolveResultStorage?(job:BuildJob,plan:RuntimePlan,context:BuildAttemptContext,signal:AbortSignal):Promise<{scope:GrantScope;ports:Pick<PackagingPorts,'writer'|'issuer'|'capacity'>}>;
+  /** Owner classifies every exact approved output, including debug symbols/archives. */
+  outputs:readonly ApprovedFile[];
+}
+/** Concrete sibling composition; providers and provisioned directories remain host-owned.
+ * No mock provider, fake grant, guessed cloud generation, install, or automatic cleanup. */
+export function createStorageWorkerPorts(config:StorageWorkerConfig):BuildWorkerPorts {
+  assertParentBinding(config.binding);
+  const binding = config.binding, base = config.packaging, authority = snapshotWorkerAuthority(config.authority);
+  const selections = JSON.parse(canonicalData(config.outputs)) as ApprovedFile[];
+  check(selections.length === binding.profile.outputPaths.length && new Set(selections.map(x => x.path)).size === selections.length && binding.profile.outputPaths.every(path => selections.some(x => x.path === path)),'complete-output-selection-required');
+  return {
+    transport:config.transport,liveness:config.liveness,
+    restoreInput:async (input,plan,signal,context,controllerMaxInputBytes) => {
+      const uid = binding.approval.host.uid;
+      let project:ResolvedProjectInputPorts|undefined,effectiveCap=0;
+      if(config.projectInputs){
+        check(context,'actual-project-input-claim-required');assertBuildAttemptContext(context);
+        assertBuildResponseSource(context.source,authority,context.compute.epoch);
+        check(context.serverProfileHash===binding.serverProfileHash&&context.localRecipeHash===binding.localRecipeHash,'project-input-profile-binding');
+        const maximum=config.projectInputs.maxBytes;
+        check(Number.isSafeInteger(maximum)&&maximum>0&&maximum<=4*1024**3&&Number.isSafeInteger(controllerMaxInputBytes)&&(controllerMaxInputBytes??0)>0,'project-input-approved-byte-budget');
+        effectiveCap=Math.min(maximum,controllerMaxInputBytes!);
+        // The actual claim exists only now. Resolve from immutable host approval
+        // templates, never guess an attempt or mutate construction-time config.
+        project=await config.projectInputs.resolve(input,plan,context,signal);
+        check(!signal.aborted&&project.scope.projectId===input.projectId&&canonicalData(project.scope.compute)===canonicalData(context.compute),'project-input-scope-binding');
+      }
+      await canonical(binding.approval.host.inputBase,uid,'directory',true);
+      await canonical(binding.approval.host.workBase,uid,'directory',true);
+      const createRoots=async()=>{
+        await mkdir(plan.inputRoot,{mode:0o700});await mkdir(plan.workRoot,{mode:0o700});
+        await canonical(plan.inputRoot,uid,'directory',true);await canonical(plan.workRoot,uid,'directory',true);
+        if(plan.kind==='xcode-build-v1')for(const name of ['home','tmp','DerivedData','dependencies','modules','swift-modules'])await mkdir(join(plan.workRoot,name),{mode:0o700});
+      };
+      if(project){
+        const populated=await populateProjectInputSnapshot({manifest:input.manifest,snapshotHash:input.snapshotHash,scope:project.scope},
+          {local:base.local,routing:project.routing},signal,effectiveCap);
+        const encoded=await base.local.read(populated.local,signal);verifyObject({ref:input.manifest,bytes:encoded},input.projectId);
+        // Over-cap snapshots are rejected before source hydration and before any
+        // destination creation. A failed restore keeps its actual partial evidence.
+        await createRoots();
+        const materialize=(path:string)=>materializeProjectInputSnapshot(populated.local,{path,uid},base.local,base.seal,signal,effectiveCap);
+        const restored=await materialize(plan.inputRoot);check(restored.snapshotHash===input.snapshotHash,'project-materialized-root-binding');
+        if(binding.approval.recipe.kind==='linux-build-v1'&&binding.approval.recipe.tool!=='cmake'){
+          const source=join(plan.workRoot,'source');await mkdir(source,{mode:0o700});await materialize(source);
+        }
+        return {inputHash:hashInput(input),inputRoot:plan.inputRoot,workRoot:plan.workRoot,manifest:{ref:input.manifest,bytes:encoded},
+          projectLocal:{snapshot:populated.local,local:base.local,seal:base.seal}};
+      }
+      await createRoots();
+      const encoded = await config.readInput(input.manifest,{input,plan,attempt:context},signal);
+      verifyObject({ref:input.manifest,bytes:encoded},input.projectId);
+      check(input.manifest.sha256 === input.snapshotHash,'snapshot-hash-mismatch');
+      const manifest = JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(encoded)) as InputSnapshot;
+      check(manifest.version === 1 && manifest.projectId === input.projectId && Array.isArray(manifest.files) && manifest.files.length <= 128,'unsupported-storage-snapshot');
+      let total = 0, count = 0;
+      for (const file of manifest.files) {
+        check(Array.isArray(file.chunks) && Array.isArray(file.localChunks) && file.chunks.length === file.localChunks.length,'snapshot-chunk-lineage');
+        for (let i=0;i<file.chunks.length;i++) {
+          const claim = file.chunks[i]!; total += claim.ref.sizeBytes; count++;
+          check(total <= 128*1048576 && count <= 128,'input-snapshot-budget');
+          const bytes = await config.readInput(claim.ref,{input,plan,claim,attempt:context},signal);
+          verifyObject({ref:claim.ref,bytes},input.projectId);
+          const local = await base.local.put(bytes,signal);
+          check(canonicalData(local) === canonicalData(file.localChunks[i]),'snapshot-local-cas-format-unsupported');
+        }
+      }
+      const snapshotLocal = await base.local.put(encoded,signal);
+      const restored = await materializeLocalSnapshot(snapshotLocal,{path:plan.inputRoot,uid},base.local,base.seal,signal);
+      check(restored.snapshotHash === input.snapshotHash,'materialized-snapshot-hash-mismatch');
+      if (binding.approval.recipe.kind === 'linux-build-v1' && binding.approval.recipe.tool !== 'cmake') {
+        const source = join(plan.workRoot,'source'); await mkdir(source,{mode:0o700});
+        const copied = await materializeLocalSnapshot(snapshotLocal,{path:source,uid},base.local,base.seal,signal);
+        check(copied.snapshotHash === input.snapshotHash,'working-source-copy-mismatch');
+      }
+      return {inputHash:hashInput(input),inputRoot:plan.inputRoot,workRoot:plan.workRoot,manifest:{ref:input.manifest,bytes:encoded}};
+    },
+    publishResult:async (job,plan,result,context,signal) => {
+      assertBuildAttemptContext(context);
+      assertBuildResponseSource(context.source,authority,context.compute.epoch);
+      check(context.serverProfileHash === binding.serverProfileHash && context.serverProfileHash === job.profileHash &&
+        context.localRecipeHash === binding.localRecipeHash && context.localRecipeHash === plan.profileHash &&
+        context.compute.authorityId === authority.authorityId && context.compute.workerId === authority.workerId &&
+        context.compute.workloadId === job.id && context.compute.leaseId === plan.attemptId && context.compute.attemptId === plan.attemptId,'publish-claim-context-mismatch');
+      check(result.outcome === 'completed' && result.stop.stopped && result.exit?.code === 0,'real-stopped-success-required');
+      const resolved=config.resolveResultStorage?await config.resolveResultStorage(job,plan,context,signal):undefined;
+      const scope=resolved?.scope??(config.resultScope?await config.resultScope(job,plan,context,signal):undefined);
+      check(scope&&scope.projectId===job.projectId&&canonicalData(scope.compute)===canonicalData(context.compute),'result-scope-binding');
+      const publication=resolved?.ports??base;check(publication.writer&&publication.issuer&&publication.capacity,'actual-result-storage-ports-required');
+      const uid = binding.approval.host.uid, refs = new Map<string,LocalRef>();
+      const ports:PackagingPorts = {writer:publication.writer,issuer:publication.issuer,capacity:publication.capacity,seal:base.seal,local:{
+        put:async (bytes,sig) => {const ref = await base.local.put(bytes,sig);refs.set(`${ref.sha256}:${ref.sizeBytes}`,ref);return ref;},
+        read:(ref,sig) => base.local.read(ref,sig),
+      }};
+      const logs:ApprovedFile[] = [];
+      if (result.exit.output.byteLength) {
+        const name = '.foundry-runtime.log';
+        check(!binding.profile.outputPaths.includes(name),'runtime-log-output-collision');
+        await base.seal.withExclusiveTrees([plan.workRoot],async () => {
+          await canonical(plan.workRoot,uid,'directory',true);
+          const f = await open(join(plan.workRoot,name),constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
+          try {await f.writeFile(result.exit!.output);await f.sync();} finally {await f.close();}
+          const directory = await open(plan.workRoot,constants.O_RDONLY|constants.O_NOFOLLOW);
+          try {await directory.sync();} finally {await directory.close();}
+        },signal);
+        logs.push({path:name,classification:'build-log'});
+      }
+      const profile = JSON.parse(canonicalData(binding.profile));
+      const collected = await collectOutputs({root:{path:plan.workRoot,uid},profile,scope,outputs:selections,logs},ports,signal);
+      const staged = await writeResultManifest({jobId:job.id,attemptId:plan.attemptId,inputHash:job.inputHash,profileHash:job.profileHash,exitCode:0,collected},ports,signal);
+      const read = async (claim:ArtifactClaim):Promise<BoundObject> => {
+        const ref = refs.get(`${claim.ref.sha256}:${claim.ref.sizeBytes}`); check(ref,'actual-local-publication-receipt-missing');
+        const bytes = await base.local.read(ref,signal); verifyObject({ref:claim.ref,bytes},job.projectId); return {claim,bytes};
+      };
+      const objects:BoundObject[] = [];
+      for (const claim of [...staged.manifest.outputs.flatMap(output => output.chunks),...staged.manifest.logs]) objects.push(await read(claim));
+      const bytes = await base.local.read(staged.local,signal);
+      check(sameRef(staged.artifact.ref,{...staged.artifact.ref,sha256:staged.local.sha256,sizeBytes:bytes.byteLength}),'actual-manifest-local-receipt-mismatch');
+      return {manifest:{claim:staged.artifact,bytes},objects};
+    },
+  };
+}
+const hashInput = (input:InputApproval) => hash(canonicalData(input));
+
+/** Full inert constructor; ports run only on explicit controller.run()/pollOnce(). */
+export function createStorageBuildWorkerController(config:StorageWorkerConfig,expectedEpoch:number,adapter:RuntimeAdapter,maxInputBytes:number):BuildWorkerController {
+  return new BuildWorkerController(config.binding,expectedEpoch,createStorageWorkerPorts(config),adapter,maxInputBytes,config.authority);
+}

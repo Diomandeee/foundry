@@ -1,0 +1,54 @@
+{
+  "format": "foundry.linux-isolation.findings.v1",
+  "review": "implementing-agent inline source review; independent acceptance pending",
+  "findings": [
+    {
+      "id": "LI-01",
+      "status": "source-repaired-validation-pending",
+      "finding": "shared-UID writable workspace/seal gap",
+      "resolution": "root-private bounded filesystem and narrow concrete adapter; legacy path denied"
+    },
+    {
+      "id": "LI-02",
+      "status": "source-repaired-validation-pending",
+      "finding": "delayed Docker start after attach-client cancellation",
+      "resolution": "persistent root cgroup permanently frozen/killed and empty observation"
+    },
+    {
+      "id": "LI-03",
+      "status": "source-repaired-validation-pending",
+      "finding": "broker process crash or late/malformed renewal",
+      "resolution": "independent pipe/boottime watchdog; no expired-budget revival"
+    },
+    {
+      "id": "LI-04",
+      "status": "source-repaired-validation-pending",
+      "finding": "private disk omitted from census",
+      "resolution": "actual bounded root-written accounting and idle-slot refusal"
+    },
+    {
+      "id": "LI-05",
+      "status": "source-repaired-validation-pending",
+      "finding": "generic input reader/local seal as missing integration",
+      "resolution": "existing actual namespace/capacity/grant/read path reused directly, streamed input and byte-based publication"
+    },
+    {
+      "id": "LI-06",
+      "status": "explicit-pilot-limitation",
+      "finding": "automatic repeat scheduling, root resource reclamation and unattended service operation",
+      "resolution": "not supplied; owner-mediated single-attempt retention is explicit"
+    },
+    {
+      "id": "LI-07",
+      "status": "HOLD",
+      "finding": "compilation, independent cumulative review and operational acceptance",
+      "resolution": "not authorized or performed; see deferred protocol"
+    },
+    {
+      "id": "LI-08",
+      "status": "HOLD",
+      "finding": "actual installed pins/cgroupfs/account/images/storage/clock policy and inherited G3/schema/Mac readiness",
+      "resolution": "owner resource/policy gates remain; no fabricated values"
+    }
+  ]
+}

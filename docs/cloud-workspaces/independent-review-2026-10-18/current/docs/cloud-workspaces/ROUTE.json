@@ -1,0 +1,381 @@
+{
+  "format": "foundry.cloud-workspaces.route.v1",
+  "stop": "R6-independent-source-review-complete-validation-HOLD",
+  "authority": "Cloudflare existing compute authority",
+  "deployments": 0,
+  "testsExecuted": 0,
+  "buildsExecuted": 0,
+  "servicesStarted": 0,
+  "newCloudResources": 0,
+  "stages": [
+    {
+      "id": "R1",
+      "state": "source-reviewed",
+      "evidence": [
+        "BASELINE.json",
+        "R1-REVIEW.md",
+        "R1-FINDINGS.json",
+        "R1-PROJECT-READINESS.json",
+        "R1-CAPACITY.json"
+      ]
+    },
+    {
+      "id": "R2",
+      "state": "implemented-validation-pending",
+      "evidence": [
+        "LIBRARY-REVIEW.md"
+      ],
+      "blockedBy": [
+        "real scoped identity/provider mapping",
+        "approved published chunks/namespaces",
+        "activation approval"
+      ]
+    },
+    {
+      "id": "R3",
+      "state": "implemented-source-reviewed-validation-pending",
+      "evidence": [
+        "SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R4",
+      "state": "implemented-with-explicit-HOLD",
+      "evidence": [
+        "RUNTIME-REVIEW.md",
+        "BUILD-STORAGE-REVIEW.md",
+        "continuation-2026-10-18/CUMULATIVE-REVIEW.md",
+        "mac-safety-2026-10-18/SOURCE-REVIEW.md",
+        "guest-io-2026-10-18/SOURCE-REVIEW.md",
+        "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+        "writable-integration-2026-10-18/SOURCE-REVIEW.md",
+        "linux-isolation-2026-10-18/SOURCE-REVIEW.md",
+        "independent-review-2026-10-18/README.md"
+      ],
+      "blockedBy": [
+        "owner-approved host/account/images/helper binaries/toolchains/identities/resources",
+        "all observed Macs below disk headroom (prior observation, not rechecked)",
+        "asset/dependency/history completeness; authority required paths above128",
+        "runtime validation and activation approvals",
+        "operator-mediated stage/intake and provisioned image/source dependencies; no unattended root service",
+        "M3 compilation and operational acceptance pending",
+        "isolated Linux broker installation/acceptance; one owner-mediated attempt; automatic repeat-job reconciliation not supplied",
+        "actual Docker userns-remap ownership/mappings and approved enforcing AppArmor compiled payload; operational acceptance pending"
+      ]
+    },
+    {
+      "id": "R5",
+      "state": "implemented-source-reviewed-validation-pending",
+      "evidence": [
+        "SOURCE-REVIEW.md"
+      ]
+    },
+    {
+      "id": "R6",
+      "state": "independently-source-reviewed-validation-HOLD",
+      "evidence": [
+        "SOURCE-REVIEW.md",
+        "DEFERRED-VALIDATION.md",
+        "RESOURCE-PROPOSAL.json",
+        "ACTIVATION-AND-COST.md",
+        "continuation-2026-10-18/CHANGE-RECEIPT.json",
+        "mac-safety-2026-10-18/SOURCE-REVIEW.md",
+        "guest-io-2026-10-18/SOURCE-REVIEW.md",
+        "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+        "writable-integration-2026-10-18/SOURCE-REVIEW.md",
+        "linux-isolation-2026-10-18/SOURCE-REVIEW.md",
+        "independent-review-2026-10-18/README.md"
+      ]
+    },
+    {
+      "id": "R7",
+      "state": "not-started-gated",
+      "evidence": []
+    }
+  ],
+  "nextGate": "M4/R6 compilation, tests and operational acceptance require explicit validation approval. Installation, provisioning, loaded policy/mapping changes, migration, deployment, spending, credentials, merge and cleanup remain separately gated. Bounded independent source review is complete; it is not runtime acceptance.",
+  "continuation": {
+    "folder": "continuation-2026-10-18",
+    "authorization": "local source implementation/review only",
+    "work": [
+      {
+        "id": "C1",
+        "task": "Broker online authority, revocation, capacity and post-claim concrete provider wiring",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "continuation-2026-10-18/BROKER-REVIEW.md",
+          "continuation-2026-10-18/BROKER-REVIEW-FINAL.md"
+        ]
+      },
+      {
+        "id": "C2",
+        "dependsOn": [
+          "C1"
+        ],
+        "task": "Segmented project inputs, bounded namespace recovery, post-claim restoration and actual working-tree verification",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "continuation-2026-10-18/PROJECT-INPUTS.md",
+          "continuation-2026-10-18/INPUTS-REVIEW-ROUND2.md"
+        ]
+      },
+      {
+        "id": "C3",
+        "dependsOn": [
+          "C2"
+        ],
+        "task": "Mac native evidence and full termination attestation",
+        "state": "partial-implemented-full-containment-blocked",
+        "evidence": [
+          "continuation-2026-10-18/MAC-ATTESTATION.md"
+        ],
+        "blockedBy": [
+          "privileged supervisor not supplied",
+          "launchd/XPC/shared-service containment unproved",
+          "current-fence physical launch handling incomplete"
+        ],
+        "nativePlacement": "explicitly-ineligible"
+      },
+      {
+        "id": "C4",
+        "dependsOn": [
+          "C1",
+          "C2",
+          "C3"
+        ],
+        "task": "Cumulative source review and scoped receipt",
+        "state": "source-reviewed-HOLD",
+        "evidence": [
+          "continuation-2026-10-18/CUMULATIVE-REVIEW.md",
+          "continuation-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      }
+    ]
+  },
+  "nextLocalEngineering": "No unresolved actionable finding remains in the bounded independent review/repair scope. Retained pilot limitations and per-project/resource readiness remain explicit. Next route is separately approved M4/R6 validation followed by separately approved R7 activation; no operations are authorized now.",
+  "macSafety": {
+    "folder": "mac-safety-2026-10-18",
+    "state": "source-reviewed-primitives-production-HOLD",
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "helpersOrVmsStarted": 0,
+    "operationalChanges": 0,
+    "implemented": [
+      "native local launch denial in adapter and ES client",
+      "concrete Swift VZ lifecycle with nonce/generation/continuous authority budget fencing and whole-VM stop observation",
+      "branded guest job encoder and bounded standard-account guest runner source",
+      "kernel-readonly mounted-volume guard and separate read-side packaging capability"
+    ],
+    "notImplemented": [
+      "generic writable restore/CAS isolation"
+    ],
+    "nextTasks": [
+      {
+        "id": "M1",
+        "dependsOn": [
+          "source-reviewed containment primitives"
+        ],
+        "task": "Verified immutable input staging",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "guest-io-2026-10-18/README.md",
+          "guest-io-2026-10-18/SOURCE-REVIEW.md",
+          "guest-io-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      },
+      {
+        "id": "M2",
+        "dependsOn": [
+          "M1",
+          "actual stopped VM"
+        ],
+        "task": "Read-only result intake through immutable publication/verifier boundary",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "guest-io-2026-10-18/README.md",
+          "guest-io-2026-10-18/SOURCE-REVIEW.md",
+          "guest-io-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      },
+      {
+        "id": "M3",
+        "dependsOn": [
+          "M1",
+          "M2"
+        ],
+        "task": "Production adapter/controller/guest capabilities plus cumulative source review",
+        "state": "implemented-source-reviewed-validation-pending",
+        "evidence": [
+          "vm-integration-2026-10-18/README.md",
+          "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+          "vm-integration-2026-10-18/CHANGE-RECEIPT.json"
+        ]
+      },
+      {
+        "id": "M4",
+        "dependsOn": [
+          "M3",
+          "explicit matching approvals"
+        ],
+        "task": "Compilation, deferred acceptance and progressive activation",
+        "state": "gated-not-started"
+      }
+    ],
+    "nativePlacement": "explicitly-ineligible",
+    "vmSessionResult": "Standalone containment reports not-collected and quarantines. Integrated adapter requires actual accepted stop-gated intake before success; controller publishes/stages for independent verification and supervisor finalizes only safe local state."
+  },
+  "guestIO": {
+    "folder": "guest-io-2026-10-18",
+    "state": "implemented-source-reviewed-validation-pending-production-HOLD",
+    "review": "six inline source passes by implementing agent; no independent or executed validation claim",
+    "sourceTasksClosed": [
+      "M1",
+      "M2"
+    ],
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "helpersOrVmsStarted": 0,
+    "operationalChanges": 0,
+    "remaining": [
+      "generic writable CAS/materialization isolation",
+      "inherited integration HOLD",
+      "M4 separately approved compile/test/runtime acceptance",
+      "R7 separately approved progressive activation"
+    ],
+    "evidence": [
+      "guest-io-2026-10-18/SOURCE-REVIEW.md",
+      "guest-io-2026-10-18/FINDINGS.json",
+      "guest-io-2026-10-18/CHANGE-RECEIPT.json"
+    ],
+    "integrationEvidence": "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+    "laterDisposition": "See writableIntegration for current Mac CAS and gate integration status."
+  },
+  "vmIntegration": {
+    "folder": "vm-integration-2026-10-18",
+    "state": "implemented-source-reviewed-validation-pending",
+    "sourceTasksClosed": [
+      "M3.1",
+      "M3.2",
+      "M3.3",
+      "M3.4",
+      "M3.5"
+    ],
+    "review": "six inline source passes by implementing agent; no independent or executed validation",
+    "testsAuthored": 0,
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "helpersOrVmsStarted": 0,
+    "operationalChanges": 0,
+    "ioMode": "explicit owner-mediated stage/intake; no unattended privileged service",
+    "nativePlacement": "denied",
+    "vmPlacement": "requires separate owner VM activation command plus all capability/worker/profile/resource/freshness gates",
+    "evidence": [
+      "vm-integration-2026-10-18/README.md",
+      "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+      "vm-integration-2026-10-18/FINDINGS.json",
+      "vm-integration-2026-10-18/CHANGE-RECEIPT.json"
+    ],
+    "remaining": [
+      "inherited generic writable CAS/materialization isolation and cumulative integration HOLD",
+      "actual approved accounts/images/helpers/source seals/scoped storage/capacity",
+      "M4 separately approved compilation/tests/operational acceptance",
+      "R7 separately approved progressive activation"
+    ],
+    "laterDisposition": "See writableIntegration: Mac CAS and named inherited gate/revocation blockers superseded in source; validation/operational HOLD remains."
+  },
+  "writableIntegration": {
+    "folder": "writable-integration-2026-10-18",
+    "state": "implemented-source-reviewed-validation-pending-HOLD",
+    "review": "six inline passes and counterexample correction by implementing agent; no independent acceptance",
+    "testsAuthored": 0,
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "servicesStarted": 0,
+    "operationalChanges": 0,
+    "macStorage": "concrete privileged immutable CAS source; fixed bounded unprivileged client; no installed service",
+    "gateRepairs": [
+      "CR-2 direct authority observation and physical request occupancy",
+      "L3 process-wide physical occupancy/quarantine",
+      "G1/V01/V02 complete immutable reads and positive absence",
+      "G2/V03/V04/V05 genesis, exact tree/mode/content and bounded proven replay",
+      "G4 pre-merge durable verification evidence"
+    ],
+    "policy": "G3 requireChecked mechanism supplied; owner choice and deployment unchanged",
+    "externalLane": "K11 Craft reported rollout absorbed; not enrolled; natural canary remains open",
+    "evidence": [
+      "writable-integration-2026-10-18/README.md",
+      "writable-integration-2026-10-18/FINDINGS.json",
+      "writable-integration-2026-10-18/CHANGE-RECEIPT.json"
+    ],
+    "remaining": [
+      "generic Linux mutable workspace isolation",
+      "actual approved resources/installed pins/schema/headroom/project readiness",
+      "independent cumulative source acceptance and separately approved M4 validation",
+      "separately approved R7 activation and cleanup"
+    ],
+    "laterDisposition": "See linuxIsolation and independentReview: concrete bounded Linux path, Mac CAS accounting and named integration repairs source-reviewed. Runtime validation and activation remain gated."
+  },
+  "linuxIsolation": {
+    "folder": "linux-isolation-2026-10-18",
+    "state": "implemented-source-reviewed-validation-pending-HOLD",
+    "scope": "one owner-mediated Linux pilot attempt; not an unattended repeat-job service",
+    "review": "six inline passes by implementing agent; independent acceptance pending",
+    "testsAuthored": 0,
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "servicesStarted": 0,
+    "operationalChanges": 0,
+    "completedLocal": [
+      "L1",
+      "L2",
+      "L3",
+      "L4",
+      "L5"
+    ],
+    "evidence": [
+      "linux-isolation-2026-10-18/README.md",
+      "linux-isolation-2026-10-18/SOURCE-REVIEW.md",
+      "linux-isolation-2026-10-18/FINDINGS.json",
+      "linux-isolation-2026-10-18/DEFERRED-ACCEPTANCE.md",
+      "linux-isolation-2026-10-18/CHANGE-RECEIPT.json"
+    ],
+    "remaining": [
+      "independent cumulative source acceptance",
+      "M4/R6 separately approved compilation/tests/operational validation",
+      "actual installed resources/pins/cgroupfs/profiles/scoped storage and inherited G3/schema/project/headroom readiness",
+      "R7 separately approved publication/activation/provisioning/spending/cleanup"
+    ],
+    "unsupported": [
+      "generic ManagedTreeSeal and legacy shared-UID Linux execution",
+      "automatic root-slot release, replay, resource reclamation or repeat-job broker service",
+      "arbitrary network recipes, signed/release operations or directory bundle outputs"
+    ],
+    "laterDisposition": "See independentReview: source repairs and bounded independent acceptance complete, with required userns-remap/AppArmor/read-only capture. Frozen prior evidence remains historical; no operational acceptance."
+  },
+  "independentReview": {
+    "folder": "independent-review-2026-10-18",
+    "state": "bounded-source-review-complete-validation-HOLD",
+    "method": "six independent source lenses, S1, contrarian challenge, bounded repairs and follow-up reviews",
+    "unresolvedActionableSourceFindingsInScope": 0,
+    "testsAuthored": 0,
+    "testsExecuted": 0,
+    "buildsExecuted": 0,
+    "servicesStarted": 0,
+    "operationalChanges": 0,
+    "evidence": [
+      "independent-review-2026-10-18/FINDINGS.json",
+      "independent-review-2026-10-18/CHANGE-RECEIPT.json",
+      "independent-review-2026-10-18/DEFERRED-ACCEPTANCE.md"
+    ],
+    "remaining": [
+      "M4/R6 separately approved compilation/tests/operational acceptance",
+      "actual installed resources/pins/AppArmor payload/namespace mappings, G3/schema/project readiness and Mac headroom",
+      "R7 separately approved progressive fleet activation and cleanup"
+    ],
+    "unsupported": [
+      "unattended Linux repeat-job reconciliation/reclamation",
+      "direct native host Xcode execution",
+      "K11 execution enrollment without separate authority/containment work"
+    ]
+  }
+}

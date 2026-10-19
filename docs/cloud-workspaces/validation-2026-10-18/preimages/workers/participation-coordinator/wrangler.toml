@@ -1,0 +1,23 @@
+name = "participation-coordinator"
+main = "src/worker.ts"
+compatibility_date = "2026-10-05"
+compatibility_flags = ["nodejs_compat"]
+
+# Deployed at https://participation-coordinator.motionmix-participation.workers.dev
+workers_dev = true
+preview_urls = false
+
+# D1 (created at the Paid spike: `wrangler d1 create participation`)
+[[d1_databases]]
+binding = "DB"
+database_name = "participation"
+database_id = "b34d73d5-d1b1-4eee-8b74-e122355d6e40"
+
+[vars]
+PARTICIPATION_ENV = "production"
+# Worker secrets (wrangler secret put):
+#   COORD_SERVER_PKCS8 / COORD_SERVER_SPKI  - P-256 server key (base64url)
+#   COORD_TOKEN_SECRET                      - signs short-lived device-bound bearers
+# K11 Graph Kernel (participation facts; same graph as foundry gate/orchestrator),
+# reached through the Cloudflare Tunnel on k11 (quick tunnel; URL rotates on restart).
+LKG_URL = "https://assets-protective-burning-submissions.trycloudflare.com"

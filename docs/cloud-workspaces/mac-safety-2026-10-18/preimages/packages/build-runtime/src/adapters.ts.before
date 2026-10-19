@@ -1,0 +1,172 @@
+import { join } from 'node:path';
+import { readdir } from 'node:fs/promises';
+import { approvalFor, check, hash, phasesFor } from './plans.js';
+import { canonical, validateHost } from './host.js';
+import { command, launch, type ProcessHandle } from './process.js';
+import { NativeDescendantAttestor } from './mac-attestation.js';
+import type { Running, RuntimeAdapter, RuntimePlan, StopProof } from './types.js';
+export { NativeDescendantAttestor } from './mac-attestation.js';
+const controlEnv = Object.freeze({PATH:'/usr/bin:/bin',LANG:'C',LC_ALL:'C'});
+const unknown = (identity: string): StopProof => ({stopped:false,basis:'unknown',identity});
+
+/** Optional concrete supervisor evidence client. Process-only ES evidence is diagnostic:
+ * native execution retains quarantine until general service containment is implemented. */
+export class NativeMacAdapter implements RuntimeAdapter {
+  private readonly prepared = new WeakSet<object>();
+  constructor(private readonly attestor?: NativeDescendantAttestor) {
+    check(!attestor || attestor instanceof NativeDescendantAttestor,'native-concrete-attestor-required');
+  }
+  async prepare(plan: RuntimePlan): Promise<void> {
+    const a = approvalFor(plan), r = a.recipe;
+    check(process.platform === 'darwin' && r.kind === 'xcode-build-v1' && r.trustedNativeProject, 'native-mac-only');
+    await validateHost(plan);
+    await canonical(r.developerDir,a.host.uid);
+    await canonical(plan.argv[0]!,a.host.uid,'file');
+    const version = await command(plan.argv[0]!,['-version'],plan.workRoot,{...controlEnv,DEVELOPER_DIR:r.developerDir});
+    check(version.split(/\r?\n/).includes(`Build version ${r.xcodeBuild}`),'xcode-build-mismatch');
+    const sdks = await command(plan.argv[0]!,['-showsdks'],plan.workRoot,{...controlEnv,DEVELOPER_DIR:r.developerDir});
+    check(sdks.split(/\r?\n/).some(line => line.trim().split(/\s+/).some((word,index,words) => word === '-sdk' && words[index+1] === r.sdk)), 'explicit-sdk-not-installed');
+    check((await command('/usr/bin/sw_vers',['-productVersion'],plan.workRoot,controlEnv)).trim() === r.macos,'macos-version-mismatch');
+    await canonical(join(plan.inputRoot,r.project),a.host.uid);
+    // Provisioned per-attempt state; no shared home, package cache, or DerivedData.
+    for (const name of ['home','tmp','DerivedData','dependencies','modules','swift-modules']) await canonical(join(plan.workRoot,name),a.host.uid,'directory',true);
+    this.prepared.add(plan);
+  }
+  async start(plan: RuntimePlan, recordIdentity: (id:string) => Promise<void>, beforeStart: () => void): Promise<Running> {
+    const a = approvalFor(plan);
+    check(this.prepared.delete(plan) && plan.kind === 'xcode-build-v1', 'native-not-prepared');
+    await validateHost(plan);
+    if (this.attestor) return this.attestor.start(plan,recordIdentity,beforeStart);
+    const identity = `native:${hash(plan.attemptId)}`;
+    await recordIdentity(identity); // Marker exists even if spawn/identity persistence is interrupted.
+    beforeStart();
+    const p = launch(plan.argv[0]!,plan.argv.slice(1),plan.inputRoot,plan.env,a.limits.maxOutputBytes,plan.timeoutMs);
+    try { await recordIdentity(`${identity}:pid:${p.pid ?? 'unknown'}`); }
+    catch (e) { p.killGroup(); throw e; }
+    // Portable Node process groups cannot observe escaped descendants. Do not run an
+    // account/process-table scan or accept a bare callback as containment evidence.
+    const inspectStopped = async (): Promise<StopProof> => unknown(identity);
+    return {identity,completion:p.completion,inspectStopped,stop:async () => { p.killGroup(); await settleBriefly(p); return inspectStopped(); }};
+  }
+}
+async function settleBriefly(p: ProcessHandle): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try { await Promise.race([p.completion,new Promise<void>(resolve => { timer = setTimeout(resolve,1000); })]); }
+  finally { if (timer) clearTimeout(timer); }
+}
+export interface DockerHostConfig {
+  executable: string; socketPath: string; privateConfigPath: string;
+  /** Owner provisioned LOCAL Docker socket; no remote contexts, SSH, TLS or plugins. */
+}
+interface ContainerState { Id:string; Config:{Labels:Record<string,string>}; State:{Running:boolean;Status:string;ExitCode:number} }
+export class LinuxContainerAdapter implements RuntimeAdapter {
+  private readonly prepared = new WeakSet<object>();
+  private readonly config: Readonly<DockerHostConfig>;
+  constructor(config: DockerHostConfig) { this.config = Object.freeze({...config}); }
+  private async cli(plan:RuntimePlan, args: readonly string[]): Promise<string> {
+    const a = approvalFor(plan), c = this.config;
+    await canonical(c.executable,a.host.uid,'file'); await canonical(c.socketPath,a.host.uid,'socket');
+    await canonical(c.privateConfigPath,a.host.uid,'directory',true);
+    check((await readdir(c.privateConfigPath)).length === 0,'docker-config-must-be-empty');
+    return command(c.executable,['--config',c.privateConfigPath,'--host',`unix://${c.socketPath}`,...args],plan.workRoot,controlEnv);
+  }
+  async prepare(plan:RuntimePlan): Promise<void> {
+    const a = approvalFor(plan), r = a.recipe;
+    check(process.platform === 'linux' && r.kind === 'linux-build-v1','linux-host-only');
+    check(process.arch === r.architecture,'host-arch-mismatch');
+    await validateHost(plan);
+    const info = JSON.parse(await this.cli(plan,['info','--format','{{json .}}'])) as Record<string,unknown>;
+    check(info.OSType === 'linux' && info.CgroupVersion === '2' && info.CpuCfsQuota === true && info.MemoryLimit === true && info.PidsLimit === true &&
+      Array.isArray(info.SecurityOptions) && info.SecurityOptions.includes('name=seccomp,profile=builtin') &&
+      (info.Warnings === null || (Array.isArray(info.Warnings) && info.Warnings.length === 0)), 'docker-isolation-unsupported');
+    const rows = JSON.parse(await this.cli(plan,['image','inspect',r.image])) as Array<{Os:string;Architecture:string;RepoDigests?:string[];Config?:{Volumes?:object|null}}>;
+    check(rows.length === 1 && rows[0]?.Os === 'linux' && rows[0].Architecture === (r.architecture === 'x64' ? 'amd64' : r.architecture) && rows[0].RepoDigests?.includes(r.image) && rows[0].Config && !Object.keys(rows[0].Config.Volumes ?? {}).length,'image-not-approved-or-arch-mismatch');
+    this.prepared.add(plan);
+  }
+  private async inspect(plan:RuntimePlan, name:string, expected?:string): Promise<ContainerState> {
+    const rows = JSON.parse(await this.cli(plan,['inspect',name])) as ContainerState[];
+    const s = rows[0];
+    check(rows.length === 1 && s && /^[0-9a-f]{64}$/.test(s.Id) && (!expected || s.Id === expected) &&
+      s.Config?.Labels?.['foundry.build-attempt'] === hash(plan.attemptId) && s.Config.Labels['foundry.profile'] === plan.profileHash &&
+      typeof s.State?.Running === 'boolean' && Number.isInteger(s.State.ExitCode),'container-identity-unknown');
+    return s;
+  }
+  async start(plan:RuntimePlan, recordIdentity:(id:string) => Promise<void>, beforeStart:() => void): Promise<Running> {
+    approvalFor(plan);
+    check(this.prepared.delete(plan),'linux-not-prepared');
+    const commands = phasesFor(plan);
+    let stopping = false, transitioning = false, phaseUncertain = false;
+    const fence = () => { check(!stopping,'phase-cancelled'); beforeStart(); };
+    let current = await this.startPhase(plan,recordIdentity,fence,commands[0]!,0);
+    const identity = current.identity;
+    const completion = (async () => {
+      let exit = await current.completion;
+      for (let i=1;i<commands.length;i++) {
+        if (exit.code !== 0 || exit.limited || stopping) return exit;
+        if (!(await current.inspectStopped()).stopped) return {...exit,code:null};
+        transitioning = true;
+        try { current = await this.startPhase(plan,recordIdentity,fence,commands[i]!,i); }
+        catch { phaseUncertain = true; return {...exit,code:null}; }
+        finally { transitioning = false; }
+        const next = await current.completion;
+        const max = approvalFor(plan).limits.maxOutputBytes;
+        if (exit.output.byteLength + next.output.byteLength > max) return {...next,output:new Uint8Array(0),limited:true};
+        exit = {...next,output:Buffer.concat([exit.output,next.output])};
+      }
+      return exit;
+    })();
+    return {identity,completion,
+      inspectStopped:async () => {const active=current;if(transitioning||phaseUncertain)return unknown(identity);const proof=await active.inspectStopped();return current!==active||transitioning||phaseUncertain?unknown(identity):proof;},
+      stop:async () => { stopping = true; const active=current;const proof = await active.stop(); return current!==active||transitioning || phaseUncertain ? unknown(identity) : proof; }};
+  }
+  private async startPhase(plan:RuntimePlan, recordIdentity:(id:string) => Promise<void>, beforeStart:() => void, argv:readonly string[], phase:number): Promise<Running> {
+    const a = approvalFor(plan), r = a.recipe, c = this.config;
+    check(r.kind === 'linux-build-v1','linux-only');
+    await validateHost(plan);
+    const name = `foundry-build-${hash(plan.attemptId)}-${phase}`;
+    await recordIdentity(name);
+    // Cancellation/lease loss prevents create as well as start; create itself never runs the image.
+    beforeStart();
+    const args = ['create','--name',name,'--label',`foundry.build-attempt=${hash(plan.attemptId)}`,'--label',`foundry.profile=${plan.profileHash}`,
+      '--pull=never','--platform',`linux/${r.architecture === 'x64' ? 'amd64' : r.architecture}`,'--runtime=runc','--network=none','--read-only','--privileged=false',
+      `--user=${a.host.uid}:${a.host.gid}`,'--cap-drop=ALL','--security-opt=no-new-privileges=true','--cgroupns=private','--ipc=private',
+      '--cpus',String(plan.cpu),'--memory',`${plan.ramMib}m`,'--memory-swap',`${plan.ramMib}m`,'--pids-limit',String(a.limits.pids),
+      '--ulimit','core=0:0','--ulimit','nofile=1024:1024','--log-driver=none',
+      '--mount',`type=bind,src=${plan.inputRoot},dst=/input,readonly,bind-recursive=disabled`,
+      '--mount',`type=bind,src=${plan.workRoot},dst=/work,bind-recursive=disabled`,
+      '--tmpfs',`/tmp:rw,noexec,nosuid,nodev,size=${a.limits.tmpMib}m,mode=1777`,'--shm-size',`${a.limits.tmpMib}m`,
+      r.tool === 'cmake' ? '--workdir=/work' : '--workdir=/work/source','--entrypoint',argv[0]!];
+    for (const [k,v] of Object.entries(plan.env)) args.push('--env',`${k}=${v}`);
+    args.push(r.image,...argv.slice(1));
+    const id = (await this.cli(plan,args)).trim();
+    check(/^[0-9a-f]{64}$/.test(id),'container-create-uncertain');
+    await recordIdentity(id); await this.inspect(plan,id,id);
+    // Revalidate fixed executable/socket/config immediately before synchronous launch fence.
+    await canonical(c.executable,a.host.uid,'file'); await canonical(c.socketPath,a.host.uid,'socket');
+    await canonical(c.privateConfigPath,a.host.uid,'directory',true);
+    check((await readdir(c.privateConfigPath)).length === 0,'docker-config-must-be-empty');
+    beforeStart();
+    const p = launch(c.executable,['--config',c.privateConfigPath,'--host',`unix://${c.socketPath}`,'start','--attach',id],plan.workRoot,controlEnv,a.limits.maxOutputBytes,plan.timeoutMs);
+    const inspectStopped = async (): Promise<StopProof> => {
+      // The start CLI must have CLOSED: a timed-out client can leave a delayed start in flight.
+      if (!p.closed()) return unknown(id);
+      try {
+        const s = await this.inspect(plan,id,id);
+        return !s.State.Running && ['exited','dead'].includes(s.State.Status) ? {stopped:true,basis:'container-inspect',identity:id} : unknown(id);
+      } catch { return unknown(id); }
+    };
+    const completion = p.completion.then(async exit => {
+      if (!p.closed() || exit.limited || exit.code !== 0) return exit;
+      try {
+        const state = await this.inspect(plan,id,id);
+        return {...exit,code:!state.State.Running && state.State.Status === 'exited' ? state.State.ExitCode : null};
+      } catch { return {...exit,code:null}; }
+    });
+    return {identity:id,completion,inspectStopped,stop:async () => {
+      p.killGroup(); await settleBriefly(p);
+      try { const s = await this.inspect(plan,id,id); if (s.State.Running) await this.cli(plan,['kill','--signal=KILL',id]); }
+      catch { return unknown(id); }
+      return inspectStopped();
+    }};
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-18T17:32:42.623774+00:00",
+  "command": [
+    "gcloud",
+    "compute",
+    "instances",
+    "list",
+    "--project=project-8380e794-e4d6-4ad4-aaf",
+    "--format=json(name,zone,machineType,status,labels)"
+  ],
+  "exit": 1,
+  "instances": null,
+  "error": "ERROR: (gcloud.compute.instances.list) PERMISSION_DENIED: Compute Engine API has not been used in project project-8380e794-e4d6-4ad4-aaf before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=project-8380e794-e4d6-4ad4-aaf then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry. This command is authenticated as granddiomande7907@gmail.com which is the active account specified by the [core/account] property.\nCompute Engine API has not been used in project project-8380e794-e4d6-4ad4-aaf before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=project-8380e794-e4d6-4ad4-aaf then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.\nGoogle developers console API activation\nhttps://console.developers.google.com/apis"
+}

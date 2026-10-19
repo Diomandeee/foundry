@@ -1,0 +1,187 @@
+#!/usr/bin/env python3
+"""Portable Foundry fleet browser and explicit project pull operator."""
+import argparse
+import json
+import re
+import threading
+import urllib.parse
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from common import Catalog, encode
+from cloud import CloudReader
+from pull import no_symlink_parents, restore
+
+
+def serve(args, catalog):
+    assets = Path(__file__).parent / "web"
+    workspace = no_symlink_parents(args.workspace_root) if args.workspace_root else None
+    if args.enable_pull and (not workspace or not workspace.is_dir() or not args.account or not args.gcp_project or not args.cache_root):
+        raise ValueError("pull mode needs existing workspace root, cache root, project and existing account")
+    lock, state_lock = threading.Lock(), threading.Lock()
+    state = {"state": "idle"}
+
+    def destination_for(project, version):
+        name = re.sub(r"[^a-zA-Z0-9_-]+", "-", project["title"]).strip("-")[:64] or "project"
+        return workspace / (name + "--" + version["id"][:16])
+
+    class Handler(BaseHTTPRequestHandler):
+        def setup(self):
+            super().setup()
+            self.connection.settimeout(30)
+
+        def log_message(self, *unused):
+            pass
+
+        def allowed_host(self):
+            port = self.server.server_port
+            return self.headers.get("Host") in ("127.0.0.1:" + str(port), "localhost:" + str(port))
+
+        def reply(self, status, value, content_type="application/json"):
+            raw = value if isinstance(value, bytes) else encode(value)
+            self.send_response(status)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(raw)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "no-referrer")
+            self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'")
+            self.end_headers()
+            self.wfile.write(raw)
+
+        def do_GET(self):
+            if not self.allowed_host():
+                return self.reply(403, {"error": "loopback Host required"})
+            path = urllib.parse.urlsplit(self.path).path
+            try:
+                if path in ("/", "/app.js", "/style.css"):
+                    name, kind = {"/": ("index.html", "text/html; charset=utf-8"),
+                                  "/app.js": ("app.js", "text/javascript; charset=utf-8"),
+                                  "/style.css": ("style.css", "text/css; charset=utf-8")}[path]
+                    return self.reply(200, (assets / name).read_bytes(), kind)
+                if path == "/api/catalog":
+                    return self.reply(200, {**catalog.index, "archives": None, "pullEnabled": args.enable_pull,
+                                            "workspaceRoot": str(workspace) if workspace else None})
+                if path.startswith("/api/project/"):
+                    project = catalog.project(urllib.parse.unquote(path[len("/api/project/"):]))
+                    if workspace:
+                        for version in project["versions"]:
+                            destination = destination_for(project, version)
+                            receipt_path = destination / ".foundry-workspace.json"
+                            if (destination.is_dir() and not destination.is_symlink() and receipt_path.is_file()
+                                    and not receipt_path.is_symlink() and receipt_path.stat().st_size < 65536):
+                                try:
+                                    receipt = json.loads(receipt_path.read_text())
+                                    if receipt.get("project") == project["id"] and receipt.get("version") == version["id"]:
+                                        version["localWorkspace"] = str(destination)
+                                except (ValueError, OSError):
+                                    pass
+                    return self.reply(200, project)
+                if path == "/api/pull-status":
+                    with state_lock:
+                        return self.reply(200, dict(state))
+                return self.reply(404, {"error": "unknown route"})
+            except (KeyError, StopIteration):
+                return self.reply(404, {"error": "unknown project or version"})
+            except Exception:
+                return self.reply(503, {"error": "catalog or local file unavailable"})
+
+        def do_POST(self):
+            # Browser-only mutation: exact loopback Host/Origin + JSON custom header.
+            if (not self.allowed_host() or self.headers.get("Origin") != "http://" + self.headers.get("Host", "")
+                    or self.headers.get("Content-Type") != "application/json"
+                    or self.headers.get("X-Foundry-Intent") != "pull-version"
+                    or self.headers.get("Sec-Fetch-Site", "same-origin") != "same-origin"):
+                return self.reply(403, {"error": "same-origin operator request required"})
+            if self.path != "/api/pull" or not args.enable_pull:
+                return self.reply(403, {"error": "pull is disabled"})
+            try:
+                size = int(self.headers.get("Content-Length", "0"))
+                if not 0 < size <= 8192 or self.headers.get("Transfer-Encoding"):
+                    raise ValueError("request size invalid")
+                payload = json.loads(self.rfile.read(size))
+                if set(payload) != {"project", "version", "catalogRevision"} or payload["catalogRevision"] != catalog.index["revision"]:
+                    raise ValueError("catalog changed; reload before pulling")
+                project, version = catalog.version(payload["project"], payload["version"])
+                if version["pullBlocked"]:
+                    raise ValueError("version has unresolved filesystem path conflicts")
+                # No client-controlled path. Use a full content-derived identity.
+                destination = destination_for(project, version)
+                if destination.exists() or destination.is_symlink():
+                    raise ValueError("this workspace already exists; no overwrite attempted")
+                reader = CloudReader(args.gcp_project, args.account, args.cache_root, args.cloud_via)
+            except (ValueError, KeyError, StopIteration, TypeError):
+                return self.reply(400, {"error": "invalid/stale version, unavailable cloud client, or workspace already exists"})
+            if not lock.acquire(blocking=False):
+                return self.reply(409, {"error": "one pull is already in progress"})
+            with state_lock:
+                state.clear()
+                state.update(state="pulling", project=project["id"], version=version["id"], destination=str(destination))
+
+            def work():
+                try:
+                    receipt = restore(catalog, project["id"], version["id"], destination, reader)
+                    with state_lock:
+                        state.update(state="complete", receipt=receipt)
+                except Exception as error:
+                    with state_lock:
+                        # Restore errors are deliberately sanitized at their source.
+                        state.update(state="failed", error=str(error) if isinstance(error, RuntimeError) else type(error).__name__)
+                finally:
+                    lock.release()
+            threading.Thread(target=work, daemon=False).start()
+            return self.reply(202, {"state": "pulling", "destination": str(destination)})
+
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    server.daemon_threads = True
+    print(json.dumps({"url": "http://127.0.0.1:" + str(server.server_port),
+                      "catalogRevision": catalog.index["revision"], "pullEnabled": args.enable_pull}), flush=True)
+    try:
+        server.serve_forever()
+    finally:
+        server.server_close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--catalog", required=True)
+    sub = parser.add_subparsers(dest="command", required=True)
+    listing = sub.add_parser("list")
+    listing.add_argument("--search", default="")
+    detail = sub.add_parser("show")
+    detail.add_argument("project")
+    pull = sub.add_parser("pull")
+    pull.add_argument("project")
+    pull.add_argument("--version", required=True)
+    pull.add_argument("--destination", required=True)
+    browser = sub.add_parser("serve")
+    browser.add_argument("--port", type=int, default=9148)
+    browser.add_argument("--enable-pull", action="store_true")
+    browser.add_argument("--workspace-root")
+    for command in (pull, browser):
+        command.add_argument("--gcp-project")
+        command.add_argument("--account")
+        command.add_argument("--cache-root")
+        command.add_argument("--cloud-via", choices=["mac1"], help="Read through existing Mac1 SSH; no Google credential copies")
+    args = parser.parse_args()
+    try:
+        catalog = Catalog(args.catalog)
+        if args.command == "list":
+            print(json.dumps([p for p in catalog.index["projects"] if args.search.casefold() in
+                              (p["title"] + " " + p["family"]).casefold()], ensure_ascii=False, indent=2))
+        elif args.command == "show":
+            print(json.dumps(catalog.project(args.project), ensure_ascii=False, indent=2))
+        elif args.command == "pull":
+            if not all((args.gcp_project, args.account, args.cache_root)):
+                raise ValueError("pull requires explicit project, account and cache root")
+            print(json.dumps(restore(catalog, args.project, args.version, args.destination,
+                                     CloudReader(args.gcp_project, args.account, args.cache_root, args.cloud_via))))
+        else:
+            serve(args, catalog)
+    except (Exception, KeyboardInterrupt) as error:
+        # No subprocess stderr, HTTP request headers or tracebacks are emitted.
+        message = str(error) if isinstance(error, (ValueError, RuntimeError)) else type(error).__name__
+        parser.exit(1, "Foundry Library stopped: " + message + "\n")
+
+
+if __name__ == "__main__":
+    main()

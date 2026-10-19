@@ -1,0 +1,81 @@
+import {constants} from 'node:fs';
+import {lstat, open, opendir} from 'node:fs/promises';
+import {isAbsolute, join, parse, resolve} from 'node:path';
+import {alive, check, fold, relative} from './checks';
+import type {ManagedRoot} from './types';
+import type {Stats} from 'node:fs';
+
+export function rootCopy(root:ManagedRoot):ManagedRoot {
+  check(typeof root.path==='string'&&isAbsolute(root.path)&&resolve(root.path)===root.path&&root.path!==parse(root.path).root&&!/[\x00-\x1f\x7f]/.test(root.path),'managed-root');
+  check(Number.isSafeInteger(root.uid)&&root.uid>=0,'managed-uid'); return Object.freeze({...root});
+}
+function directory(s:Stats,uid:number,leaf:boolean) {
+  check(s.isDirectory()&&!s.isSymbolicLink()&&(s.uid===uid||(!leaf&&s.uid===0))&&(s.mode&0o022)===0,'unmanaged-directory');
+}
+export async function verifyRoot(root:ManagedRoot,signal:AbortSignal):Promise<void> {
+  rootCopy(root); alive(signal);
+  const base=parse(root.path).root; directory(await lstat(base),root.uid,false);
+  let current=base;
+  for(const part of root.path.slice(base.length).split('/')) {current=join(current,part); directory(await lstat(current),root.uid,current===root.path); alive(signal);}
+}
+/** Enumerates at most 4096 sibling names by default (bounded bundle plans may use
+ * their 20000-entry cap), including unselected names, to reject aliases.
+ * No recursive scan of unapproved content and no unbounded readdir allocation. */
+export async function siblingNames(parent:string,signal:AbortSignal,maxEntries=4096):Promise<Set<string>> {
+  const dir=await opendir(parent), names=new Set<string>(), folded=new Set<string>();
+  try {
+    for(let n=0;;n++) {
+      alive(signal); const entry=await dir.read(); if(!entry) break;
+      check(n<maxEntries,'directory-entry-budget'); relative(entry.name);
+      const key=fold(entry.name); check(!folded.has(key),'directory-name-collision');
+      names.add(entry.name); folded.add(key);
+    }
+  } finally {await dir.close();}
+  return names;
+}
+export function availableName(names:Set<string>,name:string) {
+  check(names.size<4096,'directory-entry-budget');
+  check(!Array.from(names).some(existing=>fold(existing)===fold(name)),'create-target-or-name-alias-exists');
+}
+async function inspectPath(root:ManagedRoot,path:string,kind:'file'|'directory',signal:AbortSignal,checkSiblings:boolean):Promise<Stats> {
+  relative(path); await verifyRoot(root,signal);
+  const device=(await lstat(root.path)).dev;
+  let parent=root.path; const parts=path.split('/');
+  for(let i=0;i<parts.length;i++) {
+    if(checkSiblings) check((await siblingNames(parent,signal)).has(parts[i]),'file-missing-or-name-mismatch');
+    const target=join(parent,parts[i]), s=await lstat(target); alive(signal);
+    check(s.dev===device,'nested-mount-forbidden');
+    check(!s.isSymbolicLink(),'symlink-forbidden');
+    if(i===parts.length-1) {
+      if(kind==='directory') {directory(s,root.uid,true); return s;}
+      check(s.isFile(),'approved-path-must-be-regular-file');
+      check(s.uid===root.uid&&s.nlink===1&&(s.mode&0o022)===0,'unmanaged-or-hardlinked-file');
+      check(Number.isSafeInteger(s.size)&&s.size>=0,'file-size'); return s;
+    }
+    directory(s,root.uid,true); parent=target;
+  }
+  throw new Error('build-storage: invalid-path');
+}
+/** Skip sibling enumeration ONLY inside an already inventoried, exclusively sealed
+ * tree. Ancestor lstat, ownership, type and device checks still run on every call. */
+export const inspectFile=(root:ManagedRoot,path:string,signal:AbortSignal,checkSiblings=true)=>inspectPath(root,path,'file',signal,checkSiblings);
+export const inspectDirectory=(root:ManagedRoot,path:string,signal:AbortSignal,checkSiblings=true)=>inspectPath(root,path,'directory',signal,checkSiblings);
+export const sameFile=(a:Stats,b:Stats)=>a.dev===b.dev&&a.ino===b.ino&&a.size===b.size&&a.mtimeMs===b.mtimeMs&&a.ctimeMs===b.ctimeMs&&a.mode===b.mode&&a.uid===b.uid&&a.nlink===b.nlink;
+/** Caller holds the trusted exclusive seal. Never follows a final symlink, blocks on
+ * a FIFO, allocates a whole large file, or silently truncates a changing file. */
+export async function readFileChunks(root:ManagedRoot,path:string,expected:Stats,chunkBytes:number,
+  consume:(bytes:Uint8Array,index:number)=>Promise<void>,signal:AbortSignal,checkSiblings=true):Promise<void> {
+  check(sameFile(expected,await inspectFile(root,path,signal,checkSiblings)),'file-changed');
+  const handle=await open(join(root.path,path),constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
+  try {
+    check(sameFile(expected,await handle.stat()),'opened-file-changed');
+    let offset=0,index=0;
+    while(offset<expected.size) {
+      alive(signal); const bytes=new Uint8Array(Math.min(chunkBytes,expected.size-offset)); let used=0;
+      while(used<bytes.length) {const r=await handle.read(bytes,used,bytes.length-used,offset+used); alive(signal); check(r.bytesRead>0,'file-shrank'); used+=r.bytesRead;}
+      await consume(bytes,index++); alive(signal); offset+=used;
+    }
+    const extra=await handle.read(new Uint8Array(1),0,1,offset); check(extra.bytesRead===0,'file-grew');
+    check(sameFile(expected,await handle.stat())&&sameFile(expected,await inspectFile(root,path,signal,checkSiblings)),'file-changed');
+  } finally {await handle.close();}
+}

@@ -1,0 +1,101 @@
+# Foundry fleet project library — local implementation candidate
+
+This bridge connects the delivered fleet source archives to a project browser and explicit local pulls. Its source is in the Foundry repository. It does not replace the transactional `packages/library-catalog` authority, enroll projects into that authority, publish snapshots there, attest compute leases, promote canonical revisions, or consult the merge gate. The fleet index is a browse/read model of source-copy receipts.
+
+## Current state
+
+Implemented locally, source-reviewed, **not runtime-validated**. No software tests, builds, browser session, restore trial, service start, remote client installation, cloud upload, provisioning or credential operation was performed for this change. The catalog was actually assembled and packaged from existing transfer manifests; that is data processing, not evidence that the new client works end to end.
+
+Current catalog revision: `47c1a94efec4584c69f5aaec4856e40c3789e80de555eb878e12976d11e1f127`.
+
+The actual output is at:
+
+`/Users/mohameddiomande/Documents/Codex/2026-10-15/ran-command-inventory-review-package-contents/foundry-project-library-2026-10-17/catalog-r3/`
+
+| Observation from assembly | Count |
+| --- | ---: |
+| Delivered distinct machine/path records | 146,743 |
+| Project/directory entries | 585 |
+| Entries with delivered source | 457 |
+| Inventory entries without delivered source | 128 |
+| Preserved source-copy versions | 589 |
+| Entries with a suggested starting copy | 419 |
+| Entries requiring an explicit version choice | 38 |
+| Held/unavailable paths across the source estate | 535 |
+| Referenced source archives | 10 |
+
+These are catalog counts, not a claim of 585 unique applications. Nested repositories and four uncatalogued directory collections are visible. Parent project copies retain their nested source; the same delivered path can therefore appear in multiple browse views without another cloud upload. Name-only families remain provisional. Held counts within parent/child project views can overlap; the estate total remains 535.
+
+## User flow
+
+The Operator desk now has a Projects section linking to `http://127.0.0.1:9148/`. That link does not start a service. Once separately activated on a Mac, Library shows the same reviewed catalog revision and project grouping on every client. Search, inspect a project's versions and differing/unique paths, then choose a version to pull to that Mac.
+
+The browser calculates a destination under its configured workspace directory from project title and version identity. It never accepts a browser-supplied destination path. Restored workspaces contain `.foundry-workspace.json` identifying project, catalog revision, version and archive generations. Library recognizes those receipts when displaying a project on that Mac; recognition does not prove that subsequent local edits are unchanged. Existing destinations are refused, even when empty. There is no automatic overlay, deletion, merge, editor launch or execution of restored files.
+
+A suggested version contains every observed path in the grouped copies with matching SHA-256 and permissions. Stable member order breaks identical-content ties. This is neither timestamp-based selection nor canonical promotion. Where no such superset exists, selection remains explicit; alternatives are retained. Captures are assembled from directory reads, not filesystem-atomic snapshots. The current assembly observed zero paths changing between supplemental captures.
+
+## Files and responsibilities
+
+| File | Responsibility |
+| --- | --- |
+| `build_catalog.py` | Match source catalog and per-archive manifests to transfer hashes; group proposal members; preserve uncovered files; materialize project comparisons and content-addressed detail files |
+| `common.py` | Catalog/detail/version hashes; relative path, permissions, size and macOS case/Unicode collision validation |
+| `cloud.py` | Read-only generation-pinned GCS downloads, verified local cache, optional existing-SSH read-through via Mac1 |
+| `pull.py` | Stage selected files, resolve internal archive hardlinks without extracting links, verify SHA/size, fsync and publish by atomic no-replace rename |
+| `bridge.py` | CLI list/show/pull and loopback browser/API; one browser pull at a time |
+| `web/` | Search, versions, differences, held coverage, captured path browser, pull and local workspace receipt display |
+| `package_catalog.py` | Produce a portable immutable catalog package plus a clearly unpublished descriptor |
+| `sync_catalog.py` | Fetch a genuinely published pinned catalog package into a new local revision directory; reject prepared templates |
+| `ssh_reader.py` | On-demand Mac1 helper: stream only scoped GCS bytes; no daemon or credential forwarding |
+
+## Read transport and credentials
+
+Direct mode uses an already-installed `gcloud` with an explicit account and project on every token request. It performs no login, global account switch, ADC setup, key creation, IAM edit or credential persistence. Bearer values remain in memory and never enter browser responses, subprocess error output, catalog packages or workspace receipts.
+
+Read-only environment discovery found Python on all three Macs. `gcloud` was found on Mac1 but not through Mac4/Mac5's current SSH PATH or `/opt/homebrew/bin/gcloud`; this does not prove that no SDK exists elsewhere. Optional `--cloud-via mac1` avoids depending on a remote SDK: existing BatchMode SSH invokes the canonical Mac1 helper, using its existing CLI login. Verified archive bytes stream to the target Mac without an intermediate archive on Mac1. SSH host-key checks are retained. No new credential is copied to another Mac.
+
+The helper is fixed at:
+
+`/Users/mohameddiomande/Developer/foundry-integration/source/tools/foundry-library-bridge/ssh_reader.py`
+
+Its scope is the existing private pilot bucket's current clean-source prefix and the prepared `catalogs/fleet/` namespace. It is a compatibility path, not a high-availability service: Mac1 must be awake, reachable through existing SSH and able to use the explicitly selected existing account. A future independent per-device identity remains separately gated.
+
+## Commands prepared for later activation
+
+The following are operator instructions, **not commands run during implementation**. Python 3.9+ and the standard library are used. No pip or npm install is required by the client. The client/canonical helper and catalog must first be placed at their approved destinations; no remote placement happened here.
+
+Read-only browsing on Mac1, using the already assembled local catalog:
+
+```sh
+/opt/homebrew/bin/python3 /Users/mohameddiomande/Developer/foundry-integration/source/tools/foundry-library-bridge/bridge.py --catalog /Users/mohameddiomande/Documents/Codex/2026-10-15/ran-command-inventory-review-package-contents/foundry-project-library-2026-10-17/catalog-r3 serve --port 9148
+```
+
+For activated clients, the intended common layout is `/Users/mohameddiomande/Developer/Foundry-Library/client/` and `/Users/mohameddiomande/Developer/Foundry-Library/catalogs/r3/`. Those directories have **not** been installed on the Macs. After approval and placement, Mac4/Mac5's command is:
+
+```sh
+/opt/homebrew/bin/python3 /Users/mohameddiomande/Developer/Foundry-Library/client/bridge.py --catalog /Users/mohameddiomande/Developer/Foundry-Library/catalogs/r3 serve --port 9148 --enable-pull --workspace-root /Users/mohameddiomande/Developer --cache-root /Users/mohameddiomande/Library/Caches/FoundryLibrary --gcp-project project-8380e794-e4d6-4ad4-aaf --account granddiomande7907@gmail.com --cloud-via mac1
+```
+
+The account is the operator account recorded for the source transfer; current usable authentication is not re-proven by this implementation. Mac1 can use the same client command without `--cloud-via mac1`, relying on its existing installed CLI. There are no launch agents, background installation scripts or auto-start hooks in this package. A foreground server requires separate activation approval.
+
+CLI operations are `list --search QUERY`, `show PROJECT_ID`, and `pull PROJECT_ID --version VERSION_SHA --destination NEW_ABSOLUTE_PATH`, with the same explicit cloud flags for pull. Catalog path precedes the subcommand. A pull destination's parent must already exist and contain no symlink components.
+
+## Central catalog distribution
+
+`catalog-distribution-r3.tar.gz` is a 12,094,956-byte local package containing catalog metadata, not a second upload of project contents. Its prepared descriptor has `status: prepared-not-published` and `object: null`. No cloud generation is invented. After owner-approved create-only publication in the existing bucket, record the real bucket/object/generation/bytes/SHA and catalog revision in a `foundry.catalog-distribution.v1` descriptor with `status: published`.
+
+`sync_catalog.py` accepts that descriptor, explicit account/project/cache and a new destination; `--cloud-via mac1` is optional. It verifies the package, catalog revision and all detail hashes before publication. An installed client can use the same immutable revision on all three machines. There is no mutable latest-pointer writer, automatic catalog polling, project save-back or live filesystem synchronization in this slice. A newer catalog is a separately reviewed publication and explicit client revision update, never an unverified replacement during a pull. The catalog's `cloudPublished: false` records its assembly-time state; a subsequent distribution descriptor carries actual publication evidence.
+
+## Safety and failure behavior
+
+- GCS reads name an exact recorded generation; no current-version fallback. Full archive SHA and size are checked before source extraction; selected files are checked independently.
+- No `extractall`, restored symlinks, special files, unsafe relative paths, case/Unicode collisions, file/directory collisions, or privileged permission bits. Only declared regular content is written. Internal hardlinks are read as bytes, not created in the workspace.
+- Downloads and extraction are bounded. Disk headroom is checked conservatively for required archives and staged files. Archives are cached on the receiving Mac and are not automatically evicted. The first pull can download a whole machine archive even for a small project.
+- Selected regular members are read in archive-offset order. Multiple paths referencing one internal hardlink source are copied from the first verified staged file through its open descriptor, with each output hashed; path order does not cause repeated gzip rewinds for those copies. This performance correction is source-reviewed, not benchmarked.
+- Failed private download temporaries are removed; corrupt existing cache objects and failed restore stages are retained. A retry does not overwrite either a published workspace or an old failed stage. Downloads restart rather than resume after interruption. No durable in-progress queue is claimed.
+- Loopback-only server, exact Host/Origin checks and JSON/custom-header mutation requests; no CORS, public listener, external scripts, cookie reuse or forwarding of Operator credentials. The client is for the local OS user, not a multi-user service. OS users with access to that user's account are outside this boundary.
+- Source-copy scope excludes complete Git stores, installed dependencies/SDKs, secrets, bulk media/models/data and held files. A successful pull would establish delivered-content integrity, not buildability, runnable dependencies, successful tests, complete backup or canonical authority.
+
+## Review and next gate
+
+See the workspace `ROUTE.md` and `review/SOURCE-REVIEW.md` for the exact stop. No tests, remote relay invocation, browser validation or trial pull was run. Operational acceptance remains open. Deployment, remote client placement/installation, cloud publication, cost-bearing reads, spending and secret changes remain gated. The existing R2 integration HOLD and unrelated R3–R7 work are not closed by this bridge.

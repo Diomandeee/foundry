@@ -1,0 +1,49 @@
+import {constants} from 'node:fs';
+import {open} from 'node:fs/promises';
+import {join} from 'node:path';
+import {alive, boundedBytes, check, CHUNK_BYTES, freeze, sha256, snapshot} from './checks';
+import {availableName, inspectFile, readFileChunks, rootCopy, siblingNames, verifyRoot} from './filesystem';
+import type {LocalContentStore, LocalRef, ManagedRoot, ManagedTreeSeal} from './types';
+
+/** Real on-disk CAS. Host provisions a private dedicated directory. Construction is inert.
+ * Local refs deliberately have NO cloud generation or grant ID. Failed partial creates
+ * remain as evidence; collision/corruption fails closed rather than replacing/cleaning. */
+export function createLocalContentStore(config:ManagedRoot,seal:ManagedTreeSeal):LocalContentStore {
+  const root=rootCopy(config);
+  const name=(digest:string)=>`sha256-${digest}`;
+  const validate=(input:LocalRef)=>{
+    const ref=snapshot(input) as LocalRef;
+    check(Object.keys(ref).length===4&&ref.kind==='local-cas'&&/^[a-f0-9]{64}$/.test(ref.sha256)&&
+      Number.isSafeInteger(ref.sizeBytes)&&ref.sizeBytes>0&&ref.sizeBytes<=CHUNK_BYTES&&ref.relativePath===name(ref.sha256),'local-ref');
+    return ref;
+  };
+  async function read(ref:LocalRef,signal:AbortSignal):Promise<Uint8Array> {
+    const stat=await inspectFile(root,ref.relativePath,signal); check(stat.size===ref.sizeBytes,'local-size');
+    const bytes=new Uint8Array(ref.sizeBytes);
+    await readFileChunks(root,ref.relativePath,stat,CHUNK_BYTES,async b=>{bytes.set(b);},signal);
+    check(sha256(bytes)===ref.sha256,'local-digest'); return bytes;
+  }
+  return Object.freeze({
+    async put(input:Uint8Array,signal:AbortSignal) {
+      const bytes=boundedBytes(input,CHUNK_BYTES); check(bytes.length>0,'empty-local-object');
+      const digest=sha256(bytes), ref:LocalRef=freeze({kind:'local-cas',sha256:digest,sizeBytes:bytes.length,relativePath:name(digest)});
+      return seal.withExclusiveTrees([root.path],async()=>{
+        alive(signal); await verifyRoot(root,signal);
+        const names=await siblingNames(root.path,signal);
+        if(names.has(ref.relativePath)) {await read(ref,signal); return ref;}
+        availableName(names,ref.relativePath);
+        const handle=await open(join(root.path,ref.relativePath),constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
+        try {
+          let offset=0;
+          while(offset<bytes.length) {alive(signal); const r=await handle.write(bytes,offset,bytes.length-offset,offset); check(r.bytesWritten>0,'local-write-progress'); offset+=r.bytesWritten;}
+          await handle.sync();
+        } finally {await handle.close();}
+        // Seal directory entry as well as bytes; no rename or replacement protocol.
+        const dir=await open(root.path,constants.O_RDONLY|constants.O_DIRECTORY|constants.O_NOFOLLOW);
+        try {await dir.sync();} finally {await dir.close();}
+        await read(ref,signal); alive(signal); return ref;
+      },signal);
+    },
+    async read(input:LocalRef,signal:AbortSignal) {const ref=validate(input); return seal.withExclusiveTrees([root.path],()=>read(ref,signal),signal);},
+  });
+}

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "demo:graphvc",
+    "--",
+    "--lkg",
+    ""
+  ],
+  "exit": 0,
+  "networkGraphWrites": false,
+  "freshTemporaryRoot": true
+}

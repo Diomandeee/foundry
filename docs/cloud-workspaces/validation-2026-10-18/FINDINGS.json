@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "status": "complete",
+  "items": [
+    {
+      "id": "V01",
+      "finding": "Compiler/test discovery included archived evidence source",
+      "fix": "Explicit product source roots; preserve archived evidence",
+      "state": "fixed"
+    },
+    {
+      "id": "V02",
+      "finding": "TypeScript compiler failures after source-only changes",
+      "fix": "Explicit decoder defaults, safe array length descriptor access/null history refusal, nonce buffers and Node/Worker request typing",
+      "state": "fixed"
+    },
+    {
+      "id": "V03",
+      "finding": "Swift ACL C interop mismatch",
+      "fix": "Explicit enum raw value and opaque-pointer conversion; typecheck and native link succeeded",
+      "state": "fixed"
+    },
+    {
+      "id": "V04",
+      "finding": "Worker authority check used owner-only status route; wrapper excluded worker discovery",
+      "fix": "Separate enrolled executor metadata route with after-body authentication; pinned caller/wrapper transport; negative binding/revocation tests",
+      "state": "fixed"
+    },
+    {
+      "id": "V05",
+      "finding": "Git absence threw on nonexistent SHA/unborn ref; stale tests assumed text-error swallowing and unproven no-op replay",
+      "fix": "Machine-readable commit lookup; explicit absence fixtures; retain corruption and provenance refusal",
+      "state": "fixed"
+    },
+    {
+      "id": "V06",
+      "finding": "Relay malformed UTF-8/JSON escaped classified error boundary; stale abort signature tests",
+      "fix": "Fixed 400 response classification; explicit abort signal and timeout behavior assertions",
+      "state": "fixed"
+    },
+    {
+      "id": "V07",
+      "finding": "Local gate-hook decision store lacked mandatory durable verification receipts",
+      "fix": "Create-only hash-bound receipt file with exact byte readback and fsync; corrupt UTF-8 regression added after independent review",
+      "state": "fixed"
+    },
+    {
+      "id": "V08",
+      "finding": "Demo erased a fixed root and duplicate root flag did not override first value",
+      "fix": "Fresh default mkdtemp root; existing explicit root refusal; updated regression and root argument script",
+      "state": "fixed",
+      "executionNote": "Initial demo invocation used legacy /tmp/foundry-graphvc reset despite an appended temporary root because argument parsing selected first occurrence. No production/project path was targeted. That fixture pre-state was not captured; do not claim it untouched."
+    },
+    {
+      "id": "V09",
+      "finding": "No executable host launcher assembled build-worker factories and verifier",
+      "state": "fixed",
+      "owner": "launcher subagent; tools/foundry-build-pilot",
+      "evidence": "BUILD-LAUNCHER.md (tools/foundry-build-pilot, 43 scoped tests) + LAUNCHER-SOURCE-REVIEW.md F1/F2 repairs"
+    },
+    {
+      "id": "V10",
+      "finding": "No Mac currently meets 50GiB free reserve; required installed runtime paths absent",
+      "state": "operational-HOLD",
+      "evidence": "CAPACITY-CURRENT.json",
+      "fix": "Exact owner-approved capacity and installation work required; no cleanup performed"
+    },
+    {
+      "id": "V11",
+      "finding": "linux-isolated-input packed-input cases exceeded the 30 s default timeout at host load avg ~75 (passed alone, 23/23)",
+      "fix": "Explicit 120 s timeout on those three CPU-heavy cases only; assertions unchanged",
+      "state": "fixed"
+    },
+    {
+      "id": "V12",
+      "finding": "enrollment-runtime \"approved profile before dispatch\" returned retry once at load avg ~50 (5 s HTTP deadline); passed 3/3 alone and in the final full run",
+      "fix": "None (deadline is part of the asserted contract); recorded as load-sensitive",
+      "state": "observed-load-sensitive"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+name = "foundry-epoch-pipeline"
+main = "src/index.ts"
+compatibility_date = "2026-10-05"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+EPOCH_TRANSPORT_ENABLED = "false"
+# Host must supply reviewed environment/authority/policy/auth digest configuration.
+# COMPUTE_OWNER_BEARER and COMPUTE_SUBMITTER_BEARER reference host secret bindings.
+
+[[durable_objects.bindings]]
+name = "EPOCH_PIPELINE"
+class_name = "EpochPipelineAuthority"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["EpochPipelineAuthority"]
+
+[[services]]
+binding = "FOUNDRY"
+service = "foundry-compute"

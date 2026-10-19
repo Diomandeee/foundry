@@ -1,0 +1,7 @@
+{
+  "name": "@foundry/build-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./discovery": "./src/discovery.ts", "./storage": "./src/storage-integration.ts" }
+}

@@ -1,0 +1,62 @@
+{
+  "at": "2026-10-18T16:24:13.239278+00:00",
+  "branch": "codex/foundry-integration-20261016",
+  "head": "cf27ac662730bb98a509af8d1d1ebea4342eef7a",
+  "files": [
+    {
+      "path": "packages/build-runtime/src/adapters.ts",
+      "sha256": "0a9761f6c7d242f39384c5f46b89151e7025f51a7aaae291bf44eb799c7f21bb",
+      "bytes": 10165
+    },
+    {
+      "path": "packages/build-runtime/src/controller.ts",
+      "sha256": "312cb57c1bb15286412a4d9351777e3d68ec26c75fa21b9a53dfe5e7bc4a3a18",
+      "bytes": 18821
+    },
+    {
+      "path": "packages/build-runtime/src/index.ts",
+      "sha256": "418c10a4c452f340b01afbfef6934c19d5e49da0dcf14e512aedd2f1be6bf3cb",
+      "bytes": 2908
+    },
+    {
+      "path": "packages/build-storage/src/packaging.ts",
+      "sha256": "3525e8229b2e4714f6f75987670d0f7e5bf55e3891eff3eb2beb408be9a1582c",
+      "bytes": 10376
+    },
+    {
+      "path": "packages/build-storage/src/index.ts",
+      "sha256": "182b761e2616d34fe2f61decd74948a06ec2bdfc5ebcf0898bff139cceb45be4",
+      "bytes": 1725
+    },
+    {
+      "path": "docs/cloud-workspaces/ROUTE.json",
+      "sha256": "18ce2cb846d6de0a2a0f2ee3563c12a194ff0ab7d5a841709051346700665817",
+      "bytes": 11937
+    },
+    {
+      "path": "docs/cloud-workspaces/MASTER-CHECKLIST.md",
+      "sha256": "c4f2982f14211c8446e255f23df993eccdecd5f45bf2548ed17e4156ab25858a",
+      "bytes": 13840
+    },
+    {
+      "path": "README.md",
+      "sha256": "f132d45b7a9d2eda349e6f2f57baba1f8eae745f8c21601065eb5cc98e006f2e",
+      "bytes": 8069
+    },
+    {
+      "path": "packages/build-storage/src/publication.ts",
+      "sha256": "3a2718eb6354806f381c71f282c7105693f031d54d3e87954ae7e88ec6a9a7e3",
+      "bytes": 4709
+    },
+    {
+      "path": "packages/build-runtime/src/liveness.ts",
+      "sha256": "ba9a02680f0968e02cdc00d0c48279fff6376050f18696adc4df74afce2fa238",
+      "bytes": 6383
+    },
+    {
+      "path": "packages/build-storage/src/project-input-io.ts",
+      "sha256": "ae527092548739d4889c95d50449a5883ad927c26575cc3a4d407493794207b6",
+      "bytes": 8190
+    }
+  ]
+}

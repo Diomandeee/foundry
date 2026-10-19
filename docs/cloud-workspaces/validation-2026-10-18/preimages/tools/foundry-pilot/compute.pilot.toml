@@ -1,0 +1,24 @@
+# Unactivated candidate. Owner must reconcile target/namespace/migration before use.
+name = "foundry-compute-pilot-candidate"
+main = "../../workers/compute/src/index.ts"
+compatibility_date = "2026-10-05"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+
+[vars]
+COMPUTE_ENVIRONMENT = "pilot"
+COMPUTE_AUTHORITY_NAME = "pilot"
+COMPUTE_ISSUER_ID = "foundry-pilot-issuer-v1"
+COMPUTE_TRANSPORT_ENABLED = "false"
+COMPUTE_ENROLLMENT_ENABLED = "true"
+COMPUTE_EXECUTION_IMAGES = "[]"
+COMPUTE_AUTH_CONFIG = "[]"
+# COMPUTE_ISSUER_KEY is deliberately absent. It is a gated managed secret.
+
+[[durable_objects.bindings]]
+name = "AUTHORITY"
+class_name = "ComputeAuthority"
+
+[[migrations]]
+tag = "r1-pilot-sqlite-v1"
+new_sqlite_classes = ["ComputeAuthority"]

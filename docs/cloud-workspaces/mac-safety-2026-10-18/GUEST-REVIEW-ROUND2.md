@@ -1,0 +1,59 @@
+# Independent source review — round 2
+
+2026-10-18. **REQUEST_CHANGES** for one remaining MEDIUM/P2 receipt-budget finding. The six original findings are **addressed by static inspection** in the source snapshots below. No runtime, helper-protocol, production, release or activation approval is implied.
+
+## Scope and snapshot
+
+| Source | SHA-256 |
+| --- | --- |
+| `packages/build-runtime/native/mac-vm-guest.py` | `6ff67139f408a6fe596ea09206514d02d12420ee4be9c9e2871c1ad0534b03ce` |
+| `packages/build-runtime/src/mac-vm-job.ts` | `74de8dfee1acab2c092c8752a329e6ff3450904970dc2f5d7b56456a3f51599b` |
+| `packages/build-runtime/src/mac-vm.ts` | `cc5b3d534d8238c611126ff6a0323f6f11f5e42a6b36860d40fef3288a32885b` |
+
+Reviewed the three named product files only, plus the prior review report for disposition. Applicable AGENTS/PROTOCOLS/SOUL values were read earlier in this same review. No shell/process commands, product execution/imports, tests/test authoring, compilation, probes, helper/VM starts, installation, provider operations, credential access, spending, commits, deployment, cleanup or product edits were performed in round 2. Only this round-2 report was written. Directory creation and report existence/size verification use filesystem APIs to honor the latest no-exec instruction.
+
+The helper, HostJournal implementation and other imported implementations remain outside this source scope. Their contracts are distinguished below from behavior directly visible in these files. Concurrent edits after these snapshots require a fresh comparison.
+
+## Review: packages/build-runtime/native/mac-vm-guest.py:207-209,311-341,348-351
+
+**Severity**: MEDIUM — P2
+**Issue**: Receipt metadata is accumulated and serialized before its byte budget is enforced. The repaired traversal allows up to 20,000 visited entries and 4,096 bytes per relative path, while output byte accounting counts only log/file contents. Thousands of empty files with long legal names consume virtually no file-content budget but accumulate a large output-record list. For example, 6,000 zero-byte files with roughly 200-byte paths pass the entry, depth, path and content limits, yet exceed the 1 MiB receipt budget on paths alone. The final write_json first constructs the complete JSON string and encoded payload and only then checks its size. This can allocate tens of MiB for allowed trees before failing the entire receipt after collection. Allocation is bounded by the new traversal limits; it is not unlimited, and this finding does not reopen the repaired unbounded-directory-enumeration defect. It is a remaining mismatch between the metadata budget and when that budget is enforced.
+**Fix**: Enforce a cumulative encoded receipt/metadata budget while admitting each output record, including JSON escaping, separators and fixed receipt fields. Bound retained path/record bytes before appending, and avoid constructing a complete oversized JSON payload before checking the limit. Align the supported output count/path budget with the receipt capacity, with a fixed safe failure reason on overflow. Preserve bounded content copies and independent post-stop verification.
+
+## Disposition of the six original findings
+
+| Original finding | Disposition in this snapshot | Static evidence |
+| --- | --- | --- |
+| HIGH/P1: root output path-check/reopen race | ADDRESSED for the reported unsafe-follow/read path | Guest lines 59-77 open each component descriptor-relatively with no-follow/nonblocking flags and same-device checks. Lines 122-159 validate the actual copied regular-file descriptor, hash/read that same descriptor, check stability, and use root-owned destination parents. The preliminary traversal descriptor is still reopened for copying, but the copy descriptor independently validates type, size and stability; the previously checked descriptor is no longer the security justification for that read. |
+| HIGH/P1: unbounded copy and missing operation deadline | ADDRESSED for source-level byte/loop enforcement | Guest lines 127-152 copy no more than the initial bounded size, check for an extra byte, hash the copied stream, check metadata stability and enforce deadlines. Lines 226-251 establish a shared deadline from run start; staging, observations, build and collection use it (283-284,293-307,315-347). Host whole-VM bounding remains a separate helper-review contract. |
+| MEDIUM/P2: repeated stop writes after stdin end | ADDRESSED | Client lines 97,102-106 guard writableEnded and stopRequested; the stop-request flag is set before the single stop write/end. Terminal handling seals the channel (140-144). Buffered challenges cannot resend stop frames once requested. |
+| MEDIUM/P2: failure/EOF/stop observations can remain pending | ADDRESSED in the visible client paths | Client lines 91-115 bound failed/startup/maximum-stop observation, lines 147-149 handle stdout EOF/error and stderr error, and lines 158-172 keep or install the ten-second unknown timer through the awaited journal finish. Lines 176-179 also bound explicit stop(). A timed-out observation is not upgraded on later close. The intermediate round-2 revision cleared this timer too early; the final snapshot repairs that gap. |
+| MEDIUM/P2: eager directory materialization and noncumulative count | ADDRESSED | Guest lines 311-330 use incremental scandir, cumulative visited/pending checks, depth and path limits, per-entry name checks and deadline checks. The new receipt-budget finding above concerns retained serialized metadata, rather than reopening this finding. |
+| MEDIUM/P2: manifest/tool output checked only after unrestricted read | ADDRESSED | Guest lines 85-100 validate a bounded regular descriptor before reading the manifest; lines 162-204 stream observations into a capped buffer with timeout handling. Lines 235 and 293-296 use those paths. |
+
+“Addressed” means source reasoning supports closing the described defect, not that a race, filesystem, shutdown or recovery behavior was exercised. Cooperative Python deadlines cannot interrupt every blocking kernel operation; independent whole-VM bounding remains necessary. Guest group kills and shutdown requests remain insufficient as stop proof.
+
+## Additional source dispositions and explicit gates
+
+- **Private helper policy/pinning:** client lines 71-72 capture private plain policy data; lines 82,86 pin and spawn the captured executable. The earlier mutable-policy finding remains statically closed, subject to the imported canonicalData contract. No helper signature/entitlement or platform behavior was exercised.
+- **Job/attempt/recipe staging binding:** encoder lines 14-17 brand each returned job through a module-private WeakMap to the same RuntimePlan object; lines 60-64 freeze the job and its nested records/arrays. Client lines 66,74-78 require that brand, privately capture canonical job data, check attempt/job/profile/identity, and compare its SHA-256 to configuration.guestJobSha256 before reservation/spawn. This closes the client-side acceptance of an unrelated caller-constructed guest job. Actual opened input/job.json digest matching before VM start is reserved for the helper's independent review. The mutable returned bytes buffer cannot by itself redefine the frozen branded job or the digest recomputed by this client.
+- **Snapshot approval remains a precondition:** encoder lines 22-24 explicitly require the independently verified complete approved manifest. Lines 33,59-60 still do not prove equality of every selected file to that manifest. The new brand/digest establishes encoder/plan/configuration consistency, not full snapshot approval. Retain that distinction through staging and later intake.
+- **Guest identity and staging:** guest lines 243-244 recompute the identity binding; its inputs are restricted to ASCII tokens/hashes. Lines 267-284 keep staging directories root-owned through copying, then lines 285-288 transfer WORK and descendants before the build. This addresses the stated staging-owner correction on the assumed fresh, owner-provisioned image; it is not a claim that an arbitrary precompromised image is safe.
+- **Actual reservation API:** client lines 84-85 directly construct imported HostJournal and reserve/record identity before spawn; the caller-supplied fake persistence callback is gone. Lines 164-166 explicitly finish into quarantined even after a confirmed stop because result remains not-collected. No release path is present in this primitive. Journal durability/branding semantics require its own implementation review; they were not inferred from the method names.
+- **Fence/start semantics:** currentFence is checked before activation steps, after async pin/persistence and at each permit (69,82,85,135). started requires a previously issued permit (137). A returned session can still be starting and is not proof of VM start. Fresh one-use permit enforcement and actual VM-start timing belong to the helper's independent review.
+- **Config/challenge protocol:** the client now carries helperUID/cpuCount/maxRunSeconds and guestJobSha256 and checks challenge generations/timestamp-field shape/duration. No helper source was read and no protocol compatibility or mismatch is asserted here; defer helper event fields, clock semantics, permit expiry and actual opened-file digest enforcement to its independent review.
+- **VM-stop evidence and results:** client lines 140-172 require a matching terminal event, clean helper close, no invalid/pending frame and successful journal completion before returning positive evidence. EOF/exit alone remains insufficient. Positive evidence depends on the separately reviewed helper actually establishing authoritative whole-VM stop. Evidence remains a separate MacVmStopEvidence with result:not-collected. This does not automatically satisfy a production adapter's proof contract. All guest results remain untrusted: independently verify their lineage, schema, allowlists, types, sizes and hashes through an approved readonly extraction path only after actual VM stop.
+- **Pending scope remains pending:** guest toolchain/image installation, readonly result extraction and production dispatch are not demonstrated. The generic guest failure receipt/suppressed receipt-write errors (360-365) still provide limited diagnostic classification; this is retained as an operational gate from round 1, not a new containment finding. Existing authority/native denial is required; code outside the three reviewed sources was not rechecked. No test or execution authorization is implied.
+
+## Six static lenses and RTD boundary
+
+| Static lens | Round-2 disposition |
+| --- | --- |
+| Correctness | Six original findings closed on source evidence; receipt-size behavior remains actionable. |
+| Security | Descriptor no-follow/type/device checks and private policy/job binding assessed; no broader escape or production-security claim. |
+| Resources | Content reads/copies/traversal bounded in source; metadata serialization budget still applied too late. |
+| Failure/recovery | Idempotent stop and bounded unknown settlement, including journal wait, now visible; unknown state retains quarantine and helper custody. |
+| Integration/lineage | Branded job/config digest binding visible; full snapshot equality, helper behavior, journal implementation and intake remain outside scope. |
+| Content/truth | not-collected and experimental/non-adapter boundaries preserved; no successful build or actual stopped VM demonstrated. |
+
+RTD: **Structure — static reviewed; Compilation — DEFERRED BY USER; Integration — static contracts only; Content — static reviewed; User journey/runtime — DEFERRED BY USER; Deployment — DEFERRED BY USER.** No tests or test authoring. This report is the sole written review record; no separate memory/ledger was created under the output-only constraint.

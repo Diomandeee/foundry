@@ -1,0 +1,231 @@
+import {spawn, type ChildProcessWithoutNullStreams} from 'node:child_process';
+import {createHash, randomBytes} from 'node:crypto';
+import {constants} from 'node:fs';
+import {access, lstat, open} from 'node:fs/promises';
+import {isAbsolute, resolve} from 'node:path';
+import type {ManagedReadonlyTreeSeal} from './types';
+
+/** Read-side composition of the ManagedTreeSeal callback contract, intentionally
+ * NOT assignable to ManagedTreeSeal: no withExclusiveTrees and no writable mode.
+ * Only owner-provisioned, static, kernel-read-only source capture/collection.
+ * Restore, CAS put, and live mutable workspaces require a different implementation. */
+export interface ReadonlyManagedTreeSeal extends ManagedReadonlyTreeSeal {
+  readonly kind:'mac-kernel-readonly-v1';
+  /** A failed instance is never reusable, even after a child eventually exits. */
+  state():Readonly<{poisoned:boolean; active:boolean; childPid:number|null;
+    childClosed:boolean; callbackPending:boolean; verificationPending:boolean}>;
+}
+
+/** Expected values are an owner-maintained trust record, NOT learned from READY.
+ * Decimal strings avoid JS inode/device precision loss. UUID is lower-case. */
+export interface MacReadonlyTreeIdentity {
+  readonly path:string;
+  readonly mountPoint:string;
+  readonly filesystem:'apfs'|'hfs';
+  readonly fsid:readonly [number,number];
+  readonly mountSource:string;
+  readonly volumeUuid:string;
+  readonly rootDevice:string;
+  readonly rootInode:string;
+}
+export interface MacReadonlySealConfig {
+  /** Owner-installed native executable; root-owned, no ACLs or writable ancestors.
+   * Hash the reviewed installed Mach-O binary, not this C source. No default hash. */
+  readonly helper:Readonly<{path:string;sha256:string}>;
+  readonly tree:MacReadonlyTreeIdentity;
+  /** Whole operation deadline; timing out poisons rather than stopping a callback. */
+  readonly maxOperationMs?:number;
+}
+
+const error=(code:string)=>new Error(`build-storage: mac-readonly-${code}`);
+function requireThat(ok:unknown,code:string):asserts ok {if(!ok) throw error(code);}
+function path(value:string) {
+  requireThat(typeof value==='string'&&isAbsolute(value)&&resolve(value)===value&&value!=='/'&&
+    Buffer.byteLength(value)<1024&&!/[^\x20-\x7e]/.test(value),'canonical-ascii-path-required');
+}
+function decimal(value:string) {requireThat(typeof value==='string'&&/^(0|[1-9][0-9]{0,19})$/.test(value)&&BigInt(value)<=0xffffffffffffffffn,'identity-integer');}
+function deferred<T>() {
+  let resolve!:(value:T)=>void, reject!:(reason:unknown)=>void;
+  const promise=new Promise<T>((yes,no)=>{resolve=yes;reject=no;});
+  // Failure may arrive before this phase is awaited. Retain it without an
+  // unhandled rejection; callers still await the original rejected promise.
+  void promise.catch(()=>{});
+  return {promise,resolve,reject};
+}
+
+/** Construction is inert. The only executable started by an operation is this
+ * pinned helper, directly with shell:false and an empty environment. No sudo,
+ * mounts, images, unmount, executable discovery or caller-supplied guard verdict. */
+export function createMacReadonlyTreeSeal(config:MacReadonlySealConfig):ReadonlyManagedTreeSeal {
+  const helper=Object.freeze({...config.helper});
+  const tree=Object.freeze({...config.tree,fsid:Object.freeze([...config.tree.fsid])});
+  const maxOperationMs=config.maxOperationMs??300_000;
+  path(helper.path); path(tree.path); path(tree.mountPoint); path(tree.mountSource);
+  requireThat(tree.path===tree.mountPoint||tree.path.startsWith(`${tree.mountPoint}/`),'root-outside-mount');
+  requireThat(/^\/dev\/disk[0-9]+(?:s[0-9]+)*$/.test(tree.mountSource),'local-block-volume-required');
+  requireThat(tree.filesystem==='apfs'||tree.filesystem==='hfs','filesystem');
+  requireThat(tree.fsid.length===2&&tree.fsid.every(n=>Number.isInteger(n)&&n>=-2147483648&&n<=2147483647),'fsid');
+  requireThat(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(tree.volumeUuid)&&
+    tree.volumeUuid!=='00000000-0000-0000-0000-000000000000','volume-uuid');
+  decimal(tree.rootDevice); decimal(tree.rootInode);
+  requireThat(/^[a-f0-9]{64}$/.test(helper.sha256),'helper-sha256');
+  requireThat(Number.isSafeInteger(maxOperationMs)&&maxOperationMs>=1000&&maxOperationMs<=1_800_000,'deadline');
+  let poisoned=false, active=false, child:ChildProcessWithoutNullStreams|undefined;
+  let childClosed=true, callbackPending=false, verificationPending=false;
+
+  async function verifyHelper(signal:AbortSignal) {
+    requireThat(process.platform==='darwin','darwin-only');
+    requireThat(process.getuid?.()!==0&&process.getuid?.()===process.geteuid?.()&&
+      process.getgid?.()===process.getegid?.(),'unprivileged-host-required');
+    const parts=helper.path.slice(1).split('/'); let current='';
+    for(let i=-1;i<parts.length;i++) {
+      current=i===-1?'/':`${current==='/'?'':current}/${parts[i]}`;
+      const s=await lstat(current,{bigint:true}), leaf=i===parts.length-1;
+      requireThat(s.uid===0n&&(s.mode&0o022n)===0n&&!s.isSymbolicLink()&&
+        (leaf?s.isFile()&&s.nlink===1n&&(s.mode&0o6000n)===0n&&(s.mode&0o111n)!==0n:s.isDirectory()),'untrusted-helper-path');
+      // Additional effective access refusal; native guard rejects every extended
+      // ACL as well. ACL-free helper provisioning is part of the trust boundary.
+      let writable=false;
+      try {await access(current,constants.W_OK); writable=true;}
+      catch(e) {requireThat(['EACCES','EPERM','EROFS'].includes((e as NodeJS.ErrnoException).code??''),'helper-access-indeterminate');}
+      requireThat(!writable&&!signal.aborted,'helper-writable-or-aborted');
+    }
+    const fd=await open(helper.path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
+    try {
+      const before=await fd.stat({bigint:true});
+      requireThat(before.isFile()&&before.uid===0n&&before.nlink===1n&&(before.mode&0o6022n)===0n&&
+        (before.mode&0o111n)!==0n&&before.size>0n&&before.size<=16_777_216n,'helper-metadata');
+      const hash=createHash('sha256'), block=Buffer.alloc(65536); let offset=0;
+      while(BigInt(offset)<before.size) {
+        requireThat(!signal.aborted,'aborted');
+        const {bytesRead}=await fd.read(block,0,Math.min(block.length,Number(before.size)-offset),offset);
+        requireThat(bytesRead>0,'helper-short-read');
+        if(offset===0) requireThat(bytesRead>=4&&[0xfeedface,0xcefaedfe,0xfeedfacf,0xcffaedfe,
+          0xcafebabe,0xbebafeca,0xcafebabf,0xbfbafeca].includes(block.readUInt32BE(0)),'native-helper-required');
+        hash.update(block.subarray(0,bytesRead)); offset+=bytesRead;
+      }
+      const after=await fd.stat({bigint:true}), named=await lstat(helper.path,{bigint:true});
+      requireThat([after,named].every(s=>s.dev===before.dev&&s.ino===before.ino&&s.size===before.size&&
+        s.mode===before.mode&&s.uid===before.uid&&s.nlink===before.nlink&&s.mtimeNs===before.mtimeNs&&s.ctimeNs===before.ctimeNs)&&
+        hash.digest('hex')===helper.sha256,'helper-pin-mismatch');
+    } finally {await fd.close();}
+  }
+
+  return Object.freeze({
+    kind:'mac-kernel-readonly-v1' as const,
+    state:()=>Object.freeze({poisoned,active,childPid:child?.pid??null,childClosed,callbackPending,verificationPending}),
+    async withReadonlyTrees<T>(roots:readonly string[],run:()=>Promise<T>,signal:AbortSignal):Promise<T> {
+      requireThat(!poisoned&&!active,'poisoned-or-busy');
+      requireThat(roots.length===1&&roots[0]===tree.path,'exact-single-readonly-root-required');
+      requireThat(typeof run==='function'&&!signal.aborted,'callback-or-signal');
+      active=true;
+      const fatal=deferred<never>(), ready=deferred<void>(), done=deferred<void>();
+      let failed:Error|undefined, releasing=false, running:Promise<T>|undefined;
+      let startup:ReturnType<typeof setTimeout>|undefined, finish:ReturnType<typeof setTimeout>|undefined;
+      const fail=(reason:unknown)=>{
+        if(failed) return;
+        failed=reason instanceof Error?reason:error('guard-failed'); poisoned=true;
+        fatal.reject(failed); ready.reject(failed); done.reject(failed);
+      };
+      const abort=()=>fail(error('aborted-state-uncertain'));
+      signal.addEventListener('abort',abort,{once:true});
+      const deadline=setTimeout(()=>fail(error('deadline-state-uncertain')),maxOperationMs);
+      try {
+        // Do not leave an asynchronous verification running after an abort and
+        // accidentally spawn later. Check failed again after it settles.
+        verificationPending=true;
+        const verification=verifyHelper(signal);
+        void verification.then(()=>{verificationPending=false;},()=>{verificationPending=false;});
+        // A timeout/abort may settle the caller while native metadata I/O remains
+        // pending. That work has NO launch side effect; poisoned state retains it
+        // until verification and its descriptor cleanup physically finish.
+        await Promise.race([verification,fatal.promise]);
+        if(signal.aborted) abort(); if(failed) throw failed;
+        const nonce=randomBytes(16).toString('hex');
+        child=spawn(helper.path,['--readonly-v1',helper.path,nonce,tree.path,tree.mountPoint,tree.filesystem,
+          String(tree.fsid[0]),String(tree.fsid[1]),tree.mountSource,tree.volumeUuid,tree.rootDevice,tree.rootInode],
+          {shell:false,cwd:'/',env:{},stdio:['pipe','pipe','pipe'],detached:false});
+        const guard=child; childClosed=false;
+        let buffer=Buffer.alloc(0), stdoutBytes=0, stderrBytes=0, frames=0;
+        const identity=(message:unknown,event:'ready'|'released')=>{
+          requireThat(!!message&&typeof message==='object'&&!Array.isArray(message),'guard-json-object');
+          const m=message as Record<string,unknown>;
+          const keys=['protocol','event','nonce','path','mountPoint','filesystem','fsid','mountSource','volumeUuid',
+            'rootDevice','rootInode','mountOwner','readonly','local'];
+          requireThat(Object.keys(m).length===keys.length&&keys.every(k=>Object.hasOwn(m,k))&&
+            m.protocol==='mac-tree-guard/1'&&m.event===event&&m.nonce===nonce&&m.path===tree.path&&
+            m.mountPoint===tree.mountPoint&&m.filesystem===tree.filesystem&&m.mountSource===tree.mountSource&&
+            m.volumeUuid===tree.volumeUuid&&m.rootDevice===tree.rootDevice&&m.rootInode===tree.rootInode&&
+            m.mountOwner===0&&m.readonly===true&&m.local===true&&Array.isArray(m.fsid)&&m.fsid.length===2&&
+            m.fsid[0]===tree.fsid[0]&&m.fsid[1]===tree.fsid[1],'guard-identity-mismatch');
+        };
+        guard.on('error',()=>fail(error('child-error-state-uncertain')));
+        guard.stdin.on('error',()=>fail(error('stdin-error-state-uncertain')));
+        guard.stdout.on('error',()=>fail(error('stdout-error-state-uncertain')));
+        guard.stdout.on('end',()=>{
+          if(!releasing||frames!==2||buffer.length!==0) fail(error('stdout-closed-before-release'));
+        });
+        guard.stderr.on('error',()=>fail(error('stderr-error-state-uncertain')));
+        guard.stderr.on('data',(chunk:Buffer)=>{
+          stderrBytes+=chunk.length; // Never retain/log native diagnostics or arbitrary payloads.
+          fail(error(stderrBytes>2048?'stderr-budget':'guard-diagnostic'));
+        });
+        guard.stdout.on('data',(chunk:Buffer)=>{
+          if(failed) return; // Drain without retaining an unbounded hostile stream.
+          try {
+            stdoutBytes+=chunk.length; requireThat(stdoutBytes<=16_384,'stdout-budget');
+            buffer=Buffer.concat([buffer,chunk]);
+            let newline:number;
+            while((newline=buffer.indexOf(10))!==-1) {
+              requireThat(newline>0&&newline<=8192&&frames<2,'guard-frame-budget');
+              const line=buffer.subarray(0,newline); buffer=buffer.subarray(newline+1);
+              requireThat(line.every(b=>b>=0x20&&b<=0x7e),'guard-frame-encoding');
+              const message:unknown=JSON.parse(line.toString('ascii'));
+              if(frames===0) {identity(message,'ready');frames++;clearTimeout(startup);ready.resolve();}
+              else {requireThat(releasing,'premature-release');identity(message,'released');frames++;}
+            }
+            requireThat(buffer.length<=8192,'guard-line-budget');
+          } catch(e) {fail(e);}
+        });
+        guard.on('exit',(code,signalName)=>{
+          if(!releasing||code!==0||signalName!==null) fail(error('child-exit-state-uncertain'));
+        });
+        guard.on('close',(code,signalName)=>{
+          childClosed=true;
+          if(code!==0||signalName!==null||!releasing||frames!==2||buffer.length!==0||stderrBytes!==0)
+            fail(error('incomplete-guard-release'));
+          if(!failed) done.resolve();
+        });
+        startup=setTimeout(()=>fail(error('ready-timeout-state-uncertain')),10_000);
+        await Promise.race([ready.promise,fatal.promise]);
+        requireThat(!signal.aborted&&!failed&&!childClosed,'guard-lost-before-callback');
+        callbackPending=true;
+        running=Promise.resolve().then(()=>{
+          requireThat(!signal.aborted&&!failed&&!childClosed,'guard-lost-before-callback');
+          return run();
+        });
+        // On abort/failure, keep stdin and the held root FD until the host callback
+        // actually settles. A rejected race cannot cancel arbitrary host code.
+        void running.then(()=>{callbackPending=false;if(failed) guard.stdin.end();},
+          ()=>{callbackPending=false;if(failed) guard.stdin.end();});
+        const result=await Promise.race([running,fatal.promise]);
+        if(signal.aborted) abort(); if(failed) throw failed;
+        releasing=true; guard.stdin.end(); // EOF is the ONLY release command.
+        finish=setTimeout(()=>fail(error('release-timeout-state-uncertain')),10_000);
+        await Promise.race([done.promise,fatal.promise]);
+        if(signal.aborted) abort(); if(failed) throw failed;
+        return result;
+      } catch(e) {
+        fail(e);
+        // Do not send signals, discard child state, assume rollback, or retry.
+        if(child&&!callbackPending) child.stdin.end();
+        throw failed;
+      } finally {
+        clearTimeout(deadline);clearTimeout(startup);clearTimeout(finish);
+        signal.removeEventListener('abort',abort); active=false;
+        // Retain the child reference on failure, including late close/exit state.
+        if(!poisoned) child=undefined;
+      }
+    },
+  });
+}

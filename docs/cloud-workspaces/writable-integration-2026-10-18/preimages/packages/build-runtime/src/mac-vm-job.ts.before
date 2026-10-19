@@ -1,0 +1,74 @@
+import {validateMacVmCapability,type MacVmCapability} from '../../build-jobs/src/mac-vm-capability.js';
+import {assertVerifiedMacVmInput,type VerifiedMacVmInput} from './mac-vm-input.js';
+import { approvalFor, check, hash, localPath } from './plans.js';
+import { canonicalData } from './parent-profile.js';
+import type { RuntimePlan } from './types.js';
+
+export const MAC_VM_JOB_MAX_BYTES=262144;
+
+export interface MacVmInputFile {path:string;sha256:string;sizeBytes:number;mode:number}
+export interface MacVmGuestJob {
+  version:2; guestCapabilityHash:string;guestRunnerSha256:string; identity:string; attemptId:string; jobId:string; profileHash:string; sourceHash:string;
+  recipe:{developerDir:string;project:string;scheme:string;sdk:string;destination:string;
+    configuration:'Debug'|'Release';xcodeBuild:string;macos:string;outputPaths:readonly string[]};
+  limits:{cpu:number;timeoutMs:number;maxOutputBytes:number};files:readonly MacVmInputFile[];
+}
+const guestJobs=new WeakMap<MacVmGuestJob,{plan:RuntimePlan;input:VerifiedMacVmInput}>();
+export function assertMacVmGuestJob(job:MacVmGuestJob,plan:RuntimePlan):void {
+  check(guestJobs.get(job)?.plan === plan,'mac-vm-unbranded-guest-job');
+}
+export function macVmGuestInput(job:MacVmGuestJob,plan:RuntimePlan):VerifiedMacVmInput {
+  assertMacVmGuestJob(job,plan);return guestJobs.get(job)!.input;
+}
+export const macVmIdentity = (plan:RuntimePlan):string => {
+  approvalFor(plan);
+  return `vm:${hash(JSON.stringify([plan.jobId,plan.attemptId,plan.profileHash]))}`;
+};
+/** Encode only a privately verified complete immutable snapshot. This neither stages
+ * nor creates/mounts an image, installs a service, runs a VM or approves placement.
+ * No host path, credentials or launch capability are serialized into the guest. */
+export function encodeMacVmGuestJob(plan:RuntimePlan,verified:VerifiedMacVmInput,capability:Readonly<MacVmCapability>):Readonly<{job:MacVmGuestJob;bytes:Uint8Array;sha256:string}> {
+  const a = approvalFor(plan),r=a.recipe;
+  const binding=assertVerifiedMacVmInput(verified,plan),{context,input}=binding;
+  validateMacVmCapability(capability);
+  check(context.vmCapabilityHash===hash(canonicalData(capability)),'mac-vm-claimed-capability-binding');
+  const selectedFiles=verified.files;
+  check(r.kind === 'xcode-build-v1' && plan.kind === r.kind,'mac-vm-xcode-only');
+  check(context.localRecipeHash === plan.profileHash && context.compute.workloadId === plan.jobId &&
+    context.compute.attemptId === plan.attemptId && context.compute.leaseId === plan.attemptId,'mac-vm-claim-binding');
+  check(input.reconstructable === true && input.missingInputs.length === 0 && /^[0-9a-f]{64}$/.test(input.snapshotHash),'mac-vm-complete-approved-input-required');
+  check(/^\/Applications\/Xcode[^/]*\.app\/Contents\/Developer$/.test(r.developerDir) &&
+    r.destination !== 'platform=macOS,arch=x86_64','mac-vm-arm64-guest-recipe-required');
+  check(capability.macos===r.macos&&capability.developerDir===r.developerDir&&capability.xcodeBuild===r.xcodeBuild&&capability.sdks.includes(r.sdk),'mac-vm-guest-toolchain-binding');
+  check(plan.cpu <= 64 && plan.timeoutMs <= 3600000 && a.limits.maxOutputBytes <= 7*1048576,'mac-vm-pilot-limits');
+  check(Array.isArray(selectedFiles) && selectedFiles.length > 0 && selectedFiles.length <= 1024,'mac-vm-input-count');
+  const files = JSON.parse(canonicalData(selectedFiles)) as MacVmInputFile[];
+  let total=0; const names=new Set<string>();
+  const prefixes=new Map<string,string>();
+  for(const file of files) {
+    check(Object.keys(file).sort().join(',') === 'mode,path,sha256,sizeBytes','mac-vm-input-shape');
+    localPath(file.path);
+    check(/^[0-9a-f]{64}$/.test(file.sha256) && Number.isSafeInteger(file.sizeBytes) && file.sizeBytes >= 0 && file.sizeBytes <= 64*1048576 &&
+      [0o600,0o644,0o700,0o755].includes(file.mode),'mac-vm-input-metadata');
+    const key=file.path.toLowerCase();check(!names.has(key),'mac-vm-input-collision');names.add(key);
+    const parts=file.path.split('/');
+    for(let i=1;i<=parts.length;i++) {
+      const path=parts.slice(0,i).join('/'),folded=path.toLowerCase(),old=prefixes.get(folded);
+      check(old === undefined || old === path,'mac-vm-component-collision');prefixes.set(folded,path);
+    }
+    total+=file.sizeBytes;check(total <= 2*1024**3,'mac-vm-input-budget');
+    Object.freeze(file);
+  }
+  for(const file of files) {
+    const parts=file.path.split('/');
+    for(let i=1;i<parts.length;i++)check(!names.has(parts.slice(0,i).join('/').toLowerCase()),'mac-vm-file-directory-collision');
+  }
+  check(input.requiredInputs.every(path => files.some(file => file.path === path)),'mac-vm-required-input-missing');
+  const job:MacVmGuestJob = {version:2,guestCapabilityHash:hash(canonicalData(capability)),guestRunnerSha256:capability.guestRunnerSha256,identity:macVmIdentity(plan),attemptId:plan.attemptId,jobId:plan.jobId,profileHash:plan.profileHash,sourceHash:input.snapshotHash,
+    recipe:{developerDir:r.developerDir,project:r.project,scheme:r.scheme,sdk:r.sdk,destination:r.destination,configuration:r.configuration,
+      xcodeBuild:r.xcodeBuild,macos:r.macos,outputPaths:Object.freeze([...r.outputPaths])},
+    limits:{cpu:plan.cpu,timeoutMs:plan.timeoutMs,maxOutputBytes:a.limits.maxOutputBytes},files:Object.freeze(files)};
+  Object.freeze(job.recipe);Object.freeze(job.limits);Object.freeze(job);guestJobs.set(job,{plan,input:verified});
+  const bytes=Buffer.from(canonicalData(job));check(bytes.byteLength <= MAC_VM_JOB_MAX_BYTES,'mac-vm-job-byte-budget');
+  return Object.freeze({job,bytes,sha256:hash(bytes.toString('utf8'))});
+}

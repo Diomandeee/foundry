@@ -1,0 +1,2267 @@
+--- a/docs/cloud-workspaces/MASTER-CHECKLIST.md
++++ b/docs/cloud-workspaces/MASTER-CHECKLIST.md
+@@ -58,11 +58,13 @@
+ 
+ The original Foundry R2–R7 integration route remains separate: this feature route does not close inherited merge-gate HOLD findings or grant merge/deployment approval.
+ 
+-## Current stop — R6 source-review checkpoint
++## Current stop — R6 Mac safety source batch, production HOLD
+ 
+-The local implementation items checked above have source/static-review receipts only. The 2026-10-18 continuation extends the prior checkpoint with concrete online broker scope/issuance/capacity/revocation wiring and segmented project inputs; its current receipt is in continuation-2026-10-18, while root-level hashes/delta retain the prior freeze. Native full termination attestation remains unimplemented and native placement is explicitly ineligible. Trusted host configuration, actual tree sealing, capacity, disk headroom, inherited integration findings and all runtime acceptance remain blockers. R7 is entirely unexecuted.
++The `mac-safety-2026-10-18` batch supersedes the previous native execution direction. Native adapter/client launch now rejects locally. Concrete Swift whole-VM containment, branded guest jobs, bounded guest runner and a separate kernel-read-only volume guard exist as source. The optional read-side packaging capability is wired without claiming a mutable-tree seal. Independent static reviews and scoped receipts describe the exact coverage. No compiler, test or runtime evidence exists for this batch.
+ 
+-No tests, builds, typechecks, runtime imports/probes, trial restores, services, installations, cloud provider operations, provisioning, spending, secret changes, commits, pushes, merges, deployments or cleanup were performed. Baseline/source/disk observations, metadata inventories, source/document edits and local receipt preparation are the actual evidence.
++Production Mac builds remain ineligible. Verified immutable guest staging, stop-gated read-only result intake, production controller/adapter/guest capability wiring, generic writable CAS/materialization isolation, resources and inherited integration HOLD items remain open. All operational acceptance and R7 activation remain unexecuted. See `mac-safety-2026-10-18/README.md` for the ordered M1–M4 continuation.
++
++No tests, builds, typechecks, runtime imports/probes, trial restores, helpers/VMs/services, installations, provider operations, provisioning, spending, secret changes, commits/pushes/merges, deployments, publication or cleanup were performed. Source/metadata reads, public primary research, source/document edits and local review/hash artifacts are the evidence.
+ 
+ ## Authorized continuation tasks (dependencies are explicit)
+ 
+@@ -76,3 +78,18 @@
+ - [ ] C3.2 Full native supervisor, service containment, current-fence physical launch and confirmed termination. **BLOCKED; source protocol is not a supplied supervisor.**
+ - [x] C4.1 Repair cumulative source-review findings and freeze the new scoped delta/hashes; independent approvals are bounded, and C3.2/native/integration HOLD remains.
+ - [ ] C4.2 Operational acceptance. **GATED; no tests or activation authorized.**
++
++## Mac safety source substeps — no operational completion implied
++
++- [x] MS1 Preserve fresh source preimages and exact baseline before implementation.
++- [x] MS2 Deny incomplete native launch at local API boundaries; retain diagnostic recovery reads and authority denial.
++- [x] MS3 Implement concrete whole-VM lifecycle source, one-use continuous-time authority-budget permits, terminal admission closure and callback-drained stop observation.
++- [x] MS4 Encode branded guest-job metadata; implement bounded same-descriptor guest staging/build/log/output/receipt handling.
++- [x] MS5 Implement root-mounted kernel-read-only volume guard, explicit identity/ACL checks, poisoned uncertainty and separate read-side packaging integration.
++- [x] MS6 Repair bounded independent source findings and record final diff/hash/review coverage. Compilation/runtime remain unverified.
++- [ ] M1 Verified immutable snapshot → complete guest job/input staging. **LOCAL ENGINEERING OPEN.**
++- [ ] M2 After actual VM stop, approved read-only output-disk intake and independent artifact/receipt/lineage verification. **LOCAL ENGINEERING OPEN.**
++- [ ] M3 Production VM adapter/controller and truthful guest capability wiring; resolve writable isolation/inherited HOLD and re-review. **LOCAL ENGINEERING OPEN.**
++- [ ] M4 Compile/test/operational acceptance and activation. **SEPARATELY GATED, NOT STARTED.**
++
++The checked source substeps do not mean R4 or the overall end goal is complete. A VM session always reports `not-collected` and retains its durable host slot, including after a clean observed VM stop.
+--- a/docs/cloud-workspaces/ROUTE.json
++++ b/docs/cloud-workspaces/ROUTE.json
+@@ -1,6 +1,6 @@
+ {
+   "format": "foundry.cloud-workspaces.route.v1",
+-  "stop": "R6-local-continuation-source-reviewed-HOLD",
++  "stop": "R6-mac-safety-source-reviewed-HOLD",
+   "authority": "Cloudflare existing compute authority",
+   "deployments": 0,
+   "testsExecuted": 0,
+@@ -44,11 +44,13 @@
+       "evidence": [
+         "RUNTIME-REVIEW.md",
+         "BUILD-STORAGE-REVIEW.md",
+-        "continuation-2026-10-18/CUMULATIVE-REVIEW.md"
++        "continuation-2026-10-18/CUMULATIVE-REVIEW.md",
++        "mac-safety-2026-10-18/SOURCE-REVIEW.md"
+       ],
+       "blockedBy": [
+-        "complete native supervisor/service containment and launch fencing",
+-        "real managed-tree seal and owner-approved host/account/identity/resources",
++        "production VM snapshot staging/output intake/controller integration; direct native launch remains denied",
++        "generic writable CAS/materialization seal; readonly seal is a separate limited capability",
++        "owner-approved host/account/images/helper binaries/toolchains/identities/resources",
+         "all observed Macs below disk headroom (prior observation, not rechecked)",
+         "asset/dependency/history completeness; authority required paths above128",
+         "runtime validation and activation approvals"
+@@ -69,7 +71,8 @@
+         "DEFERRED-VALIDATION.md",
+         "RESOURCE-PROPOSAL.json",
+         "ACTIVATION-AND-COST.md",
+-        "continuation-2026-10-18/CHANGE-RECEIPT.json"
++        "continuation-2026-10-18/CHANGE-RECEIPT.json",
++        "mac-safety-2026-10-18/SOURCE-REVIEW.md"
+       ]
+     },
+     {
+@@ -78,7 +81,7 @@
+       "evidence": []
+     }
+   ],
+-  "nextGate": "Review concrete candidate and unresolved prerequisite designs before authorizing validation; installation/provision/spend/secret/merge/deploy/cleanup separately gated.",
++  "nextGate": "Continue remaining local engineering/source review before requesting validation. Tests/builds, installations/image provisioning/VM starts, provider operations/spend, secret changes, merge/deploy and cleanup remain separately gated.",
+   "continuation": {
+     "folder": "continuation-2026-10-18",
+     "authorization": "local source implementation/review only",
+@@ -137,5 +140,64 @@
+       }
+     ]
+   },
+-  "nextLocalEngineering": "Complete supported native supervisor/containment and current-fence physical launch design; do not treat ES lineage as stop proof."
++  "nextLocalEngineering": "M1 verified immutable snapshot-to-guest staging, then M2 stop-gated readonly output intake, then M3 production VM adapter/controller and guest capability wiring; writable restore/CAS isolation and inherited integration HOLD remain.",
++  "macSafety": {
++    "folder": "mac-safety-2026-10-18",
++    "state": "source-reviewed-primitives-production-HOLD",
++    "testsExecuted": 0,
++    "buildsExecuted": 0,
++    "helpersOrVmsStarted": 0,
++    "operationalChanges": 0,
++    "implemented": [
++      "native local launch denial in adapter and ES client",
++      "concrete Swift VZ lifecycle with nonce/generation/continuous authority budget fencing and whole-VM stop observation",
++      "branded guest job encoder and bounded standard-account guest runner source",
++      "kernel-readonly mounted-volume guard and separate read-side packaging capability"
++    ],
++    "notImplemented": [
++      "verified immutable snapshot to complete guest job/filelist staging",
++      "stop-gated output-disk mount/extraction and independent result intake",
++      "production VM RuntimeAdapter/controller and guest capability reporting",
++      "generic writable restore/CAS isolation"
++    ],
++    "nextTasks": [
++      {
++        "id": "M1",
++        "dependsOn": [
++          "source-reviewed containment primitives"
++        ],
++        "task": "Verified immutable input staging",
++        "state": "not-implemented"
++      },
++      {
++        "id": "M2",
++        "dependsOn": [
++          "M1",
++          "actual stopped VM"
++        ],
++        "task": "Read-only result intake through immutable publication/verifier boundary",
++        "state": "not-implemented"
++      },
++      {
++        "id": "M3",
++        "dependsOn": [
++          "M1",
++          "M2"
++        ],
++        "task": "Production adapter/controller/guest capabilities plus cumulative source review",
++        "state": "not-implemented"
++      },
++      {
++        "id": "M4",
++        "dependsOn": [
++          "M3",
++          "explicit matching approvals"
++        ],
++        "task": "Compilation, deferred acceptance and progressive activation",
++        "state": "gated-not-started"
++      }
++    ],
++    "nativePlacement": "explicitly-ineligible",
++    "vmSessionResult": "always-not-collected-retains-quarantine"
++  }
+ }
+--- a/packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md
++++ b/packages/build-runtime/MAC-SUPERVISOR-PROTOCOL.md
+@@ -1,3 +1,10 @@
++> Superseded launch direction (2026-10-18): native launch is now explicitly denied
++> by both NativeMacAdapter and NativeDescendantAttestor.start. This document records
++> the earlier ES protocol design; its RESERVE/RUN discussion is historical, not an
++> enabled API. Signed recovery-journal review remains available. See
++> ../../docs/cloud-workspaces/mac-safety-2026-10-18/ARCHITECTURE.md for the separate
++> experimental whole-VM containment implementation and unresolved production gates.
++
+ # Mac observer and supervisor evidence protocol — HOLD
+ 
+ Source candidate only; no native compilation, execution or installation evidence.
+--- a/packages/build-runtime/README.md
++++ b/packages/build-runtime/README.md
+@@ -3,11 +3,13 @@
+ Inert host-side build execution and durable worker orchestration. Construction does not
+ start polling, discover tools, resolve credentials, execute jobs or send HTTP. Only static
+ source review has been performed; tests/builds/typechecks and operational checks remain
+-DEFERRED. Native descendant containment is BLOCKED without a supported real attestor.
+-The Mac sidecar now includes public ES observer C source and a signed-journal protocol
+-client/verifier. Its process-only evidence NEVER releases native quarantine; the
+-privileged launch/service lifecycle supervisor remains missing. See
+-`MAC-SUPERVISOR-PROTOCOL.md` for the exact implementation, interface and open gates.
++DEFERRED. Direct native Mac launch is denied locally and by placement. ES signed
++process evidence remains diagnostic only. The new Apple Virtualization host, one-shot
++guest runner and TypeScript containment client are experimental source primitives;
++they are not an installed service or a production RuntimeAdapter, and always leave
++results uncollected and the host slot quarantined. See
++`../../docs/cloud-workspaces/mac-safety-2026-10-18/ARCHITECTURE.md` for the changed
++boundary, exact remaining engineering and separate operational gates.
+ 
+ ## Entry points
+ 
+@@ -87,20 +89,16 @@
+ wire fields. Census carries exact observed SDK identifiers and actual/unknown storage
+ measurements; unknown is not zero. Cache admission above 20 GiB rejects, without eviction.
+ 
+-Only native Linux/digest-pinned offline npm/cargo/CMake recipes are supported by the Linux
++Only Linux/digest-pinned offline npm/cargo/CMake recipes are supported by the Linux
+ adapter. Owner-approved executable mappings are explicit. CMake configure/build phases
+-share host-visible work storage. Native Mac projects are trusted and unsigned, with
+-explicit Xcode/build-number/SDK/destination and copied staging. Without a real descendant
+-attestor, even native exit zero retains quarantine. Hard native resource/network isolation
+-and host work-volume disk quotas are not provided by portable Node APIs.
+-`NativeDescendantAttestor` is now a concrete class constructed with owner-only public
+-`MacSupervisorConfig` pins; the former arbitrary `inspect` callback is rejected.
+-All current native paths, including an authenticated process-only seal, retain quarantine.
+-The optional pinned supervisor companion is not supplied/installed, and the raw C
+-observer stream cannot be substituted for an authenticated journal or termination proof.
++share host-visible work storage. `NativeMacAdapter.prepare/start` and the ES client's
++`start` reject before any callback or process invocation. `reviewRecovery` still reads
++bounded historical signed journals; a process seal never establishes service closure.
+ 
+-See `../../docs/cloud-workspaces/RUNTIME-REVIEW.md` for the exact file/interface inventory,
+-static findings, provider requirements, unsupported states and deferred RTD gates.
++The separate `launchMacVmContainment` source API reserves a durable host slot and
++requires owner-provisioned images, roots, signed helper and pinned guest job. It observes
++whole-VM termination only, never build success. Unknown observations and even a clean
++VM stop retain the slot pending explicit reconciliation and missing result intake.
+ 
+ Final source handoff: native-attestor, current-authorization and project-scale readiness
+ remain explicit HOLDs owned by the parent. No default-success attestor/authorization port
+--- /dev/null
++++ b/packages/build-runtime/native/mac-vm-guest.py
+@@ -0,0 +1,374 @@
++"""One-shot macOS guest boot runner. SOURCE ONLY; no installer or host execution.
++Run only inside an owner-provisioned, secret-free, offline Foundry VM image.
++The host must stop the entire VM before trusting any output for intake.
++"""
++import hashlib
++import json
++import os
++from pathlib import Path
++import pwd
++import re
++import selectors
++import signal
++import stat
++import subprocess
++import time
++
++INPUT = Path('/Volumes/My Shared Files')
++OUTPUT = Path('/Volumes/FoundryOutputs')
++WORK = Path('/private/var/foundry/work')
++BUILD_USER = 'foundry-build'
++MAX_FILES = 8192
++MAX_INPUT = 4 * 1024 ** 3
++MAX_RESULT = 7 * 1024 ** 2
++
++
++def require(ok, code):
++    if not ok:
++        raise ValueError(code)
++
++
++def relative(value):
++    require(isinstance(value, str) and re.fullmatch(r'[A-Za-z0-9_./-]{1,240}', value)
++            and not value.startswith(('/', '-')) and all(p not in ('', '.', '..') for p in value.split('/')), 'relative-path')
++    return value
++
++
++def token(value):
++    require(isinstance(value, str) and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,127}', value), 'recipe-token')
++    return value
++
++
++def deadline_check(deadline):
++    require(time.monotonic() < deadline, 'guest-deadline')
++
++
++def open_directory(path):
++    fd = os.open('/', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try:
++        for part in Path(path).parts[1:]:
++            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
++            os.close(fd)
++            fd = child
++        return fd
++    except BaseException:
++        os.close(fd)
++        raise
++
++
++def open_beneath(root, path, directory=False):
++    require(isinstance(path, str) and not path.startswith('/')
++            and all(p not in ('', '.', '..') for p in path.split('/')), 'descriptor-path')
++    fd = os.dup(root)
++    device = os.fstat(fd).st_dev
++    try:
++        parts = path.split('/')
++        for i, part in enumerate(parts):
++            flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
++            if i < len(parts)-1 or directory:
++                flags |= os.O_DIRECTORY
++            child = os.open(part, flags, dir_fd=fd)
++            os.close(fd)
++            fd = child
++            require(os.fstat(fd).st_dev == device, 'nested-mount')
++        return fd
++    except BaseException:
++        os.close(fd)
++        raise
++
++
++def stable(a, b):
++    return (a.st_dev, a.st_ino, a.st_mode, a.st_nlink, a.st_size, a.st_mtime_ns, a.st_ctime_ns) == (
++        b.st_dev, b.st_ino, b.st_mode, b.st_nlink, b.st_size, b.st_mtime_ns, b.st_ctime_ns)
++
++
++def read_regular(root, path, maximum, deadline):
++    fd = open_beneath(root, path)
++    try:
++        before = os.fstat(fd)
++        require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1
++                and 0 <= before.st_size <= maximum, 'regular-file-budget')
++        content = bytearray()
++        while len(content) < before.st_size:
++            deadline_check(deadline)
++            chunk = os.read(fd, min(65536, before.st_size-len(content)))
++            require(chunk, 'file-shrank')
++            content.extend(chunk)
++        require(not os.read(fd, 1) and stable(before, os.fstat(fd)), 'file-changed')
++        return bytes(content)
++    finally:
++        os.close(fd)
++
++
++def destination_parent(root, path):
++    fd = os.dup(root)
++    try:
++        for part in path.split('/')[:-1]:
++            try:
++                os.mkdir(part, mode=0o700, dir_fd=fd)
++            except FileExistsError:
++                pass
++            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
++            st = os.fstat(child)
++            require(st.st_uid == 0 and st.st_mode & 0o077 == 0, 'destination-owner')
++            os.close(fd)
++            fd = child
++        return fd
++    except BaseException:
++        os.close(fd)
++        raise
++
++
++def copy_regular(source_root, path, destination_root, dest_path, maximum, deadline, expected=None, mode=0o600):
++    src = open_beneath(source_root, path)
++    parent = -1
++    dest = -1
++    try:
++        before = os.fstat(src)
++        require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1
++                and 0 <= before.st_size <= maximum, 'copy-regular-budget')
++        parent = destination_parent(destination_root, dest_path)
++        dest = os.open(dest_path.split('/')[-1], os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, mode, dir_fd=parent)
++        digest = hashlib.sha256()
++        copied = 0
++        while copied < before.st_size:
++            deadline_check(deadline)
++            chunk = os.read(src, min(1024*1024, before.st_size-copied))
++            require(chunk and copied+len(chunk) <= maximum, 'copy-size')
++            digest.update(chunk)
++            view = memoryview(chunk)
++            while view:
++                deadline_check(deadline)
++                count = os.write(dest, view)
++                require(count > 0, 'copy-write')
++                view = view[count:]
++            copied += len(chunk)
++        require(not os.read(src, 1) and stable(before, os.fstat(src)), 'copy-source-changed')
++        value = digest.hexdigest()
++        if expected is not None:
++            require((value, copied) == expected, 'copy-expected-content')
++        os.fsync(dest)
++        os.fsync(parent)
++        deadline_check(deadline)
++        return value, copied
++    finally:
++        os.close(src)
++        if dest >= 0:
++            os.close(dest)
++        if parent >= 0:
++            os.close(parent)
++
++
++def capture(argv, cwd, env, deadline, maximum, preexec=None):
++    deadline_check(deadline)
++    proc = subprocess.Popen(argv, env=env, cwd=cwd, stdin=subprocess.DEVNULL,
++                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True, preexec_fn=preexec)
++    content, limited = bytearray(), False
++    poller = selectors.DefaultSelector()
++    poller.register(proc.stdout, selectors.EVENT_READ)
++    os.set_blocking(proc.stdout.fileno(), False)
++    try:
++        while poller.get_map():
++            if time.monotonic() >= deadline or len(content) >= maximum:
++                limited = True
++                break
++            for key, _ in poller.select(min(0.1, max(0, deadline-time.monotonic()))):
++                chunk = os.read(key.fd, min(65536, maximum-len(content)))
++                if chunk:
++                    content.extend(chunk)
++                else:
++                    poller.unregister(key.fileobj)
++        if limited:
++            try:
++                os.killpg(proc.pid, signal.SIGKILL)
++            except ProcessLookupError:
++                pass
++        try:
++            code = proc.wait(timeout=max(0.1, deadline-time.monotonic()))
++        except subprocess.TimeoutExpired:
++            limited = True
++            try:
++                os.killpg(proc.pid, signal.SIGKILL)
++            except ProcessLookupError:
++                pass
++            code = proc.wait(timeout=10)
++        return code, bytes(content), limited
++    finally:
++        poller.close()
++        proc.stdout.close()
++
++
++def fixed_command(exe, args, env, deadline):
++    code, output, limited = capture([exe]+args, WORK, env, min(deadline, time.monotonic()+30), 65536)
++    require(code == 0 and not limited, 'toolchain-observation')
++    return output.decode('utf-8', errors='strict')
++
++
++def write_json(path, data):
++    payload = json.dumps(data, sort_keys=True, separators=(',', ':')).encode()
++    require(len(payload) <= 1024 * 1024, 'receipt-budget')
++    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
++    try:
++        with os.fdopen(fd, 'wb', closefd=False) as f:
++            f.write(payload)
++            f.flush()
++            os.fsync(fd)
++    finally:
++        os.close(fd)
++    parent = os.open(path.parent, os.O_RDONLY | os.O_NOFOLLOW)
++    try:
++        os.fsync(parent)
++    finally:
++        os.close(parent)
++
++
++def run():
++    started = time.monotonic()
++    deadline = started + 3600
++    require(os.getuid() == 0 and os.uname().machine == 'arm64', 'guest-root-arm64-only')
++    require(INPUT.is_mount() and OUTPUT.is_mount() and os.statvfs(INPUT).f_flag & os.ST_RDONLY, 'guest-volumes-required')
++    require(not WORK.exists() and not (OUTPUT / 'result.json').exists(), 'guest-never-replay')
++    input_fd = open_directory(INPUT)
++    output_fd = open_directory(OUTPUT)
++    output_stat = os.fstat(output_fd)
++    require(output_stat.st_uid == 0 and output_stat.st_mode & 0o077 == 0, 'guest-output-private-root')
++    raw = read_regular(input_fd, 'job.json', 262144, deadline)
++    job = json.loads(raw)
++    require(set(job) == {'version', 'identity', 'attemptId', 'jobId', 'profileHash', 'sourceHash', 'recipe', 'limits', 'files'}, 'job-shape')
++    require(job['version'] == 1 and re.fullmatch(r'vm:[a-f0-9]{64}', job['identity']), 'job-version')
++    for key in ('attemptId', 'jobId'):
++        token(job[key])
++    for key in ('profileHash', 'sourceHash'):
++        require(re.fullmatch(r'[a-f0-9]{64}', job[key]), 'job-digest')
++    binding = json.dumps([job['jobId'], job['attemptId'], job['profileHash']], separators=(',', ':')).encode()
++    require(job['identity'] == 'vm:'+hashlib.sha256(binding).hexdigest(), 'job-identity-binding')
++    r, limits, files = job['recipe'], job['limits'], job['files']
++    require(set(r) == {'developerDir', 'project', 'scheme', 'sdk', 'destination', 'configuration', 'xcodeBuild', 'macos', 'outputPaths'}, 'recipe-shape')
++    require(set(limits) == {'cpu', 'timeoutMs', 'maxOutputBytes'}, 'limits-shape')
++    require(type(limits['cpu']) is int and 1 <= limits['cpu'] <= 64
++            and type(limits['timeoutMs']) is int and 1 <= limits['timeoutMs'] <= 3600000
++            and type(limits['maxOutputBytes']) is int and 1 <= limits['maxOutputBytes'] <= MAX_RESULT, 'limits')
++    deadline = min(deadline, started + limits['timeoutMs']/1000)
++    require(isinstance(files, list) and 0 < len(files) <= MAX_FILES, 'input-count')
++    require(r['configuration'] in ('Debug', 'Release')
++            and re.fullmatch(r'/Applications/Xcode[^/]*\.app/Contents/Developer', r['developerDir'])
++            and re.fullmatch(r'\d+(\.\d+){1,2}', r['macos']), 'guest-toolchain')
++    for key in ('scheme', 'sdk', 'xcodeBuild'):
++        token(r[key])
++    require(re.fullmatch(r'(generic/platform=(iOS|macOS|iOS Simulator)|platform=macOS,arch=arm64)', r['destination']), 'guest-destination')
++    relative(r['project'])
++    require(r['project'].endswith(('.xcodeproj', '.xcworkspace')), 'project-kind')
++    require(isinstance(r['outputPaths'], list) and 0 < len(r['outputPaths']) <= 24, 'outputs')
++    for path in r['outputPaths']:
++        relative(path)
++    require(len(set(r['outputPaths'])) == len(r['outputPaths']), 'duplicate-output')
++    user = pwd.getpwnam(BUILD_USER)
++    require(user.pw_uid > 0 and user.pw_gid > 0, 'guest-build-user')
++    WORK.mkdir(mode=0o700)
++    for name in ('source', 'home', 'tmp', 'DerivedData', 'dependencies', 'modules', 'swift-modules'):
++        p = WORK / name
++        p.mkdir(mode=0o700)
++    work_fd = open_directory(WORK)
++    seen, total = set(), 0
++    for entry in files:
++        require(set(entry) == {'path', 'sha256', 'sizeBytes', 'mode'}, 'input-shape')
++        path = relative(entry['path'])
++        key = path.casefold()
++        require(key not in seen and re.fullmatch(r'[a-f0-9]{64}', entry['sha256'])
++                and type(entry['sizeBytes']) is int and 0 <= entry['sizeBytes'] <= 64 * 1024 ** 2
++                and entry['mode'] in (0o600, 0o644, 0o700, 0o755), 'input-metadata')
++        seen.add(key)
++        total += entry['sizeBytes']
++        require(total <= MAX_INPUT, 'input-total')
++        copy_regular(input_fd, 'source/'+path, work_fd, 'source/'+path, entry['sizeBytes'], deadline,
++                     (entry['sha256'], entry['sizeBytes']), entry['mode'])
++    for parent, dirs, names in os.walk(WORK, followlinks=False):
++        os.chown(parent, user.pw_uid, user.pw_gid)
++        for name in names:
++            os.chown(Path(parent) / name, user.pw_uid, user.pw_gid)
++    env = {'PATH': '/usr/bin:/bin', 'LANG': 'C', 'LC_ALL': 'C', 'HOME': str(WORK / 'home'),
++           'TMPDIR': str(WORK / 'tmp'), 'DEVELOPER_DIR': r['developerDir'],
++           'CLANG_MODULE_CACHE_PATH': str(WORK / 'modules'), 'SWIFT_MODULECACHE_PATH': str(WORK / 'swift-modules')}
++    exe = r['developerDir'] + '/usr/bin/xcodebuild'
++    require('Build version ' + r['xcodeBuild'] in fixed_command(exe, ['-version'], env, deadline).splitlines(), 'xcode-build')
++    sdks = fixed_command(exe, ['-showsdks'], env, deadline)
++    require(r['sdk'] in re.findall(r'-sdk\s+([A-Za-z0-9_.-]+)', sdks), 'sdk')
++    require(fixed_command('/usr/bin/sw_vers', ['-productVersion'], env, deadline).strip() == r['macos'], 'guest-macos')
++    argv = [exe, '-workspace' if r['project'].endswith('.xcworkspace') else '-project', str(WORK / 'source' / r['project']),
++            '-scheme', r['scheme'], '-configuration', r['configuration'], '-sdk', r['sdk'], '-destination', r['destination'],
++            '-derivedDataPath', str(WORK / 'DerivedData'), '-clonedSourcePackagesDirPath', str(WORK / 'dependencies'),
++            '-disableAutomaticPackageResolution', '-onlyUsePackageVersionsFromResolvedFile', '-skipPackageUpdates',
++            '-jobs', str(limits['cpu']), 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'CODE_SIGN_IDENTITY=',
++            'DEVELOPMENT_TEAM=', 'COMPILER_INDEX_STORE_ENABLE=NO', 'build']
++    def drop():
++        os.setgroups([])
++        os.setgid(user.pw_gid)
++        os.setuid(user.pw_uid)
++    code, log, limited = capture(argv, WORK / 'source', env, deadline, limits['maxOutputBytes'], drop)
++    # Root collection is descriptor-relative, bounded, and never reopens checked
++    # files by pathname. Descendants may still mutate guest data; reject unstable
++    # bytes. Only host VZ whole-VM stop can close their execution lifetime.
++    output_files, used, visited, metadata_bytes = [], len(log), 0, 0
++    for selected in r['outputPaths'] if code == 0 and not limited else []:
++        pending = [(relative(selected), 0)]
++        while pending:
++            deadline_check(deadline)
++            path, depth = pending.pop()
++            visited += 1
++            require(visited <= 20000 and depth <= 64 and len(path.encode()) <= 4096, 'output-tree-budget')
++            fd = open_beneath(work_fd, path)
++            try:
++                st = os.fstat(fd)
++                if stat.S_ISDIR(st.st_mode):
++                    with os.scandir(fd) as entries:
++                        for entry in entries:
++                            deadline_check(deadline)
++                            require(len(pending)+visited < 20000, 'output-entry-budget')
++                            name = entry.name
++                            require(name not in ('.', '..') and not any(ord(c) < 32 for c in name)
++                                    and len(name.encode()) <= 255, 'output-name')
++                            pending.append((path+'/'+name, depth+1))
++                    continue
++                require(stat.S_ISREG(st.st_mode) and st.st_nlink == 1, 'output-type')
++            finally:
++                os.close(fd)
++            # Admit encoded receipt metadata BEFORE copying or retaining a row.
++            # A 64-hex digest and maximum numeric size bound the eventual record.
++            row_bound = len(json.dumps({'path': path, 'sha256': '0'*64, 'sizeBytes': MAX_RESULT},
++                                       sort_keys=True, separators=(',', ':')).encode()) + 1
++            require(metadata_bytes+row_bound <= 900*1024, 'receipt-metadata-budget')
++            metadata_bytes += row_bound
++            # Reopening through the anchored no-follow chain is safe even if a
++            # directory changed: the checked/copy descriptor itself sets limits.
++            actual, size = copy_regular(work_fd, path, output_fd, 'files/'+path,
++                                        limits['maxOutputBytes']-used, deadline)
++            used += size
++            require(used <= limits['maxOutputBytes'], 'result-total')
++            output_files.append({'path': path, 'sha256': actual, 'sizeBytes': size})
++    deadline_check(deadline)
++    with open(OUTPUT / 'build.log', 'xb') as f:
++        f.write(log)
++        f.flush()
++        os.fsync(f.fileno())
++    deadline_check(deadline)
++    write_json(OUTPUT / 'result.json', {'version': 1, 'identity': job['identity'], 'attemptId': job['attemptId'],
++               'jobId': job['jobId'], 'profileHash': job['profileHash'], 'sourceHash': job['sourceHash'],
++               'guestMacos': r['macos'], 'xcodeBuild': r['xcodeBuild'], 'exitCode': code, 'limited': limited,
++               'outputs': output_files, 'logSha256': hashlib.sha256(log).hexdigest(), 'logBytes': len(log)})
++    os.close(work_fd)
++    os.close(output_fd)
++    os.close(input_fd)
++
++
++if __name__ == '__main__':
++    try:
++        run()
++    except BaseException:
++        # No exception/path/argv/source output: diagnostics never expose job content.
++        try:
++            write_json(OUTPUT / 'failure.json', {'version': 1, 'failure': 'guest-job-incomplete'})
++        except BaseException:
++            pass
++    finally:
++        subprocess.run(['/sbin/shutdown', '-h', 'now'], env={'PATH': '/usr/bin:/bin'},
++                       stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=10, check=False)
+--- /dev/null
++++ b/packages/build-runtime/native/mac-vm-host.entitlements
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<plist version="1.0">
++<dict>
++    <key>com.apple.security.virtualization</key>
++    <true/>
++</dict>
++</plist>
+--- /dev/null
++++ b/packages/build-runtime/native/mac-vm-host.swift
+@@ -0,0 +1,560 @@
++// Source candidate only. No native execution fallback; see VM-HOST-REVIEW.md.
++// Owner must build/sign/pin and provision artifacts separately. macOS 13+, arm64.
++import Foundation
++import Virtualization
++import CryptoKit
++import Security
++import Darwin
++
++private struct Refusal: Error { let id: String }
++private func require(_ value: Bool, _ id: String) throws {
++    if !value { throw Refusal(id: id) }
++}
++private func diagnostic(_ id: String) {
++    // Only fixed identifiers reach stderr; never print NSError, paths or input.
++    let bytes = Array((id + "\n").utf8)
++    _ = bytes.withUnsafeBytes { Darwin.write(STDERR_FILENO, $0.baseAddress, $0.count) }
++}
++private func fail(_ id: String) -> Never { diagnostic(id); exit(2) }
++
++// Continuous time includes host sleep. Values are bounded well below UInt64.max.
++private struct Clock {
++    let scale: Double
++    init() {
++        var info = mach_timebase_info_data_t()
++        guard mach_timebase_info(&info) == KERN_SUCCESS, info.denom != 0 else { fail("clock-unavailable") }
++        scale = Double(info.numer) / Double(info.denom)
++    }
++    func now() -> UInt64 { UInt64(Double(mach_continuous_time()) * scale) }
++}
++
++// Deliberately restricted JSON grammar: flat objects, unescaped printable ASCII
++// strings and unsigned decimal integers only. Reject duplicates BEFORE decoding.
++// No floats, nesting, escapes, null, booleans, BOM, CR or trailing tokens.
++private enum Atom { case text(String), number(UInt64) }
++private struct FlatJSON {
++    var bytes: [UInt8]; var i = 0
++    mutating func whitespace() { while i < bytes.count && (bytes[i] == 32 || bytes[i] == 9) { i += 1 } }
++    mutating func take(_ byte: UInt8) throws {
++        whitespace(); try require(i < bytes.count && bytes[i] == byte, "invalid-json"); i += 1
++    }
++    mutating func string() throws -> String {
++        try take(34); let start = i
++        while i < bytes.count && bytes[i] != 34 {
++            try require(bytes[i] >= 32 && bytes[i] <= 126 && bytes[i] != 92, "invalid-json-string")
++            i += 1
++        }
++        try require(i < bytes.count && i - start <= 512, "invalid-json-string")
++        let value = String(decoding: bytes[start..<i], as: UTF8.self); i += 1; return value
++    }
++    mutating func object() throws -> [String: Atom] {
++        try require(!bytes.isEmpty && bytes.count <= 8192, "json-size")
++        try take(123); whitespace(); var result: [String: Atom] = [:]
++        while i < bytes.count && bytes[i] != 125 {
++            let key = try string()
++            try require(result[key] == nil && result.count < 18, "json-keys")
++            try take(58); whitespace()
++            if i < bytes.count && bytes[i] == 34 { result[key] = .text(try string()) }
++            else {
++                let start = i
++                while i < bytes.count && bytes[i] >= 48 && bytes[i] <= 57 { i += 1 }
++                try require(i > start && i - start <= 16 && (i - start == 1 || bytes[start] != 48), "json-integer")
++                guard let value = UInt64(String(decoding: bytes[start..<i], as: UTF8.self)) else { throw Refusal(id: "json-integer") }
++                result[key] = .number(value)
++            }
++            whitespace()
++            if i < bytes.count && bytes[i] == 44 {
++                i += 1; whitespace(); try require(i < bytes.count && bytes[i] != 125, "invalid-json")
++            } else { break }
++        }
++        try take(125); whitespace(); try require(i == bytes.count, "invalid-json"); return result
++    }
++}
++private func text(_ o: [String: Atom], _ key: String) throws -> String {
++    guard case let .text(value)? = o[key] else { throw Refusal(id: "config-string") }; return value
++}
++private func number(_ o: [String: Atom], _ key: String) throws -> UInt64 {
++    guard case let .number(value)? = o[key] else { throw Refusal(id: "config-number") }; return value
++}
++private func token(_ s: String) -> Bool {
++    !s.isEmpty && s != "." && s != ".." && s.utf8.count <= 128 && s.utf8.allSatisfy {
++        ($0 >= 48 && $0 <= 57) || ($0 >= 65 && $0 <= 90) || ($0 >= 97 && $0 <= 122) || $0 == 45 || $0 == 95 || $0 == 46
++    }
++}
++private func hexDigest(_ s: String) -> Bool {
++    s.utf8.count == 64 && s.utf8.allSatisfy { ($0 >= 48 && $0 <= 57) || ($0 >= 97 && $0 <= 102) }
++}
++private struct Config {
++    let attemptId: String, profileHash: String, jobId: String, identity: String, guestJobSha256: String
++    let uid: uid_t, cpu: Int, memory: UInt64, bootLimit: UInt64, outputLimit: UInt64, runSeconds: UInt64
++    let boot: String, output: String, aux: String, hardware: String, machine: String, input: String
++    init(_ o: [String: Atom]) throws {
++        try require(Set(o.keys) == Set(["version", "attemptId", "profileHash", "jobId", "identity", "guestJobSha256", "helperUID", "cpuCount", "memoryBytes", "maxBootBytes", "maxOutputBytes", "maxRunSeconds", "bootDisk", "outputDisk", "auxiliaryStorage", "hardwareModel", "machineIdentifier", "inputDirectory"]), "config-keys")
++        try require(number(o, "version") == 1, "config-version")
++        attemptId = try text(o, "attemptId"); profileHash = try text(o, "profileHash"); jobId = try text(o, "jobId")
++        try require(token(attemptId) && token(jobId), "config-identity")
++        try require(hexDigest(profileHash), "config-profile")
++        guestJobSha256 = try text(o, "guestJobSha256"); try require(hexDigest(guestJobSha256), "config-guest-job-digest")
++        // ASCII tokens make these exact bytes identical to JSON.stringify; order is contractual.
++        let binding = Data("[\"\(jobId)\",\"\(attemptId)\",\"\(profileHash)\"]".utf8)
++        let expected = "vm:" + SHA256.hash(data: binding).map { String(format: "%02x", $0) }.joined()
++        identity = try text(o, "identity"); try require(identity == expected, "config-binding")
++        let user = try number(o, "helperUID")
++        try require(user >= 501 && user <= UInt64(UInt32.max) && getuid() == user && geteuid() == user && getgid() != 0 && getegid() != 0, "dedicated-uid-required")
++        uid = uid_t(user)
++        let cpus = try number(o, "cpuCount"); try require(cpus >= 1 && cpus <= 64, "cpu-bound"); cpu = Int(cpus)
++        memory = try number(o, "memoryBytes"); try require(memory >= 2 * 1024 * 1024 * 1024 && memory <= 64 * 1024 * 1024 * 1024 && memory % (1024 * 1024) == 0, "memory-bound")
++        bootLimit = try number(o, "maxBootBytes"); outputLimit = try number(o, "maxOutputBytes")
++        try require(bootLimit >= 1024 * 1024 && bootLimit <= 128 * 1024 * 1024 * 1024 && bootLimit % 512 == 0, "boot-bound")
++        try require(outputLimit >= 1024 * 1024 && outputLimit <= 8 * 1024 * 1024 * 1024 && outputLimit % 512 == 0, "output-bound")
++        runSeconds = try number(o, "maxRunSeconds"); try require(runSeconds >= 1 && runSeconds <= 3600, "duration-bound")
++        let base = "/Library/Foundry/VM/attempts/" + attemptId
++        boot = try text(o, "bootDisk"); output = try text(o, "outputDisk"); aux = try text(o, "auxiliaryStorage")
++        hardware = try text(o, "hardwareModel"); machine = try text(o, "machineIdentifier"); input = try text(o, "inputDirectory")
++        try require(boot == base + "/boot.raw" && output == base + "/outputs.raw" && aux == base + "/auxiliary.bin" && hardware == base + "/hardware-model.bin" && machine == base + "/machine-identifier.bin" && input == base + "/input", "fixed-paths-required")
++    }
++}
++
++// Reject extended ACL entries, including ones which mode bits would miss. An
++// unsupported ACL query is a refusal, not permission to assume secure ancestry.
++private func noACL(_ fd: Int32) throws {
++    // acl_get_fd_np(NULL) cannot distinguish absence from failure; acl_to_text
++    // can omit entries on allocation failure. Neither is evidence of an empty ACL.
++    guard let security = filesec_init() else { throw Refusal(id: "acl-unavailable") }
++    defer { filesec_free(security) }
++    var observed = stat(); var present: Int32 = 0
++    try require(fstatx_np(fd, &observed, security) == 0 &&
++                filesec_query_property(security, FILESEC_ACL, &present) == 0, "acl-unavailable")
++    if present == 0 { return }
++    var obtained: acl_t? = nil
++    try require(filesec_get_property(security, FILESEC_ACL, &obtained) == 0, "acl-unavailable")
++    // Darwin _FILESEC_REMOVE_ACL is the sentinel pointer (void *)1, not an ACL.
++    guard let acl = obtained, UInt(bitPattern: acl) > 1 else { throw Refusal(id: "acl-unavailable") }
++    var entry: acl_entry_t? = nil
++    errno = 0
++    let result = acl_get_entry(acl, ACL_FIRST_ENTRY, &entry)
++    let entryErrno = errno // Capture BEFORE acl_free/filesec_free can change it.
++    let freed = acl_free(acl)
++    // Darwin: 0 means an entry exists; -1/EINVAL is the empty/out-of-range case.
++    try require(freed == 0 && result == -1 && entryErrno == EINVAL, "acl-entries-or-error")
++}
++private func localVolume(_ fd: Int32) throws {
++    var volume = statfs()
++    try require(fstatfs(fd, &volume) == 0 && volume.f_owner == 0 &&
++                (volume.f_flags & UInt32(MNT_LOCAL)) != 0, "root-local-volume-required")
++}
++private func statFD(_ fd: Int32) throws -> stat {
++    var s = stat(); try require(fstat(fd, &s) == 0, "fstat-failed"); return s
++}
++private func isType(_ s: stat, _ kind: mode_t) -> Bool { (s.st_mode & mode_t(S_IFMT)) == kind }
++private func sameFile(_ a: stat, _ b: stat) -> Bool {
++    a.st_dev == b.st_dev && a.st_ino == b.st_ino && a.st_uid == b.st_uid && a.st_gid == b.st_gid &&
++    a.st_mode == b.st_mode && a.st_nlink == b.st_nlink && a.st_size == b.st_size && a.st_flags == b.st_flags &&
++    a.st_mtimespec.tv_sec == b.st_mtimespec.tv_sec && a.st_mtimespec.tv_nsec == b.st_mtimespec.tv_nsec &&
++    a.st_ctimespec.tv_sec == b.st_ctimespec.tv_sec && a.st_ctimespec.tv_nsec == b.st_ctimespec.tv_nsec
++}
++private final class Pin {
++    let fd: Int32, path: String, initial: stat
++    init(_ fd: Int32, _ path: String) throws { self.fd = fd; self.path = path; initial = try statFD(fd) }
++    deinit { close(fd) }
++    func recheck() throws {
++        let held = try statFD(fd)
++        var s = stat(); try require(lstat(path, &s) == 0 && sameFile(initial, s) && sameFile(initial, held), "artifact-changed")
++        try noACL(fd)
++    }
++    func readSmall() throws -> Data {
++        try require(initial.st_size > 0 && initial.st_size <= 4096, "metadata-bound")
++        var bytes = [UInt8](repeating: 0, count: Int(initial.st_size))
++        let count = bytes.withUnsafeMutableBytes { pread(fd, $0.baseAddress, $0.count, 0) }
++        try require(count == bytes.count, "metadata-read"); try recheck(); return Data(bytes)
++    }
++    func sha256(maximum: Int) throws -> String {
++        try recheck()
++        try require(initial.st_size > 0 && initial.st_size <= maximum, "guest-job-bound")
++        var hash = SHA256(); var offset: off_t = 0
++        var buffer = [UInt8](repeating: 0, count: 65536)
++        while offset < initial.st_size {
++            let wanted = min(buffer.count, Int(initial.st_size - offset))
++            let n = buffer.withUnsafeMutableBytes { pread(fd, $0.baseAddress, wanted, offset) }
++            if n < 0 && errno == EINTR { continue }
++            try require(n > 0 && n <= wanted, "guest-job-read")
++            hash.update(data: Data(buffer.prefix(n))); offset += off_t(n)
++        }
++        try recheck()
++        return hash.finalize().map { String(format: "%02x", $0) }.joined()
++    }
++}
++private final class Artifacts {
++    var pins: [Pin] = []
++    let boot: Pin, output: Pin, aux: Pin, input: Pin, job: Pin
++    let guestJobSha256: String
++    let hardwareData: Data, machineData: Data
++    init(_ c: Config) throws {
++        func directory(_ path: String) throws -> Pin {
++            // Walk from / with openat: no symlink resolution at ANY component.
++            var fd = open("/", O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
++            try require(fd >= 0, "root-open")
++            do {
++                for part in ([String("")] + path.split(separator: "/").map(String.init)) {
++                    if !part.isEmpty {
++                        let next = openat(fd, part, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
++                        try require(next >= 0, "ancestor-open"); close(fd); fd = next
++                    }
++                    let s = try statFD(fd)
++                    try require(isType(s, mode_t(S_IFDIR)) && s.st_uid == 0 && (s.st_mode & 0o022) == 0, "root-ancestry-required")
++                    try noACL(fd)
++                    try localVolume(fd)
++                    // Root can mutate these; the owner must keep this hierarchy sealed for the attempt.
++                }
++                return try Pin(fd, path)
++            } catch { close(fd); throw error }
++        }
++        func file(_ parent: Pin, _ name: String, writable: Bool, limit: UInt64) throws -> Pin {
++            let fd = openat(parent.fd, name, (writable ? O_RDWR : O_RDONLY) | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK)
++            try require(fd >= 0, "artifact-open")
++            do {
++                let s = try statFD(fd)
++                try require(isType(s, mode_t(S_IFREG)) && s.st_nlink == 1 && s.st_uid == (writable ? c.uid : 0) && (s.st_mode & 0o7777) == (writable ? 0o600 : 0o444) && s.st_size > 0 && UInt64(s.st_size) <= limit, "artifact-policy")
++                try noACL(fd)
++                try localVolume(fd)
++                try require(s.st_dev == parent.initial.st_dev, "artifact-device")
++                try require(flock(fd, (writable ? LOCK_EX : LOCK_SH) | LOCK_NB) == 0, "artifact-in-use")
++                return try Pin(fd, parent.path + "/" + name)
++            } catch { close(fd); throw error }
++        }
++        let root = try directory("/Library/Foundry/VM/attempts/" + c.attemptId)
++        boot = try file(root, "boot.raw", writable: true, limit: c.bootLimit)
++        output = try file(root, "outputs.raw", writable: true, limit: c.outputLimit)
++        aux = try file(root, "auxiliary.bin", writable: true, limit: 16 * 1024 * 1024)
++        let hardware = try file(root, "hardware-model.bin", writable: false, limit: 4096)
++        let machine = try file(root, "machine-identifier.bin", writable: false, limit: 4096)
++        input = try directory(c.input)
++        try require(input.initial.st_dev == root.initial.st_dev, "input-device")
++        // Descriptor-relative open, retained until actual VM stop. No pathname
++        // reopen or caller callback may substitute the approved guest job bytes.
++        job = try file(input, "job.json", writable: false, limit: 262144)
++        guestJobSha256 = c.guestJobSha256
++        // Require fully allocated raw files, not truncate-created sparse images.
++        for disk in [boot, output] {
++            let s = disk.initial
++            try require(s.st_size % 512 == 0 && s.st_blocks >= (s.st_size + 511) / 512 && (s.st_flags & UInt32(UF_COMPRESSED)) == 0, "disk-allocation-required")
++            try require(lseek(disk.fd, 0, SEEK_HOLE) == s.st_size, "sparse-disk-forbidden")
++        }
++        hardwareData = try hardware.readSmall(); machineData = try machine.readSmall()
++        pins = [root, boot, output, aux, hardware, machine, input, job]
++        var count = 0; var bytes: UInt64 = 0
++        func sealedInput(_ fd: Int32, depth: Int) throws {
++            try require(depth <= 32, "input-depth")
++            let s = try statFD(fd)
++            try require(isType(s, mode_t(S_IFDIR)) && s.st_uid == 0 && (s.st_mode & 0o7777) == 0o555 && s.st_dev == input.initial.st_dev, "input-directory-policy")
++            try noACL(fd)
++            let duplicate = dup(fd); try require(duplicate >= 0, "input-dup")
++            guard let dir = fdopendir(duplicate) else { close(duplicate); throw Refusal(id: "input-enumerate") }
++            defer { closedir(dir) }
++            while true {
++                errno = 0
++                guard let entry = readdir(dir) else { try require(errno == 0, "input-enumerate"); break }
++                let nameCapacity = Int(entry.pointee.d_namlen) + 1
++                let name = withUnsafePointer(to: &entry.pointee.d_name) {
++                    $0.withMemoryRebound(to: CChar.self, capacity: nameCapacity) { String(validatingUTF8: $0) }
++                }
++                guard let name = name else { throw Refusal(id: "input-name") }
++                if name == "." || name == ".." { continue }
++                count += 1; try require(count <= 65536, "input-entry-bound")
++                let child = openat(fd, name, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC)
++                try require(child >= 0, "input-child-open")
++                do {
++                    let item = try statFD(child)
++                    try require(item.st_uid == 0 && item.st_dev == input.initial.st_dev, "input-owner-device")
++                    if isType(item, mode_t(S_IFDIR)) { try sealedInput(child, depth: depth + 1) }
++                    else {
++                        try require(isType(item, mode_t(S_IFREG)) && item.st_nlink == 1 && (item.st_mode & 0o7777) == 0o444 && item.st_size >= 0, "input-file-policy")
++                        try noACL(child); bytes += UInt64(item.st_size); try require(bytes <= 2 * 1024 * 1024 * 1024, "input-byte-bound")
++                    }
++                    close(child)
++                } catch { close(child); throw error }
++            }
++        }
++        try sealedInput(input.fd, depth: 0)
++        try recheck()
++        try verifyGuestJob()
++    }
++    func recheck() throws { for pin in pins { try pin.recheck() } }
++    func verifyGuestJob() throws {
++        try require(job.sha256(maximum: 262144) == guestJobSha256, "guest-job-digest-mismatch")
++    }
++}
++
++#if arch(arm64)
++@available(macOS 13.0, *)
++private final class Host: NSObject, VZVirtualMachineDelegate {
++    let clock = Clock()
++    private var config: Config?, artifacts: Artifacts?, vm: VZVirtualMachine?
++    private var watchdog: DispatchSourceTimer?, signals: [DispatchSourceSignal] = []
++    private let inputQueue = DispatchQueue(label: "foundry.vm.stdin", qos: .userInitiated)
++    private let artifactQueue = DispatchQueue(label: "foundry.vm.artifacts", qos: .userInitiated)
++    private var terminal = false, startIssued = false, startPending = false, stopPending = false
++    private var admissionPending = false
++    private var stopFailed = false, fault = false, emittedStopped = false
++    private var generation: UInt64 = 0, outstanding: String?, challengeCreated: UInt64 = 0
++    private var nextChallenge: UInt64 = 0, challengeDeadline: UInt64 = 0
++    private var permitExpires: UInt64 = 0, runDeadline: UInt64 = 0
++    private var configDeadline: UInt64 = 0
++
++    func run() {
++        dispatchPrecondition(condition: .onQueue(.main))
++        configDeadline = clock.now() + 5_000_000_000
++        let timer = DispatchSource.makeTimerSource(queue: .main)
++        timer.schedule(deadline: .now(), repeating: .milliseconds(10), leeway: .milliseconds(1))
++        timer.setEventHandler { [self] in tick() }; timer.resume(); watchdog = timer
++        for sig in [SIGTERM, SIGINT, SIGHUP] {
++            signal(sig, SIG_IGN)
++            let source = DispatchSource.makeSignalSource(signal: sig, queue: .main)
++            source.setEventHandler { [self] in end("signal-stop", failed: true) }; source.resume(); signals.append(source)
++        }
++        inputQueue.async { [self] in readInput() }
++    }
++    private func output(_ fields: [String: Any]) -> Bool {
++        guard let c = config else { return false }
++        var row = fields; row["identity"] = c.identity
++        guard var data = try? JSONSerialization.data(withJSONObject: row, options: [.sortedKeys]), data.count < 2048 else { return false }
++        data.append(10)
++        // Nonblocking, bounded write; pipe writes fit PIPE_BUF. A socket short
++        // write or EAGAIN poisons the protocol and stops; never queue retries.
++        let n = data.withUnsafeBytes { Darwin.write(STDOUT_FILENO, $0.baseAddress, $0.count) }
++        return n == data.count
++    }
++    private func readInput() {
++        var line: [UInt8] = []; var buffer = [UInt8](repeating: 0, count: 4096)
++        var configured = false
++        while true {
++            let n = buffer.withUnsafeMutableBytes { Darwin.read(STDIN_FILENO, $0.baseAddress, $0.count) }
++            if n < 0 && errno == EINTR { continue }
++            if n <= 0 {
++                DispatchQueue.main.sync {
++                    // The parent closes stdin after STOP. It cannot renew or
++                    // reopen admission, and must not poison a clean stop.
++                    if !terminal { end(n == 0 ? "channel-eof" : "channel-read", failed: true) }
++                }; return
++            }
++            for byte in buffer.prefix(n) {
++                if byte != 10 {
++                    line.append(byte)
++                    if line.count > (configured ? 2048 : 8192) {
++                        DispatchQueue.main.sync { end("channel-line-bound", failed: true) }; return
++                    }
++                    continue
++                }
++                do {
++                    var parser = FlatJSON(bytes: line); let object = try parser.object(); line.removeAll(keepingCapacity: true)
++                    if !configured {
++                        let c = try Config(object)
++                        // Bounded filesystem traversal/metadata reads stay OFF the VZ/main queue.
++                        let a = try Artifacts(c)
++                        DispatchQueue.main.sync { configure(c, a) }; configured = true
++                    } else { DispatchQueue.main.sync { control(object) } }
++                } catch {
++                    let id = (error as? Refusal)?.id ?? "source-validation-failed"
++                    DispatchQueue.main.sync { end(id, failed: true) }; return
++                }
++            }
++        }
++    }
++    private func configure(_ c: Config, _ a: Artifacts) {
++        guard !terminal else { return }
++        config = c; artifacts = a
++        do {
++            try require(clock.now() < configDeadline, "config-deadline")
++            try require(VZVirtualMachine.isSupported, "virtualization-unsupported")
++            guard let hardware = VZMacHardwareModel(dataRepresentation: a.hardwareData), hardware.isSupported,
++                  let machine = VZMacMachineIdentifier(dataRepresentation: a.machineData) else { throw Refusal(id: "platform-unsupported") }
++            let platform = VZMacPlatformConfiguration()
++            platform.hardwareModel = hardware; platform.machineIdentifier = machine
++            platform.auxiliaryStorage = VZMacAuxiliaryStorage(contentsOf: URL(fileURLWithPath: c.aux))
++            let v = VZVirtualMachineConfiguration()
++            v.bootLoader = VZMacOSBootLoader(); v.platform = platform
++            v.cpuCount = c.cpu; v.memorySize = c.memory
++            // Exactly two owner-provisioned raw disks. No image creation or install path.
++            v.storageDevices = try [c.boot, c.output].map {
++                VZVirtioBlockDeviceConfiguration(attachment: try VZDiskImageStorageDeviceAttachment(url: URL(fileURLWithPath: $0), readOnly: false))
++            }
++            let input = VZVirtioFileSystemDeviceConfiguration(tag: VZVirtioFileSystemDeviceConfiguration.macOSGuestAutomountTag)
++            input.share = VZSingleDirectoryShare(directory: VZSharedDirectory(url: URL(fileURLWithPath: c.input), readOnly: true))
++            v.directorySharingDevices = [input]
++            v.networkDevices = []; v.socketDevices = []; v.serialPorts = []
++            v.audioDevices = []; v.entropyDevices = []; v.graphicsDevices = []
++            v.keyboards = []; v.pointingDevices = []; v.memoryBalloonDevices = []
++            // No USB controllers, console, GUI view, clipboard or other device is created.
++            try v.validate()
++            let machineVM = VZVirtualMachine(configuration: v, queue: .main)
++            machineVM.delegate = self; vm = machineVM
++            runDeadline = clock.now() + c.runSeconds * 1_000_000_000
++            issueChallenge()
++        } catch { end((error as? Refusal)?.id ?? "vm-configuration-rejected", failed: true) }
++    }
++    private func issueChallenge() {
++        guard !terminal else { return }
++        var bytes = [UInt8](repeating: 0, count: 32)
++        let result = bytes.withUnsafeMutableBytes { SecRandomCopyBytes(kSecRandomDefault, $0.count, $0.baseAddress!) }
++        guard result == errSecSuccess else { end("nonce-unavailable", failed: true); return }
++        generation += 1
++        let nonce = bytes.map { String(format: "%02x", $0) }.joined()
++        challengeCreated = clock.now(); nextChallenge = challengeCreated + 500_000_000
++        challengeDeadline = challengeCreated + 1_000_000_000
++        // Supersede any unanswered nonce. Merely issuing a challenge NEVER grants
++        // additional run time. Initial admission also expires without a permit.
++        if permitExpires == 0 { permitExpires = challengeDeadline }
++        outstanding = nonce
++        guard output(["event": "challenge", "nonce": nonce, "generation": generation,
++                      "createdContinuousNs": String(challengeCreated), "deadlineContinuousNs": String(challengeDeadline)]) else {
++            end("channel-write", failed: true); return
++        }
++    }
++    private func control(_ o: [String: Atom]) {
++        guard !terminal else { return } // No terminal input can ever reopen admission.
++        do {
++            guard let c = config else { throw Refusal(id: "control-before-config") }
++            try require(text(o, "identity") == c.identity, "control-binding")
++            let event = try text(o, "event")
++            if event == "stop" {
++                try require(Set(o.keys) == Set(["event", "identity"]), "stop-keys")
++                end("parent-stop", failed: false); return
++            }
++            try require(event == "permit" && Set(o.keys) == Set(["event", "nonce", "identity", "validForMs"]), "permit-keys")
++            let now = clock.now()
++            try require(!expired(now), "permit-expired")
++            // Never let input which waited in a pipe/main-queue backlog consume
++            // a nonce whose 500 ms generation has already been superseded.
++            if now >= nextChallenge { issueChallenge() }
++            try require(!terminal && clock.now() < challengeDeadline, "permit-expired")
++            try require(outstanding != nil && text(o, "nonce") == outstanding, "permit-nonce")
++            let validForMs = try number(o, "validForMs")
++            try require(validForMs >= 1 && validForMs <= 1000, "permit-budget")
++            let expiry = min(challengeCreated + validForMs * 1_000_000, min(challengeDeadline, runDeadline))
++            try require(clock.now() < expiry, "permit-budget-expired")
++            outstanding = nil // Consume once; the nonce binds this generation internally.
++            permitExpires = expiry // Actual remaining parent budget, NEVER receipt time.
++            if !startIssued && !admissionPending {
++                guard let artifacts = artifacts else { throw Refusal(id: "vm-missing") }
++                admissionPending = true
++                let activationGeneration = generation
++                // Metadata I/O cannot stall the main-queue stop watchdog. A late
++                // check is rejected; newer permits cannot revive this admission.
++                artifactQueue.async { [self] in
++                    let checked: Bool
++                    do { try artifacts.recheck(); try artifacts.verifyGuestJob(); checked = true } catch { checked = false }
++                    DispatchQueue.main.async { [self] in
++                        admissionPending = false
++                        guard !terminal else { return }
++                        guard checked, generation == activationGeneration, clock.now() < nextChallenge,
++                              !expired(clock.now()), let vm = vm else {
++                            end("activation-fence", failed: true); return
++                        }
++                        // The ONLY physical start site, immediately behind the
++                        // generation/continuous-time/terminal fence on VZ's queue.
++                        startIssued = true; startPending = true
++                        vm.start { [self] result in
++                            dispatchPrecondition(condition: .onQueue(.main))
++                            // An extra queue turn means the callback has RETURNED
++                            // before startPending clears or proof can be emitted.
++                            DispatchQueue.main.async { [self] in
++                                startPending = false
++                                switch result {
++                                case .failure: end("vm-start-failed", failed: true)
++                                case .success:
++                                    if !terminal {
++                                        if expired(clock.now()) { end("activation-expired", failed: true) }
++                                        else if !output(["event": "started"]) { end("channel-write", failed: true) }
++                                    }
++                                }
++                                if terminal { driveStop() }
++                            }
++                        }
++                    }
++                }
++            }
++        } catch { end((error as? Refusal)?.id ?? "control-invalid", failed: true) }
++    }
++    private func expired(_ now: UInt64) -> Bool {
++        now >= runDeadline || (permitExpires != 0 && now >= permitExpires) || (outstanding != nil && now >= challengeDeadline)
++    }
++    private func tick() {
++        if terminal { driveStop(); return }
++        guard vm != nil else { if clock.now() >= configDeadline { end("config-timeout", failed: true) }; return }
++        let now = clock.now()
++        if expired(now) { end("fence-timeout", failed: true); return }
++        if now >= nextChallenge { issueChallenge() }
++    }
++    private func end(_ id: String, failed: Bool) {
++        if failed { fault = true }
++        if !terminal {
++            terminal = true; outstanding = nil; permitExpires = 0 // Close admission BEFORE touching VZ.
++            if failed { diagnostic(id) }
++        }
++        driveStop()
++    }
++    private func driveStop() {
++        guard terminal, !emittedStopped else { return }
++        guard let vm = vm else { exit(2) } // Validation/startup without a VM is UNKNOWN.
++        // A pre-start stopped state is not stop evidence for an attempted run.
++        if !startIssued { exit(2) }
++        if startPending || stopPending { return }
++        if vm.state == .stopped {
++            emittedStopped = true
++            // Retain VM + descriptors until this observation AND all callbacks drained.
++            guard output(["event": "stopped"]) else { diagnostic("stopped-write-failed"); exit(2) }
++            exit(fault ? 2 : 0) // Complete write accepted; no stdio/user-space buffer.
++        }
++        if !stopFailed && vm.canStop {
++            stopPending = true
++            vm.stop { [self] error in
++                dispatchPrecondition(condition: .onQueue(.main))
++                DispatchQueue.main.async { [self] in
++                    stopPending = false
++                    if error != nil { stopFailed = true; fault = true; diagnostic("vm-stop-failed") }
++                    driveStop()
++                }
++            }
++        }
++        // Starting/stopping/error/unsupported transitions are NOT stopped. Retain and
++        // observe indefinitely; parent must quarantine, never infer proof from PID loss.
++    }
++    func guestDidStop(_ virtualMachine: VZVirtualMachine) {
++        dispatchPrecondition(condition: .onQueue(.main)); end("guest-stopped", failed: false)
++    }
++    func virtualMachine(_ virtualMachine: VZVirtualMachine, didStopWithError error: Error) {
++        dispatchPrecondition(condition: .onQueue(.main)); end("vm-state-error", failed: true)
++    }
++}
++#endif
++
++signal(SIGPIPE, SIG_IGN)
++// No run-time platform fallback, CLI commands, installers, inherited shell or credentials.
++for fd in [STDIN_FILENO, STDOUT_FILENO] {
++    var s = stat()
++    guard fstat(fd, &s) == 0 else { fail("private-channel-required") }
++    if isType(s, mode_t(S_IFSOCK)) {
++        var peer = sockaddr_storage(); var length = socklen_t(MemoryLayout<sockaddr_storage>.size)
++        let result = withUnsafeMutablePointer(to: &peer) {
++            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) { getpeername(fd, $0, &length) }
++        }
++        var kind: Int32 = 0; var kindLength = socklen_t(MemoryLayout<Int32>.size)
++        guard result == 0, peer.ss_family == sa_family_t(AF_UNIX),
++              getsockopt(fd, SOL_SOCKET, SO_TYPE, &kind, &kindLength) == 0, kind == SOCK_STREAM else { fail("local-stream-required") }
++    } else if !isType(s, mode_t(S_IFIFO)) { fail("private-channel-required") }
++}
++let inputFlags = fcntl(STDIN_FILENO, F_GETFL)
++guard inputFlags >= 0 && fcntl(STDIN_FILENO, F_SETFL, inputFlags & ~O_NONBLOCK) == 0 else { fail("channel-input-flags") }
++for fd in [STDOUT_FILENO, STDERR_FILENO] {
++    let flags = fcntl(fd, F_GETFL)
++    guard flags >= 0 && fcntl(fd, F_SETFL, flags | O_NONBLOCK) == 0 else { fail("nonblocking-output-required") }
++}
++#if arch(arm64)
++if #available(macOS 13.0, *) {
++    let host = Host()
++    host.run()
++    dispatchMain()
++} else { fail("macos13-required") }
++#else
++fail("apple-silicon-required")
++#endif
+--- a/packages/build-runtime/src/adapters.ts
++++ b/packages/build-runtime/src/adapters.ts
+@@ -9,44 +9,20 @@
+ const controlEnv = Object.freeze({PATH:'/usr/bin:/bin',LANG:'C',LC_ALL:'C'});
+ const unknown = (identity: string): StopProof => ({stopped:false,basis:'unknown',identity});
+ 
+-/** Optional concrete supervisor evidence client. Process-only ES evidence is diagnostic:
+- * native execution retains quarantine until general service containment is implemented. */
++/** Native shared-service containment is unavailable. Deny at the local boundary too:
++ * authority placement is not the only caller of a RuntimeAdapter. Diagnostics and
++ * optional ES evidence never grant execution permission. */
+ export class NativeMacAdapter implements RuntimeAdapter {
+-  private readonly prepared = new WeakSet<object>();
+-  constructor(private readonly attestor?: NativeDescendantAttestor) {
++  constructor(attestor?: NativeDescendantAttestor) {
+     check(!attestor || attestor instanceof NativeDescendantAttestor,'native-concrete-attestor-required');
+   }
+   async prepare(plan: RuntimePlan): Promise<void> {
+-    const a = approvalFor(plan), r = a.recipe;
+-    check(process.platform === 'darwin' && r.kind === 'xcode-build-v1' && r.trustedNativeProject, 'native-mac-only');
+-    await validateHost(plan);
+-    await canonical(r.developerDir,a.host.uid);
+-    await canonical(plan.argv[0]!,a.host.uid,'file');
+-    const version = await command(plan.argv[0]!,['-version'],plan.workRoot,{...controlEnv,DEVELOPER_DIR:r.developerDir});
+-    check(version.split(/\r?\n/).includes(`Build version ${r.xcodeBuild}`),'xcode-build-mismatch');
+-    const sdks = await command(plan.argv[0]!,['-showsdks'],plan.workRoot,{...controlEnv,DEVELOPER_DIR:r.developerDir});
+-    check(sdks.split(/\r?\n/).some(line => line.trim().split(/\s+/).some((word,index,words) => word === '-sdk' && words[index+1] === r.sdk)), 'explicit-sdk-not-installed');
+-    check((await command('/usr/bin/sw_vers',['-productVersion'],plan.workRoot,controlEnv)).trim() === r.macos,'macos-version-mismatch');
+-    await canonical(join(plan.inputRoot,r.project),a.host.uid);
+-    // Provisioned per-attempt state; no shared home, package cache, or DerivedData.
+-    for (const name of ['home','tmp','DerivedData','dependencies','modules','swift-modules']) await canonical(join(plan.workRoot,name),a.host.uid,'directory',true);
+-    this.prepared.add(plan);
++    approvalFor(plan);
++    throw new Error('native-full-containment-unavailable');
+   }
+-  async start(plan: RuntimePlan, recordIdentity: (id:string) => Promise<void>, beforeStart: () => void): Promise<Running> {
+-    const a = approvalFor(plan);
+-    check(this.prepared.delete(plan) && plan.kind === 'xcode-build-v1', 'native-not-prepared');
+-    await validateHost(plan);
+-    if (this.attestor) return this.attestor.start(plan,recordIdentity,beforeStart);
+-    const identity = `native:${hash(plan.attemptId)}`;
+-    await recordIdentity(identity); // Marker exists even if spawn/identity persistence is interrupted.
+-    beforeStart();
+-    const p = launch(plan.argv[0]!,plan.argv.slice(1),plan.inputRoot,plan.env,a.limits.maxOutputBytes,plan.timeoutMs);
+-    try { await recordIdentity(`${identity}:pid:${p.pid ?? 'unknown'}`); }
+-    catch (e) { p.killGroup(); throw e; }
+-    // Portable Node process groups cannot observe escaped descendants. Do not run an
+-    // account/process-table scan or accept a bare callback as containment evidence.
+-    const inspectStopped = async (): Promise<StopProof> => unknown(identity);
+-    return {identity,completion:p.completion,inspectStopped,stop:async () => { p.killGroup(); await settleBriefly(p); return inspectStopped(); }};
++  async start(plan: RuntimePlan, _recordIdentity: (id:string) => Promise<void>, _beforeStart: () => void): Promise<Running> {
++    approvalFor(plan);
++    throw new Error('native-full-containment-unavailable');
+   }
+ }
+ async function settleBriefly(p: ProcessHandle): Promise<void> {
+--- a/packages/build-runtime/src/index.ts
++++ b/packages/build-runtime/src/index.ts
+@@ -20,3 +20,8 @@
+ export { discover, discoverCensus, discoverXcodeCandidates } from './discovery.js';
+ export { managedStorageInventory } from './storage-inventory.js';
+ export type { StorageRoot, StorageScanLimits, StorageMeasurement, ManagedStorageInventory } from './storage-inventory.js';
++
++export {launchMacVmContainment} from './mac-vm.js';
++export type {MacVmHostConfiguration,MacVmHostPolicy,MacVmStopEvidence,MacVmSession} from './mac-vm.js';
++export {encodeMacVmGuestJob,macVmIdentity,MAC_VM_JOB_MAX_BYTES} from './mac-vm-job.js';
++export type {MacVmGuestJob,MacVmInputFile} from './mac-vm-job.js';
+--- a/packages/build-runtime/src/mac-attestation.ts
++++ b/packages/build-runtime/src/mac-attestation.ts
+@@ -1,21 +1,18 @@
+-import { createHash, createPublicKey, randomBytes, verify, type KeyObject } from 'node:crypto';
++import { createHash, createPublicKey, verify, type KeyObject } from 'node:crypto';
+ import { constants } from 'node:fs';
+ import { open } from 'node:fs/promises';
+ import { join } from 'node:path';
+ import { canonical } from './host.js';
+-import { absolute, approvalFor, check, hash } from './plans.js';
+-import { command, launch } from './process.js';
+-import type { Running, RuntimePlan, StopProof } from './types.js';
++import { absolute, approvalFor, check } from './plans.js';
++import type { Running, RuntimePlan } from './types.js';
+ 
+ const protocol = 'foundry-mac-es-journal-v1';
+ const domain = Buffer.from(`${protocol}\0`);
+ const zero = '0'.repeat(64);
+-const controlEnv = Object.freeze({PATH:'/usr/bin:/bin',LANG:'C',LC_ALL:'C'});
+ const maxJournalBytes = 8 * 1048576, maxRecords = 32768;
+ const digest = (bytes:Uint8Array) => createHash('sha256').update(bytes).digest('hex');
+ const hex = (v:unknown):v is string => typeof v === 'string' && /^[0-9a-f]{64}$/.test(v);
+ const uint = (v:unknown):v is number => Number.isSafeInteger(v) && Number(v) >= 0 && Number(v) <= 0xffffffff;
+-const unknown = (identity:string):StopProof => ({stopped:false,basis:'unknown',identity});
+ function tuple(v:unknown, length:number):asserts v is unknown[] {
+   check(Array.isArray(v) && v.length === length,'mac-evidence-shape');
+ }
+@@ -69,7 +66,6 @@
+   blocker:'native-service-containment-unimplemented';
+ }
+ interface Evidence extends MacEvidenceAssessment { armedDigest:string }
+-interface Active { checkpoint:MacLaunchCheckpoint; last?:Evidence; invalid:boolean }
+ 
+ /** Read a bounded, stable, root-owned object. No following symlinks, hard links,
+  * account scans, shell, process probes, key discovery or fallback to worker-owned data. */
+@@ -92,13 +88,12 @@
+ }
+ 
+ /** Concrete protocol client and verifier, not an owner-supplied success callback.
+- * Construction is inert. Explicit start invokes only the pinned, provisioned client.
++ * Construction is inert. Launch is denied; durable recovery checkpoints remain readable.
+  * V1 supports PROCESS-LINEAGE EVIDENCE ONLY and NEVER emits stopped:true. Installing
+  * a client or signing a seal cannot promote this protocol into full containment. */
+ export class NativeDescendantAttestor {
+   private readonly config:Readonly<MacSupervisorConfig>;
+   private readonly key:KeyObject;
+-  private readonly active = new WeakMap<RuntimePlan,Active>();
+   constructor(config:MacSupervisorConfig) {
+     check(config && typeof config.publicKeyPem === 'string' && config.publicKeyPem.length <= 4096,'mac-public-key-required');
+     check(/^-----BEGIN PUBLIC KEY-----\r?\n[A-Za-z0-9+/=\r\n]+\r?\n-----END PUBLIC KEY-----\s*$/.test(config.publicKeyPem),'mac-public-key-pem-only');
+@@ -107,14 +102,6 @@
+     this.config = Object.freeze({...config});
+     this.key = createPublicKey(config.publicKeyPem);
+     check(this.key.asymmetricKeyType === 'ed25519','mac-ed25519-public-key-required');
+-  }
+-  private async client():Promise<string> {
+-    check(process.platform === 'darwin','native-mac-only');
+-    const path = this.config.clientExecutable;
+-    const bytes = await rootFile(path,16*1048576);
+-    check(digest(bytes) === this.config.clientSha256,'mac-supervisor-client-digest');
+-    await canonical(this.config.evidenceRoot,0);
+-    return path;
+   }
+   private async read(binding:Readonly<MacLaunchBinding>, expectedArmed?:string, prefix?:Evidence):Promise<Evidence> {
+     check(hex(binding.ticket) && hex(binding.attemptHash) && hex(binding.profileHash) && hex(binding.intentHash) && uint(binding.uid) && binding.uid > 0 && uint(binding.gid) && binding.gid > 0,'mac-launch-binding');
+@@ -204,54 +191,13 @@
+     check(hex(checkpoint.armedDigest),'mac-recovery-anchor-required');
+     return this.read(checkpoint.binding,checkpoint.armedDigest);
+   }
+-  /** Explicit launch via an already provisioned supervisor client. RESERVE may only
+-   * create/fsync an ARMED journal; RUN owns suspended spawn, identity binding and resume.
+-   * This protocol is intentionally unusable when that companion is absent. */
+-  async start(plan:RuntimePlan, recordIdentity:(identity:string)=>Promise<void>, beforeStart:()=>void):Promise<Running> {
+-    const a = approvalFor(plan);
+-    check(plan.kind === 'xcode-build-v1' && a.recipe.kind === 'xcode-build-v1' && a.recipe.trustedNativeProject && !this.active.has(plan),'mac-supervisor-plan');
+-    const ticket = randomBytes(32).toString('hex'); // correlation challenge, NOT authority
+-    const binding = Object.freeze({ticket,attemptHash:hash(plan.attemptId),profileHash:plan.profileHash,
+-      intentHash:hash(JSON.stringify([plan.argv,Object.entries(plan.env).sort(([x],[y])=>x < y ? -1 : x > y ? 1 : 0),plan.inputRoot,plan.workRoot,a.host.uid,a.host.gid,a.limits.maxOutputBytes,plan.timeoutMs])),uid:a.host.uid,gid:a.host.gid});
+-    const identity = `native:${binding.attemptHash}:${ticket}`;
+-    const state:Active = {checkpoint:{binding,armedDigest:''},invalid:false};
+-    this.active.set(plan,state); // one attempt; ambiguous failure NEVER retries/reserves again
+-    await recordIdentity(identity);
+-    // The existing pre-run journal already pins profileHash. These markers preserve
+-    // the remaining checkpoint fields without journaling argv, env, paths or output.
+-    await recordIdentity(`native-intent:${binding.intentHash}:${binding.uid}:${binding.gid}`);
+-    let executable = await this.client(); beforeStart();
+-    await command(executable,['reserve','--protocol',protocol,'--ticket',ticket,'--attempt-hash',binding.attemptHash,'--profile-hash',binding.profileHash,'--intent-hash',binding.intentHash,'--uid',String(binding.uid),'--gid',String(binding.gid)],plan.workRoot,controlEnv);
+-    const armed = await this.read(binding);
+-    check(armed.records === 1 && armed.liveProcesses === 0,'mac-supervisor-premature-launch');
+-    state.checkpoint = {binding,armedDigest:armed.armedDigest}; state.last = armed;
+-    await recordIdentity(`native-evidence:${armed.armedDigest}`); // durable BEFORE RUN
+-    executable = await this.client(); beforeStart();
+-    const p = launch(executable,['run','--protocol',protocol,'--ticket',ticket,'--work-root',plan.workRoot,'--max-output-bytes',String(a.limits.maxOutputBytes),'--timeout-ms',String(plan.timeoutMs),'--',...plan.argv],plan.inputRoot,plan.env,a.limits.maxOutputBytes,plan.timeoutMs);
+-    const inspectStopped = async ():Promise<StopProof> => {
+-      try { await this.inspectEvidence(plan); } catch { state.invalid = true; }
+-      // ES process ancestry does not prove that XPC/shared services have no pending
+-      // or future work. Neither leader close nor even a valid durable seal fixes this.
+-      return unknown(identity);
+-    };
+-    return {identity,completion:p.completion,inspectStopped,stop:async () => {
+-      p.killGroup(); // best effort for the proxy only, never used as workload evidence
+-      try {
+-        const client = await this.client();
+-        await command(client,['stop','--protocol',protocol,'--ticket',ticket],plan.workRoot,controlEnv);
+-      } catch { state.invalid = true; }
+-      return inspectStopped();
+-    }};
+-  }
+-  async inspectEvidence(plan:RuntimePlan):Promise<MacEvidenceAssessment> {
+-    const state = this.active.get(plan);
+-    check(state && !state.invalid && hex(state.checkpoint.armedDigest),'mac-evidence-unbound-or-poisoned');
+-    try {
+-      const evidence = await this.read(state.checkpoint.binding,state.checkpoint.armedDigest,state.last);
+-      // Full-prefix validation detects ordinary truncation. A same-session signer
+-      // must be append-only; no reconnect/re-signing recovery is permitted.
+-      check(!state.last || (evidence.records >= state.last.records && evidence.bootId === state.last.bootId && evidence.sessionId === state.last.sessionId && (evidence.records !== state.last.records || evidence.headDigest === state.last.headDigest)),'mac-evidence-rollback');
+-      state.last = evidence; return evidence;
+-    } catch (error) { state.invalid = true; throw error; }
+-  }
+-}
++  /** Kept as an explicit denial for existing callers. A signed process journal
++   * cannot make native launch safe; do not invoke even a provisioned RUN helper. */
++  async start(plan:RuntimePlan, _recordIdentity:(identity:string)=>Promise<void>, _beforeStart:()=>void):Promise<Running> {
++    approvalFor(plan);
++    throw new Error('native-full-containment-unavailable');
++  }
++  async inspectEvidence(_plan:RuntimePlan):Promise<MacEvidenceAssessment> {
++    throw new Error('native-execution-disabled-use-durable-recovery-checkpoint');
++  }
++}
+--- /dev/null
++++ b/packages/build-runtime/src/mac-vm-job.ts
+@@ -0,0 +1,69 @@
++import type { InputApproval } from '../../build-jobs/src/contracts.js';
++import { assertBuildAttemptContext, type BuildAttemptContext } from './controller.js';
++import { approvalFor, check, hash, localPath } from './plans.js';
++import { canonicalData } from './parent-profile.js';
++import type { RuntimePlan } from './types.js';
++
++export const MAC_VM_JOB_MAX_BYTES=262144;
++
++export interface MacVmInputFile {path:string;sha256:string;sizeBytes:number;mode:number}
++export interface MacVmGuestJob {
++  version:1; identity:string; attemptId:string; jobId:string; profileHash:string; sourceHash:string;
++  recipe:{developerDir:string;project:string;scheme:string;sdk:string;destination:string;
++    configuration:'Debug'|'Release';xcodeBuild:string;macos:string;outputPaths:readonly string[]};
++  limits:{cpu:number;timeoutMs:number;maxOutputBytes:number};files:readonly MacVmInputFile[];
++}
++const guestJobs=new WeakMap<MacVmGuestJob,RuntimePlan>();
++export function assertMacVmGuestJob(job:MacVmGuestJob,plan:RuntimePlan):void {
++  check(guestJobs.get(job) === plan,'mac-vm-unbranded-guest-job');
++}
++export const macVmIdentity = (plan:RuntimePlan):string => {
++  approvalFor(plan);
++  return `vm:${hash(JSON.stringify([plan.jobId,plan.attemptId,plan.profileHash]))}`;
++};
++/** Encode only an explicitly selected guest job. This neither verifies the manifest
++ * nor creates/mounts an image, installs a service, runs a VM or approves placement.
++ * Caller must use the independently verified approved snapshot's complete file list.
++ * No host path, credentials or launch capability are serialized into the guest. */
++export function encodeMacVmGuestJob(plan:RuntimePlan,context:BuildAttemptContext,input:InputApproval,
++  selectedFiles:readonly MacVmInputFile[]):Readonly<{job:MacVmGuestJob;bytes:Uint8Array;sha256:string}> {
++  const a = approvalFor(plan),r=a.recipe;
++  assertBuildAttemptContext(context);
++  check(r.kind === 'xcode-build-v1' && plan.kind === r.kind,'mac-vm-xcode-only');
++  check(context.localRecipeHash === plan.profileHash && context.compute.workloadId === plan.jobId &&
++    context.compute.attemptId === plan.attemptId && context.compute.leaseId === plan.attemptId,'mac-vm-claim-binding');
++  check(input.reconstructable === true && input.missingInputs.length === 0 && /^[0-9a-f]{64}$/.test(input.snapshotHash),'mac-vm-complete-approved-input-required');
++  check(/^\/Applications\/Xcode[^/]*\.app\/Contents\/Developer$/.test(r.developerDir) &&
++    r.destination !== 'platform=macOS,arch=x86_64','mac-vm-arm64-guest-recipe-required');
++  check(plan.cpu <= 64 && plan.timeoutMs <= 3600000 && a.limits.maxOutputBytes <= 7*1048576,'mac-vm-pilot-limits');
++  check(Array.isArray(selectedFiles) && selectedFiles.length > 0 && selectedFiles.length <= 1024,'mac-vm-input-count');
++  const files = JSON.parse(canonicalData(selectedFiles)) as MacVmInputFile[];
++  let total=0; const names=new Set<string>();
++  const prefixes=new Map<string,string>();
++  for(const file of files) {
++    check(Object.keys(file).sort().join(',') === 'mode,path,sha256,sizeBytes','mac-vm-input-shape');
++    localPath(file.path);
++    check(/^[0-9a-f]{64}$/.test(file.sha256) && Number.isSafeInteger(file.sizeBytes) && file.sizeBytes >= 0 && file.sizeBytes <= 64*1048576 &&
++      [0o600,0o644,0o700,0o755].includes(file.mode),'mac-vm-input-metadata');
++    const key=file.path.toLowerCase();check(!names.has(key),'mac-vm-input-collision');names.add(key);
++    const parts=file.path.split('/');
++    for(let i=1;i<=parts.length;i++) {
++      const path=parts.slice(0,i).join('/'),folded=path.toLowerCase(),old=prefixes.get(folded);
++      check(old === undefined || old === path,'mac-vm-component-collision');prefixes.set(folded,path);
++    }
++    total+=file.sizeBytes;check(total <= 2*1024**3,'mac-vm-input-budget');
++    Object.freeze(file);
++  }
++  for(const file of files) {
++    const parts=file.path.split('/');
++    for(let i=1;i<parts.length;i++)check(!names.has(parts.slice(0,i).join('/').toLowerCase()),'mac-vm-file-directory-collision');
++  }
++  check(input.requiredInputs.every(path => files.some(file => file.path === path)),'mac-vm-required-input-missing');
++  const job:MacVmGuestJob = {version:1,identity:macVmIdentity(plan),attemptId:plan.attemptId,jobId:plan.jobId,profileHash:plan.profileHash,sourceHash:input.snapshotHash,
++    recipe:{developerDir:r.developerDir,project:r.project,scheme:r.scheme,sdk:r.sdk,destination:r.destination,configuration:r.configuration,
++      xcodeBuild:r.xcodeBuild,macos:r.macos,outputPaths:Object.freeze([...r.outputPaths])},
++    limits:{cpu:plan.cpu,timeoutMs:plan.timeoutMs,maxOutputBytes:a.limits.maxOutputBytes},files:Object.freeze(files)};
++  Object.freeze(job.recipe);Object.freeze(job.limits);Object.freeze(job);guestJobs.set(job,plan);
++  const bytes=Buffer.from(canonicalData(job));check(bytes.byteLength <= MAC_VM_JOB_MAX_BYTES,'mac-vm-job-byte-budget');
++  return Object.freeze({job,bytes,sha256:hash(bytes.toString('utf8'))});
++}
+--- /dev/null
++++ b/packages/build-runtime/src/mac-vm.ts
+@@ -0,0 +1,193 @@
++import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
++import { constants } from 'node:fs';
++import { access, lstat, open, statfs } from 'node:fs/promises';
++import { freemem } from 'node:os';
++import { dirname } from 'node:path';
++import { createHash } from 'node:crypto';
++import { performance } from 'node:perf_hooks';
++import { canonical, HostJournal, validateHost } from './host.js';
++import { absolute, approvalFor, check } from './plans.js';
++import { macVmIdentity, assertMacVmGuestJob, MAC_VM_JOB_MAX_BYTES, type MacVmGuestJob } from './mac-vm-job.js';
++import { canonicalData } from './parent-profile.js';
++import type { RuntimePlan } from './types.js';
++
++export interface MacVmHostConfiguration {
++  version:1;identity:string;jobId:string;attemptId:string;profileHash:string;guestJobSha256:string;
++  bootDisk:string;outputDisk:string;auxiliaryStorage:string;hardwareModel:string;machineIdentifier:string;inputDirectory:string;
++  helperUID:number;cpuCount:number;memoryBytes:number;maxBootBytes:number;maxOutputBytes:number;maxRunSeconds:number;
++}
++export interface MacVmHostPolicy {
++  /** Root-provisioned signed executable, entitlement and public hash. No installer. */
++  executable:string;sha256:string;
++  configuration:MacVmHostConfiguration;
++}
++export interface MacVmStopEvidence {
++  identity:string;stopped:boolean;basis:'virtual-machine-stopped'|'unknown';
++  /** VM stop is containment evidence ONLY; this never attests a successful build. */
++  result:'not-collected';
++}
++export interface MacVmSession {
++  readonly identity:string;
++  /** Never reject and never infer stop from a PID/EOF/exit code alone. */
++  readonly settled:Promise<MacVmStopEvidence>;
++  stop():Promise<MacVmStopEvidence>;
++  state():Readonly<{phase:'starting'|'running'|'stopping'|'stopped'|'unknown';result:'not-collected'}>;
++}
++const unknown=(identity:string):MacVmStopEvidence=>({identity,stopped:false,basis:'unknown',result:'not-collected'});
++
++async function pinHelper(path:string,expected:string):Promise<void> {
++  absolute(path);check(/^[0-9a-f]{64}$/.test(expected),'mac-vm-helper-pin');
++  check(process.getuid?.() !== 0 && process.getuid?.() === process.geteuid?.(),'mac-vm-unprivileged-helper-client');
++  await canonical(path,0,'file');
++  for(let current=path;;current=dirname(current)) {
++    let writable=false;
++    try{await access(current,constants.W_OK);writable=true;}catch(e){check(['EACCES','EPERM','EROFS'].includes((e as NodeJS.ErrnoException).code ?? ''),'mac-vm-helper-access-unknown');}
++    check(!writable,'mac-vm-helper-writable');if(current==='/')break;
++  }
++  const f=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
++  try {
++    const before=await f.stat();
++    check(before.uid===0 && before.nlink===1 && before.isFile() && before.size>0 && before.size<=32*1048576 && (before.mode&0o6022)===0 && (before.mode&0o111)!==0,'mac-vm-helper-file');
++    const magic=Buffer.alloc(4),header=await f.read(magic,0,4,0);
++    check(header.bytesRead===4 && [0xfeedface,0xcefaedfe,0xfeedfacf,0xcffaedfe,0xcafebabe,0xbebafeca,0xcafebabf,0xbfbafeca].includes(magic.readUInt32BE(0)),'mac-vm-native-helper-required');
++    const digest=createHash('sha256');let at=0;
++    while(at<before.size){const bytes=Buffer.alloc(Math.min(1048576,before.size-at));const read=await f.read(bytes,0,bytes.length,at);check(read.bytesRead>0,'mac-vm-helper-short');digest.update(bytes.subarray(0,read.bytesRead));at+=read.bytesRead;}
++    const after=await f.stat(),named=await lstat(path);
++    check(before.dev===after.dev && before.ino===after.ino && before.size===after.size && before.mtimeMs===after.mtimeMs && before.ctimeMs===after.ctimeMs && named.dev===before.dev && named.ino===before.ino && named.size===before.size && named.ctimeMs===before.ctimeMs && digest.digest('hex')===expected,'mac-vm-helper-changed');
++  } finally {await f.close();}
++}
++
++/** Experimental concrete containment primitive, intentionally NOT RuntimeAdapter.
++ * It does not claim/renew jobs, prepare images, install/start services, mount outputs,
++ * collect results, release a durable slot, or make Xcode placement eligible. Owner
++ * supplies provisioned artifacts and activation separately. No work at import time.
++ * currentFence must return the current continuous-time lease/deadline runway and
++ * synchronously check cancellation using the same authority observation as
++ * the controller. The Swift helper anchors each one-use permit to its OWN clock.
++ * Caller retains the host reservation on any unknown state, including client loss. */
++export async function launchMacVmContainment(plan:RuntimePlan,policy:MacVmHostPolicy,
++  guestJob:MacVmGuestJob,currentFence:()=>Readonly<{remainingMs:number}>,signal:AbortSignal):Promise<MacVmSession> {
++  const approved=approvalFor(plan);assertMacVmGuestJob(guestJob,plan);
++  check(process.platform==='darwin' && process.arch==='arm64' && plan.kind==='xcode-build-v1','mac-vm-arm64-only');
++  check(approved.host.allowActivation===true,'owner-activation-gated');
++  check(!signal.aborted,'mac-vm-cancelled');currentFence();
++  // Plain data only; never share mutable caller configuration with the helper.
++  const owner=JSON.parse(canonicalData(policy)) as MacVmHostPolicy;
++  const c=owner.configuration;
++  const identity=macVmIdentity(plan);
++  const guestEncoded=canonicalData(guestJob);check(Buffer.byteLength(guestEncoded)<=MAC_VM_JOB_MAX_BYTES,'mac-vm-job-byte-budget');
++  const guest=JSON.parse(guestEncoded) as MacVmGuestJob;
++  check(guest.version===1 && guest.identity===identity && guest.jobId===plan.jobId && guest.attemptId===plan.attemptId && guest.profileHash===plan.profileHash &&
++    createHash('sha256').update(canonicalData(guest)).digest('hex')===c.guestJobSha256,'mac-vm-guest-job-digest');
++  check(c.version===1 && c.identity===identity && c.jobId===plan.jobId && c.attemptId===plan.attemptId && c.profileHash===plan.profileHash,'mac-vm-config-binding');
++  check(c.helperUID===approved.host.uid && process.getuid?.()===c.helperUID && c.cpuCount===plan.cpu && c.memoryBytes===plan.ramMib*1048576 && c.maxRunSeconds*1000===plan.timeoutMs && Number.isSafeInteger(c.maxRunSeconds) && c.maxRunSeconds>=1 && c.maxRunSeconds<=3600,'mac-vm-config-limits');
++  for(const path of [c.bootDisk,c.outputDisk,c.auxiliaryStorage,c.hardwareModel,c.machineIdentifier,c.inputDirectory])absolute(path);
++  for(const n of [c.maxBootBytes,c.maxOutputBytes])check(Number.isSafeInteger(n) && n>0 && n<=2*1024**4,'mac-vm-disk-limit');
++  const encoded=JSON.stringify(c);check(Buffer.byteLength(encoded)<=16384,'mac-vm-config-budget');
++  await validateHost(plan);currentFence();check(!signal.aborted,'mac-vm-cancelled');
++  const imageVolume=await statfs(dirname(c.bootDisk));currentFence();
++  check(imageVolume.bavail*imageVolume.bsize>=Math.max(50*1024**3,approved.limits.minFreeBytes),'mac-vm-image-disk-headroom');
++  check(freemem()>=c.memoryBytes+1024**3,'mac-vm-host-memory-headroom');
++  await pinHelper(owner.executable,owner.sha256);currentFence();check(!signal.aborted,'mac-vm-cancelled');
++  // Marker before the only process launch. Persistence failure never starts helper.
++  const reservation=await new HostJournal(approved.host).reserve(plan);
++  await reservation.recordIdentity(identity);currentFence();check(!signal.aborted,'mac-vm-cancelled');
++  const child:ChildProcessWithoutNullStreams=spawn(owner.executable,[],{env:{PATH:'/usr/bin:/bin',LANG:'C',LC_ALL:'C'},stdio:['pipe','pipe','pipe']});
++  let phase:'starting'|'running'|'stopping'|'stopped'|'unknown'='starting';
++  let closed=false,invalid=false,terminal=false,started=false,stopRequested=false,observationResolved=false,permitIssued=false,pending=Buffer.alloc(0),total=0;
++  let resolve!:(proof:MacVmStopEvidence)=>void;
++  const settled=new Promise<MacVmStopEvidence>(done=>{resolve=done;});
++  let stopDeadline:ReturnType<typeof setTimeout>|undefined;
++  const settleUnknown=()=>{markUnknown();if(!observationResolved){observationResolved=true;resolve(unknown(identity));}};
++  const seen=new Set<string>();
++  let challengeAt=0,challengeCount=0,generation=0;
++  const markUnknown=()=>{invalid=true;phase='unknown';};
++  const send=(message:object)=>{
++    if(closed || child.stdin.destroyed || child.stdin.writableEnded)return;
++    const bytes=JSON.stringify(message)+'\n';
++    if(child.stdin.writableLength+Buffer.byteLength(bytes)>65536){markUnknown();child.stdin.destroy();return;}
++    child.stdin.write(bytes);
++  };
++  const requestStop=()=>{
++    if(closed || terminal || stopRequested)return;
++    stopRequested=true;if(!invalid)phase='stopping';
++    send({event:'stop',identity});child.stdin.end();
++    stopDeadline=setTimeout(settleUnknown,10000);
++  };
++  const fail=()=>{markUnknown();requestStop();};
++  const onAbort=()=>requestStop();
++  signal.addEventListener('abort',onAbort,{once:true});
++  child.stdin.on('error',fail);
++  child.on('error',fail);
++  let startup:ReturnType<typeof setTimeout>|undefined=setTimeout(fail,15000);
++  // This timer bounds observation only. It never kills the helper or proves stop.
++  const maximum=setTimeout(requestStop,Math.min(c.maxRunSeconds*1000,3600000)+15000);
++  child.stderr.on('data',(bytes:Buffer)=>{if(bytes.length)fail();});
++  const accept=(line:Buffer)=>{
++    check(line.length>0 && line.length<=2048,'mac-vm-event-size');
++    const row=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(line)) as Record<string,unknown>;
++    check(row && !Array.isArray(row) && row.identity===identity && typeof row.event==='string','mac-vm-event-binding');
++    if(row.event==='challenge'){
++      check(!terminal && Object.keys(row).sort().join(',')==='createdContinuousNs,deadlineContinuousNs,event,generation,identity,nonce' && typeof row.nonce==='string' && /^[a-f0-9]{64}$/.test(row.nonce),'mac-vm-challenge');
++      check(Number.isSafeInteger(row.generation) && row.generation===generation+1 &&
++        typeof row.createdContinuousNs==='string' && /^(0|[1-9][0-9]{0,19})$/.test(row.createdContinuousNs) &&
++        typeof row.deadlineContinuousNs==='string' && /^(0|[1-9][0-9]{0,19})$/.test(row.deadlineContinuousNs) &&
++        BigInt(row.deadlineContinuousNs)-BigInt(row.createdContinuousNs)===1000000000n,'mac-vm-challenge-generation');
++      generation=row.generation as number;
++      // Store only the immediately preceding challenge: the helper rejects replays,
++      // while a bounded client never retains 7200 nonces or refreshes lease time.
++      check(!seen.has(row.nonce),'mac-vm-challenge-replay');seen.clear();seen.add(row.nonce);
++      const now=performance.now();
++      if(now-challengeAt<50)challengeCount++;else challengeCount=0;
++      challengeAt=now;check(challengeCount<4,'mac-vm-challenge-rate');
++      if(signal.aborted || phase==='stopping' || invalid){requestStop();return;}
++      const remaining=currentFence().remainingMs;
++      check(Number.isFinite(remaining) && remaining>=1,'mac-vm-current-lease-runway');
++      const validForMs=Math.min(1000,Math.floor(remaining));
++      permitIssued=true;send({event:'permit',identity,nonce:row.nonce,validForMs});
++    } else if(row.event==='started'){
++      check(!terminal && !started && permitIssued && Object.keys(row).length===2,'mac-vm-start-order');
++      started=true;if(startup){clearTimeout(startup);startup=undefined;}
++      if(phase==='starting')phase='running';
++    } else if(row.event==='stopped'){
++      check(!terminal && Object.keys(row).length===2,'mac-vm-stop-order');terminal=true;
++      // Keep the launch channel sealed. Proof requires helper's terminal close too.
++      stopRequested=true;child.stdin.end();
++      if(!stopDeadline)stopDeadline=setTimeout(settleUnknown,10000);
++    } else throw new Error('mac-vm-invalid-event');
++  };
++  child.stdout.on('error',fail);
++  child.stdout.on('end',()=>{if(!terminal)fail();});
++  child.stderr.on('error',fail);
++  child.stdout.on('data',(data:Buffer)=>{
++    try{
++      total+=data.byteLength;check(total<=4*1048576 && pending.byteLength+data.byteLength<=65536,'mac-vm-channel-budget');
++      pending=Buffer.concat([pending,data]);let end:number;
++      while((end=pending.indexOf(10))>=0){const line=pending.subarray(0,end);pending=pending.subarray(end+1);accept(line);}
++      check(pending.length<=2048,'mac-vm-frame-budget');
++    }catch{fail();}
++  });
++  child.on('close',async(code,terminationSignal)=>{
++    closed=true;clearTimeout(maximum);if(startup)clearTimeout(startup);
++    if(!stopDeadline)stopDeadline=setTimeout(settleUnknown,10000);
++    signal.removeEventListener('abort',onAbort);
++    const confirmed=!invalid && terminal && code===0 && terminationSignal===null && pending.byteLength===0;
++    try {
++      // This primitive has no verified result/intake path, so even an observed VM
++      // stop retains the host slot. Never clear/reuse an attempt from this API.
++      await reservation.finish({stopped:confirmed,basis:confirmed?'host-containment-inspect':'unknown',identity},'quarantined');
++      // A timed-out observation is terminal for this client; later clean closure
++      // can be reconciled from durable evidence, never silently upgrade it here.
++      if(confirmed && !observationResolved){observationResolved=true;phase='stopped';resolve({identity,stopped:true,basis:'virtual-machine-stopped',result:'not-collected'});}
++      else settleUnknown();
++    }catch{settleUnknown();}
++    finally{if(stopDeadline)clearTimeout(stopDeadline);}
++  });
++  send(c);
++  if(signal.aborted)requestStop();
++  return Object.freeze({identity,settled,state:()=>Object.freeze({phase,result:'not-collected' as const}),stop:async()=>{
++    requestStop();let timer:ReturnType<typeof setTimeout>|undefined;
++    try{return await Promise.race([settled,new Promise<MacVmStopEvidence>(done=>{timer=setTimeout(()=>{settleUnknown();done(unknown(identity));},10000);})]);}
++    finally{if(timer)clearTimeout(timer);}
++  }});
++}
+--- /dev/null
++++ b/packages/build-storage/native/mac-tree-guard.c
+@@ -0,0 +1,312 @@
++/* mac-tree-guard/1: observation and FD lifetime only. No mount/image/unmount,
++ * shell, writes to the tree, privilege elevation, or cooperative writer lock.
++ * A trusted root administrator provisions an ACL-free static tree and helper.
++ * The kernel's MNT_RDONLY supplies immutability against unprivileged writers.
++ * Root administration, raw block access and host-process compromise are outside
++ * this contract. See FILESYSTEM-REVIEW.md before any build or admission. */
++#ifndef __APPLE__
++#error "mac-tree-guard requires macOS"
++#endif
++#include <sys/param.h>
++#include <sys/mount.h>
++#include <sys/stat.h>
++#include <sys/attr.h>
++#include <sys/acl.h>
++#include <sys/proc_info.h>
++#include <libproc.h>
++#include <dirent.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <inttypes.h>
++#include <limits.h>
++#include <signal.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <uuid/uuid.h>
++
++#define ENTRY_LIMIT 200000U
++#define DEPTH_LIMIT 128U
++#define MOUNT_LIMIT 4096U
++
++static void die(void) {
++    /* Bounded constant diagnostic: never echo paths, content, or errno strings. */
++    (void)write(STDERR_FILENO, "mac-tree-guard: refused\n", 24);
++    _exit(1);
++}
++static void need(int yes) { if (!yes) die(); }
++static int beneath(const char *path, const char *parent) {
++    size_t n = strlen(parent);
++    return !strcmp(path, parent) || (!strncmp(path, parent, n) && path[n] == '/');
++}
++static void canonical(const char *path) {
++    size_t n = strlen(path);
++    need(n > 1 && n < MAXPATHLEN && path[0] == '/' && path[n - 1] != '/');
++    const char *p = path + 1;
++    while (*p) {
++        const char *end = strchr(p, '/');
++        size_t len = end ? (size_t)(end - p) : strlen(p);
++        need(len > 0 && len <= NAME_MAX && !(len == 1 && p[0] == '.') &&
++             !(len == 2 && p[0] == '.' && p[1] == '.'));
++        for (size_t i = 0; i < len; i++) need((unsigned char)p[i] >= 0x20 && (unsigned char)p[i] <= 0x7e);
++        if (!end) break;
++        p = end + 1;
++    }
++}
++static uint64_t number(const char *s) {
++    need(*s && !(s[0] == '0' && s[1]));
++    for (const char *p = s; *p; p++) need(*p >= '0' && *p <= '9');
++    errno = 0; char *end = NULL;
++    unsigned long long v = strtoull(s, &end, 10);
++    need(!errno && end && !*end);
++    return (uint64_t)v;
++}
++static int32_t fsid_number(const char *s) {
++    errno = 0; char *end = NULL; long long n = strtoll(s, &end, 10);
++    need(*s && !errno && end && !*end && n >= INT32_MIN && n <= INT32_MAX);
++    return (int32_t)n;
++}
++static void no_acl(int fd) {
++    /* Refuse even deny-only ACLs: do not try to approximate effective ACL rights. */
++    /* Distinguish an absent ACL from an API failure. acl_get_fd_np alone returns
++     * NULL for both; an ordinary ACL-free node need not contain an empty ACL. */
++    filesec_t security = filesec_init(); need(security != NULL);
++    struct stat observed; int present = 0;
++    need(fstatx_np(fd, &observed, security) == 0 &&
++         filesec_query_property(security, FILESEC_ACL, &present) == 0);
++    if (!present) { filesec_free(security); return; }
++    acl_t acl = NULL;
++    need(filesec_get_property(security, FILESEC_ACL, &acl) == 0 && acl != NULL &&
++         (void *)acl != _FILESEC_REMOVE_ACL);
++    acl_entry_t entry;
++    int result = acl_get_entry(acl, ACL_FIRST_ENTRY, &entry);
++    int entry_errno = errno;
++    need(acl_free(acl) == 0);
++    filesec_free(security);
++    /* Darwin acl_get_entry returns -1/EINVAL for an out-of-range entry index. */
++    need(result == -1 && entry_errno == EINVAL);
++}
++static int same_node(const struct stat *a, const struct stat *b) {
++    return a->st_dev == b->st_dev && a->st_ino == b->st_ino &&
++           a->st_uid == b->st_uid && a->st_mode == b->st_mode && a->st_nlink == b->st_nlink;
++}
++static void secure_directory(int fd) {
++    struct stat s; struct statfs fs;
++    need(fstat(fd, &s) == 0 && S_ISDIR(s.st_mode) && s.st_uid == 0 && !(s.st_mode & 0022));
++    no_acl(fd);
++    need(fstatfs(fd, &fs) == 0 && fs.f_owner == 0 && (fs.f_flags & MNT_LOCAL));
++}
++/* Walk from / with openat; each directory is held while its child is opened.
++ * An unprivileged UID cannot replace entries in these ACL-free root directories. */
++static int secure_open(const char *path, int executable) {
++    canonical(path);
++    int fd = open("/", O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
++    need(fd >= 0); secure_directory(fd);
++    char copy[MAXPATHLEN]; memcpy(copy, path + 1, strlen(path));
++    char *save = NULL, *part = strtok_r(copy, "/", &save);
++    while (part) {
++        char *next = strtok_r(NULL, "/", &save);
++        int leaf = !next && executable;
++        int child = openat(fd, part, O_RDONLY | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK | (leaf ? 0 : O_DIRECTORY));
++        need(child >= 0);
++        if (leaf) {
++            struct stat s;
++            need(fstat(child, &s) == 0 && S_ISREG(s.st_mode) && s.st_uid == 0 &&
++                 s.st_nlink == 1 && !(s.st_mode & 06022) && (s.st_mode & 0111));
++            no_acl(child);
++        } else secure_directory(child);
++        need(close(fd) == 0); fd = child; part = next;
++    }
++    return fd;
++}
++static const char self_image_anchor[] = "mac-tree-guard/1";
++static void verify_executable(const char *expected) {
++    char actual[PROC_PIDPATHINFO_MAXSIZE] = {0};
++    need(proc_pidpath(getpid(), actual, sizeof(actual)) > 0 &&
++         memchr(actual, '\0', sizeof(actual)) != NULL && !strcmp(actual, expected));
++    int fd = secure_open(expected, 1);
++    struct stat named;
++    need(fstat(fd, &named) == 0);
++    /* Check the vnode backing this image's own constant mapping, not argv[0]
++     * or merely a second pathname stat. No privilege or caller attestation. */
++    struct proc_regionwithpathinfo image = {0};
++    uint64_t address = (uint64_t)(uintptr_t)self_image_anchor;
++    need(proc_pidinfo(getpid(), PROC_PIDREGIONPATHINFO, address,
++                      &image, sizeof(image)) == (int)sizeof(image));
++    need(address >= image.prp_prinfo.pri_address &&
++         address - image.prp_prinfo.pri_address < image.prp_prinfo.pri_size);
++    struct vinfo_stat *loaded = &image.prp_vip.vip_vi.vi_stat;
++    need(loaded->vst_dev == (uint32_t)named.st_dev && loaded->vst_ino == (uint64_t)named.st_ino &&
++         loaded->vst_uid == 0 && S_ISREG(loaded->vst_mode) && !(loaded->vst_mode & 06022) &&
++         loaded->vst_size == named.st_size && memchr(image.prp_vip.vip_path, '\0', sizeof(image.prp_vip.vip_path)) != NULL &&
++         !strcmp(image.prp_vip.vip_path, expected));
++    need(close(fd) == 0);
++}
++struct identity {
++    struct stat root;
++    struct statfs fs;
++    uuid_t uuid;
++};
++static int same_fs(const struct statfs *a, const struct statfs *b) {
++    return a->f_fsid.val[0] == b->f_fsid.val[0] && a->f_fsid.val[1] == b->f_fsid.val[1] &&
++           !strcmp(a->f_mntonname, b->f_mntonname) && !strcmp(a->f_mntfromname, b->f_mntfromname) &&
++           !strcmp(a->f_fstypename, b->f_fstypename) && a->f_owner == b->f_owner;
++}
++static void volume_uuid(int fd, uuid_t out) {
++    struct attrlist attrs = {0};
++    attrs.bitmapcount = ATTR_BIT_MAP_COUNT;
++    attrs.commonattr = ATTR_CMN_RETURNED_ATTRS;
++    attrs.volattr = ATTR_VOL_INFO | ATTR_VOL_UUID;
++    /* getattrlist packing is 4-byte aligned; byte-copy avoids C padding assumptions. */
++    unsigned char bytes[sizeof(uint32_t) + sizeof(attribute_set_t) + sizeof(uuid_t)] = {0};
++    need(fgetattrlist(fd, &attrs, bytes, sizeof(bytes), 0) == 0);
++    uint32_t length; attribute_set_t returned;
++    memcpy(&length, bytes, sizeof(length));
++    memcpy(&returned, bytes + sizeof(length), sizeof(returned));
++    need(length == sizeof(bytes) && (returned.volattr & ATTR_VOL_UUID));
++    memcpy(out, bytes + sizeof(length) + sizeof(returned), sizeof(uuid_t));
++    need(!uuid_is_null(out));
++}
++static void observe(int fd, int mountfd, const char *path, struct identity *out) {
++    secure_directory(fd);
++    need(fstat(fd, &out->root) == 0 && fstatfs(fd, &out->fs) == 0);
++    struct statfs named;
++    /* Both pathname and held-descriptor observations must agree. */
++    need(statfs(path, &named) == 0 && same_fs(&named, &out->fs));
++    need((out->fs.f_flags & (MNT_RDONLY | MNT_LOCAL)) == (MNT_RDONLY | MNT_LOCAL) &&
++         (named.f_flags & (MNT_RDONLY | MNT_LOCAL)) == (MNT_RDONLY | MNT_LOCAL) && out->fs.f_owner == 0);
++    need(!strcmp(out->fs.f_fstypename, "apfs") || !strcmp(out->fs.f_fstypename, "hfs"));
++    struct statfs mounted;
++    need(fstatfs(mountfd, &mounted) == 0 && same_fs(&mounted, &out->fs) &&
++         (mounted.f_flags & (MNT_RDONLY | MNT_LOCAL)) == (MNT_RDONLY | MNT_LOCAL));
++    /* Volume attributes require the volume root, even when the managed tree is
++     * a subdirectory. The separate retained mountpoint FD supplies that root. */
++    volume_uuid(mountfd, out->uuid);
++    /* Use getattrlist too, independently of the descriptor's fgetattrlist. */
++    struct attrlist attrs = {0}; attrs.bitmapcount = ATTR_BIT_MAP_COUNT;
++    attrs.volattr = ATTR_VOL_INFO | ATTR_VOL_UUID;
++    unsigned char bytes[sizeof(uint32_t) + sizeof(uuid_t)] = {0};
++    uint32_t length;
++    need(getattrlist(out->fs.f_mntonname, &attrs, bytes, sizeof(bytes), FSOPT_NOFOLLOW) == 0);
++    memcpy(&length, bytes, sizeof(length));
++    need(length == sizeof(bytes) && !memcmp(bytes + sizeof(length), out->uuid, sizeof(uuid_t)));
++}
++static void mount_table(const struct identity *id, const char *mountpoint) {
++    int count = getfsstat(NULL, 0, MNT_NOWAIT);
++    need(count > 0 && count < (int)MOUNT_LIMIT);
++    /* One spare entry detects growth/truncation, never silently accepts it. */
++    size_t capacity = (size_t)count + 1;
++    struct statfs *mounts = calloc(capacity, sizeof(*mounts)); need(mounts != NULL);
++    int used = getfsstat(mounts, (int)(capacity * sizeof(*mounts)), MNT_NOWAIT);
++    need(used == count && getfsstat(NULL, 0, MNT_NOWAIT) == count);
++    int seen = 0;
++    for (int i = 0; i < used; i++) {
++        struct statfs *m = &mounts[i];
++        if (!strcmp(m->f_mntonname, mountpoint)) {
++            need(same_fs(m, &id->fs) && (m->f_flags & MNT_RDONLY) && (m->f_flags & MNT_LOCAL) && m->f_owner == 0);
++            seen++;
++        } else {
++            need(!beneath(m->f_mntonname, mountpoint));
++            /* No second alias of this volume, including a writable mount alias. */
++            need(strcmp(m->f_mntfromname, id->fs.f_mntfromname) &&
++                 !(m->f_fsid.val[0] == id->fs.f_fsid.val[0] && m->f_fsid.val[1] == id->fs.f_fsid.val[1]));
++        }
++        /* Every mounted filesystem covering the namespace must be root-mounted. */
++        if (!strcmp(m->f_mntonname, "/") || beneath(mountpoint, m->f_mntonname))
++            need(m->f_owner == 0 && (m->f_flags & MNT_LOCAL));
++    }
++    need(seen == 1); free(mounts);
++}
++static void scan(int fd, const struct identity *id, unsigned depth, unsigned *entries) {
++    need(depth <= DEPTH_LIMIT); secure_directory(fd);
++    int iterator = openat(fd, ".", O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
++    need(iterator >= 0);
++    DIR *dir = fdopendir(iterator); need(dir != NULL);
++    for (;;) {
++        errno = 0; struct dirent *entry = readdir(dir);
++        if (!entry) {need(errno == 0); break;}
++        if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) continue;
++        need(++*entries <= ENTRY_LIMIT);
++        struct stat before, opened; struct statfs fs;
++        need(fstatat(fd, entry->d_name, &before, AT_SYMLINK_NOFOLLOW) == 0 &&
++             before.st_dev == id->root.st_dev && before.st_uid == 0 && !(before.st_mode & 0022) &&
++             (S_ISDIR(before.st_mode) || (S_ISREG(before.st_mode) && before.st_nlink == 1)));
++        int child = openat(fd, entry->d_name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK |
++                           (S_ISDIR(before.st_mode) ? O_DIRECTORY : 0));
++        need(child >= 0 && fstat(child, &opened) == 0 && same_node(&before, &opened));
++        need(fstatfs(child, &fs) == 0 && same_fs(&fs, &id->fs) && (fs.f_flags & MNT_RDONLY));
++        no_acl(child);
++        if (S_ISDIR(opened.st_mode)) scan(child, id, depth + 1, entries);
++        need(close(child) == 0);
++    }
++    need(closedir(dir) == 0);
++}
++static void json_string(const char *s) {
++    need(putchar('"') != EOF);
++    for (; *s; s++) {
++        unsigned char c = (unsigned char)*s;
++        need(c >= 0x20 && c <= 0x7e);
++        if (c == '"' || c == '\\') need(putchar('\\') != EOF);
++        need(putchar(c) != EOF);
++    }
++    need(putchar('"') != EOF);
++}
++static void frame(const char *event, const char *nonce, const char *path, const struct identity *id) {
++    char uuid[37]; uuid_unparse_lower(id->uuid, uuid);
++    need(printf("{\"protocol\":\"mac-tree-guard/1\",\"event\":") > 0); json_string(event);
++    need(printf(",\"nonce\":") > 0); json_string(nonce);
++    need(printf(",\"path\":") > 0); json_string(path);
++    need(printf(",\"mountPoint\":") > 0); json_string(id->fs.f_mntonname);
++    need(printf(",\"filesystem\":") > 0); json_string(id->fs.f_fstypename);
++    need(printf(",\"fsid\":[%" PRId32 ",%" PRId32 "],\"mountSource\":", id->fs.f_fsid.val[0], id->fs.f_fsid.val[1]) > 0);
++    json_string(id->fs.f_mntfromname);
++    need(printf(",\"volumeUuid\":") > 0); json_string(uuid);
++    need(printf(",\"rootDevice\":\"%" PRIu64 "\",\"rootInode\":\"%" PRIu64 "\",\"mountOwner\":0,\"readonly\":true,\"local\":true}\n",
++                (uint64_t)id->root.st_dev, (uint64_t)id->root.st_ino) > 0);
++    need(fflush(stdout) == 0);
++}
++int main(int argc, char **argv) {
++    need(argc == 13 && !strcmp(argv[1], "--readonly-v1"));
++    need(getuid() != 0 && getuid() == geteuid() && getgid() == getegid() && !issetugid());
++    need(signal(SIGPIPE, SIG_IGN) != SIG_ERR);
++    const char *helper = argv[2], *nonce = argv[3], *path = argv[4], *mountpoint = argv[5];
++    canonical(path); canonical(mountpoint); need(beneath(path, mountpoint));
++    need(strlen(nonce) == 32 && strspn(nonce, "0123456789abcdef") == 32);
++    /* TS pins the executable bytes; here require ACL-free root-owned placement. */
++    verify_executable(helper);
++    int mounted = secure_open(mountpoint, 0), root = secure_open(path, 0);
++    struct identity before, after;
++    observe(root, mounted, path, &before);
++    struct statfs mountfs; struct stat mountstat;
++    need(fstatfs(mounted, &mountfs) == 0 && same_fs(&mountfs, &before.fs) && fstat(mounted, &mountstat) == 0);
++    need(!strcmp(before.fs.f_mntonname, mountpoint) && !strcmp(before.fs.f_fstypename, argv[6]) &&
++         before.fs.f_fsid.val[0] == fsid_number(argv[7]) && before.fs.f_fsid.val[1] == fsid_number(argv[8]) &&
++         !strcmp(before.fs.f_mntfromname, argv[9]) && (uint64_t)before.root.st_dev == number(argv[11]) &&
++         (uint64_t)before.root.st_ino == number(argv[12]));
++    uuid_t expected; need(uuid_parse(argv[10], expected) == 0 && !uuid_compare(expected, before.uuid));
++    mount_table(&before, mountpoint);
++    unsigned entries = 0; scan(root, &before, 0, &entries);
++    frame("ready", nonce, path, &before);
++    /* Blocking private stdin: no command language. EOF alone releases. Root FD
++     * remains open across the complete host callback and postflight validation. */
++    char byte;
++    for (;;) {
++        ssize_t n = read(STDIN_FILENO, &byte, 1);
++        if (n < 0 && errno == EINTR) continue;
++        need(n == 0); break;
++    }
++    int reopened = secure_open(path, 0), remounted = secure_open(mountpoint, 0);
++    struct stat named, mountnamed;
++    need(fstat(reopened, &named) == 0 && same_node(&named, &before.root));
++    need(fstat(remounted, &mountnamed) == 0 && same_node(&mountnamed, &mountstat));
++    observe(root, mounted, path, &after);
++    need(same_node(&before.root, &after.root) && same_fs(&before.fs, &after.fs) && !uuid_compare(before.uuid, after.uuid));
++    mount_table(&after, mountpoint);
++    entries = 0; scan(root, &after, 0, &entries);
++    verify_executable(helper);
++    frame("released", nonce, path, &after);
++    need(close(reopened) == 0 && close(remounted) == 0 && close(mounted) == 0 && close(root) == 0);
++    return 0;
++}
+--- a/packages/build-storage/src/index.ts
++++ b/packages/build-storage/src/index.ts
+@@ -12,3 +12,6 @@
+ export {projectInputOperationKey} from './project-input-io';
+ export {PROJECT_INPUT_LIMITS} from './project-input-format';
+ export {packageProjectInputSnapshot, populateProjectInputSnapshot, materializeProjectInputSnapshot, verifyLocalProjectInputSnapshot} from './project-inputs';
++
++export {createMacReadonlyTreeSeal} from './mac-readonly-seal';
++export type {ReadonlyManagedTreeSeal,MacReadonlySealConfig,MacReadonlyTreeIdentity} from './mac-readonly-seal';
+--- /dev/null
++++ b/packages/build-storage/src/mac-readonly-seal.ts
+@@ -0,0 +1,231 @@
++import {spawn, type ChildProcessWithoutNullStreams} from 'node:child_process';
++import {createHash, randomBytes} from 'node:crypto';
++import {constants} from 'node:fs';
++import {access, lstat, open} from 'node:fs/promises';
++import {isAbsolute, resolve} from 'node:path';
++import type {ManagedReadonlyTreeSeal} from './types';
++
++/** Read-side composition of the ManagedTreeSeal callback contract, intentionally
++ * NOT assignable to ManagedTreeSeal: no withExclusiveTrees and no writable mode.
++ * Only owner-provisioned, static, kernel-read-only source capture/collection.
++ * Restore, CAS put, and live mutable workspaces require a different implementation. */
++export interface ReadonlyManagedTreeSeal extends ManagedReadonlyTreeSeal {
++  readonly kind:'mac-kernel-readonly-v1';
++  /** A failed instance is never reusable, even after a child eventually exits. */
++  state():Readonly<{poisoned:boolean; active:boolean; childPid:number|null;
++    childClosed:boolean; callbackPending:boolean; verificationPending:boolean}>;
++}
++
++/** Expected values are an owner-maintained trust record, NOT learned from READY.
++ * Decimal strings avoid JS inode/device precision loss. UUID is lower-case. */
++export interface MacReadonlyTreeIdentity {
++  readonly path:string;
++  readonly mountPoint:string;
++  readonly filesystem:'apfs'|'hfs';
++  readonly fsid:readonly [number,number];
++  readonly mountSource:string;
++  readonly volumeUuid:string;
++  readonly rootDevice:string;
++  readonly rootInode:string;
++}
++export interface MacReadonlySealConfig {
++  /** Owner-installed native executable; root-owned, no ACLs or writable ancestors.
++   * Hash the reviewed installed Mach-O binary, not this C source. No default hash. */
++  readonly helper:Readonly<{path:string;sha256:string}>;
++  readonly tree:MacReadonlyTreeIdentity;
++  /** Whole operation deadline; timing out poisons rather than stopping a callback. */
++  readonly maxOperationMs?:number;
++}
++
++const error=(code:string)=>new Error(`build-storage: mac-readonly-${code}`);
++function requireThat(ok:unknown,code:string):asserts ok {if(!ok) throw error(code);}
++function path(value:string) {
++  requireThat(typeof value==='string'&&isAbsolute(value)&&resolve(value)===value&&value!=='/'&&
++    Buffer.byteLength(value)<1024&&!/[^\x20-\x7e]/.test(value),'canonical-ascii-path-required');
++}
++function decimal(value:string) {requireThat(typeof value==='string'&&/^(0|[1-9][0-9]{0,19})$/.test(value)&&BigInt(value)<=0xffffffffffffffffn,'identity-integer');}
++function deferred<T>() {
++  let resolve!:(value:T)=>void, reject!:(reason:unknown)=>void;
++  const promise=new Promise<T>((yes,no)=>{resolve=yes;reject=no;});
++  // Failure may arrive before this phase is awaited. Retain it without an
++  // unhandled rejection; callers still await the original rejected promise.
++  void promise.catch(()=>{});
++  return {promise,resolve,reject};
++}
++
++/** Construction is inert. The only executable started by an operation is this
++ * pinned helper, directly with shell:false and an empty environment. No sudo,
++ * mounts, images, unmount, executable discovery or caller-supplied guard verdict. */
++export function createMacReadonlyTreeSeal(config:MacReadonlySealConfig):ReadonlyManagedTreeSeal {
++  const helper=Object.freeze({...config.helper});
++  const tree=Object.freeze({...config.tree,fsid:Object.freeze([...config.tree.fsid])});
++  const maxOperationMs=config.maxOperationMs??300_000;
++  path(helper.path); path(tree.path); path(tree.mountPoint); path(tree.mountSource);
++  requireThat(tree.path===tree.mountPoint||tree.path.startsWith(`${tree.mountPoint}/`),'root-outside-mount');
++  requireThat(/^\/dev\/disk[0-9]+(?:s[0-9]+)*$/.test(tree.mountSource),'local-block-volume-required');
++  requireThat(tree.filesystem==='apfs'||tree.filesystem==='hfs','filesystem');
++  requireThat(tree.fsid.length===2&&tree.fsid.every(n=>Number.isInteger(n)&&n>=-2147483648&&n<=2147483647),'fsid');
++  requireThat(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(tree.volumeUuid)&&
++    tree.volumeUuid!=='00000000-0000-0000-0000-000000000000','volume-uuid');
++  decimal(tree.rootDevice); decimal(tree.rootInode);
++  requireThat(/^[a-f0-9]{64}$/.test(helper.sha256),'helper-sha256');
++  requireThat(Number.isSafeInteger(maxOperationMs)&&maxOperationMs>=1000&&maxOperationMs<=1_800_000,'deadline');
++  let poisoned=false, active=false, child:ChildProcessWithoutNullStreams|undefined;
++  let childClosed=true, callbackPending=false, verificationPending=false;
++
++  async function verifyHelper(signal:AbortSignal) {
++    requireThat(process.platform==='darwin','darwin-only');
++    requireThat(process.getuid?.()!==0&&process.getuid?.()===process.geteuid?.()&&
++      process.getgid?.()===process.getegid?.(),'unprivileged-host-required');
++    const parts=helper.path.slice(1).split('/'); let current='';
++    for(let i=-1;i<parts.length;i++) {
++      current=i===-1?'/':`${current==='/'?'':current}/${parts[i]}`;
++      const s=await lstat(current,{bigint:true}), leaf=i===parts.length-1;
++      requireThat(s.uid===0n&&(s.mode&0o022n)===0n&&!s.isSymbolicLink()&&
++        (leaf?s.isFile()&&s.nlink===1n&&(s.mode&0o6000n)===0n&&(s.mode&0o111n)!==0n:s.isDirectory()),'untrusted-helper-path');
++      // Additional effective access refusal; native guard rejects every extended
++      // ACL as well. ACL-free helper provisioning is part of the trust boundary.
++      let writable=false;
++      try {await access(current,constants.W_OK); writable=true;}
++      catch(e) {requireThat(['EACCES','EPERM','EROFS'].includes((e as NodeJS.ErrnoException).code??''),'helper-access-indeterminate');}
++      requireThat(!writable&&!signal.aborted,'helper-writable-or-aborted');
++    }
++    const fd=await open(helper.path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
++    try {
++      const before=await fd.stat({bigint:true});
++      requireThat(before.isFile()&&before.uid===0n&&before.nlink===1n&&(before.mode&0o6022n)===0n&&
++        (before.mode&0o111n)!==0n&&before.size>0n&&before.size<=16_777_216n,'helper-metadata');
++      const hash=createHash('sha256'), block=Buffer.alloc(65536); let offset=0;
++      while(BigInt(offset)<before.size) {
++        requireThat(!signal.aborted,'aborted');
++        const {bytesRead}=await fd.read(block,0,Math.min(block.length,Number(before.size)-offset),offset);
++        requireThat(bytesRead>0,'helper-short-read');
++        if(offset===0) requireThat(bytesRead>=4&&[0xfeedface,0xcefaedfe,0xfeedfacf,0xcffaedfe,
++          0xcafebabe,0xbebafeca,0xcafebabf,0xbfbafeca].includes(block.readUInt32BE(0)),'native-helper-required');
++        hash.update(block.subarray(0,bytesRead)); offset+=bytesRead;
++      }
++      const after=await fd.stat({bigint:true}), named=await lstat(helper.path,{bigint:true});
++      requireThat([after,named].every(s=>s.dev===before.dev&&s.ino===before.ino&&s.size===before.size&&
++        s.mode===before.mode&&s.uid===before.uid&&s.nlink===before.nlink&&s.mtimeNs===before.mtimeNs&&s.ctimeNs===before.ctimeNs)&&
++        hash.digest('hex')===helper.sha256,'helper-pin-mismatch');
++    } finally {await fd.close();}
++  }
++
++  return Object.freeze({
++    kind:'mac-kernel-readonly-v1' as const,
++    state:()=>Object.freeze({poisoned,active,childPid:child?.pid??null,childClosed,callbackPending,verificationPending}),
++    async withReadonlyTrees<T>(roots:readonly string[],run:()=>Promise<T>,signal:AbortSignal):Promise<T> {
++      requireThat(!poisoned&&!active,'poisoned-or-busy');
++      requireThat(roots.length===1&&roots[0]===tree.path,'exact-single-readonly-root-required');
++      requireThat(typeof run==='function'&&!signal.aborted,'callback-or-signal');
++      active=true;
++      const fatal=deferred<never>(), ready=deferred<void>(), done=deferred<void>();
++      let failed:Error|undefined, releasing=false, running:Promise<T>|undefined;
++      let startup:ReturnType<typeof setTimeout>|undefined, finish:ReturnType<typeof setTimeout>|undefined;
++      const fail=(reason:unknown)=>{
++        if(failed) return;
++        failed=reason instanceof Error?reason:error('guard-failed'); poisoned=true;
++        fatal.reject(failed); ready.reject(failed); done.reject(failed);
++      };
++      const abort=()=>fail(error('aborted-state-uncertain'));
++      signal.addEventListener('abort',abort,{once:true});
++      const deadline=setTimeout(()=>fail(error('deadline-state-uncertain')),maxOperationMs);
++      try {
++        // Do not leave an asynchronous verification running after an abort and
++        // accidentally spawn later. Check failed again after it settles.
++        verificationPending=true;
++        const verification=verifyHelper(signal);
++        void verification.then(()=>{verificationPending=false;},()=>{verificationPending=false;});
++        // A timeout/abort may settle the caller while native metadata I/O remains
++        // pending. That work has NO launch side effect; poisoned state retains it
++        // until verification and its descriptor cleanup physically finish.
++        await Promise.race([verification,fatal.promise]);
++        if(signal.aborted) abort(); if(failed) throw failed;
++        const nonce=randomBytes(16).toString('hex');
++        child=spawn(helper.path,['--readonly-v1',helper.path,nonce,tree.path,tree.mountPoint,tree.filesystem,
++          String(tree.fsid[0]),String(tree.fsid[1]),tree.mountSource,tree.volumeUuid,tree.rootDevice,tree.rootInode],
++          {shell:false,cwd:'/',env:{},stdio:['pipe','pipe','pipe'],detached:false});
++        const guard=child; childClosed=false;
++        let buffer=Buffer.alloc(0), stdoutBytes=0, stderrBytes=0, frames=0;
++        const identity=(message:unknown,event:'ready'|'released')=>{
++          requireThat(!!message&&typeof message==='object'&&!Array.isArray(message),'guard-json-object');
++          const m=message as Record<string,unknown>;
++          const keys=['protocol','event','nonce','path','mountPoint','filesystem','fsid','mountSource','volumeUuid',
++            'rootDevice','rootInode','mountOwner','readonly','local'];
++          requireThat(Object.keys(m).length===keys.length&&keys.every(k=>Object.hasOwn(m,k))&&
++            m.protocol==='mac-tree-guard/1'&&m.event===event&&m.nonce===nonce&&m.path===tree.path&&
++            m.mountPoint===tree.mountPoint&&m.filesystem===tree.filesystem&&m.mountSource===tree.mountSource&&
++            m.volumeUuid===tree.volumeUuid&&m.rootDevice===tree.rootDevice&&m.rootInode===tree.rootInode&&
++            m.mountOwner===0&&m.readonly===true&&m.local===true&&Array.isArray(m.fsid)&&m.fsid.length===2&&
++            m.fsid[0]===tree.fsid[0]&&m.fsid[1]===tree.fsid[1],'guard-identity-mismatch');
++        };
++        guard.on('error',()=>fail(error('child-error-state-uncertain')));
++        guard.stdin.on('error',()=>fail(error('stdin-error-state-uncertain')));
++        guard.stdout.on('error',()=>fail(error('stdout-error-state-uncertain')));
++        guard.stdout.on('end',()=>{
++          if(!releasing||frames!==2||buffer.length!==0) fail(error('stdout-closed-before-release'));
++        });
++        guard.stderr.on('error',()=>fail(error('stderr-error-state-uncertain')));
++        guard.stderr.on('data',(chunk:Buffer)=>{
++          stderrBytes+=chunk.length; // Never retain/log native diagnostics or arbitrary payloads.
++          fail(error(stderrBytes>2048?'stderr-budget':'guard-diagnostic'));
++        });
++        guard.stdout.on('data',(chunk:Buffer)=>{
++          if(failed) return; // Drain without retaining an unbounded hostile stream.
++          try {
++            stdoutBytes+=chunk.length; requireThat(stdoutBytes<=16_384,'stdout-budget');
++            buffer=Buffer.concat([buffer,chunk]);
++            let newline:number;
++            while((newline=buffer.indexOf(10))!==-1) {
++              requireThat(newline>0&&newline<=8192&&frames<2,'guard-frame-budget');
++              const line=buffer.subarray(0,newline); buffer=buffer.subarray(newline+1);
++              requireThat(line.every(b=>b>=0x20&&b<=0x7e),'guard-frame-encoding');
++              const message:unknown=JSON.parse(line.toString('ascii'));
++              if(frames===0) {identity(message,'ready');frames++;clearTimeout(startup);ready.resolve();}
++              else {requireThat(releasing,'premature-release');identity(message,'released');frames++;}
++            }
++            requireThat(buffer.length<=8192,'guard-line-budget');
++          } catch(e) {fail(e);}
++        });
++        guard.on('exit',(code,signalName)=>{
++          if(!releasing||code!==0||signalName!==null) fail(error('child-exit-state-uncertain'));
++        });
++        guard.on('close',(code,signalName)=>{
++          childClosed=true;
++          if(code!==0||signalName!==null||!releasing||frames!==2||buffer.length!==0||stderrBytes!==0)
++            fail(error('incomplete-guard-release'));
++          if(!failed) done.resolve();
++        });
++        startup=setTimeout(()=>fail(error('ready-timeout-state-uncertain')),10_000);
++        await Promise.race([ready.promise,fatal.promise]);
++        requireThat(!signal.aborted&&!failed&&!childClosed,'guard-lost-before-callback');
++        callbackPending=true;
++        running=Promise.resolve().then(()=>{
++          requireThat(!signal.aborted&&!failed&&!childClosed,'guard-lost-before-callback');
++          return run();
++        });
++        // On abort/failure, keep stdin and the held root FD until the host callback
++        // actually settles. A rejected race cannot cancel arbitrary host code.
++        void running.then(()=>{callbackPending=false;if(failed) guard.stdin.end();},
++          ()=>{callbackPending=false;if(failed) guard.stdin.end();});
++        const result=await Promise.race([running,fatal.promise]);
++        if(signal.aborted) abort(); if(failed) throw failed;
++        releasing=true; guard.stdin.end(); // EOF is the ONLY release command.
++        finish=setTimeout(()=>fail(error('release-timeout-state-uncertain')),10_000);
++        await Promise.race([done.promise,fatal.promise]);
++        if(signal.aborted) abort(); if(failed) throw failed;
++        return result;
++      } catch(e) {
++        fail(e);
++        // Do not send signals, discard child state, assume rollback, or retry.
++        if(child&&!callbackPending) child.stdin.end();
++        throw failed;
++      } finally {
++        clearTimeout(deadline);clearTimeout(startup);clearTimeout(finish);
++        signal.removeEventListener('abort',abort); active=false;
++        // Retain the child reference on failure, including late close/exit state.
++        if(!poisoned) child=undefined;
++      }
++    },
++  });
++}
+--- a/packages/build-storage/src/packaging.ts
++++ b/packages/build-storage/src/packaging.ts
+@@ -41,7 +41,8 @@
+   check(selected.size===required.size&&r.profile.outputPaths.every(path=>selected.has(path)),'required-output-selection-incomplete');
+   check(r.outputs.every(f=>required.has(f.path)&&f.classification!=='build-log'),'unapproved-output');
+   check(r.logs.every(f=>f.classification==='build-log'),'log-classification');
+-  return ports.seal.withExclusiveTrees([root.path],async()=>{
++  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal.withExclusiveTrees.bind(ports.seal);
++  return readTrees([root.path],async()=>{
+     const plans:ArtifactPlan[]=[]; let total=0,count=0,entries=0;
+     // Preflight ALL files before cloud writes: no partial publish for known size/type errors.
+     let logChunks=0;
+--- a/packages/build-storage/src/project-input-io.ts
++++ b/packages/build-storage/src/project-input-io.ts
+@@ -5,7 +5,7 @@
+ import {current, issueCurrent, observeGrant, publish, reserve} from './publication';
+ import {PROJECT_INPUT_LIMITS} from './project-input-format';
+ import type {SnapshotImportRequest, TrustedSnapshotReader} from './snapshots';
+-import type {ArtifactClaim, GrantScope, LocalContentStore, LocalRef, ManagedTreeSeal, ObjectRef, PublicationReservation, TrustedGrantIssuer, TrustedPublicationCapacity, TrustedWriter} from './types';
++import type {ArtifactClaim, GrantScope, LocalContentStore, LocalRef, ManagedTreeSeal, ManagedReadonlyTreeSeal, ObjectRef, PublicationReservation, TrustedGrantIssuer, TrustedPublicationCapacity, TrustedWriter} from './types';
+ 
+ interface ProjectInputNamespace {scope:GrantScope;issuer:TrustedGrantIssuer;capacity:TrustedPublicationCapacity}
+ export interface ProjectInputPublicationNamespace extends ProjectInputNamespace {writer:TrustedWriter}
+@@ -40,7 +40,7 @@
+   selectNamespace(request:ProjectInputRouteRequest,signal:AbortSignal):Promise<string>;
+ }
+ export interface ProjectInputPackagingPorts {
+-  local:LocalContentStore;seal:ManagedTreeSeal;routing:ProjectInputRouting<ProjectInputPublicationNamespace>;
++  local:LocalContentStore;seal:ManagedTreeSeal;readSeal?:ManagedReadonlyTreeSeal;routing:ProjectInputRouting<ProjectInputPublicationNamespace>;
+ }
+ export interface ProjectInputReadPorts {local:LocalContentStore;routing:ProjectInputRouting<ProjectInputReadNamespace>}
+ 
+--- a/packages/build-storage/src/project-inputs.ts
++++ b/packages/build-storage/src/project-inputs.ts
+@@ -43,7 +43,8 @@
+   for(const path of requiredInputs) {check(!required.has(path),'duplicate-required-input'); paths.add(path,true); required.add(path);}
+   const missingInputs=requiredInputs.filter(p=>!selected.has(p));
+   const publisher=projectPublisher(scope,ports,signal); // Validates explicit namespace set and local layout before disk reads.
+-  return ports.seal.withExclusiveTrees([root.path],async()=>{
++  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal.withExclusiveTrees.bind(ports.seal);
++  return readTrees([root.path],async()=>{
+     const tree=new ProjectInputTree(signal), plans:SegmentPlan[]=[plan()]; let total=0,objectCount=0;
+     for(const file of files) {
+       const stat=await tree.inspect(root,file.path); v.uint(stat.size,0,L.maxChunksPerFile*CHUNK_BYTES);
+--- a/packages/build-storage/src/snapshots.ts
++++ b/packages/build-storage/src/snapshots.ts
+@@ -53,7 +53,8 @@
+     }
+   }
+   if(r.git.revision!==null) check(/^[a-f0-9]{40,64}$/.test(r.git.revision),'git-revision');
+-  return ports.seal.withExclusiveTrees([root.path],async()=>{
++  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal.withExclusiveTrees.bind(ports.seal);
++  return readTrees([root.path],async()=>{
+     const stats:Stats[]=[]; let total=0,count=0;
+     for(const file of r.files) {
+       const s=await inspectFile(root,file.path,signal);
+--- a/packages/build-storage/src/types.ts
++++ b/packages/build-storage/src/types.ts
+@@ -45,6 +45,11 @@
+    * Portable Node lstat/O_NOFOLLOW alone cannot implement this containment guarantee. */
+   withExclusiveTrees<T>(roots: readonly string[], run: () => Promise<T>, signal: AbortSignal): Promise<T>;
+ }
++/** Separate read-side capability. It deliberately cannot authorize mutable
++ * restoration or CAS writes. Kernel read-only storage may implement this. */
++export interface ManagedReadonlyTreeSeal {
++  withReadonlyTrees<T>(roots:readonly string[],run:()=>Promise<T>,signal:AbortSignal):Promise<T>;
++}
+ export interface ManagedRoot {path:string; uid:number}
+ export interface LocalRef {kind:'local-cas'; sha256:string; sizeBytes:number; relativePath:string}
+ export interface LocalContentStore {
+@@ -61,6 +66,9 @@
+ export interface PackagingPorts {
+   writer:TrustedWriter; issuer:TrustedGrantIssuer; capacity:TrustedPublicationCapacity;
+   seal:ManagedTreeSeal; local:LocalContentStore;
++  /** Optional concrete immutable source/output root guard. Local CAS writes retain
++   * their independent writable store/seal; never adapt this into a writable seal. */
++  readSeal?:ManagedReadonlyTreeSeal;
+ }
+ export interface CollectedOutputs {
+   outputs:ResultManifest['outputs']; logs:ArtifactClaim[]; lineage:OutputLineage[];

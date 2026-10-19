@@ -1,0 +1,59 @@
+# Cloud-backed projects and remote builds
+
+## Authority and storage boundaries
+
+Cloudflare's existing compute Durable Object remains the command authority. New build tables share its storage transaction adapter, compute epoch, worker enrollment and authenticated identities. The new route is disabled unless `COMPUTE_BUILDS_ENABLED` and managed enrollment are explicitly enabled. No configuration flag was enabled here.
+
+GCS preserves immutable objects; the Linux VM and Macs hold replaceable workspaces/caches. The fleet source catalog is a read model of captured variants, not a canonical repository or complete historical backup. An owner must approve input metadata after required assets, lockfiles, submodules, LFS and local dependencies are reconciled. A `reconstructable` approval is an accountable declaration; only later restore/build evidence validates it.
+
+```mermaid
+flowchart LR
+ O[Foundry operator on a Mac] --> C[Cloudflare compute authority]
+ O --> L[Local project library]
+ L --> B[Authenticated scoped storage broker]
+ C --> B
+ B --> G[Immutable GCS objects]
+ W[Linux or native Mac worker] --> C
+ W --> B
+ W --> A[Immutable output publisher]
+ A --> G
+ V[Independent verifier] --> C
+```
+
+No cloud VM, account, daemon, credential or broker namespace was created. DigitalOcean retains existing responsibilities. Supabase remains a distinct data service; memory/models do not decide merges. MotionMix live controls, N'Ko, Vast lifecycle, stock Codex and other agent work are outside this route.
+
+## Project and recipe contracts
+
+Owner-approved inputs carry project identity, an immutable manifest reference, source snapshot identity, optional Git remote/revision/history status, required inputs and explicit missing inputs. Unknown readiness stays unknown. Changed work is captured separately, never overlaid into archived copies or promoted by timestamp.
+
+Owner-approved profiles select `linux-build-v1` or `xcode-build-v1`, exact structured recipe, resource/disk/time limits, required output paths, and opt-in policy. Submitters select approved input/profile hashes; no job body supplies an executable or shell script. Linux images are digest pinned. Native Xcode selects `DEVELOPER_DIR` per job and disables signing. Project scripts still execute: only owner-approved trusted native projects are eligible, and account separation is not a hostile-code sandbox.
+
+The runtime's local approval digest covers host account/paths/isolation settings and is distinct from the authority's portable build profile hash. Controller bindings must pin both; neither digest can be substituted for the other.
+
+## Lifecycle and failure behavior
+
+The authority owns one durable build slot per host; retained build slots also block legacy reservations. Worker census is sequence-fenced, server-timestamped and stale after 30 seconds. The existing enrollment freshness is checked separately. Placement explains class, liveness, owner profile approval, platform/toolchain, memory, disk and occupancy. Initial profiles require explicit worker opt-in for every host; the operator station receives a lower owner-configured preference without machine-name rules.
+
+Jobs move QUEUED → RUNNING → VERIFYING → SUCCEEDED. Failed/cancelled/expired attempts retain stop uncertainty until actual stop evidence or explicit owner reconciliation. A 60-second lease renews at 15-second intervals and cannot exceed the profile's absolute duration (maximum one hour). Cancellation and renewal loss initiate host termination; expiry alone does not release a slot. Requeue is explicit, bounded and requires cleared stop uncertainty.
+
+The host persists intent and runtime identity before activation. Restart uncertainty quarantines; it never reruns automatically. Native descendants require host evidence beyond a killed process group. Lack of evidence is a blocked result, not successful containment.
+
+Artifacts and logs use immutable, generation-pinned references. Result manifests bind job, attempt, input and profile. Staging is not acceptance. Independent verification checks actual manifest/chunk bytes, complete required output paths, full-file hashes, bounds, lineage and current fences after asynchronous reads. Success verifies a build receipt, not app functionality, test quality, signing or release readiness.
+
+## Capacity and retention
+
+All hosts must retain at least 50 GiB beyond estimated job growth. Unknown estimates defer work. Initial scheduling permits one build per host. Mac1 is preferred as operator and needs explicit build opt-in; no machine receives a hard-coded task assignment. Pi remains census-only.
+
+Managed reusable caches default to 20 GiB/Mac. Successful disposable workspaces are cleanup-eligible at 24 hours and failed workspaces at seven days, subject to ownership, inactivity and cleanup approval. Release archives/debug symbols and original project copies require separate retention/recovery decisions. Current inventory accepts **zero bytes as safe to delete**.
+
+## Review status
+
+This is local source implementation pending compilation/runtime validation. The master checklist and final review identify implemented versus blocked boundaries. Constructor DI ports are trusted host boundaries, not claims that a cloud provider/account/agent has been configured. No source archive is described as buildable merely because its hashes match.
+
+## Initial bounded pilot versus estate coverage
+
+The project library describes 585 catalog entries/589 captured versions, not 585 build-validated apps. All are discoverable in the captured collection; actual restore access is still gated. Node build input snapshots support 128 explicit files under a generic 128MiB packaging ceiling, further constrained by real broker namespace capacity. Project-scale manifest segmentation and dependency/history onboarding are not implemented by this slice.
+
+Initial portable build outputs/logs are capped at 7MiB total, 24 required paths and 31 chunks plus one manifest, fitting the hard 32-grant/8MiB fresh-namespace bounds. Existing usage must still pass real capacity admission; no namespace is silently rolled over or emptied. Approved app/debug/archive bundles are deterministic tar artifacts with explicit format and full artifact hashes; unsupported links/types and over-budget trees reject. A tar artifact is not proof that an app is runnable or distribution signed.
+
+Apple's OCI-compatible Linux containers can help optional Mac development environments, but this source's Linux executor requires a Linux host. Native Xcode remains a distinct Mac profile. No Apple container tool was installed, invoked or treated as a substitute for macOS/Xcode.

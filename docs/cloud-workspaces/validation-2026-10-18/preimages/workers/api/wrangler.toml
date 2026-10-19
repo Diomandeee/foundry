@@ -1,0 +1,20 @@
+name = "foundry-api"
+main = "src/index.ts"
+compatibility_date = "2026-10-05"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "foundry-decisions"
+database_id = "12e5a5e8-4e87-4ce6-8074-99e393ff9463"
+
+[env.staging]
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "foundry-decisions-staging"
+database_id = "4dfb279c-4e61-4954-a13a-3e8ef8181484"
+
+[env.production]
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "foundry-decisions-prod"
+database_id = "21b306b7-c143-4462-9fab-475742907279"

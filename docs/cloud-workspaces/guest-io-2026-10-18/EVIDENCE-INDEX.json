@@ -1,0 +1,45 @@
+{
+  "kind": "local-document-byte-inventory-not-runtime-validation",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 10754,
+      "sha256": "1acf1790558ddd8b8eda83977324fd8e21aa050a3ac7ec791fbf3301f93a275d"
+    },
+    {
+      "path": "SOURCE-REVIEW.md",
+      "bytes": 5561,
+      "sha256": "a3e4ffde10505c954636af47576a57e102370ccc3055739c7b1f8bb9f29aa8ba"
+    },
+    {
+      "path": "FINDINGS.json",
+      "bytes": 4897,
+      "sha256": "bd80de81b5dfcf4c0e9520dcf8b00c658b68b8a8830a5afb1ce31ce3c9b4f1ef"
+    },
+    {
+      "path": "DEFERRED-ACCEPTANCE.md",
+      "bytes": 3365,
+      "sha256": "07e1f02f9390b82596f7afcf4fb871c4a97a049689855beda4f8aafe686e8128"
+    },
+    {
+      "path": "TASKS.md",
+      "bytes": 1290,
+      "sha256": "3c1325020919aa9dda44b52dfcfe3fe597ef634547a72940e086a8f718b9594e"
+    },
+    {
+      "path": "CHANGE-RECEIPT.json",
+      "bytes": 5946,
+      "sha256": "d28682ca966cc0f740a4edd7f30f7cc36c1672aaf05d55ce2046ab5f732ad2e2"
+    },
+    {
+      "path": "SCOPE.json",
+      "bytes": 7537,
+      "sha256": "5b256fd8d06249e1909167461d7ba55bb97f78f1fc7fec7649dfd3a472c1681f"
+    },
+    {
+      "path": "changes.patch",
+      "bytes": 93481,
+      "sha256": "87e03ab7fac5e9df3ab32d8f4fc1bd287b62d5253c31fc79bdea75138a8e3caf"
+    }
+  ]
+}

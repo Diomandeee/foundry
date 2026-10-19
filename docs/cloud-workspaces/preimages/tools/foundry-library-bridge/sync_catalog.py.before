@@ -1,0 +1,95 @@
+"""Fetch a reviewed immutable catalog package after its publication is approved."""
+import argparse
+import hashlib
+import json
+import os
+import tarfile
+import tempfile
+from pathlib import Path
+from common import Catalog, safe_path, valid_hash
+from cloud import CloudReader
+from pull import no_symlink_parents, publish_exclusive
+
+
+def sync(descriptor_path, destination, project, account, cache, via=None):
+    descriptor = json.loads(Path(descriptor_path).read_text())
+    if descriptor.get("format") != "foundry.catalog-distribution.v1" or descriptor.get("status") != "published":
+        raise ValueError("a real published generation receipt is required; preparation templates cannot be fetched")
+    expected_revision = valid_hash(descriptor["catalogRevision"])
+    destination = no_symlink_parents(destination)
+    if destination.exists() or destination.is_symlink() or not destination.parent.is_dir():
+        raise ValueError("catalog destination must be new under an existing directory")
+    cache = no_symlink_parents(cache)
+    reference = descriptor["object"]
+    if reference["bytes"] > 256 * 1024**2:
+        raise ValueError("catalog package exceeds bound")
+    archive = CloudReader(project, account, cache, via).fetch(reference)
+    stage = Path(tempfile.mkdtemp(prefix=".foundry-catalog-", dir=destination.parent))
+    published = False
+    try:
+        names, total = set(), 0
+        with tarfile.open(archive, "r:gz") as tar:
+            for member in tar:
+                name = safe_path(member.name)
+                if name in names or not member.isreg():
+                    raise ValueError("catalog package must contain unique regular files only")
+                names.add(name)
+                if name != "catalog.json":
+                    if not name.startswith("projects/") or not name.endswith(".json") or name.count("/") != 1:
+                        raise ValueError("unexpected catalog package member")
+                    valid_hash(name[len("projects/"):-len(".json")])
+                total += member.size
+                if member.size < 0 or member.size > 64 * 1024**2 or total > 256 * 1024**2 or len(names) > 10000:
+                    raise ValueError("expanded catalog package exceeds bound")
+                output = stage / name
+                output.parent.mkdir(exist_ok=True, mode=0o700)
+                with tar.extractfile(member) as source, output.open("xb") as target:
+                    remaining = member.size
+                    while remaining:
+                        chunk = source.read(min(remaining, 1024 * 1024))
+                        if not chunk:
+                            raise ValueError("truncated catalog package")
+                        target.write(chunk)
+                        remaining -= len(chunk)
+                    target.flush()
+                    os.fsync(target.fileno())
+        catalog = Catalog(stage)
+        if catalog.index["revision"] != expected_revision:
+            raise ValueError("catalog revision does not match publication receipt")
+        expected_names = {"catalog.json"}
+        for project_id in catalog.projects:
+            catalog.project(project_id)
+            expected_names.add("projects/" + catalog.projects[project_id]["detailSha256"] + ".json")
+        if names != expected_names:
+            raise ValueError("catalog package is incomplete or contains unexpected files")
+        for directory in (stage / "projects", stage):
+            if directory.exists():
+                fd = os.open(directory, os.O_RDONLY)
+                try:
+                    os.fsync(fd)
+                finally:
+                    os.close(fd)
+        publish_exclusive(stage, destination)
+        published = True
+        fd = os.open(destination.parent, os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+        return {"catalogRevision": expected_revision, "destination": str(destination), "cloudWrites": 0}
+    except Exception as error:
+        detail = str(error) if isinstance(error, ValueError) else type(error).__name__
+        raise RuntimeError(("catalog published at " + str(destination) if published else "catalog sync stopped; staging retained at " + str(stage))
+                           + "; reason: " + detail) from None
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    for name in ("descriptor", "destination", "gcp-project", "account", "cache-root"):
+        parser.add_argument("--" + name, required=True)
+    parser.add_argument("--cloud-via", choices=["mac1"])
+    args = parser.parse_args()
+    try:
+        print(json.dumps(sync(args.descriptor, args.destination, args.gcp_project, args.account, args.cache_root, args.cloud_via)))
+    except Exception as error:
+        parser.exit(1, "Catalog sync stopped: " + (str(error) if isinstance(error, (ValueError, RuntimeError)) else type(error).__name__) + "\n")

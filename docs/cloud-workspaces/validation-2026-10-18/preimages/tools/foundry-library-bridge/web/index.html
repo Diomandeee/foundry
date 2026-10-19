@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Foundry · Projects</title><link rel="stylesheet" href="/style.css"><script defer src="/app.js"></script></head>
+<body><header><span class="brand">FOUNDRY / LIBRARY</span><span id="capture"></span></header>
+<main><h1>Your projects, together.</h1><p id="scope">Loading the source catalog…</p>
+<aside id="notice">Source snapshots preserve the captured code. Local edits stay local until a separate save workflow is implemented.</aside>
+<aside><span id="storage">Cache usage has not been observed.</span> <button id="refresh-storage" type="button">Refresh storage</button></aside>
+<label for="search">Find a project</label><input id="search" type="search" placeholder="Project or repository name" autocomplete="off">
+<div class="filters"><label><input type="checkbox" id="available" checked> With copied source</label><span id="count"></span></div>
+<section id="projects" aria-label="Project collection"></section>
+<section id="detail" hidden aria-label="Project versions"></section>
+<section id="status" role="status" aria-live="polite"></section></main></body></html>

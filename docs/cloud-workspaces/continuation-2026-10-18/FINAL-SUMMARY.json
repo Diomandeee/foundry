@@ -1,0 +1,14 @@
+{
+  "stop": "R6-local-source-reviewed-HOLD",
+  "changedProductFiles": 34,
+  "newProductFiles": 15,
+  "modifiedProductFiles": 19,
+  "changedRootDocs": 7,
+  "scopedStateSha256": "1592ab4f2a5b3f1c128a2079bcd303263616a19b2fae4faff6c2d900242ee03f",
+  "patchSha256": "95365feff83ab24ed8d5c0e0164667ef52e844e058a92cdb92cabc11ecf82cd8",
+  "patchBytes": 223364,
+  "allAgentsClosed": true,
+  "testsExecuted": 0,
+  "nativeTermination": "not implemented; native placement explicitly ineligible",
+  "R7": "not started"
+}

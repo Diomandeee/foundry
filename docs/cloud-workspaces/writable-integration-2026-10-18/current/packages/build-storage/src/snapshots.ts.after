@@ -1,0 +1,226 @@
+import {createHash} from 'node:crypto';
+import {constants} from 'node:fs';
+import {lstat, mkdir, open} from 'node:fs/promises';
+import {join} from 'node:path';
+import type {Stats} from 'node:fs';
+import * as v from '../../build-jobs/src/validation';
+import {readResult} from '../../library-jobs/src/data';
+import {alive, boundedBytes, canonical, check, CHUNK_BYTES, exactRef, freeze, jsonBytes, MAX_CHUNKS, MAX_TOTAL_BYTES, scopeCopy, sha256, snapshot, uniquePaths} from './checks';
+import {availableName, inspectFile, readFileChunks, rootCopy, siblingNames, verifyRoot} from './filesystem';
+import {validateFileSelections} from './packaging';
+import {current, issueCurrent, observeGrant, publish, reserve} from './publication';
+import {materializeProjectInputSnapshot} from './project-inputs';
+import type {ApprovedFile, ArtifactClaim, BuildProfile, FileLineage, GrantScope, InputApproval, LocalContentStore, LocalRef, ManagedRoot, ManagedTreeSeal, ObjectRef, PackagingPorts, PublicationReservation, TrustedGrantIssuer, TrustedPublicationCapacity} from './types';
+
+export interface InputSnapshotRequest {
+  root:ManagedRoot; scope:GrantScope; files:ApprovedFile[]; requiredInputs:string[];
+  /** Metadata supplied by owner; package never runs Git or reads ambient credentials. */
+  git:{remote:string|null; revision:string|null};
+}
+export interface HistoryAttestation {
+  /** A real host evidence record, never inferred from the presence of .git files. */
+  evidenceRef:LocalRef; historyPreserved:true;
+}
+export interface TrustedHistoryAttestor {
+  attest(request:{projectId:string; files:FileLineage[]; git:InputSnapshotRequest['git']},signal:AbortSignal):Promise<HistoryAttestation>;
+}
+export interface InputSnapshot {
+  version:1; projectId:string; files:(FileLineage&{mode:number;localChunks:LocalRef[]})[];
+  requiredInputs:string[]; missingInputs:string[];
+  git:InputApproval['git']; historyEvidence:LocalRef|null;
+}
+export interface PackagedInput {
+  snapshot:InputSnapshot; snapshotLocal:LocalRef; manifest:ArtifactClaim;
+  /** Candidate only, ALWAYS reconstructable:false. Parent separately records owner
+   * completeness evidence bound to snapshotHash before approving true/recomputing hash. */
+  approval:InputApproval; inputHash:string;
+}
+
+/** Bounded explicit FILE selection; never traverses/archives an entire repository,
+ * deletes history, reads .git config implicitly, or claims a remote is reconstructable.
+ * Host must vet selected source/history for secrets before calling. */
+export async function packageInputSnapshot(request:InputSnapshotRequest,ports:PackagingPorts,signal:AbortSignal,
+  history?:TrustedHistoryAttestor):Promise<PackagedInput> {
+  const r=snapshot(request) as InputSnapshotRequest, root=rootCopy(r.root), scope=scopeCopy(r.scope);
+  check(r.files.length>0,'empty-snapshot-selection');
+  validateFileSelections(r.files,'inputs'); check(r.requiredInputs.length<=128,'required-input-count'); uniquePaths(r.requiredInputs);
+  v.exact(r.git,['remote','revision']);
+  // Validate remote/revision using the parent policy without inventing a stored ref.
+  if(r.git.remote!==null) {
+    v.text(r.git.remote,256); check(/^(https:\/\/|ssh:\/\/|git@)/.test(r.git.remote)&&!/[?#]/.test(r.git.remote),'git-remote');
+    if(r.git.remote.startsWith('https://')||r.git.remote.startsWith('ssh://')) {
+      const u=new URL(r.git.remote); check(!u.password&&(!u.username||u.protocol==='ssh:'),'credential-in-remote');
+    }
+  }
+  if(r.git.revision!==null) check(/^[a-f0-9]{40,64}$/.test(r.git.revision),'git-revision');
+  check(ports.readSeal||ports.seal,'source-tree-isolation-required');
+  const readTrees=ports.readSeal ? ports.readSeal.withReadonlyTrees.bind(ports.readSeal) : ports.seal!.withExclusiveTrees.bind(ports.seal!);
+  return readTrees([root.path],async()=>{
+    const stats:Stats[]=[]; let total=0,count=0;
+    for(const file of r.files) {
+      const s=await inspectFile(root,file.path,signal);
+      total+=s.size; count+=Math.ceil(s.size/CHUNK_BYTES); stats.push(s);
+    }
+    check(total<=MAX_TOTAL_BYTES&&count<=MAX_CHUNKS,'input-snapshot-budget');
+    const operationKey=v.hash({scope,kind:'input-package',files:r.files,requiredInputs:r.requiredInputs,git:r.git});
+    const reservation=await reserve(scope,count+1,total+CHUNK_BYTES,ports,signal,operationKey);
+    const files:InputSnapshot['files']=[];
+    for(let i=0;i<r.files.length;i++) {
+      const selected=r.files[i], chunks:ArtifactClaim[]=[], localChunks:LocalRef[]=[], digest=createHash('sha256');
+      await readFileChunks(root,selected.path,stats[i],CHUNK_BYTES,async bytes=>{
+        digest.update(bytes); localChunks.push(await ports.local.put(bytes,signal));
+        chunks.push(await publish(bytes,'objects',scope,reservation,ports,signal));
+      },signal);
+      files.push({...selected,retention:'retain',sha256:digest.digest('hex'),sizeBytes:stats[i].size,chunks,localChunks,mode:stats[i].mode&0o777});
+    }
+    let attestation:HistoryAttestation|undefined;
+    if(history) {
+      try {
+        attestation=snapshot(await history.attest({projectId:scope.projectId,files,git:r.git},signal)) as HistoryAttestation;
+        v.exact(attestation,['evidenceRef','historyPreserved']); check(attestation.historyPreserved===true,'history-attestation');
+        // The attestor's actual evidence must exist in the private local CAS.
+        await ports.local.read(attestation.evidenceRef,signal);
+      } catch {throw new Error('build-storage: history-attestation-unconfirmed');}
+    }
+    const selected=new Set(files.map(f=>f.path)), missingInputs=r.requiredInputs.filter(p=>!selected.has(p));
+    const manifest:InputSnapshot={version:1,projectId:scope.projectId,files,requiredInputs:r.requiredInputs,missingInputs,
+      git:{...r.git,historyPreserved:!!attestation},historyEvidence:attestation?.evidenceRef??null};
+    const bytes=jsonBytes(manifest), snapshotLocal=await ports.local.put(bytes,signal);
+    await current(ports,reservation,signal);
+    const claim=await publish(bytes,'manifests',scope,reservation,ports,signal);
+    const approval:InputApproval={projectId:scope.projectId,snapshotHash:sha256(bytes),manifest:claim.ref,git:manifest.git,
+      requiredInputs:r.requiredInputs,missingInputs,reconstructable:false};
+    v.input(approval);
+    return freeze({snapshot:manifest,snapshotLocal,manifest:claim,approval,inputHash:v.hash(approval)});
+  },signal);
+}
+
+/** Stores a recipe as inert canonical bytes only. Does not approve it, spawn, install,
+ * resolve dependencies, inspect a toolchain or communicate with an authority. */
+export async function storeLocalRecipe(input:BuildProfile,local:LocalContentStore,signal:AbortSignal):Promise<{profile:BuildProfile;profileHash:string;local:LocalRef}> {
+  const profile=snapshot(input) as BuildProfile; v.profile(profile);
+  uniquePaths(profile.outputPaths);
+  const bytes=jsonBytes(profile), ref=await local.put(bytes,signal);
+  check(ref.sha256===sha256(bytes)&&ref.sizeBytes===bytes.length,'local-recipe-byte-binding');
+  return freeze({profile,profileHash:v.hash(profile),local:ref});
+}
+
+/** Reconstructs the locally staged snapshot into an owner-provisioned input directory.
+ * No archive extraction, remote reads, Git, replacement, rollback or cleanup. Failure
+ * leaves partial evidence; host must quarantine rather than treating it as ready. */
+export async function materializeLocalSnapshot(snapshotRef:LocalRef,destination:ManagedRoot,local:LocalContentStore,
+  seal:ManagedTreeSeal,signal:AbortSignal):Promise<{snapshotHash:string;files:number;bytes:number}> {
+  const expected=snapshot(snapshotRef) as LocalRef, root=rootCopy(destination), encoded=await local.read(expected,signal);
+  check(encoded.length<=CHUNK_BYTES&&sha256(encoded)===expected.sha256,'snapshot-local-digest');
+  const decoded=snapshot(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(encoded)));
+  if((decoded as {version?:unknown}).version===2) return materializeProjectInputSnapshot(expected,root,local,seal,signal);
+  const manifest=decoded as InputSnapshot;
+  const {total}=validateSnapshot(manifest);
+  return seal.withExclusiveTrees([root.path],async()=>{
+    await verifyRoot(root,signal); const device=(await lstat(root.path)).dev;
+    for(const file of manifest.files) {
+      let parent=root.path; const parts=file.path.split('/');
+      for(const part of parts.slice(0,-1)) {
+        const names=await siblingNames(parent,signal), child=join(parent,part);
+        if(!names.has(part)) {availableName(names,part); await mkdir(child,{mode:0o700});}
+        await verifyRoot({path:child,uid:root.uid},signal);
+        check((await lstat(child)).dev===device,'nested-mount-forbidden'); parent=child;
+      }
+      const names=await siblingNames(parent,signal);
+      availableName(names,parts[parts.length-1]);
+      const handle=await open(join(parent,parts[parts.length-1]),constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
+      try {
+        let offset=0; const digest=createHash('sha256');
+        for(const ref of file.localChunks) {
+          const bytes=await local.read(ref,signal); alive(signal); check(bytes.length===ref.sizeBytes&&sha256(bytes)===ref.sha256,'restore-chunk-digest'); digest.update(bytes);
+          let used=0;
+          while(used<bytes.length) {alive(signal); const r=await handle.write(bytes,used,bytes.length-used,offset+used); check(r.bytesWritten>0,'restore-write-progress'); used+=r.bytesWritten;}
+          offset+=bytes.length;
+        }
+        check(offset===file.sizeBytes&&digest.digest('hex')===file.sha256,'restore-whole-file-digest');
+        await handle.chmod(file.mode&0o755); await handle.sync();
+      } finally {await handle.close();}
+      // Read back the actual created bytes under the held seal, not just metadata.
+      const stat=await inspectFile(root,file.path,signal), digest=createHash('sha256');
+      await readFileChunks(root,file.path,stat,CHUNK_BYTES,async b=>{digest.update(b);},signal);
+      check(stat.size===file.sizeBytes&&digest.digest('hex')===file.sha256,'restore-readback');
+      const dir=await open(parent,constants.O_RDONLY|constants.O_DIRECTORY|constants.O_NOFOLLOW);
+      try {await dir.sync();} finally {await dir.close();}
+    }
+    alive(signal); return freeze({snapshotHash:sha256(encoded),files:manifest.files.length,bytes:total});
+  },signal);
+}
+
+/** Shared static-shape/byte-budget checks before remote chunks or destination writes. */
+function validateSnapshot(manifest:InputSnapshot):{total:number;count:number} {
+  v.exact(manifest,['version','projectId','files','requiredInputs','missingInputs','git','historyEvidence']);
+  check(manifest.version===1&&Array.isArray(manifest.files)&&manifest.files.length>0&&manifest.files.length<=128,'snapshot-shape'); v.id(manifest.projectId);
+  validateFileSelections(manifest.files.map(f=>({path:f.path,classification:f.classification})),'inputs');
+  check(Array.isArray(manifest.requiredInputs)&&manifest.requiredInputs.length<=128&&Array.isArray(manifest.missingInputs)&&manifest.missingInputs.length===0,'snapshot-incomplete'); uniquePaths(manifest.requiredInputs);
+  check(manifest.requiredInputs.every(p=>manifest.files.some(f=>f.path===p)),'snapshot-required-input');
+  let total=0,count=0;
+  for(const file of manifest.files) {
+    v.exact(file,['path','classification','retention','sha256','sizeBytes','chunks','localChunks','mode']);
+    v.digest(file.sha256); v.uint(file.sizeBytes,0,MAX_TOTAL_BYTES); v.uint(file.mode,0,0o777);
+    check(file.retention==='retain'&&(file.mode&0o022)===0&&Array.isArray(file.chunks)&&Array.isArray(file.localChunks)&&file.chunks.length===file.localChunks.length&&file.chunks.length===Math.ceil(file.sizeBytes/CHUNK_BYTES),'snapshot-file-shape');
+    if(file.sizeBytes===0) check(file.sha256===sha256(new Uint8Array(0)),'empty-file-digest');
+    let size=0;
+    file.chunks.forEach((claim,i)=>{
+      v.claim(claim); check(claim.ref.projectId===manifest.projectId,'snapshot-chunk-project');
+      const ref=file.localChunks[i]; check(ref.sha256===claim.ref.sha256&&ref.sizeBytes===claim.ref.sizeBytes,'snapshot-chunk-lineage');
+      v.exact(ref,['kind','sha256','sizeBytes','relativePath']);
+      check(ref.kind==='local-cas'&&ref.relativePath===`sha256-${ref.sha256}`&&claim.ref.objectKey===`projects/${manifest.projectId}/objects/${ref.sha256}`,'snapshot-chunk-kind');
+      check(claim.ref.sizeBytes===Math.min(CHUNK_BYTES,file.sizeBytes-size),'snapshot-chunk-order-size'); size+=claim.ref.sizeBytes;
+    });
+    total+=file.sizeBytes; count+=file.chunks.length;
+  }
+  check(total<=MAX_TOTAL_BYTES&&count<=MAX_CHUNKS,'snapshot-restore-budget');
+  return {total,count};
+}
+
+export interface SnapshotImportRequest {manifest:ObjectRef; snapshotHash:string; scope:GrantScope}
+export interface TrustedSnapshotReader {
+  /** Actual broker read in the scope namespace, enforcing principal/fence/current
+   * authorization and allocation bounds. Return the generation actually read. */
+  readArtifact(claim:ArtifactClaim,scope:GrantScope,signal:AbortSignal):Promise<{ref:ObjectRef;bytes:Uint8Array}>;
+}
+export interface SnapshotImportPorts {local:LocalContentStore; issuer:TrustedGrantIssuer; capacity:TrustedPublicationCapacity; reader:TrustedSnapshotReader}
+
+/** Concrete remote -> local CAS bridge. Every reference is resolved through actual
+ * current broker issuance; original serialized grant IDs are never trusted/replayed.
+ * Owner completeness approval remains a separate parent gate after byte recovery. */
+export async function populateLocalSnapshot(request:SnapshotImportRequest,ports:SnapshotImportPorts,signal:AbortSignal):Promise<{snapshot:InputSnapshot;local:LocalRef}> {
+  const r=snapshot(request) as SnapshotImportRequest, scope=scopeCopy(r.scope);
+  v.digest(r.snapshotHash); const manifestRef=exactRef(r.manifest,scope.projectId,'manifests');
+  check(manifestRef.sha256===r.snapshotHash,'snapshot-manifest-digest-binding');
+  const read=async(ref:ObjectRef,reservation:PublicationReservation):Promise<Uint8Array>=>{
+    await current(ports,reservation,signal);
+    const {claim,grant}=await issueCurrent(ref,scope,ports.issuer,signal,reservation);
+    try {
+      const value=readResult(await ports.reader.readArtifact(claim,scope,signal));
+      const actualRef=exactRef(value.ref,scope.projectId);
+      check(canonical(actualRef)===canonical(ref),'snapshot-generation-readback');
+      const bytes=boundedBytes(value.bytes,ref.sizeBytes);
+      check(bytes.length===ref.sizeBytes&&sha256(bytes)===ref.sha256,'snapshot-byte-readback');
+      await observeGrant(grant,ports.issuer,signal); return bytes;
+    } catch {throw new Error('build-storage: authorized-snapshot-byte-read-unconfirmed');}
+  };
+  const manifestReservation=await reserve(scope,1,manifestRef.sizeBytes,ports,signal,v.hash({scope,kind:'input-import-manifest',manifestRef}));
+  const bytes=await read(manifestRef,manifestReservation); await current(ports,manifestReservation,signal);
+  const manifest=snapshot(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes))) as InputSnapshot;
+  const {count,total}=validateSnapshot(manifest); check(manifest.projectId===scope.projectId,'snapshot-project');
+  const chunkReservation=count>0?await reserve(scope,count,total,ports,signal,v.hash({scope,kind:'input-import-chunks',manifestRef})):undefined;
+  for(const file of manifest.files) {
+    const digest=createHash('sha256');
+    for(let i=0;i<file.chunks.length;i++) {
+      check(chunkReservation,'chunk-reservation-required'); await current(ports,chunkReservation,signal);
+      const chunk=await read(file.chunks[i].ref,chunkReservation); await current(ports,chunkReservation,signal); digest.update(chunk);
+      const local=await ports.local.put(chunk,signal);
+      check(canonical(local)===canonical(file.localChunks[i]),'snapshot-local-chunk-binding');
+    }
+    check(digest.digest('hex')===file.sha256,'snapshot-whole-file-digest');
+  }
+  const local=await ports.local.put(bytes,signal); check(local.sha256===r.snapshotHash,'snapshot-local-manifest-binding');
+  await current(ports,manifestReservation,signal); if(chunkReservation) await current(ports,chunkReservation,signal);
+  return freeze({snapshot:manifest,local});
+}

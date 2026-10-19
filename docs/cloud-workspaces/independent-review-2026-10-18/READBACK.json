@@ -1,0 +1,10 @@
+{
+  "method": "metadata byte/hash readback only; no product execution or tests",
+  "at": "2026-10-18T17:08:01.184643+00:00",
+  "scopeFiles": 89,
+  "evidenceFiles": 135,
+  "mismatches": [],
+  "indexSha256": "e3047a273cddfaf374946365e4bc70ae4689645f4e8483d4276820d0f6be12c9",
+  "scopeSha256": "8352c54d2d15a711c77b55b782717801c8d3944abc7e29bddafb8c192f359413",
+  "patchSha256": "eb2dd7633223e15e97a6a87dfd9b25c2e906311702043087baea39612d2b2568"
+}

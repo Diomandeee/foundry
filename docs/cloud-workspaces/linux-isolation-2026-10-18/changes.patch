@@ -1,0 +1,1467 @@
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Current cloud-workspace source stop:** `R6-linux-isolation-source-reviewed-HOLD`. The [Linux isolation delivery](docs/cloud-workspaces/linux-isolation-2026-10-18/README.md) supplies a concrete owner-mediated pilot path with private staging/workspace/capture, permanent cgroup containment, real scoped storage and census. Legacy shared-directory Linux execution is denied. No tests, installation or activation have occurred; independent acceptance, M4 validation and R7 operations remain gated. Automatic repeat-job reconciliation is not supplied.
++
+ # Foundry — every push is reviewed before it lands
+ 
+ Foundry is a merge gate for teams of AI agents sharing one codebase. Agents
+--- a/docs/cloud-workspaces/MASTER-CHECKLIST.md
++++ b/docs/cloud-workspaces/MASTER-CHECKLIST.md
+@@ -129,3 +129,17 @@
+ - [ ] Independent acceptance, M4 compilation/tests/runtime validation and R7 activation; all still gated.
+ 
+ Current route: `R6-writable-integration-source-reviewed-HOLD`. Detailed evidence and exact supported scope: `writable-integration-2026-10-18/README.md`. This supersedes earlier generic Mac CAS/integration blocker wording without changing frozen historical receipts. No full-fleet completion or operational success is claimed.
++
++
++## Linux isolation — current source stop, 2026-10-18
++
++- [x] L1 Narrow root broker, private allocated workspace filesystem, fixed recipe policy, durable slot and independent cgroup watchdog.
++- [x] L2 Actual broker-admitted v1/v2 source bytes -> bounded stream -> double hash verification -> exact recipe execution -> permanent stop-gated capture.
++- [x] L3 Concrete production controller/factory/publication/census integration; legacy shared-UID Linux execution denied.
++- [x] L4 Six inline source passes, counterexample repairs, explicit limits and deferred acceptance.
++- [x] L5 Updated route and scoped before/after evidence.
++- [ ] Independent cumulative source acceptance and approved M4/R6 compilation/tests/runtime validation.
++- [ ] Actual owner-approved policy/resources/installed pins and remaining G3/schema/project/Mac capacity prerequisites.
++- [ ] R7 activation/provisioning/publication/spending/cleanup approvals and execution.
++
++Current stop: `R6-linux-isolation-source-reviewed-HOLD`. The generic Linux writable-seal gap is superseded for the concrete pilot path, not implemented as a pretend universal seal. The pilot deliberately retains its root slot, disk, cgroup, socket and evidence after one attempt; automatic reuse/reclamation is not supplied. See `linux-isolation-2026-10-18/README.md`. No tests, compilation or operational changes occurred. Historical checked/unchecked rows above remain dated evidence, not current operational completion claims.
+--- a/docs/cloud-workspaces/ROUTE.json
++++ b/docs/cloud-workspaces/ROUTE.json
+@@ -1,6 +1,6 @@
+ {
+   "format": "foundry.cloud-workspaces.route.v1",
+-  "stop": "R6-writable-integration-source-reviewed-HOLD",
++  "stop": "R6-linux-isolation-source-reviewed-HOLD",
+   "authority": "Cloudflare existing compute authority",
+   "deployments": 0,
+   "testsExecuted": 0,
+@@ -48,7 +48,8 @@
+         "mac-safety-2026-10-18/SOURCE-REVIEW.md",
+         "guest-io-2026-10-18/SOURCE-REVIEW.md",
+         "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+-        "writable-integration-2026-10-18/SOURCE-REVIEW.md"
++        "writable-integration-2026-10-18/SOURCE-REVIEW.md",
++        "linux-isolation-2026-10-18/SOURCE-REVIEW.md"
+       ],
+       "blockedBy": [
+         "owner-approved host/account/images/helper binaries/toolchains/identities/resources",
+@@ -57,7 +58,7 @@
+         "runtime validation and activation approvals",
+         "operator-mediated stage/intake and provisioned image/source dependencies; no unattended root service",
+         "M3 compilation and operational acceptance pending",
+-        "generic Linux writable materialization remains unsupported; Mac CAS source now concrete but installation/acceptance pending"
++        "isolated Linux broker installation/acceptance; one owner-mediated attempt; automatic repeat-job reconciliation not supplied"
+       ]
+     },
+     {
+@@ -79,7 +80,8 @@
+         "mac-safety-2026-10-18/SOURCE-REVIEW.md",
+         "guest-io-2026-10-18/SOURCE-REVIEW.md",
+         "vm-integration-2026-10-18/SOURCE-REVIEW.md",
+-        "writable-integration-2026-10-18/SOURCE-REVIEW.md"
++        "writable-integration-2026-10-18/SOURCE-REVIEW.md",
++        "linux-isolation-2026-10-18/SOURCE-REVIEW.md"
+       ]
+     },
+     {
+@@ -147,7 +149,7 @@
+       }
+     ]
+   },
+-  "nextLocalEngineering": "Generic Linux writable workspace isolation remains an explicit unsupported engineering gap. The Mac VM path no longer depends on a generic writable CAS seal. Required-input lists above 128, arbitrary binary/mode merge transport and unattended privileged image IO remain outside the implemented pilot scope.",
++  "nextLocalEngineering": "Authorized bounded Linux pilot source is implemented/reviewed. Independent cumulative acceptance and approved M4 validation are next. Unattended Linux repeat scheduling/reconciliation remains outside this pilot; no operational work is authorized.",
+   "macSafety": {
+     "folder": "mac-safety-2026-10-18",
+     "state": "source-reviewed-primitives-production-HOLD",
+@@ -307,6 +309,43 @@
+       "actual approved resources/installed pins/schema/headroom/project readiness",
+       "independent cumulative source acceptance and separately approved M4 validation",
+       "separately approved R7 activation and cleanup"
++    ],
++    "laterDisposition": "See linuxIsolation: Linux seal-dependent production dispatch replaced in source by concrete private bounded pilot path; unattended reuse and validation/operational HOLD remain explicit."
++  },
++  "linuxIsolation": {
++    "folder": "linux-isolation-2026-10-18",
++    "state": "implemented-source-reviewed-validation-pending-HOLD",
++    "scope": "one owner-mediated Linux pilot attempt; not an unattended repeat-job service",
++    "review": "six inline passes by implementing agent; independent acceptance pending",
++    "testsAuthored": 0,
++    "testsExecuted": 0,
++    "buildsExecuted": 0,
++    "servicesStarted": 0,
++    "operationalChanges": 0,
++    "completedLocal": [
++      "L1",
++      "L2",
++      "L3",
++      "L4",
++      "L5"
++    ],
++    "evidence": [
++      "linux-isolation-2026-10-18/README.md",
++      "linux-isolation-2026-10-18/SOURCE-REVIEW.md",
++      "linux-isolation-2026-10-18/FINDINGS.json",
++      "linux-isolation-2026-10-18/DEFERRED-ACCEPTANCE.md",
++      "linux-isolation-2026-10-18/CHANGE-RECEIPT.json"
++    ],
++    "remaining": [
++      "independent cumulative source acceptance",
++      "M4/R6 separately approved compilation/tests/operational validation",
++      "actual installed resources/pins/cgroupfs/profiles/scoped storage and inherited G3/schema/project/headroom readiness",
++      "R7 separately approved publication/activation/provisioning/spending/cleanup"
++    ],
++    "unsupported": [
++      "generic ManagedTreeSeal and legacy shared-UID Linux execution",
++      "automatic root-slot release, replay, resource reclamation or repeat-job broker service",
++      "arbitrary network recipes, signed/release operations or directory bundle outputs"
+     ]
+   }
+ }
+--- /dev/null
++++ b/packages/build-runtime/native/linux-isolation.py
+@@ -0,0 +1,650 @@
++#!/usr/bin/python3
++"""Source-only Linux execution broker. No install/start/cleanup is implicit.
++
++Owner provisions /var/lib/foundry-linux (0700 root), run (0755 root), an
++empty Docker config directory and policy.json (0600 root). One root process,
++one authenticated controller connection, one attempt per connection. Any
++disconnect/error retains the durable slot, disks and containers for reconciliation.
++The Docker socket is root-only. Clients cannot submit argv, host paths or images.
++"""
++import base64
++import hashlib
++import json
++import os
++import re
++import selectors
++import socket
++import stat
++import struct
++import subprocess
++import sys
++import time
++
++ROOT = '/var/lib/foundry-linux'
++SOCKET = '/run/foundry-linux/broker.sock'
++FRAME = 1450000
++CHUNK = 1048576
++ENV = {'PATH': '/usr/sbin:/usr/bin:/sbin:/bin', 'LANG': 'C', 'LC_ALL': 'C'}
++
++def require(value):
++    if not value:
++        raise ValueError('linux-isolation-refused')
++
++def exact(obj, keys):
++    require(type(obj) is dict and set(obj) == set(keys.split()))
++
++def digest(b):
++    return hashlib.sha256(b).hexdigest()
++
++def number(n, low, high):
++    require(type(n) is int and low <= n <= high)
++
++def hexhash(s):
++    require(type(s) is str and re.fullmatch('[0-9a-f]{64}', s))
++
++def relative(s):
++    require(type(s) is str and re.fullmatch('[A-Za-z0-9_./-]{1,240}', s))
++    require(not s.startswith(('/', '-')) and all(p not in ('', '.', '..') for p in s.split('/')) and len(s.split('/')) <= 32)
++
++def trusted(path, directory=False, private=False):
++    require(os.path.isabs(path) and os.path.normpath(path) == path)
++    current = '/'
++    for part in path.split('/')[1:]:
++        current = os.path.join(current, part)
++        s = os.lstat(current)
++        require(not stat.S_ISLNK(s.st_mode) and s.st_uid == 0 and not s.st_mode & 0o022)
++        require(not any(k.startswith('system.posix_acl_') for k in os.listxattr(current, follow_symlinks=False)))
++        if current != path or directory:
++            require(stat.S_ISDIR(s.st_mode))
++    if private:
++        require(not s.st_mode & 0o077)
++    return s
++
++def sync_dir(path):
++    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try:
++        os.fsync(fd)
++    finally:
++        os.close(fd)
++
++def create(path, data):
++    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
++    try:
++        with os.fdopen(fd, 'wb', closefd=False) as f:
++            f.write(data)
++            f.flush()
++            os.fsync(fd)
++    finally:
++        os.close(fd)
++    sync_dir(os.path.dirname(path))
++
++def encoded(value):
++    return json.dumps(value, separators=(',', ':'), ensure_ascii=True).encode()
++
++def receive(sock):
++    def take(n):
++        b = bytearray()
++        while len(b) < n:
++            p = sock.recv(n-len(b))
++            require(p)
++            b.extend(p)
++        return bytes(b)
++    n = struct.unpack('!I', take(4))[0]
++    number(n, 1, FRAME)
++    return json.loads(take(n))
++
++def send(sock, value):
++    b = encoded(value)
++    number(len(b), 1, FRAME)
++    sock.sendall(struct.pack('!I', len(b)) + b)
++
++def peer(sock):
++    return struct.unpack('3i', sock.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))[1:]
++
++def load_policy():
++    trusted(ROOT, True, True)
++    trusted(ROOT+'/docker-config', True, True)
++    require(not os.listdir(ROOT+'/docker-config'))
++    s = trusted(ROOT+'/policy.json', private=True)
++    require(stat.S_ISREG(s.st_mode) and s.st_nlink == 1 and s.st_size <= 262144)
++    with open(ROOT+'/policy.json', 'rb') as f:
++        p = json.load(f)
++    exact(p, 'version controllerUid controllerGid buildUid buildGid maxWorkBytes reserveBytes executables profiles')
++    require(p['version'] == 1)
++    for k in ('controllerUid', 'controllerGid', 'buildUid', 'buildGid'):
++        number(p[k], 1000, 2147483647)
++    require(p['controllerUid'] != p['buildUid'] and p['controllerGid'] != p['buildGid'])
++    number(p['maxWorkBytes'], 268435456, 8*1024**3)
++    require(p['maxWorkBytes'] % 4096 == 0)
++    number(p['reserveBytes'], 50*1024**3, 1024**5)
++    exact(p['executables'], 'docker mkfs mount')
++    paths = {'docker':'/usr/bin/docker', 'mkfs':'/usr/sbin/mke2fs', 'mount':'/usr/bin/mount'}
++    for k, path in paths.items():
++        hexhash(p['executables'][k])
++        s = trusted(path)
++        require(stat.S_ISREG(s.st_mode) and s.st_size <= 256*1024**2)
++        with open(path, 'rb') as f:
++            require(digest(f.read()) == p['executables'][k])
++    trusted('/run', True)
++    s = trusted('/run/docker.sock')
++    require(stat.S_ISSOCK(s.st_mode) and not s.st_mode & 0o077)
++    require(type(p['profiles']) is dict and 1 <= len(p['profiles']) <= 32)
++    for key, q in p['profiles'].items():
++        hexhash(key)
++        exact(q, 'image architecture commands env cpu ramMib pids tmpMib timeoutMs maxOutputBytes maxInputBytes outputPaths sourceCopy')
++        require(re.fullmatch('[a-z0-9][a-z0-9./:_-]{0,200}@sha256:[0-9a-f]{64}', q['image']))
++        require(q['architecture'] in ('amd64', 'arm64') and type(q['sourceCopy']) is bool)
++        for k, low, high in [('cpu',1,64),('ramMib',128,1048576),('pids',16,4096),('tmpMib',1,8192),('timeoutMs',1000,3600000),('maxOutputBytes',1,31*CHUNK),('maxInputBytes',1,2*1024**3)]:
++            number(q[k], low, high)
++        require(type(q['commands']) is list and 1 <= len(q['commands']) <= 2)
++        for cmd in q['commands']:
++            require(type(cmd) is list and 1 <= len(cmd) <= 40 and all(type(a) is str and 0 < len(a) <= 512 and not re.search('[\x00-\x1f\x7f]', a) for a in cmd))
++            require(cmd[0].startswith('/') and os.path.normpath(cmd[0]) == cmd[0])
++        require(type(q['env']) is dict and len(q['env']) <= 24)
++        for k,v in q['env'].items():
++            require(re.fullmatch('[A-Z][A-Z0-9_]{0,63}', k) and type(v) is str and len(v) <= 512 and not re.search('[\x00-\x1f\x7f]', v))
++        require(type(q['outputPaths']) is list and len(q['outputPaths']) <= 64 and len(set(q['outputPaths'])) == len(q['outputPaths']))
++        for path in q['outputPaths']:
++            relative(path)
++            require(not path.endswith(('.app','.dSYM','.xcarchive')))
++    return p
++
++def census(policy, helper_hash, python_hash, attempt=None):
++    # Account backing images once; never recurse into mounted build filesystems.
++    began=time.monotonic();entries=0;total=0;complete=True;dev=os.stat(ROOT).st_dev
++    def walk(path,depth):
++        nonlocal entries,total
++        require(depth<=40 and time.monotonic()-began<2)
++        with os.scandir(path) as iterator:
++            for e in iterator:
++                entries+=1;require(entries<=100000 and time.monotonic()-began<2)
++                s=e.stat(follow_symlinks=False)
++                if s.st_dev!=dev:
++                    require(e.name=='work' and depth==1 and stat.S_ISDIR(s.st_mode))
++                    continue
++                require(s.st_uid==0 and not stat.S_ISLNK(s.st_mode))
++                if stat.S_ISDIR(s.st_mode):walk(e.path,depth+1)
++                else:
++                    require(stat.S_ISREG(s.st_mode) and s.st_nlink==1)
++                    total+=s.st_size
++    try:walk(ROOT+'/attempts',0)
++    except Exception:complete=False
++    if attempt is not None and not getattr(attempt,'sealed',False):complete=False
++    disk=os.statvfs(ROOT)
++    value={'version':1,'observedAt':int(time.time()*1000),'freeBytes':disk.f_bavail*disk.f_frsize,
++           'workspaceBytes':total if complete else None,'complete':complete,
++           'slotFree':not os.path.lexists(ROOT+'/slot.json'),'profiles':sorted(policy['profiles']),
++           'helperSha256':helper_hash,'pythonSha256':python_hash}
++    path='/run/foundry-linux/census.json';temp=path+'.'+str(os.getpid())+'.'+str(time.monotonic_ns())
++    create(temp,encoded(value));os.chmod(temp,0o444);os.replace(temp,path);sync_dir('/run/foundry-linux')
++
++class Attempt:
++    def __init__(self, p, request):
++        exact(request, 'op attemptId profileHash inputHash filesHash bytes files')
++        require(request['op'] == 'begin' and re.fullmatch('[A-Za-z0-9][A-Za-z0-9._-]{0,63}', request['attemptId']))
++        for k in ('profileHash','inputHash','filesHash'):
++            hexhash(request[k])
++        self.p, self.q = p, p['profiles'][request['profileHash']]
++        number(request['bytes'], 0, self.q['maxInputBytes'])
++        number(request['files'], 1, 8192)
++        self.identity = digest(encoded([request['attemptId'],request['profileHash'],request['inputHash'],request['filesHash']]))
++        self.request, self.root = request, ROOT+'/attempts/'+request['attemptId']
++        self.child = None
++        self.container = None
++        self.started = False
++        self.terminal = False
++        self.success = False
++        self.exit_code = None
++        self.phase = -1
++        self.total = 0
++        self.entries = []
++        self.components = set()
++        self.active = None
++        self.log = bytearray()
++        self.outputs = []
++        self.expires = 0
++        self.contained = False
++        self.deadline = time.monotonic() + self.q['timeoutMs']/1000
++        self.boot_offset=time.clock_gettime(time.CLOCK_BOOTTIME)-time.monotonic()
++        # Durable global lock precedes all run-capable work. No restart replay.
++        create(ROOT+'/slot.json', encoded({'version':1,'identity':self.identity,'request':request}))
++        trusted('/sys/fs/cgroup/foundry-builds', True)
++        self.cgroup='/sys/fs/cgroup/foundry-builds/'+self.identity
++        os.mkdir(self.cgroup,0o700)
++        with open(self.cgroup+'/cgroup.subtree_control','w') as f:f.write('+cpu +memory +pids')
++        trusted(ROOT+'/attempts', True, True)
++        free = os.statvfs(ROOT)
++        overhead=(65536+8192+128)*free.f_frsize*2+self.q['maxOutputBytes']
++        require(free.f_bavail*free.f_frsize >= p['reserveBytes']+request['bytes']+p['maxWorkBytes']+overhead)
++        os.mkdir(self.root, 0o700)
++        sync_dir(ROOT+'/attempts')
++        os.mkdir(self.root+'/input', 0o755)
++        os.mkdir(self.root+'/captured', 0o700)
++        os.mkdir(self.root+'/work', 0o700)
++        create(self.root+'/events.jsonl', encoded({'event':'intent','identity':self.identity})+b'\n')
++        raw = self.root+'/work.ext4'
++        fd = os.open(raw, os.O_RDWR|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW, 0o600)
++        try:
++            os.posix_fallocate(fd, 0, p['maxWorkBytes'])
++            os.fsync(fd)
++        finally:
++            os.close(fd)
++        sync_dir(self.root)
++        self.cmd(['/usr/sbin/mke2fs','-t','ext4','-q','-F','-m','0',raw])
++        self.cmd(['/usr/bin/mount','-t','ext4','-o','loop,nodev,nosuid',raw,self.root+'/work'])
++        self.work_dev = os.stat(self.root+'/work').st_dev
++        require(self.work_dev != os.stat(self.root).st_dev)
++        os.chown(self.root+'/work', p['buildUid'], p['buildGid'])
++        os.chmod(self.root+'/work', 0o700)
++        if self.q['sourceCopy']:
++            os.mkdir(self.root+'/work/source', 0o700)
++            os.chown(self.root+'/work/source',p['buildUid'],p['buildGid'])
++        self.event({'event':'prepared-disk'})
++        self.watch_read,self.watch_write=os.pipe()
++        self.watch_pid=os.fork()
++        if self.watch_pid==0:
++            # A separate session survives broker/client death. Only its pipe is
++            # retained; EOF, deadline or malformed input freezes/kills the scope.
++            os.setsid()
++            for name in os.listdir('/proc/self/fd'):
++                fd=int(name)
++                if fd!=self.watch_read:
++                    try:os.close(fd)
++                    except OSError:pass
++            end=self.deadline+self.boot_offset;buffer=bytearray()
++            sel=selectors.DefaultSelector();sel.register(self.watch_read,selectors.EVENT_READ)
++            try:
++                while time.clock_gettime(time.CLOCK_BOOTTIME)<end:
++                    if not sel.select(min(.05,max(0,end-time.clock_gettime(time.CLOCK_BOOTTIME)))):continue
++                    b=os.read(self.watch_read,1024)
++                    if not b:break
++                    buffer.extend(b);require(len(buffer)<=1024)
++                    while b'\n' in buffer:
++                        require(time.clock_gettime(time.CLOCK_BOOTTIME)<end)
++                        line,_,rest=buffer.partition(b'\n');buffer=bytearray(rest)
++                        require(re.fullmatch(b'[1-9][0-9]{0,19}',line))
++                        target=int(line)/1000000000+self.boot_offset
++                        require(time.clock_gettime(time.CLOCK_BOOTTIME)<target<=time.clock_gettime(time.CLOCK_BOOTTIME)+60)
++                        end=min(self.deadline+self.boot_offset,target)
++            except BaseException:
++                pass  # Protocol/clock/IO errors close containment too.
++            try:
++                self.contain()
++                create(self.root+'/watchdog-closed.json',encoded({'identity':self.identity,'closed':True}))
++                os._exit(0)
++            except BaseException:os._exit(1)
++        os.close(self.watch_read)
++
++    def pulse_watchdog(self,deadline):
++        require(abs(time.clock_gettime(time.CLOCK_BOOTTIME)-time.monotonic()-self.boot_offset)<.05)
++        require(not os.path.lexists(self.root+'/watchdog-closed.json') and os.waitpid(self.watch_pid,os.WNOHANG)==(0,0))
++        data=(str(int(deadline*1000000000))+'\n').encode()
++        require(os.write(self.watch_write,data)==len(data))
++
++    def event(self, value):
++        fd = os.open(self.root+'/events.jsonl', os.O_WRONLY|os.O_APPEND|os.O_NOFOLLOW)
++        try:
++            data=memoryview(encoded(value)+b'\n')
++            while data:
++                n=os.write(fd,data);require(n>0);data=data[n:]
++            os.fsync(fd)
++        finally:
++            os.close(fd)
++
++    def cmd(self, args):
++        # Bounded output; no shell, plugins or ambient Docker context.
++        p = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=ENV, cwd=ROOT, start_new_session=True)
++        data = bytearray()
++        end = time.monotonic()+10
++        sel = selectors.DefaultSelector()
++        sel.register(p.stdout, selectors.EVENT_READ)
++        try:
++            while sel.get_map():
++                require(time.monotonic() < end)
++                for key,_ in sel.select(.05):
++                    b = os.read(key.fd, 65536)
++                    if not b:
++                        sel.unregister(key.fd)
++                    else:
++                        data.extend(b)
++                        require(len(data) <= CHUNK)
++            require(p.wait(timeout=max(.001,end-time.monotonic())) == 0)
++            return bytes(data)
++        finally:
++            sel.close()
++            if p.poll() is None:
++                p.kill()
++                p.wait()
++            p.stdout.close()
++
++    def docker(self, args):
++        return self.cmd(['/usr/bin/docker','--config',ROOT+'/docker-config','--host','unix:///run/docker.sock']+args)
++
++    def begin_file(self, r):
++        exact(r,'op path sha256 sizeBytes mode')
++        require(not self.started and not self.terminal and self.active is None and len(self.entries)<self.request['files'])
++        relative(r['path']); hexhash(r['sha256']); number(r['sizeBytes'],0,64*CHUNK)
++        number(r['mode'],0,0o777); require(not r['mode'] & 0o022)
++        # Global casefold/path-prefix collision checks also cover file/dir aliases.
++        name=r['path'].casefold()
++        for f in self.entries:
++            old=f['path'].casefold()
++            require(name!=old and not name.startswith(old+'/') and not old.startswith(name+'/'))
++        require(self.total+r['sizeBytes']<=self.request['bytes'])
++        parts=r['path'].split('/')
++        self.components.update('/'.join(parts[:i]) for i in range(1,len(parts)+1))
++        require(len(self.components)<=65536)
++        parent=os.path.dirname(self.root+'/input/'+r['path'])
++        os.makedirs(parent,mode=0o755,exist_ok=True)
++        fd=os.open(self.root+'/input/'+r['path'],os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
++        self.active={'meta':{k:r[k] for k in ('path','sha256','sizeBytes','mode')},'fd':fd,'size':0,'hash':hashlib.sha256()}
++
++    def append(self,r):
++        exact(r,'op offset data')
++        a=self.active; require(a is not None and r['offset']==a['size'])
++        require(type(r['data']) is str and len(r['data'])<=1398104)
++        b=base64.b64decode(r['data'],validate=True)
++        require(0<len(b)<=CHUNK and a['size']+len(b)<=a['meta']['sizeBytes'])
++        view=memoryview(b)
++        while view:
++            n=os.write(a['fd'],view);require(n>0);view=view[n:]
++        a['hash'].update(b);a['size']+=len(b)
++
++    def end_file(self):
++        a=self.active; require(a is not None and a['size']==a['meta']['sizeBytes'] and a['hash'].hexdigest()==a['meta']['sha256'])
++        os.fchmod(a['fd'],0o555 if a['meta']['mode'] & 0o111 else 0o444)
++        os.fsync(a['fd']);os.close(a['fd']);self.active=None
++        m=a['meta'];sync_dir(os.path.dirname(self.root+'/input/'+m['path']))
++        if self.q['sourceCopy']:
++            dst=self.root+'/work/source/'+m['path'];os.makedirs(os.path.dirname(dst),mode=0o755,exist_ok=True)
++            # Source parents were created by root; only the mounted build UID can
++            # write them during execution, never the host controller UID.
++            cursor=os.path.dirname(dst)
++            while cursor != self.root+'/work':
++                os.chown(cursor,self.p['buildUid'],self.p['buildGid']);cursor=os.path.dirname(cursor)
++            with open(self.root+'/input/'+m['path'],'rb') as src:
++                fd=os.open(dst,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o700 if m['mode'] & 0o111 else 0o600)
++                try:
++                    while True:
++                        b=src.read(CHUNK)
++                        if not b:break
++                        view=memoryview(b)
++                        while view:
++                            n=os.write(fd,view);require(n>0);view=view[n:]
++                    os.fchown(fd,self.p['buildUid'],self.p['buildGid']);os.fsync(fd)
++                finally:os.close(fd)
++        self.entries.append(m);self.total+=m['sizeBytes']
++
++    def seal(self):
++        require(not self.started and self.active is None and len(self.entries)==self.request['files'] and self.total==self.request['bytes'])
++        # Explicit ordered tuples avoid cross-language object serialization differences.
++        tuples=[[f[k] for k in ('path','sha256','sizeBytes','mode')] for f in self.entries]
++        require(digest(encoded(tuples))==self.request['filesHash'])
++        self.event({'event':'input-verified','filesHash':self.request['filesHash']})
++        self.sealed=True
++
++    def launch(self,phase):
++        require(not self.terminal and time.monotonic()<min(self.deadline,self.expires))
++        require(not os.path.lexists(self.root+'/watchdog-closed.json') and os.waitpid(self.watch_pid,os.WNOHANG)==(0,0))
++        self.phase=phase; q=self.q
++        name='foundry-isolated-'+self.identity+'-'+str(phase)
++        self.container=name
++        self.event({'event':'create-intent','container':name,'phase':phase})
++        args=['create','--name',name,'--label','foundry.isolated='+self.identity,'--restart=no','--pull=never','--runtime=runc',
++              '--platform','linux/'+q['architecture'],'--network=none','--read-only','--privileged=false','--userns=host',
++              '--user',str(self.p['buildUid'])+':'+str(self.p['buildGid']),'--cap-drop=ALL','--security-opt=no-new-privileges=true',
++              '--cgroup-parent=/foundry-builds/'+self.identity,'--cgroupns=private','--ipc=private','--cpus',str(q['cpu']),'--memory',str(q['ramMib'])+'m','--memory-swap',str(q['ramMib'])+'m',
++              '--pids-limit',str(q['pids']),'--ulimit','core=0:0','--ulimit','nofile=1024:1024','--log-driver=none',
++              '--mount','type=bind,src='+self.root+'/input,dst=/input,readonly,bind-recursive=disabled',
++              '--mount','type=bind,src='+self.root+'/work,dst=/work,bind-recursive=disabled',
++              '--tmpfs','/tmp:rw,noexec,nosuid,nodev,size='+str(q['tmpMib'])+'m,mode=1777','--shm-size',str(q['tmpMib'])+'m',
++              '--workdir=/work/source' if q['sourceCopy'] else '--workdir=/work','--entrypoint',q['commands'][phase][0]]
++        for k,v in q['env'].items():args.extend(['--env',k+'='+v])
++        args.extend([q['image']]+q['commands'][phase][1:])
++        cid=self.docker(args).decode().strip();hexhash(cid)
++        self.container=cid;self.event({'event':'container-created','container':cid})
++        require(time.monotonic()<min(self.deadline,self.expires))
++        self.child=subprocess.Popen(['/usr/bin/docker','--config',ROOT+'/docker-config','--host','unix:///run/docker.sock','start','--attach',cid],
++              cwd=ROOT,env=ENV,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
++        os.set_blocking(self.child.stdout.fileno(),False)
++        self.event({'event':'start-client','pid':self.child.pid,'container':cid})
++
++    def state(self):
++        rows=json.loads(self.docker(['inspect',self.container]));require(len(rows)==1)
++        s=rows[0];require(s['Config']['Labels'].get('foundry.isolated')==self.identity and s['Id']==self.container)
++        require(s['HostConfig']['RestartPolicy']['Name']=='no')
++        require(s['HostConfig']['CgroupParent']=='/foundry-builds/'+self.identity)
++        return s['State']
++
++    def empty(self):
++        with open(self.cgroup+'/cgroup.events') as f:events=dict(line.split() for line in f)
++        return events.get('populated')=='0'
++
++    def contain(self):
++        # This root-owned ancestor persists after Docker's child cgroup disappears.
++        # Freezing is permanent: even a delayed daemon start cannot execute after
++        # stop. No broker operation can thaw, move tasks or remove this cgroup.
++        with open(self.cgroup+'/cgroup.freeze','w') as f:f.write('1')
++        with open(self.cgroup+'/cgroup.kill','w') as f:f.write('1')
++        end=time.monotonic()+2
++        while time.monotonic()<end:
++            with open(self.cgroup+'/cgroup.events') as f:events=dict(line.split() for line in f)
++            if events.get('frozen')=='1' and events.get('populated')=='0':
++                self.contained=True;return
++            time.sleep(.01)
++        raise ValueError('containment-unconfirmed')
++
++    def runway(self,r):
++        require(type(r['expiresAtNs']) is str and re.fullmatch('[1-9][0-9]{0,19}',r['expiresAtNs']))
++        value=int(r['expiresAtNs']);now=time.monotonic_ns()
++        require(now<value<=now+60000000000)
++        return value/1000000000
++
++    def start(self,r):
++        exact(r,'op expiresAtNs')
++        require(getattr(self,'sealed',False) and not self.started and not self.terminal)
++        self.expires=self.runway(r)
++        self.pulse_watchdog(self.expires)
++        info=json.loads(self.docker(['info','--format','{{json .}}']))
++        require(info['OSType']=='linux' and info['CgroupVersion']=='2' and info.get('CgroupDriver')=='cgroupfs' and all(info.get(k) is True for k in ('CpuCfsQuota','MemoryLimit','PidsLimit')))
++        require(os.uname().machine==('x86_64' if self.q['architecture']=='amd64' else 'aarch64'))
++        require('name=seccomp,profile=builtin' in info['SecurityOptions'] and not info.get('Warnings'))
++        rows=json.loads(self.docker(['image','inspect',self.q['image']]))
++        require(len(rows)==1 and rows[0]['Os']=='linux' and rows[0]['Architecture']==self.q['architecture'] and self.q['image'] in rows[0].get('RepoDigests',[]) and not rows[0]['Config'].get('Volumes'))
++        self.started=True;self.launch(0)
++
++    def drain(self):
++        if not self.child:return
++        while True:
++            try:b=os.read(self.child.stdout.fileno(),65536)
++            except BlockingIOError:return
++            if not b:return
++            self.log.extend(b);require(len(self.log)<=self.q['maxOutputBytes'])
++
++    def tick(self):
++        if not self.started or self.terminal:return
++        require(not os.path.lexists(self.root+'/watchdog-closed.json') and os.waitpid(self.watch_pid,os.WNOHANG)==(0,0))
++        self.drain()
++        if time.monotonic()>=min(self.deadline,self.expires):
++            self.stop();return
++        if self.child.poll() is None:return
++        self.drain()
++        # Client completion alone does not establish stopped execution.
++        s=self.state();require(not s['Running'] and s['Status'] in ('exited','dead') and self.empty())
++        self.child.stdout.close()
++        if self.child.returncode==0 and s['ExitCode']==0 and self.phase+1<len(self.q['commands']):
++            self.launch(self.phase+1);return
++        number(s['ExitCode'],0,255);self.exit_code=s['ExitCode']
++        self.terminal=True;self.success=self.child.returncode==0 and s['Status']=='exited' and self.exit_code==0
++        self.contain()
++        self.event({'event':'stopped','success':self.success,'container':self.container})
++
++    def stop(self):
++        # Close admission permanently BEFORE requesting physical stop. Ambiguous
++        # clients/containers retain the durable slot; no disappearance-as-success.
++        self.terminal=True;self.success=False
++        self.exit_code=None
++        self.contain()
++        if self.child and self.child.poll() is None:
++            self.child.kill();self.child.wait(timeout=2)
++        if self.container:
++            s=self.state()
++            if s['Running']:self.docker(['kill','--signal=KILL',self.container])
++            s=self.state();require(not s['Running'] and s['Status'] in ('exited','dead','created'))
++        self.event({'event':'stopped','success':False,'container':self.container})
++
++    def capture(self):
++        require(self.terminal and self.success and self.contained and self.empty() and not self.outputs)
++        s=self.state();require(not s['Running'] and s['Status']=='exited' and s['ExitCode']==0)
++        total=len(self.log); chunks=(len(self.log)+CHUNK-1)//CHUNK
++        selected=[]
++        # The broker is the only Docker authority. Terminal state has no restart
++        # operation. Builds have no socket/host root access; all phases are stopped.
++        for path in self.q['outputPaths']:
++            relative(path);cur=self.root+'/work'
++            for component in path.split('/'):
++                cur+='/'+component;st=os.lstat(cur)
++                require(not stat.S_ISLNK(st.st_mode) and st.st_dev==self.work_dev)
++                require(not any(k.startswith('system.posix_acl_') for k in os.listxattr(cur,follow_symlinks=False)))
++            require(stat.S_ISREG(st.st_mode) and st.st_nlink==1 and not st.st_mode & 0o7000)
++            total+=st.st_size;chunks+=(st.st_size+CHUNK-1)//CHUNK
++            require(total<=self.q['maxOutputBytes'] and chunks<=31)
++            selected.append((path,cur,st))
++        for index,(path,src,expected) in enumerate(selected):
++            fd=os.open(src,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++            try:
++                st=os.fstat(fd);require((st.st_dev,st.st_ino,st.st_size)==(expected.st_dev,expected.st_ino,expected.st_size))
++                out=os.open(self.root+'/captured/'+str(index),os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o400)
++                h=hashlib.sha256();size=0
++                try:
++                    while True:
++                        b=os.read(fd,CHUNK)
++                        if not b:break
++                        size+=len(b);require(size<=expected.st_size);h.update(b)
++                        view=memoryview(b)
++                        while view:
++                            n=os.write(out,view);require(n>0);view=view[n:]
++                    require(size==expected.st_size);os.fsync(out)
++                finally:os.close(out)
++                self.outputs.append({'path':path,'sha256':h.hexdigest(),'sizeBytes':size})
++            finally:os.close(fd)
++        create(self.root+'/captured/log',bytes(self.log));os.chmod(self.root+'/captured/log',0o400)
++        sync_dir(self.root+'/captured')
++        self.event({'event':'captured','outputs':self.outputs,'logSha256':digest(self.log),'logBytes':len(self.log)})
++        self.captured=True
++
++    def dispatch(self,r):
++        op=r.get('op')
++        if op=='file':self.begin_file(r)
++        elif op=='append':self.append(r)
++        elif op=='end':exact(r,'op');self.end_file()
++        elif op=='seal':exact(r,'op');self.seal()
++        elif op=='start':self.start(r)
++        elif op=='pulse':
++            exact(r,'op expiresAtNs')
++            # Completion between status and pulse is a terminal reply, never revival.
++            require(self.started)
++            if not self.terminal:
++                require(time.monotonic()<self.expires)
++                self.expires=self.runway(r)
++                self.pulse_watchdog(self.expires)
++        elif op=='status':exact(r,'op')
++        elif op=='stop':exact(r,'op');self.stop()
++        elif op=='capture':exact(r,'op');self.capture()
++        elif op=='read':
++            exact(r,'op index offset');require(getattr(self,'captured',False))
++            number(r['index'],-1,len(self.outputs)-1);number(r['offset'],0,31*CHUNK)
++            path='log' if r['index']==-1 else str(r['index'])
++            with open(self.root+'/captured/'+path,'rb') as f:
++                f.seek(r['offset']);b=f.read(CHUNK)
++            return {'identity':self.identity,'data':base64.b64encode(b).decode()}
++        else:raise ValueError('operation')
++        return {'identity':self.identity,'terminal':self.terminal and self.contained,'success':self.success and self.contained,'exitCode':self.exit_code,'outputs':self.outputs,
++                'log':{'sha256':digest(self.log),'sizeBytes':len(self.log)}}
++
++def server():
++    require(sys.platform=='linux' and os.geteuid()==0)
++    os.umask(0o022)
++    p=load_policy();trusted('/run/foundry-linux',True)
++    trusted(sys.executable);trusted(os.path.abspath(__file__))
++    with open(sys.executable,'rb') as f:python_hash=digest(f.read())
++    with open(os.path.abspath(__file__),'rb') as f:helper_hash=digest(f.read())
++    require(not os.path.lexists(ROOT+'/slot.json') and not os.path.lexists(SOCKET))
++    sock=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM);sock.bind(SOCKET)
++    os.chown(SOCKET,0,p['controllerGid']);os.chmod(SOCKET,0o660);sock.listen(1)
++    sock.settimeout(1)
++    while True:
++        census(p,helper_hash,python_hash)
++        try:conn,_=sock.accept();break
++        except socket.timeout:continue
++    attempt=None
++    try:
++        require(peer(conn)==(p['controllerUid'],p['controllerGid']))
++        conn.settimeout(10)
++        request=receive(conn)
++        attempt=Attempt(p,request)
++        send(conn,{'identity':attempt.identity,'profile':attempt.q,'helperSha256':helper_hash,'pythonSha256':python_hash})
++        # Serialized frames are bounded by an absolute deadline even when a peer
++        # dribbles bytes. A separate timer is not allowed to race mutation handlers.
++        conn.setblocking(False)
++        buf=bytearray(); frame_start=None;last=time.monotonic();observed=0
++        while True:
++            attempt.tick()
++            if time.monotonic()-observed>=1:
++                census(p,helper_hash,python_hash,attempt);observed=time.monotonic()
++            require(time.monotonic()<attempt.deadline and time.monotonic()-last<(10 if attempt.started and not attempt.terminal else 60))
++            if frame_start is not None:require(time.monotonic()-frame_start<2)
++            ready=selectors.DefaultSelector()
++            try:
++                ready.register(conn,selectors.EVENT_READ)
++                events=ready.select(.05)
++            finally:ready.close()
++            if not events:continue
++            b=conn.recv(65536);require(b)
++            if not buf:frame_start=time.monotonic()
++            buf.extend(b);require(len(buf)<=FRAME+4)
++            if len(buf)<4:continue
++            n=struct.unpack('!I',buf[:4])[0];number(n,1,FRAME)
++            if len(buf)<n+4:continue
++            require(len(buf)==n+4)
++            r=json.loads(bytes(buf[4:]));buf.clear();frame_start=None
++            # tick BEFORE a pulse; a late request cannot revive expired admission.
++            attempt.tick();response=attempt.dispatch(r);last=time.monotonic()
++            conn.settimeout(2);send(conn,response);conn.setblocking(False)
++    finally:
++        if attempt:
++            try:attempt.stop()
++            except Exception:pass  # Durable slot already retained; never claim stop.
++            try:os.close(attempt.watch_write)
++            except Exception:pass
++        conn.close();sock.close()
++        # No unlink, unmount, container removal, slot clearing or restart replay.
++
++def client():
++    require(sys.platform=='linux' and os.geteuid()!=0)
++    trusted(sys.executable)
++    trusted(os.path.abspath(__file__))
++    trusted('/run/foundry-linux',True)
++    s=os.lstat(SOCKET);require(stat.S_ISSOCK(s.st_mode) and s.st_uid==0 and s.st_mode & 0o007==0)
++    sock=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM);sock.settimeout(45);sock.connect(SOCKET)
++    require(peer(sock)[0]==0)
++    try:
++        while True:
++            header=sys.stdin.buffer.read(4)
++            if not header:break
++            require(len(header)==4);n=struct.unpack('!I',header)[0];number(n,1,FRAME)
++            b=sys.stdin.buffer.read(n);require(len(b)==n)
++            sock.sendall(header+b);r=receive(sock);out=encoded(r)
++            sys.stdout.buffer.write(struct.pack('!I',len(out))+out);sys.stdout.buffer.flush()
++            sock.settimeout(12)
++    finally:sock.close()
++
++if __name__=='__main__':
++    try:
++        require(sys.flags.isolated and sys.flags.no_site and len(sys.argv)==2)
++        if sys.argv[1]=='serve':server()
++        elif sys.argv[1]=='client':client()
++        else:raise ValueError('mode')
++    except Exception:
++        # No exception text, paths, source, logs, environment or policy on stdout.
++        sys.exit(1)
+--- a/packages/build-runtime/src/adapters.ts
++++ b/packages/build-runtime/src/adapters.ts
+@@ -1,148 +1,27 @@
+-import { join } from 'node:path';
+-import { readdir } from 'node:fs/promises';
+-import { approvalFor, check, hash, phasesFor } from './plans.js';
+-import { canonical, validateHost } from './host.js';
+-import { command, launch, type ProcessHandle } from './process.js';
+-import { NativeDescendantAttestor } from './mac-attestation.js';
+-import type { Running, RuntimeAdapter, RuntimePlan, StopProof } from './types.js';
+-export { NativeDescendantAttestor } from './mac-attestation.js';
+-const controlEnv = Object.freeze({PATH:'/usr/bin:/bin',LANG:'C',LC_ALL:'C'});
+-const unknown = (identity: string): StopProof => ({stopped:false,basis:'unknown',identity});
+-
+-/** Native shared-service containment is unavailable. Deny at the local boundary too:
+- * authority placement is not the only caller of a RuntimeAdapter. Diagnostics and
+- * optional ES evidence never grant execution permission. */
++import {approvalFor,check} from './plans.js';
++import {NativeDescendantAttestor} from './mac-attestation.js';
++import type {RuntimeAdapter,RuntimePlan,Running} from './types.js';
++export {NativeDescendantAttestor} from './mac-attestation.js';
++/** Shared native-host execution has no complete containment boundary. */
+ export class NativeMacAdapter implements RuntimeAdapter {
+-  constructor(attestor?: NativeDescendantAttestor) {
+-    check(!attestor || attestor instanceof NativeDescendantAttestor,'native-concrete-attestor-required');
+-  }
+-  async prepare(plan: RuntimePlan): Promise<void> {
+-    approvalFor(plan);
+-    throw new Error('native-full-containment-unavailable');
+-  }
+-  async start(plan: RuntimePlan, _recordIdentity: (id:string) => Promise<void>, _beforeStart: () => void): Promise<Running> {
+-    approvalFor(plan);
+-    throw new Error('native-full-containment-unavailable');
++  constructor(attestor?:NativeDescendantAttestor){check(!attestor||attestor instanceof NativeDescendantAttestor,'native-concrete-attestor-required');}
++  async prepare(plan:RuntimePlan):Promise<void>{approvalFor(plan);throw new Error('native-full-containment-unavailable');}
++  async start(plan:RuntimePlan,_recordIdentity:(id:string)=>Promise<void>,_beforeStart:()=>void):Promise<Running>{
++    approvalFor(plan);throw new Error('native-full-containment-unavailable');
+   }
+ }
+-async function settleBriefly(p: ProcessHandle): Promise<void> {
+-  let timer: ReturnType<typeof setTimeout> | undefined;
+-  try { await Promise.race([p.completion,new Promise<void>(resolve => { timer = setTimeout(resolve,1000); })]); }
+-  finally { if (timer) clearTimeout(timer); }
+-}
+-export interface DockerHostConfig {
+-  executable: string; socketPath: string; privateConfigPath: string;
+-  /** Owner provisioned LOCAL Docker socket; no remote contexts, SSH, TLS or plugins. */
+-}
+-interface ContainerState { Id:string; Config:{Labels:Record<string,string>}; State:{Running:boolean;Status:string;ExitCode:number} }
++/** Historical configuration remains a source-compatible type, never an activation grant. */
++export interface DockerHostConfig {executable:string;socketPath:string;privateConfigPath:string}
++/** Deliberately deny the old shared-UID bind-mount path at every public entry.
++ * Use createLinuxIsolatedBuildWorkerController and its narrow root broker instead.
++ * Removing the unsafe implementation also prevents reflective JS access to old
++ * private methods from accidentally bypassing this boundary. */
+ export class LinuxContainerAdapter implements RuntimeAdapter {
+-  private readonly prepared = new WeakSet<object>();
+-  private readonly config: Readonly<DockerHostConfig>;
+-  constructor(config: DockerHostConfig) { this.config = Object.freeze({...config}); }
+-  private async cli(plan:RuntimePlan, args: readonly string[]): Promise<string> {
+-    const a = approvalFor(plan), c = this.config;
+-    await canonical(c.executable,a.host.uid,'file'); await canonical(c.socketPath,a.host.uid,'socket');
+-    await canonical(c.privateConfigPath,a.host.uid,'directory',true);
+-    check((await readdir(c.privateConfigPath)).length === 0,'docker-config-must-be-empty');
+-    return command(c.executable,['--config',c.privateConfigPath,'--host',`unix://${c.socketPath}`,...args],plan.workRoot,controlEnv);
++  constructor(_config:DockerHostConfig){}
++  async prepare(plan:RuntimePlan):Promise<void>{
++    approvalFor(plan);throw new Error('legacy-linux-writable-host-isolation-unavailable-use-isolated-adapter');
+   }
+-  async prepare(plan:RuntimePlan): Promise<void> {
+-    const a = approvalFor(plan), r = a.recipe;
+-    check(process.platform === 'linux' && r.kind === 'linux-build-v1','linux-host-only');
+-    check(process.arch === r.architecture,'host-arch-mismatch');
+-    await validateHost(plan);
+-    const info = JSON.parse(await this.cli(plan,['info','--format','{{json .}}'])) as Record<string,unknown>;
+-    check(info.OSType === 'linux' && info.CgroupVersion === '2' && info.CpuCfsQuota === true && info.MemoryLimit === true && info.PidsLimit === true &&
+-      Array.isArray(info.SecurityOptions) && info.SecurityOptions.includes('name=seccomp,profile=builtin') &&
+-      (info.Warnings === null || (Array.isArray(info.Warnings) && info.Warnings.length === 0)), 'docker-isolation-unsupported');
+-    const rows = JSON.parse(await this.cli(plan,['image','inspect',r.image])) as Array<{Os:string;Architecture:string;RepoDigests?:string[];Config?:{Volumes?:object|null}}>;
+-    check(rows.length === 1 && rows[0]?.Os === 'linux' && rows[0].Architecture === (r.architecture === 'x64' ? 'amd64' : r.architecture) && rows[0].RepoDigests?.includes(r.image) && rows[0].Config && !Object.keys(rows[0].Config.Volumes ?? {}).length,'image-not-approved-or-arch-mismatch');
+-    this.prepared.add(plan);
+-  }
+-  private async inspect(plan:RuntimePlan, name:string, expected?:string): Promise<ContainerState> {
+-    const rows = JSON.parse(await this.cli(plan,['inspect',name])) as ContainerState[];
+-    const s = rows[0];
+-    check(rows.length === 1 && s && /^[0-9a-f]{64}$/.test(s.Id) && (!expected || s.Id === expected) &&
+-      s.Config?.Labels?.['foundry.build-attempt'] === hash(plan.attemptId) && s.Config.Labels['foundry.profile'] === plan.profileHash &&
+-      typeof s.State?.Running === 'boolean' && Number.isInteger(s.State.ExitCode),'container-identity-unknown');
+-    return s;
+-  }
+-  async start(plan:RuntimePlan, recordIdentity:(id:string) => Promise<void>, beforeStart:() => void): Promise<Running> {
+-    approvalFor(plan);
+-    check(this.prepared.delete(plan),'linux-not-prepared');
+-    const commands = phasesFor(plan);
+-    let stopping = false, transitioning = false, phaseUncertain = false;
+-    const fence = () => { check(!stopping,'phase-cancelled'); beforeStart(); };
+-    let current = await this.startPhase(plan,recordIdentity,fence,commands[0]!,0);
+-    const identity = current.identity;
+-    const completion = (async () => {
+-      let exit = await current.completion;
+-      for (let i=1;i<commands.length;i++) {
+-        if (exit.code !== 0 || exit.limited || stopping) return exit;
+-        if (!(await current.inspectStopped()).stopped) return {...exit,code:null};
+-        transitioning = true;
+-        try { current = await this.startPhase(plan,recordIdentity,fence,commands[i]!,i); }
+-        catch { phaseUncertain = true; return {...exit,code:null}; }
+-        finally { transitioning = false; }
+-        const next = await current.completion;
+-        const max = approvalFor(plan).limits.maxOutputBytes;
+-        if (exit.output.byteLength + next.output.byteLength > max) return {...next,output:new Uint8Array(0),limited:true};
+-        exit = {...next,output:Buffer.concat([exit.output,next.output])};
+-      }
+-      return exit;
+-    })();
+-    return {identity,completion,
+-      inspectStopped:async () => {const active=current;if(transitioning||phaseUncertain)return unknown(identity);const proof=await active.inspectStopped();return current!==active||transitioning||phaseUncertain?unknown(identity):proof;},
+-      stop:async () => { stopping = true; const active=current;const proof = await active.stop(); return current!==active||transitioning || phaseUncertain ? unknown(identity) : proof; }};
+-  }
+-  private async startPhase(plan:RuntimePlan, recordIdentity:(id:string) => Promise<void>, beforeStart:() => void, argv:readonly string[], phase:number): Promise<Running> {
+-    const a = approvalFor(plan), r = a.recipe, c = this.config;
+-    check(r.kind === 'linux-build-v1','linux-only');
+-    await validateHost(plan);
+-    const name = `foundry-build-${hash(plan.attemptId)}-${phase}`;
+-    await recordIdentity(name);
+-    // Cancellation/lease loss prevents create as well as start; create itself never runs the image.
+-    beforeStart();
+-    const args = ['create','--name',name,'--label',`foundry.build-attempt=${hash(plan.attemptId)}`,'--label',`foundry.profile=${plan.profileHash}`,
+-      '--pull=never','--platform',`linux/${r.architecture === 'x64' ? 'amd64' : r.architecture}`,'--runtime=runc','--network=none','--read-only','--privileged=false',
+-      `--user=${a.host.uid}:${a.host.gid}`,'--cap-drop=ALL','--security-opt=no-new-privileges=true','--cgroupns=private','--ipc=private',
+-      '--cpus',String(plan.cpu),'--memory',`${plan.ramMib}m`,'--memory-swap',`${plan.ramMib}m`,'--pids-limit',String(a.limits.pids),
+-      '--ulimit','core=0:0','--ulimit','nofile=1024:1024','--log-driver=none',
+-      '--mount',`type=bind,src=${plan.inputRoot},dst=/input,readonly,bind-recursive=disabled`,
+-      '--mount',`type=bind,src=${plan.workRoot},dst=/work,bind-recursive=disabled`,
+-      '--tmpfs',`/tmp:rw,noexec,nosuid,nodev,size=${a.limits.tmpMib}m,mode=1777`,'--shm-size',`${a.limits.tmpMib}m`,
+-      r.tool === 'cmake' ? '--workdir=/work' : '--workdir=/work/source','--entrypoint',argv[0]!];
+-    for (const [k,v] of Object.entries(plan.env)) args.push('--env',`${k}=${v}`);
+-    args.push(r.image,...argv.slice(1));
+-    const id = (await this.cli(plan,args)).trim();
+-    check(/^[0-9a-f]{64}$/.test(id),'container-create-uncertain');
+-    await recordIdentity(id); await this.inspect(plan,id,id);
+-    // Revalidate fixed executable/socket/config immediately before synchronous launch fence.
+-    await canonical(c.executable,a.host.uid,'file'); await canonical(c.socketPath,a.host.uid,'socket');
+-    await canonical(c.privateConfigPath,a.host.uid,'directory',true);
+-    check((await readdir(c.privateConfigPath)).length === 0,'docker-config-must-be-empty');
+-    beforeStart();
+-    const p = launch(c.executable,['--config',c.privateConfigPath,'--host',`unix://${c.socketPath}`,'start','--attach',id],plan.workRoot,controlEnv,a.limits.maxOutputBytes,plan.timeoutMs);
+-    const inspectStopped = async (): Promise<StopProof> => {
+-      // The start CLI must have CLOSED: a timed-out client can leave a delayed start in flight.
+-      if (!p.closed()) return unknown(id);
+-      try {
+-        const s = await this.inspect(plan,id,id);
+-        return !s.State.Running && ['exited','dead'].includes(s.State.Status) ? {stopped:true,basis:'container-inspect',identity:id} : unknown(id);
+-      } catch { return unknown(id); }
+-    };
+-    const completion = p.completion.then(async exit => {
+-      if (!p.closed() || exit.limited || exit.code !== 0) return exit;
+-      try {
+-        const state = await this.inspect(plan,id,id);
+-        return {...exit,code:!state.State.Running && state.State.Status === 'exited' ? state.State.ExitCode : null};
+-      } catch { return {...exit,code:null}; }
+-    });
+-    return {identity:id,completion,inspectStopped,stop:async () => {
+-      p.killGroup(); await settleBriefly(p);
+-      try { const s = await this.inspect(plan,id,id); if (s.State.Running) await this.cli(plan,['kill','--signal=KILL',id]); }
+-      catch { return unknown(id); }
+-      return inspectStopped();
+-    }};
++  async start(plan:RuntimePlan,_recordIdentity:(id:string)=>Promise<void>,_beforeStart:()=>void):Promise<Running>{
++    approvalFor(plan);throw new Error('legacy-linux-writable-host-isolation-unavailable-use-isolated-adapter');
+   }
+ }
+--- a/packages/build-runtime/src/controller.ts
++++ b/packages/build-runtime/src/controller.ts
+@@ -7,9 +7,10 @@
+ import { assertParentBinding, canonicalData, type ParentProfileBinding } from './parent-profile.js';
+ import { buildPlan, check, hash } from './plans.js';
+ import { LongJobSupervisor } from './supervisor.js';
+-import { verifyRestore, verifyPublish, type RestoreReceipt, type PublishReceipt } from './receipts.js';
++import { verifyPublish, type RestoreReceipt, type PublishReceipt } from './receipts.js';
+ import type { WorkerLivenessPort } from './liveness.js';
+ import {MacVmRuntimeAdapter} from './mac-vm-adapter.js';
++import {LinuxIsolatedRuntimeAdapter} from './linux-isolated-adapter.js';
+ export interface BuildTransport {
+   /** Host fixes HTTPS origin, auth, enrollment, response byte limits and redirect policy. */
+   request(path:'/v1/builds/commands',body:{expectedEpoch:number;command:BuildCommand},signal:AbortSignal):Promise<unknown>;
+@@ -71,7 +72,7 @@
+     check(Number.isSafeInteger(expectedEpoch) && expectedEpoch > 0 && Number.isSafeInteger(maxInputBytes) && maxInputBytes > 0,'invalid-worker-policy');
+     this.authority = snapshotWorkerAuthority(authority);
+     if(binding.profile.kind==='xcode-build-v1')check(adapter instanceof MacVmRuntimeAdapter,'xcode-concrete-vm-adapter-required');
+-    else check(!(adapter instanceof MacVmRuntimeAdapter)&&'restoreInput' in ports&&'publishResult' in ports&&typeof ports.restoreInput==='function'&&typeof ports.publishResult==='function','linux-storage-ports-required');
++    else check(adapter instanceof LinuxIsolatedRuntimeAdapter,'linux-concrete-isolated-adapter-required');
+   }
+   async run(localJob:BuildJob, claimKey:string, cancel?:AbortSignal):Promise<WorkerControllerResult> {
+     check(this.binding.approval.host.allowActivation,'owner-activation-gated');
+@@ -208,9 +209,8 @@
+             check(context.vmCapabilityHash===this.adapter.capabilityHash,'claimed-vm-capability-mismatch');
+             await this.adapter.prepareAttempt(input,job,plan,context,scope,this.maxInputBytes);
+           }else{
+-            check('restoreInput' in this.ports,'restore-port-required');
+-            const receipt = await this.ports.restoreInput(input,plan,scope.signal,context,this.maxInputBytes);
+-            await verifyRestore(receipt,input,job,plan,h.uid,this.maxInputBytes,scope.signal);
++            check(this.adapter instanceof LinuxIsolatedRuntimeAdapter,'linux-concrete-isolated-adapter-required');
++            await this.adapter.prepareAttempt(input,job,plan,context,scope,this.maxInputBytes);
+           }
+           scope.assertLease();
+           await ledger.record({operation:'restore',key:key('restore'),status:'ack'});
+@@ -223,9 +223,9 @@
+           if (result.outcome !== 'completed' || !result.stop.stopped) return;
+           scope.assertLease();
+           await ledger.record({operation:'publish',key:key('publish'),status:'intent'});
+-          const receipt = this.adapter instanceof MacVmRuntimeAdapter
++          const receipt = this.adapter instanceof MacVmRuntimeAdapter||this.adapter instanceof LinuxIsolatedRuntimeAdapter
+             ? await this.adapter.publishAttempt(job,plan,result,context,scope.signal)
+-            : await (()=>{check('publishResult' in this.ports,'publish-port-required');return this.ports.publishResult(job,plan,result,context,scope.signal);})();
++            : (()=>{throw new Error('concrete-isolated-result-required');})();
+           const manifest = verifyPublish(receipt,job,plan,this.binding.approval.limits.maxOutputBytes); scope.assertLease();
+           await ledger.record({operation:'publish',key:key('publish'),status:'ack'});
+           const response = await send({operation:'stage',key:key('stage'),body:{...fence,manifest}},scope.signal);
+--- a/packages/build-runtime/src/index.ts
++++ b/packages/build-runtime/src/index.ts
+@@ -37,3 +37,8 @@
+ export type {MacVmWorkerConfig} from './mac-vm-worker.js';
+ export {readMacVmCapability} from './mac-vm-capability.js';
+ export type {MacVmCapabilityConfig} from './mac-vm-capability.js';
++export {LinuxIsolatedRuntimeAdapter,linuxIsolationProfile} from './linux-isolated-adapter.js';
++export type {LinuxIsolatedAdapterConfig} from './linux-isolated-adapter.js';
++export {createLinuxIsolatedBuildWorkerController} from './linux-isolated-worker.js';
++export type {LinuxIsolatedWorkerConfig} from './linux-isolated-worker.js';
++export type {LinuxIsolationConfig} from './linux-isolated-client.js';
+--- /dev/null
++++ b/packages/build-runtime/src/linux-isolated-adapter.ts
+@@ -0,0 +1,145 @@
++import {mkdir} from 'node:fs/promises';
++import {createHash} from 'node:crypto';
++import {setTimeout as delay} from 'node:timers/promises';
++import type {BuildJob,InputApproval} from '../../build-jobs/src/contracts.js';
++import type {ApprovedFile} from '../../build-storage/src/types.js';
++import {projectObjectReader} from '../../build-storage/src/project-input-io.js';
++import {assertBuildAttemptContext,type BuildAttemptContext} from './controller.js';
++import {canonical,assertJournalReservation} from './host.js';
++import {check,phasesFor,approvalFor,hash,buildPlan} from './plans.js';
++import {canonicalData,assertParentBinding,type ParentProfileBinding} from './parent-profile.js';
++import {LinuxIsolationClient,type LinuxIsolationConfig} from './linux-isolated-client.js';
++import {prepareLinuxInput,streamLinuxInput} from './linux-isolated-input.js';
++import {publishLinuxCapture,type CapturedLinuxFile} from './linux-isolated-publication.js';
++import type {StorageWorkerConfig} from './storage-integration.js';
++import type {RuntimeAdapter,RuntimePlan,ExecutionScope,Running,Exit,StopProof,SupervisorResult} from './types.js';
++import type {PublishReceipt} from './receipts.js';
++export interface LinuxIsolatedAdapterConfig {
++  binding:ParentProfileBinding;isolation:LinuxIsolationConfig;maxInputBytes:number;
++  resolveInputStorage:NonNullable<StorageWorkerConfig['projectInputs']>['resolve'];
++  resolveResultStorage:NonNullable<StorageWorkerConfig['resolveResultStorage']>;
++  outputs:readonly ApprovedFile[];
++}
++/** Data-only owner policy proposal; it supplies NO installed pins/approval. Owner
++ * separately installs this exact profile under binding.localRecipeHash. */
++export function linuxIsolationProfile(binding:ParentProfileBinding,maxInputBytes:number):object{
++  assertParentBinding(binding);const a=binding.approval,r=a.recipe;
++  check(r.kind==='linux-build-v1'&&Number.isSafeInteger(maxInputBytes)&&maxInputBytes>0&&maxInputBytes<=2*1024**3,'linux-isolated-policy');
++  check(a.limits.cpu<=64&&a.limits.timeoutMs>=1000&&a.limits.timeoutMs<=3600000&&a.limits.maxOutputBytes<=31*1048576,'linux-broker-supported-limits');
++  const plan=buildPlan(a,{attemptId:'policy',jobId:'policy',inputRoot:a.host.inputBase+'/policy',workRoot:a.host.workBase+'/policy'});
++  return {image:r.image,architecture:r.architecture==='x64'?'amd64':r.architecture,commands:phasesFor(plan),env:plan.env,
++    cpu:a.limits.cpu,ramMib:a.limits.ramMib,pids:a.limits.pids,tmpMib:a.limits.tmpMib,timeoutMs:a.limits.timeoutMs,
++    maxOutputBytes:a.limits.maxOutputBytes,maxInputBytes,outputPaths:r.outputPaths,sourceCopy:r.tool!=='cmake'};
++}
++interface Reply {identity:string;terminal:boolean;success:boolean;exitCode:number|null;outputs:Array<{path:string;sha256:string;sizeBytes:number}>;log:{sha256:string;sizeBytes:number}}
++interface State {context:BuildAttemptContext;job:BuildJob;scope:ExecutionScope;client:LinuxIsolationClient;identity:string;
++  started:boolean;published:boolean;stopped:boolean;files?:CapturedLinuxFile[];log?:Uint8Array}
++/** Private root-owned staging/execution/capture. Controller roots hold metadata
++ * only; neither same-UID host paths nor a generic seal enter the build. */
++export class LinuxIsolatedRuntimeAdapter implements RuntimeAdapter {
++  private readonly c:LinuxIsolatedAdapterConfig;
++  private readonly states=new WeakMap<RuntimePlan,State>();
++  private readonly preparing=new WeakSet<RuntimePlan>();
++  constructor(config:LinuxIsolatedAdapterConfig){
++    assertParentBinding(config.binding);
++    const data=JSON.parse(canonicalData({isolation:config.isolation,maxInputBytes:config.maxInputBytes,outputs:config.outputs}));
++    this.c={...config,...data};linuxIsolationProfile(config.binding,data.maxInputBytes);
++    check(data.outputs.length===config.binding.profile.outputPaths.length&&new Set(data.outputs.map((o:ApprovedFile)=>o.path)).size===data.outputs.length&&
++      config.binding.profile.outputPaths.every(p=>data.outputs.some((o:ApprovedFile)=>o.path===p)),'linux-output-policy');
++    check(data.outputs.every((o:ApprovedFile)=>! /\.(app|dSYM|xcarchive)$/.test(o.path)&&(o.classification==='build-output'||o.classification==='debug-symbols')),'linux-regular-unsigned-outputs-only');
++  }
++  async prepareAttempt(input:InputApproval,job:BuildJob,plan:RuntimePlan,context:BuildAttemptContext,scope:ExecutionScope,maxInputBytes:number):Promise<void>{
++    const c=this.c,h=c.binding.approval.host;
++    assertBuildAttemptContext(context);assertJournalReservation(scope.reservation,plan);scope.assertLease();
++    check(process.platform==='linux'&&h.allowActivation&&!this.preparing.has(plan)&&plan.profileHash===c.binding.localRecipeHash&&
++      context.localRecipeHash===plan.profileHash&&context.serverProfileHash===c.binding.serverProfileHash&&context.inputHash===job.inputHash&&context.projectId===job.projectId,'linux-attempt-binding');
++    this.preparing.add(plan);
++    const storage=await c.resolveInputStorage(input,plan,context,scope.signal);scope.assertLease();
++    check(storage.scope.projectId===input.projectId&&canonicalData(storage.scope.compute)===canonicalData(context.compute),'linux-input-broker-scope');
++    const reader=projectObjectReader(storage.scope,storage.routing,scope.signal);
++    // At most one pinned blob is retained. Packed adjacent files share its bytes;
++    // all issued reservations are freshly rechecked before physical launch.
++    let cached:{key:string;bytes:Uint8Array}|undefined;
++    const read:StorageWorkerConfig['readInput']=async(ref,_context,signal)=>{
++      check(signal===scope.signal&&!signal.aborted,'linux-input-read-scope');scope.assertLease();
++      const key=canonicalData(ref);if(cached?.key===key)return Uint8Array.from(cached.bytes);
++      const bytes=await reader.read(ref);scope.assertLease();cached={key,bytes:Uint8Array.from(bytes)};return bytes;
++    };
++    const prepared=await prepareLinuxInput(input,job,plan,context,read,scope,Math.min(c.maxInputBytes,maxInputBytes));
++    const client=await LinuxIsolationClient.connect(c.isolation,scope.signal);
++    scope.signal.addEventListener('abort',()=>client.close(),{once:true});
++    try{
++      const reply=await client.request({op:'begin',attemptId:plan.attemptId,profileHash:plan.profileHash,inputHash:job.inputHash,
++        filesHash:prepared.filesHash,bytes:prepared.bytes,files:prepared.files.length},scope.signal,true) as {identity:string;profile:unknown;helperSha256:string;pythonSha256:string};scope.assertLease();
++      const expected=hash(JSON.stringify([plan.attemptId,plan.profileHash,job.inputHash,prepared.filesHash]));
++      check(reply.identity===expected&&reply.helperSha256===c.isolation.helperSha256&&reply.pythonSha256===c.isolation.pythonSha256&&
++        canonicalData(reply.profile)===canonicalData(linuxIsolationProfile(c.binding,c.maxInputBytes)),'linux-root-policy-mismatch');
++      await scope.reservation.recordIdentity(expected);
++      await streamLinuxInput(prepared,client,expected,input,plan,context,read,scope);await reader.finish();scope.assertLease();
++      for(const base of [h.inputBase,h.workBase])await canonical(base,h.uid,'directory',true);
++      scope.assertLease();await mkdir(plan.inputRoot,{mode:0o700});scope.assertLease();await mkdir(plan.workRoot,{mode:0o700});
++      this.states.set(plan,{context,job,scope,client,identity:expected,started:false,published:false,stopped:false});
++    }catch{client.close();throw new Error('linux-isolated-preparation-unconfirmed');}
++  }
++  async prepare(plan:RuntimePlan):Promise<void>{const s=this.states.get(plan);check(s&&!s.started,'linux-verified-preparation-required');s.scope.assertLease();}
++  private async request(s:State,body:object,signal:AbortSignal):Promise<Reply>{
++    const r=await s.client.request(body,signal) as Reply;
++    check(r.identity===s.identity&&typeof r.terminal==='boolean'&&typeof r.success==='boolean'&&(!r.success||(r.terminal&&r.exitCode===0))&&
++      (r.exitCode===null||Number.isInteger(r.exitCode)&&r.exitCode>=0&&r.exitCode<=255),'linux-broker-state');return r;
++  }
++  private runway(s:State):string{
++    const began=process.hrtime.bigint();
++    const ms=Math.floor(s.scope.remainingMs());check(ms>0&&ms<=60000,'linux-current-runway');
++    // Linux Node hrtime and Python monotonic_ns use CLOCK_MONOTONIC on this
++    // same host. No wall-clock or receipt-arrival extension of authority TTL.
++    return (began+BigInt(ms)*1000000n).toString();
++  }
++  async start(plan:RuntimePlan,_record:(id:string)=>Promise<void>,beforeStart:()=>void,scope?:ExecutionScope):Promise<Running>{
++    const s=this.states.get(plan);check(s&&scope===s.scope&&!s.started,'linux-prepared-scope');
++    assertJournalReservation(s.scope.reservation,plan);beforeStart();s.started=true;
++    const first=await this.request(s,{op:'start',expiresAtNs:this.runway(s)},s.scope.signal);s.scope.assertLease();
++    const proof=():StopProof=>({stopped:s.stopped,basis:s.stopped?'host-containment-inspect':'unknown',identity:s.identity});
++    const completion=(async():Promise<Exit>=>{
++      let r=first;
++      while(!r.terminal){
++        await delay(1000,undefined,{signal:s.scope.signal});s.scope.assertLease();
++        r=await this.request(s,{op:'status'},s.scope.signal);
++        if(!r.terminal)r=await this.request(s,{op:'pulse',expiresAtNs:this.runway(s)},s.scope.signal);
++      }
++      s.stopped=true;
++      if(!r.success)return {code:r.exitCode===0?null:r.exitCode,signal:null,limited:false,output:new Uint8Array()};
++      r=await this.request(s,{op:'capture'},s.scope.signal);s.scope.assertLease();
++      check(r.terminal&&r.success&&Array.isArray(r.outputs)&&r.outputs.length===plan.outputPaths.length&&new Set(r.outputs.map(f=>f.path)).size===r.outputs.length&&plan.outputPaths.every(p=>r.outputs.some(f=>f.path===p)),'linux-capture-selection');
++      let total=0,chunks=0;
++      for(const f of [...r.outputs,r.log]){
++        check(Number.isSafeInteger(f.sizeBytes)&&f.sizeBytes>=0&&/^[0-9a-f]{64}$/.test(f.sha256),'linux-capture-metadata');
++        total+=f.sizeBytes;chunks+=Math.ceil(f.sizeBytes/1048576);
++      }
++      check(total<=approvalFor(plan).limits.maxOutputBytes&&chunks<=31,'linux-capture-budget');
++      const read=async(index:number,file:{sizeBytes:number;sha256:string})=>{
++        const bytes=new Uint8Array(file.sizeBytes);
++        for(let offset=0;offset<bytes.length;){
++          s.scope.assertLease();const response=await s.client.request({op:'read',index,offset},s.scope.signal) as {identity:string;data:string};
++          check(response.identity===s.identity&&typeof response.data==='string'&&response.data.length<=1398104,'linux-capture-frame');
++          const part=Buffer.from(response.data,'base64');check(part.toString('base64')===response.data&&part.length===Math.min(1048576,bytes.length-offset),'linux-capture-range');
++          bytes.set(part,offset);offset+=part.length;
++        }
++        check(createHash('sha256').update(bytes).digest('hex')===file.sha256,'linux-capture-hash');return bytes;
++      };
++      s.files=[];for(let i=0;i<r.outputs.length;i++)s.files.push({...r.outputs[i]!,bytes:await read(i,r.outputs[i]!)});
++      s.log=await read(-1,r.log);return {code:0,signal:null,limited:false,output:new Uint8Array()};
++    })();void completion.catch(()=>{});
++    return {identity:s.identity,completion,inspectStopped:async()=>proof(),stop:async()=>{
++      try{const r=await this.request(s,{op:'stop'},new AbortController().signal);s.stopped=r.terminal;}catch{s.stopped=false;}finally{s.client.close();}
++      return proof();
++    }};
++  }
++  async publishAttempt(job:BuildJob,plan:RuntimePlan,result:SupervisorResult,context:BuildAttemptContext,signal:AbortSignal):Promise<PublishReceipt>{
++    const s=this.states.get(plan);check(s&&s.context===context&&canonicalData(s.job)===canonicalData(job)&&s.stopped&&s.files&&s.log&&
++      !s.published&&result.outcome==='completed'&&result.stop.stopped&&result.stop.identity===s.identity&&result.exit?.code===0,'linux-publication-stop-binding');
++    s.scope.assertLease();s.published=true;
++    try{const resolved=await this.c.resolveResultStorage(job,plan,context,signal);s.scope.assertLease();
++      return await publishLinuxCapture(job,plan,context,resolved.scope,this.c.outputs,s.files,s.log,resolved.ports,approvalFor(plan).limits.maxOutputBytes,signal);
++    }finally{s.client.close();}
++  }
++}
+--- /dev/null
++++ b/packages/build-runtime/src/linux-isolated-census.ts
+@@ -0,0 +1,23 @@
++import {constants} from 'node:fs';
++import {open,lstat} from 'node:fs/promises';
++import {check} from './plans.js';
++export interface LinuxIsolationCensus {version:1;observedAt:number;freeBytes:number;workspaceBytes:number|null;complete:boolean;slotFree:boolean;
++  profiles:string[];helperSha256:string;pythonSha256:string}
++/** Actual root-written metadata only. Unreadable/stale/private state is never zero.
++ * The Unix broker is not contacted and no privileged discovery command is run. */
++export async function readLinuxIsolationCensus():Promise<LinuxIsolationCensus>{
++  check(process.platform==='linux','linux-census-platform');
++  for(const path of ['/run','/run/foundry-linux']){const s=await lstat(path);check(s.isDirectory()&&!s.isSymbolicLink()&&s.uid===0&&(s.mode&0o022)===0,'linux-census-namespace');}
++  const f=await open('/run/foundry-linux/census.json',constants.O_RDONLY|constants.O_NOFOLLOW);
++  try{
++    const s=await f.stat();check(s.isFile()&&s.uid===0&&s.nlink===1&&(s.mode&0o222)===0&&s.size>0&&s.size<=4096,'linux-census-file');
++    const data=Buffer.alloc(4097),read=await f.read(data,0,data.length,0);check(read.bytesRead===s.size,'linux-census-size');
++    const c=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(data.subarray(0,read.bytesRead))) as LinuxIsolationCensus;
++    check(Object.keys(c).sort().join(',')==='complete,freeBytes,helperSha256,observedAt,profiles,pythonSha256,slotFree,version,workspaceBytes'&&c.version===1&&typeof c.complete==='boolean'&&typeof c.slotFree==='boolean','linux-census-shape');
++    check(Array.isArray(c.profiles)&&c.profiles.length>0&&c.profiles.length<=32&&new Set(c.profiles).size===c.profiles.length&&
++      [...c.profiles,c.helperSha256,c.pythonSha256].every(h=>typeof h==='string'&&/^[0-9a-f]{64}$/.test(h)),'linux-census-installed-policy');
++    check(Number.isSafeInteger(c.observedAt)&&c.observedAt<=Date.now()&&Date.now()-c.observedAt<=15000&&Number.isSafeInteger(c.freeBytes)&&c.freeBytes>=0,'linux-census-freshness');
++    check(c.workspaceBytes===null?!c.complete:Number.isSafeInteger(c.workspaceBytes)&&c.workspaceBytes>=0&&c.complete,'linux-census-accounting');
++    return c;
++  }finally{await f.close();}
++}
+--- /dev/null
++++ b/packages/build-runtime/src/linux-isolated-client.ts
+@@ -0,0 +1,70 @@
++import {spawn,type ChildProcessWithoutNullStreams} from 'node:child_process';
++import {lstat,readFile} from 'node:fs/promises';
++import {createHash} from 'node:crypto';
++import {check} from './plans.js';
++export interface LinuxIsolationConfig {
++  python:'/usr/bin/python3.12';pythonSha256:string;
++  helper:'/usr/local/libexec/foundry-linux-isolation.py';helperSha256:string;
++}
++const FRAME=1450000;
++let occupied=false;
++async function pin(path:string,sha:string):Promise<void>{
++  check(/^[0-9a-f]{64}$/.test(sha),'linux-installed-pin-required');
++  let cursor='';for(const part of path.split('/').filter(Boolean)){
++    cursor+='/'+part;const s=await lstat(cursor);
++    check(s.uid===0&&!s.isSymbolicLink()&&(s.mode&0o022)===0,'linux-root-owned-install-required');
++    if(cursor!==path)check(s.isDirectory(),'linux-install-ancestor');
++    else check(s.isFile()&&s.nlink===1&&s.size<=256*1024**2,'linux-install-file');
++  }
++  check(createHash('sha256').update(await readFile(path)).digest('hex')===sha,'linux-installed-pin-mismatch');
++}
++/** Single process-wide physical session. Timeouts kill the forwarding client;
++ * occupancy is released ONLY on its close. Broker retains its durable slot. */
++export class LinuxIsolationClient {
++  private child?:ChildProcessWithoutNullStreams;
++  private pending?:{resolve:(v:unknown)=>void;reject:(e:Error)=>void;timer:ReturnType<typeof setTimeout>};
++  private bytes=Buffer.alloc(0);
++  private dead=false;
++  private ready=false;
++  private constructor(){}
++  static async connect(c:LinuxIsolationConfig,signal:AbortSignal):Promise<LinuxIsolationClient>{
++    check(process.platform==='linux'&&!signal.aborted&&!occupied&&c.python==='/usr/bin/python3.12'&&c.helper==='/usr/local/libexec/foundry-linux-isolation.py','linux-isolation-client-policy');
++    occupied=true;const client=new LinuxIsolationClient();
++    try{
++      await pin(c.python,c.pythonSha256);await pin(c.helper,c.helperSha256);
++      check(!signal.aborted,'linux-client-aborted');
++      const p=spawn(c.python,['-I','-S',c.helper,'client'],{stdio:['pipe','pipe','pipe'],env:{LANG:'C',LC_ALL:'C'},cwd:'/'});
++      client.child=p;
++      p.stdout.on('data',(b:Buffer)=>client.accept(b));
++      // No stderr content enters journals, errors or receipts.
++      p.stderr.on('data',()=>client.fail());p.on('error',()=>client.fail());
++      p.stdin.on('error',()=>client.fail());
++      p.on('close',()=>{occupied=false;client.fail();});client.ready=true;return client;
++    }catch{if(!client.child)occupied=false;client.fail();throw new Error('linux-isolation-connect-failed');}
++  }
++  private accept(b:Buffer):void{
++    try{
++      check(!this.dead&&this.pending&&this.bytes.length+b.length<=FRAME+4,'linux-response-overflow');
++      this.bytes=Buffer.concat([this.bytes,b]);if(this.bytes.length<4)return;
++      const n=this.bytes.readUInt32BE(0);check(n>0&&n<=FRAME,'linux-response-frame');if(this.bytes.length<n+4)return;
++      check(this.bytes.length===n+4,'linux-response-extra-frame');
++      const value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(this.bytes.subarray(4)));
++      const pending=this.pending;this.pending=undefined;this.bytes=Buffer.alloc(0);clearTimeout(pending.timer);pending.resolve(value);
++    }catch{this.fail();}
++  }
++  private fail():void{
++    this.dead=true;this.child?.kill('SIGKILL');
++    if(this.pending){clearTimeout(this.pending.timer);this.pending.reject(new Error('linux-isolation-unconfirmed'));this.pending=undefined;}
++  }
++  async request(body:object,signal:AbortSignal,preparation=false):Promise<unknown>{
++    check(this.ready&&!this.dead&&!this.pending&&!signal.aborted,'linux-session-unavailable');
++    const bytes=Buffer.from(JSON.stringify(body));check(bytes.length>0&&bytes.length<=FRAME,'linux-request-budget');
++    const header=Buffer.alloc(4);header.writeUInt32BE(bytes.length);
++    const stop=()=>this.fail();signal.addEventListener('abort',stop,{once:true});
++    try{return await new Promise<unknown>((resolve,reject)=>{
++      this.pending={resolve,reject,timer:setTimeout(()=>this.fail(),preparation?45000:10000)};
++      this.child!.stdin.write(Buffer.concat([header,bytes]),error=>{if(error)this.fail();});
++    });}finally{signal.removeEventListener('abort',stop);}
++  }
++  close():void{this.fail();}
++}
+--- /dev/null
++++ b/packages/build-runtime/src/linux-isolated-input.ts
+@@ -0,0 +1,68 @@
++import {createHash} from 'node:crypto';
++import type {InputApproval,BuildJob,ObjectRef,ArtifactClaim} from '../../build-jobs/src/contracts.js';
++import type {InputSnapshot} from '../../build-storage/src/snapshots.js';
++import {ProjectInputPaths,ProjectInputValidation,decodeProjectMetadata,type ProjectInputSnapshot,type ProjectInputSegment} from '../../build-storage/src/project-input-format.js';
++import type {BuildAttemptContext} from './controller.js';
++import type {StorageWorkerConfig} from './storage-integration.js';
++import type {RuntimePlan,ExecutionScope} from './types.js';
++import {canonicalData} from './parent-profile.js';
++import {verifyObject} from './receipts.js';
++import {check,hash,localPath} from './plans.js';
++import type {LinuxIsolationClient} from './linux-isolated-client.js';
++interface Part {ref:ObjectRef;offset:number;sizeBytes:number;claim?:ArtifactClaim}
++interface File {path:string;sha256:string;sizeBytes:number;mode:number;parts:Part[]}
++export interface LinuxInputPlan {files:File[];bytes:number;filesHash:string}
++/** Validate complete metadata first; no host materialization and no writable seal.
++ * Each actual broker object and reconstructed file is verified again while streamed. */
++export async function prepareLinuxInput(input:InputApproval,job:BuildJob,plan:RuntimePlan,context:BuildAttemptContext,
++  read:StorageWorkerConfig['readInput'],scope:ExecutionScope,maxBytes:number):Promise<LinuxInputPlan>{
++  const get=async(ref:ObjectRef)=>{scope.assertLease();const bytes=await read(ref,{input,plan,attempt:context},scope.signal);scope.assertLease();verifyObject({ref,bytes},input.projectId);return bytes;};
++  check(hash(canonicalData(input))===job.inputHash&&input.manifest.sha256===input.snapshotHash&&input.reconstructable&&input.missingInputs.length===0,'linux-input-approval');
++  const encoded=await get(input.manifest), root=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(encoded)) as InputSnapshot|ProjectInputSnapshot;
++  const files:File[]=[],paths=new ProjectInputPaths();let total=0;
++  const add=(file:File)=>{
++    localPath(file.path);paths.add(file.path);check(/^[0-9a-f]{64}$/.test(file.sha256)&&Number.isSafeInteger(file.sizeBytes)&&file.sizeBytes>=0&&file.sizeBytes<=64*1048576,'linux-input-file');
++    check(Number.isSafeInteger(file.mode)&&file.mode>=0&&file.mode<=0o777&&(file.mode&0o022)===0,'linux-input-mode');
++    total+=file.sizeBytes;check(files.length<8192&&total<=maxBytes&&total<=2*1024**3,'linux-input-cap');files.push(file);
++  };
++  check(canonicalData(root.git)===canonicalData(input.git),'linux-input-git-lineage');
++  if(root.version===2){
++    const index=decodeProjectMetadata<ProjectInputSnapshot>(encoded,'root'),validation=new ProjectInputValidation(index);
++    check(index.projectId===input.projectId&&index.totals.bytes<=maxBytes,'linux-project-input-cap');
++    for(const page of index.segments){
++      const segment=decodeProjectMetadata<ProjectInputSegment>(await get(page.ref),'segment');validation.accept(segment);
++      for(const f of segment.files)add({path:f.path,sha256:f.sha256,sizeBytes:f.sizeBytes,mode:f.mode,
++        parts:f.chunks.map(p=>({ref:segment.objects[p.object]!,offset:p.offset,sizeBytes:p.sizeBytes}))});
++    }
++    validation.finish(true);check(canonicalData([...validation.required])===canonicalData(input.requiredInputs),'linux-required-inputs');
++  }else{
++    check(root.version===1&&root.projectId===input.projectId&&Array.isArray(root.files)&&root.files.length>0&&root.files.length<=128&&
++      Array.isArray(root.missingInputs)&&root.missingInputs.length===0&&canonicalData(root.requiredInputs)===canonicalData(input.requiredInputs),'linux-legacy-input-shape');
++    let chunks=0;
++    for(const f of root.files){
++      check(Array.isArray(f.chunks)&&f.chunks.length<=64,'linux-legacy-chunks');
++      const parts=f.chunks.map(claim=>{chunks++;check(chunks<=128,'linux-legacy-chunk-budget');return {ref:claim.ref,offset:0,sizeBytes:claim.ref.sizeBytes,claim};});
++      check(parts.reduce((n,p)=>n+p.sizeBytes,0)===f.sizeBytes,'linux-legacy-file-size');
++      add({path:f.path,sha256:f.sha256,sizeBytes:f.sizeBytes,mode:f.mode,parts});
++    }
++  }
++  check(files.length>0&&input.requiredInputs.length<=128&&input.requiredInputs.every(p=>files.some(f=>f.path===p)),'linux-required-file-absent');
++  return {files,bytes:total,filesHash:hash(JSON.stringify(files.map(f=>[f.path,f.sha256,f.sizeBytes,f.mode])))};
++}
++export async function streamLinuxInput(prepared:LinuxInputPlan,client:LinuxIsolationClient,identity:string,input:InputApproval,plan:RuntimePlan,
++  context:BuildAttemptContext,read:StorageWorkerConfig['readInput'],scope:ExecutionScope):Promise<void>{
++  const send=async(body:object)=>{scope.assertLease();const response=await client.request(body,scope.signal) as {identity?:string};check(response.identity===identity,'linux-input-session');scope.assertLease();};
++  for(const f of prepared.files){
++    await send({op:'file',path:f.path,sha256:f.sha256,sizeBytes:f.sizeBytes,mode:f.mode});
++    const digest=createHash('sha256');let offset=0;
++    for(const part of f.parts){
++      scope.assertLease();const object=await read(part.ref,{input,plan,attempt:context,claim:part.claim},scope.signal);scope.assertLease();
++      verifyObject({ref:part.ref,bytes:object},input.projectId);
++      check(Number.isSafeInteger(part.offset)&&part.offset>=0&&Number.isSafeInteger(part.sizeBytes)&&part.sizeBytes>0&&part.offset+part.sizeBytes<=object.byteLength,'linux-input-range');
++      const bytes=object.subarray(part.offset,part.offset+part.sizeBytes);digest.update(bytes);
++      await send({op:'append',offset,data:Buffer.from(bytes).toString('base64')});offset+=bytes.byteLength;
++    }
++    check(offset===f.sizeBytes&&digest.digest('hex')===f.sha256,'linux-stream-file-hash');await send({op:'end'});
++  }
++  await send({op:'seal'});
++}
+--- /dev/null
++++ b/packages/build-runtime/src/linux-isolated-publication.ts
+@@ -0,0 +1,46 @@
++import {createHash} from 'node:crypto';
++import type {BuildJob,ResultManifest,ArtifactClaim} from '../../build-jobs/src/contracts.js';
++import {result as validateResult} from '../../build-jobs/src/validation.js';
++import type {PackagingPorts,GrantScope,ApprovedFile} from '../../build-storage/src/types.js';
++import {reserve,publish,current} from '../../build-storage/src/publication.js';
++import type {BuildAttemptContext} from './controller.js';
++import type {PublishReceipt,BoundObject} from './receipts.js';
++import type {RuntimePlan} from './types.js';
++import {canonicalData} from './parent-profile.js';
++import {check,hash} from './plans.js';
++export interface CapturedLinuxFile {path:string;sha256:string;sizeBytes:number;bytes:Uint8Array}
++/** Byte-based publication, deliberately not a pretend filesystem seal. Only the
++ * concrete adapter calls this with hash-checked immutable broker captures. Cloud
++ * grants/capacity/fences and independent authority verification remain unchanged. */
++export async function publishLinuxCapture(job:BuildJob,plan:RuntimePlan,context:BuildAttemptContext,scope:GrantScope,
++  selections:readonly ApprovedFile[],files:readonly CapturedLinuxFile[],log:Uint8Array,
++  ports:Pick<PackagingPorts,'writer'|'issuer'|'capacity'>,maxBytes:number,signal:AbortSignal):Promise<PublishReceipt>{
++  check(scope.projectId===job.projectId&&canonicalData(scope.compute)===canonicalData(context.compute),'linux-publication-scope');
++  check(files.length===selections.length&&selections.length===plan.outputPaths.length&&new Set(files.map(f=>f.path)).size===files.length&&
++    plan.outputPaths.every(p=>files.some(f=>f.path===p)&&selections.some(s=>s.path===p)),'linux-output-selection');
++  check(selections.every(s=>s.classification==='build-output'||s.classification==='debug-symbols'),'linux-unsigned-output-classification');
++  const copied=files.map(f=>({...f,bytes:Uint8Array.from(f.bytes)})),logs=Uint8Array.from(log);
++  let total=logs.length,count=Math.ceil(logs.length/1048576);
++  for(const f of copied){
++    check(!/\.(app|dSYM|xcarchive)$/.test(f.path)&&f.sizeBytes===f.bytes.length&&createHash('sha256').update(f.bytes).digest('hex')===f.sha256,'linux-captured-output-bytes');
++    total+=f.bytes.length;count+=Math.ceil(f.bytes.length/1048576);
++  }
++  check(total<=maxBytes&&count<=31,'linux-output-publication-budget');
++  const reservation=await reserve(scope,count+1,total+1048576,ports,signal,
++    hash(canonicalData({kind:'linux-isolated-output-v1',scope,jobId:job.id,attemptId:plan.attemptId,files:copied.map(f=>({path:f.path,sha256:f.sha256,sizeBytes:f.sizeBytes})),logSha256:createHash('sha256').update(logs).digest('hex')})));
++  const objects:BoundObject[]=[];
++  const write=async(bytes:Uint8Array):Promise<ArtifactClaim[]>=>{
++    const claims:ArtifactClaim[]=[];
++    for(let offset=0;offset<bytes.length;offset+=1048576){
++      const part=Uint8Array.from(bytes.subarray(offset,offset+1048576));
++      const claim=await publish(part,'objects',scope,reservation,ports,signal);objects.push({claim,bytes:part});claims.push(claim);
++    }
++    return claims;
++  };
++  const outputs:ResultManifest['outputs']=[];
++  for(const f of copied)outputs.push({path:f.path,format:'file',sizeBytes:f.sizeBytes,sha256:f.sha256,chunks:await write(f.bytes)});
++  const manifest:ResultManifest={version:1,jobId:job.id,attemptId:plan.attemptId,inputHash:job.inputHash,profileHash:job.profileHash,exitCode:0,outputs,logs:await write(logs)};
++  validateResult(manifest);const bytes=Buffer.from(canonicalData(manifest));
++  const claim=await publish(bytes,'manifests',scope,reservation,ports,signal);await current(ports,reservation,signal);
++  return {manifest:{claim,bytes},objects};
++}
+--- /dev/null
++++ b/packages/build-runtime/src/linux-isolated-worker.ts
+@@ -0,0 +1,20 @@
++import {BuildWorkerController,snapshotWorkerAuthority} from './controller.js';
++import {LinuxIsolatedRuntimeAdapter,type LinuxIsolatedAdapterConfig} from './linux-isolated-adapter.js';
++import {NodeWorkerLiveness,type NodeLivenessConfig} from './liveness.js';
++import {NodeBuildTransport} from './node-transport.js';
++import {canonicalData} from './parent-profile.js';
++import {check} from './plans.js';
++export interface LinuxIsolatedWorkerConfig extends LinuxIsolatedAdapterConfig {
++  transport:NodeBuildTransport;liveness:Omit<NodeLivenessConfig,'vm'|'linuxIsolation'>;
++}
++/** Inert composition. Real enrolled HTTPS transport and real post-claim broker
++ * readers/writers are required. No installation, daemon start or activation. */
++export function createLinuxIsolatedBuildWorkerController(c:LinuxIsolatedWorkerConfig):BuildWorkerController{
++  check(c.transport instanceof NodeBuildTransport,'linux-authenticated-node-transport');
++  check(canonicalData(c.liveness.host)===canonicalData(c.binding.approval.host),'linux-liveness-host-binding');
++  const authority=snapshotWorkerAuthority(c.liveness.authority);
++  const adapter=new LinuxIsolatedRuntimeAdapter(c);
++  const liveness=new NodeWorkerLiveness({...c.liveness,developerDirs:[],linuxIsolation:{profileHash:c.binding.localRecipeHash,
++    helperSha256:c.isolation.helperSha256,pythonSha256:c.isolation.pythonSha256}},c.transport);
++  return new BuildWorkerController(c.binding,c.liveness.expectedEpoch,{transport:c.transport,liveness},adapter,c.maxInputBytes,authority);
++}
+--- a/packages/build-runtime/src/liveness.ts
++++ b/packages/build-runtime/src/liveness.ts
+@@ -12,6 +12,7 @@
+ import { managedStorageInventory } from './storage-inventory.js';
+ import {readMacVmCapability,type MacVmCapabilityConfig} from './mac-vm-capability.js';
+ import { assertBuildResponseSource, snapshotWorkerAuthority, type WorkerAuthorityBinding, type BuildResponseSource } from './controller.js';
++import {readLinuxIsolationCensus} from './linux-isolated-census.js';
+ export interface WorkerLivenessPort {
+   /** Return the actual validated census wrapper source, never a synthetic success receipt. */
+   refreshLiveness(activeJobs:0|1,signal:AbortSignal):Promise<Readonly<BuildResponseSource>>;
+@@ -26,6 +27,8 @@
+   cacheRoot:string;
+   /** Exact owner-accepted guest image inventory; absent means VM-ineligible. */
+   vm?:MacVmCapabilityConfig;
++  /** Actual private root-broker accounting; inaccessible storage is never omitted. */
++  linuxIsolation?:{profileHash:string;helperSha256:string;pythonSha256:string};
+ }
+ /** Concrete CPU-only observer. GPU identities reject until a real GPU census port exists.
+  * Each refresh makes a fresh census; each >=1s refresh uses a fresh durable heartbeat.
+@@ -68,6 +71,19 @@
+       const vmDisk=await statfs('/Library/Foundry/VM/attempts');
+       census.freeBytes=Math.min(census.freeBytes,vmDisk.bavail*vmDisk.bsize);
+     }
++    if(c.linuxIsolation){
++      const isolated=await readLinuxIsolationCensus();
++      check(isolated.profiles.includes(c.linuxIsolation.profileHash)&&isolated.helperSha256===c.linuxIsolation.helperSha256&&
++        isolated.pythonSha256===c.linuxIsolation.pythonSha256,'linux-census-installed-profile-mismatch');
++      // Linux controller roots hold tiny journals only. The build disk may be
++      // a separate 100-GiB volume while the OS disk is 30 GiB; applying the
++      // 50-GiB job reserve to that OS disk would make the proposed host ineligible.
++      check(census.freeBytes>=64*1024**2,'linux-controller-metadata-headroom');
++      census.freeBytes=isolated.freeBytes;
++      census.storage.complete=storage.complete&&isolated.complete;
++      census.storage.workspaceBytes=storage.workspaceBytes===null||isolated.workspaceBytes===null?null:storage.workspaceBytes+isolated.workspaceBytes;
++      if(activeJobs===0)check(isolated.complete&&isolated.slotFree,'linux-broker-not-admissible');
++    }
+     check(!signal.aborted,'census-aborted');
+     const key = hash(`${scope}:census:${stamp.sequence}`);
+     const response = JSON.parse(canonicalData(await this.transport.request('/v1/builds/commands',{expectedEpoch:c.expectedEpoch,command:{operation:'census',key,body:census}},signal))) as {ok?:boolean;source?:unknown};
+--- a/packages/build-storage/src/project-input-io.ts
++++ b/packages/build-storage/src/project-input-io.ts
+@@ -91,7 +91,12 @@
+ }
+ export function projectReader(request:SnapshotImportRequest,ports:ProjectInputReadPorts,signal:AbortSignal) {
+   check(ports.local.layout==='sharded-v2','project-input-sharded-local-store-required');
+-  const scope=scopeCopy(request.scope), routing=router(scope,ports.routing,signal);
++  return projectObjectReader(request.scope,ports.routing,signal);
++}
++/** Same admitted, generation-pinned broker read path without a pretend local CAS.
++ * Isolated executors stream these actual bytes directly into private staging. */
++export function projectObjectReader(primary:GrantScope,routes:ProjectInputRouting<ProjectInputReadNamespace>,signal:AbortSignal) {
++  const scope=scopeCopy(primary), routing=router(scope,routes,signal);
+   return {
+     async read(input:ObjectRef):Promise<Uint8Array> {
+       const ref=exactRef(input,scope.projectId), kind=ref.objectKey.includes('/manifests/')?'manifests':'objects';
+@@ -102,7 +107,7 @@
+       check(canonical(exactRef(value.ref,scope.projectId))===canonical(ref),'snapshot-generation-readback');
+       const bytes=boundedBytes(value.bytes,ref.sizeBytes);
+       check(bytes.length===ref.sizeBytes&&sha256(bytes)===ref.sha256,'snapshot-byte-readback');
+-      await observeGrant(grant,route.issuer,signal); await current(route,receipt,signal); return bytes;
++      await observeGrant(grant,route.issuer,signal); await current(route,receipt,signal);return bytes;
+     },
+     finish:routing.finish,
+   };
+--- a/packages/build-storage/src/publication.ts
++++ b/packages/build-storage/src/publication.ts
+@@ -20,7 +20,7 @@
+ }
+ /** Only the actual issuance receipt supplies grantId. No deterministic IDs or stand-ins. */
+ export async function publish(bytes:Uint8Array,kind:'objects'|'manifests',scope:GrantScope,
+-  reservation:PublicationReservation,ports:PackagingPorts,signal:AbortSignal):Promise<ArtifactClaim> {
++  reservation:PublicationReservation,ports:Pick<PackagingPorts,'writer'|'issuer'|'capacity'>,signal:AbortSignal):Promise<ArtifactClaim> {
+   const expected=boundedBytes(bytes,1048576), digest=sha256(expected);
+   try {
+     await current(ports,reservation,signal);

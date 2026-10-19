@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "method": "Six independent source-only reviewers; packed-object finding deduplicated; parent source/document pass recorded separately.",
+  "findings": [
+    {
+      "id": "IR-01",
+      "severity": "medium",
+      "issue": "Census replacement rejects valid unlinked descriptor",
+      "state": "bounded reopen; source repair applied",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-02",
+      "severity": "high",
+      "issue": "External same-UID procfs access bypasses private ancestry and cgroup-only write exclusion",
+      "state": "whole-filesystem readonly seal applied; procfs/LSM enforcement in progress",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-03",
+      "severity": "medium",
+      "issue": "Unauthenticated socket peer consumes single broker connection",
+      "state": "reject peers inside accept loop; applied",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-04",
+      "severity": "medium",
+      "issue": "Alternating packed/large objects exhaust input reader operation budget",
+      "state": "bounded cache repair delegated",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-05",
+      "severity": "medium",
+      "issue": "Working source cannot fit configured filesystem but slot already consumed",
+      "state": "conservative pre-slot and actual post-format capacity/inode checks applied",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-06",
+      "severity": "medium",
+      "issue": "Quadratic root input collision detection",
+      "state": "bounded path-prefix indexes applied",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-07",
+      "severity": "medium",
+      "issue": "Privileged Mac CAS absent from liveness accounting",
+      "state": "root-authenticated accounting delegated",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-08",
+      "severity": "medium",
+      "issue": "Lost-response UI recovery blocked by new placement eligibility",
+      "state": "existing-intent-only recovery delegated",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-09",
+      "severity": "medium",
+      "issue": "Cgroup-v2 alone does not establish kill interface",
+      "state": "actual domain/control checks applied",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-10",
+      "severity": "medium",
+      "issue": "Pinned Docker CLI may not support nonrecursive binds",
+      "state": "Client/Server version admission before listening applied",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-11",
+      "severity": "high",
+      "issue": "Narrowed publish port conflicts with explicit extra properties at caller",
+      "state": "pass actual route ports directly; applied",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "IR-12",
+      "severity": "low",
+      "issue": "Multiple current route stops and stale schema/review gate wording",
+      "state": "schema prose corrected; final route reconciliation pending",
+      "validation": "not-run-gated"
+    }
+  ],
+  "disposition": "REQUEST_CHANGES; repair in progress; not an operational verdict"
+}

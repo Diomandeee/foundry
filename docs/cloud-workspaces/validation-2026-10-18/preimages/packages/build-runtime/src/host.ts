@@ -1,0 +1,165 @@
+import { constants } from 'node:fs';
+import { lstat, realpath, open, statfs, readdir, unlink } from 'node:fs/promises';
+import { dirname, join, parse } from 'node:path';
+import { absolute, approvalFor, check, hash } from './plans.js';
+import type { HostPolicy, RuntimePlan, StopProof } from './types.js';
+
+export async function canonical(path: string, uid: number, leaf: 'directory' | 'file' | 'socket' = 'directory', privateLeaf = false): Promise<void> {
+  absolute(path);
+  const root = parse(path).root;
+  let cursor = root;
+  for (const part of [null,...path.slice(root.length).split('/').filter(Boolean)]) {
+    if (part !== null) cursor = join(cursor,part);
+    const s = await lstat(cursor);
+    check(!s.isSymbolicLink() && (s.uid === 0 || s.uid === uid) && (s.mode & 0o022) === 0, 'unsafe-path-owner-or-mode');
+    if (cursor !== path) check(s.isDirectory(), 'unsafe-ancestor');
+    else {
+      check(leaf === 'directory' ? s.isDirectory() : leaf === 'file' ? s.isFile() : s.isSocket(), 'wrong-path-type');
+      if (privateLeaf) check(s.uid === uid && (s.mode & 0o077) === 0, 'owner-private-path-required');
+    }
+  }
+  check(await realpath(path) === path, 'symlink-path');
+}
+export function dedicated(h: HostPolicy): void {
+  check(h.dedicatedBuildUser && process.getuid?.() === h.uid && process.getgid?.() === h.gid && h.uid !== 0, 'wrong-build-account');
+}
+export async function validateHost(plan: RuntimePlan): Promise<void> {
+  const a = approvalFor(plan), h = a.host; dedicated(h);
+  check(h.allowActivation === true, 'owner-activation-gated');
+  for (const root of [h.inputBase,h.workBase,h.journalRoot,plan.inputRoot,plan.workRoot]) await canonical(root,h.uid,'directory',true);
+  check(plan.workRoot === join(h.workBase,plan.attemptId), 'attempt-work-directory-required');
+  const disk = await statfs(plan.workRoot);
+  check(disk.bavail * disk.bsize >= a.limits.minFreeBytes, 'disk-reserve');
+}
+async function syncDirectory(path: string): Promise<void> {
+  const d = await open(path,constants.O_RDONLY | constants.O_NOFOLLOW);
+  try { await d.sync(); } finally { await d.close(); }
+}
+async function exclusive(path: string, value: object): Promise<void> {
+  const f = await open(path,constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,0o600);
+  try { await f.writeFile(`${JSON.stringify(value)}\n`); await f.sync(); } finally { await f.close(); }
+  await syncDirectory(dirname(path));
+}
+export interface JournalReservation { recordIdentity(identity: string): Promise<void>; observeStop(proof:StopProof):Promise<void>; finish(proof: StopProof, outcome: string): Promise<void> }
+const reservations=new WeakMap<JournalReservation,RuntimePlan>();
+export function assertJournalReservation(reservation:JournalReservation,plan:RuntimePlan):void {
+  check(reservations.get(reservation)===plan,'untrusted-host-reservation');
+}
+/** One fixed slot for the entire provisioned host. NEVER replace/steal an existing slot.
+ * Every attempt file is permanent; a crash at any point is operator quarantine.
+ * Journal contains no argv, environment, process output, source or credentials. */
+export class HostJournal {
+  constructor(private readonly host: Readonly<HostPolicy>) { this.host = Object.freeze({...host}); }
+  /** Durable outbound identity ledger. An uncertain request is NEVER automatically retried. */
+  async controllerIntent(key:string, serverProfileHash:string, localRecipeHash:string):Promise<{
+    record:(event:{operation:string;key:string;status:'intent'|'ack';requestHash?:string})=>Promise<void>;
+    finish:()=>Promise<void>;
+  }> {
+    dedicated(this.host); await canonical(this.host.journalRoot,this.host.uid,'directory',true);
+    check(/^[A-Za-z0-9._-]{1,64}$/.test(key) && /^[0-9a-f]{64}$/.test(serverProfileHash) && /^[0-9a-f]{64}$/.test(localRecipeHash),'invalid-controller-identity');
+    const slot = join(this.host.journalRoot,'controller-slot.json');
+    const path = join(this.host.journalRoot,`controller-${hash(key)}.jsonl`);
+    await exclusive(slot,{version:1,keyHash:hash(key),serverProfileHash,localRecipeHash,at:Date.now()});
+    await exclusive(path,{version:1,event:'intent',keyHash:hash(key),serverProfileHash,localRecipeHash,at:Date.now()});
+    let finished = false, tail = Promise.resolve();
+    const record = (event:{operation:string;key:string;status:'intent'|'ack';requestHash?:string}) => {
+      check(!finished && /^[A-Za-z0-9._-]{1,64}$/.test(event.key) && ['claim','renew','stopped','stage','restore','publish','finished'].includes(event.operation),'invalid-controller-event');
+      tail = tail.then(async () => {
+        const f = await open(path,constants.O_WRONLY|constants.O_APPEND|constants.O_NOFOLLOW);
+        try { await f.writeFile(`${JSON.stringify({...event,at:Date.now()})}\n`); await f.sync(); } finally { await f.close(); }
+      }); return tail;
+    };
+    return {record,finish:async () => {
+      await record({operation:'finished',key,status:'ack'}); finished = true;
+      await unlink(slot); await syncDirectory(this.host.journalRoot);
+    }};
+  }
+  async reserve(plan: RuntimePlan): Promise<JournalReservation> {
+    const a = approvalFor(plan), h = this.host; dedicated(h);
+    check(a.host.journalRoot === h.journalRoot && a.host.uid === h.uid && a.host.gid === h.gid, 'journal-host-mismatch');
+    await canonical(h.journalRoot,h.uid,'directory',true);
+    const slot = join(h.journalRoot,'host-slot.json');
+    const key = hash(plan.attemptId), attempt = join(h.journalRoot,`attempt-${key}.jsonl`);
+    // Slot first: even an attempt marker failure keeps the host quarantined.
+    await exclusive(slot,{version:1,state:'reserved',attemptKey:key,profileHash:plan.profileHash,at:Date.now()});
+    await exclusive(attempt,{version:1,event:'pre-run',attemptKey:key,jobKey:hash(plan.jobId),profileHash:plan.profileHash,at:Date.now()});
+    let finished = false;
+    let tail = Promise.resolve();
+    const append = (value: object): Promise<void> => {
+      tail = tail.then(async () => {
+        const f = await open(attempt,constants.O_WRONLY | constants.O_APPEND | constants.O_NOFOLLOW);
+        try { await f.writeFile(`${JSON.stringify(value)}\n`); await f.sync(); } finally { await f.close(); }
+      });
+      return tail;
+    };
+    const reservation:JournalReservation = {
+      recordIdentity: async identity => {
+        check(!finished && /^[A-Za-z0-9:._-]{1,256}$/.test(identity), 'invalid-runtime-identity');
+        await append({event:'identity',identity,at:Date.now()});
+      },
+      observeStop:async proof => {
+        check(!finished,'journal-already-finished');
+        await append({event:'containment-observation',proof,at:Date.now()});
+      },
+      finish: async (proof,outcome) => {
+        check(!finished, 'journal-already-finished'); finished = true;
+        await append({event:proof.stopped && outcome !== 'quarantined' ? 'stopped' : 'quarantined',proof,outcome,at:Date.now()});
+        if (proof.stopped && outcome !== 'quarantined') {
+          // Only the ephemeral mutex is removed, never attempt history/cache/output.
+          await unlink(slot); await syncDirectory(h.journalRoot);
+        }
+      },
+    };
+    reservations.set(reservation,plan);return reservation;
+  }
+  /** Metadata-only inventory. Presence of a slot means busy OR restart-uncertain;
+   * inventory cannot claim liveness, clear quarantine, or authorize replay. */
+  async inventory(): Promise<{slotPresent: boolean; restartPolicy: 'quarantine-never-replay'; entries: Array<{name: string; bytes: number; modifiedMs: number}>}> {
+    await canonical(this.host.journalRoot,this.host.uid,'directory',true);
+    const entries = [];
+    for (const name of await readdir(this.host.journalRoot)) {
+      if (!['host-slot.json','controller-slot.json','liveness-slot.json'].includes(name) && !/^(attempt|controller)-[0-9a-f]{64}\.jsonl$/.test(name) && !/^vm-io-[A-Za-z0-9._-]+-(stage|intake)-[0-9a-f]{64}\.json$/.test(name)) continue;
+      const s = await lstat(join(this.host.journalRoot,name));
+      check(s.isFile() && !s.isSymbolicLink() && s.uid === this.host.uid && (s.mode & 0o077) === 0,'unsafe-journal-entry');
+      entries.push({name,bytes:s.size,modifiedMs:s.mtimeMs});
+    }
+    return {slotPresent:entries.some(e => e.name.endsWith('-slot.json')),restartPolicy:'quarantine-never-replay',entries};
+  }
+}
+/** Cache/retention inventory is deliberately nonrecursive and metadata-only. */
+export async function retentionInventory(root: string, uid: number): Promise<Array<{name:string; kind:'directory'|'file'|'symlink'|'other'; bytes:number; modifiedMs:number}>> {
+  await canonical(root,uid,'directory',true);
+  const rows = [];
+  for (const name of await readdir(root)) {
+    const s = await lstat(join(root,name));
+    rows.push({name,kind:s.isSymbolicLink() ? 'symlink' as const : s.isDirectory() ? 'directory' as const : s.isFile() ? 'file' as const : 'other' as const,bytes:s.size,modifiedMs:s.mtimeMs});
+  }
+  return rows;
+}
+
+/** Durable sequence reservation shared across worker instances; owner seeds from
+ * authoritative enrollment/census status. A failed/ambiguous HTTP retains the lock. */
+export async function reserveLivenessSequence(h:Readonly<HostPolicy>,scope:string,stream:'enrollment'|'census',baseline:number):Promise<{sequence:number;commit:()=>Promise<void>}> {
+  dedicated(h); await canonical(h.journalRoot,h.uid,'directory',true);
+  check(Number.isSafeInteger(baseline) && baseline >= 0,'invalid-sequence-baseline');
+  const prefix = `liveness-${hash(scope)}-${stream}-`;
+  const lock = join(h.journalRoot,'liveness-slot.json');
+  await exclusive(lock,{scopeHash:hash(scope),stream,at:Date.now()});
+  let last = baseline;
+  for (const name of await readdir(h.journalRoot)) {
+    if (name.startsWith(prefix) && /^\d+\.jsonl$/.test(name.slice(prefix.length))) {
+      await canonical(join(h.journalRoot,name),h.uid,'file',true);
+      const n = Number(name.slice(prefix.length,-6)); check(Number.isSafeInteger(n),'invalid-sequence-history'); last = Math.max(last,n);
+    }
+  }
+  const sequence = last+1; check(Number.isSafeInteger(sequence),'sequence-overflow');
+  const path = join(h.journalRoot,`${prefix}${sequence}.jsonl`);
+  await exclusive(path,{version:1,event:'before-http',scopeHash:hash(scope),stream,sequence,at:Date.now()});
+  let committed = false;
+  return {sequence,commit:async () => {
+    check(!committed,'sequence-already-committed'); committed = true;
+    const f = await open(path,constants.O_WRONLY|constants.O_APPEND|constants.O_NOFOLLOW);
+    try {await f.writeFile(`${JSON.stringify({event:'ack',sequence,at:Date.now()})}\n`);await f.sync();} finally {await f.close();}
+    await unlink(lock); await syncDirectory(h.journalRoot);
+  }};
+}

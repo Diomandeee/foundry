@@ -1,0 +1,14 @@
+# Source only. Install/load solely after owner approval and parser validation.
+# No includes: the reviewed policy is independent of host abstraction changes.
+profile foundry-linux-build-v1 flags=(attach_disconnected,mediate_deleted) {
+  file,
+  /** ix,
+  signal (send, receive),
+  deny capability,
+  deny ptrace (read, readby, trace, tracedby),
+  deny mount,
+  deny umount,
+  deny pivot_root,
+  deny /proc/** wklx,
+  deny /sys/** wklx,
+}

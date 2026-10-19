@@ -1,0 +1,194 @@
+import { DatabaseSync } from 'node:sqlite';
+import { canonical, snapshot, record, check, identifier, hash, integer, freeze, boundedBytes, readResult, sha256 } from '../../library-jobs/src/data';
+import type { Broker, BrokerPorts, GrantRevocationBinding, Limits, ReadGrant, ReadRequest, RevokeGrantCommand, RevocationReceipt } from './types';
+import { SCHEMA, GUARDS } from './schema';
+export type * from './types';
+
+export const HARD_LIMITS: Readonly<Limits> = Object.freeze({ maxGrants: 32, maxReads: 128,
+  maxStoredBytes: 8 * 1024 * 1024, maxReadBytes: 1024 * 1024, maxActiveReads: 8,
+  maxAdmittedCalls: 32, timeoutMs: 10_000, maxGrantLifetimeMs: 3_600_000,
+  maxPreemptiveRevocations: 32, maxRevocationCommands: 128 });
+const grantFields = ['version','grantId','principalRef','projectId','policyVersion','policyHash','intentId','authorizationGeneration','compute','operation','object','byteBudget','expiresAt'];
+export function validateGrant(input: unknown): ReadGrant {
+  const v = snapshot(input); record(v, grantFields);
+  check(v.version === 1 && v.operation === 'GET', 'immutable GET only');
+  for (const field of ['grantId','principalRef','projectId','policyVersion','intentId']) identifier(v[field]);
+  hash(v.policyHash); integer(v.authorizationGeneration, Number.MAX_SAFE_INTEGER, 1);
+  integer(v.byteBudget, HARD_LIMITS.maxStoredBytes); integer(v.expiresAt);
+  computeCheck(v.compute);
+  record(v.object, ['projectId','objectKey','generation','sha256','sizeBytes']);
+  check(v.object.projectId === v.projectId, 'object project'); hash(v.object.sha256);
+  integer(v.object.sizeBytes, HARD_LIMITS.maxReadBytes);
+  check(typeof v.object.generation === 'string' && /^[1-9][0-9]{0,31}(?![\s\S])/.test(v.object.generation), 'immutable generation');
+  check(v.object.objectKey === `projects/${v.projectId}/objects/${v.object.sha256}` || v.object.objectKey === `projects/${v.projectId}/manifests/${v.object.sha256}`, 'content-addressed project path');
+  check(v.byteBudget >= v.object.sizeBytes, 'byte budget');
+  return freeze(v as unknown as ReadGrant);
+}
+const same = (a: unknown, b: unknown) => canonical(a) === canonical(b);
+function computeCheck(input: unknown) {
+  record(input, ['authorityId','workloadId','leaseId','epoch','generation','attemptId','capabilityDigest','workerId','incarnation']);
+  for (const field of ['authorityId','workloadId','leaseId','attemptId','workerId']) identifier(input[field]);
+  integer(input.epoch, Number.MAX_SAFE_INTEGER, 1);
+  for (const field of ['generation','incarnation']) integer(input[field], Number.MAX_SAFE_INTEGER, 0);
+  hash(input.capabilityDigest);
+}
+export function grantRevocationBinding(input: ReadGrant): GrantRevocationBinding {
+  const grant = validateGrant(input);
+  return freeze({ projectId: grant.projectId, authorizationGeneration: grant.authorizationGeneration, compute: grant.compute, policyHash: grant.policyHash });
+}
+type Row = Record<string, any>;
+
+/** Local core only. Caller owns DB lifecycle and isolates the admin/ports from worker code. */
+export function createStorageBroker(ports: BrokerPorts): Broker {
+  const db = ports.db;
+  const supplied = snapshot(ports.limits ?? {}); check(supplied !== null && typeof supplied === 'object' && !Array.isArray(supplied), 'limits');
+  for (const key of Object.keys(supplied)) check(Object.hasOwn(HARD_LIMITS,key), 'unknown limit');
+  const limits = { ...HARD_LIMITS, ...supplied } as Limits;
+  for (const key of Object.keys(HARD_LIMITS) as (keyof Limits)[]) integer(limits[key], HARD_LIMITS[key], 1);
+  const binding = snapshot(ports.binding); record(binding,['environment','authorityId']); identifier(binding.environment); identifier(binding.authorityId);
+  const bindingText = canonical({ version: 1, ...binding, limits });
+  function get(sql: string, ...args: (string | number)[]): Row | undefined { return db.prepare(sql).get(...args) as Row | undefined; }
+  function transaction<T>(fn: () => T): T {
+    db.exec('BEGIN IMMEDIATE');
+    try { const value = fn(); db.exec('COMMIT'); return value; } catch (error) { db.exec('ROLLBACK'); throw error; }
+  }
+  function schema(database: DatabaseSync) { return canonical(database.prepare("SELECT type,name,tbl_name,sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type,name").all()); }
+  const reference = new DatabaseSync(':memory:');
+  let expectedSchema: string;
+  try { reference.exec(SCHEMA + GUARDS); expectedSchema = schema(reference); } finally { reference.close(); }
+  // Do not migrate/repair an unfamiliar or partial database: leave all evidence intact.
+  const empty = get('SELECT count(*) AS n FROM sqlite_schema')!.n === 0;
+  if (!empty) {
+    check(schema(db) === expectedSchema, 'schema mismatch; evidence preserved');
+    check(get('SELECT value FROM binding WHERE id=1')?.value === bindingText, 'constructor binding mismatch');
+    check(get('PRAGMA quick_check')?.quick_check === 'ok', 'database integrity');
+  }
+  db.exec('PRAGMA foreign_keys=ON; PRAGMA recursive_triggers=ON; PRAGMA synchronous=FULL; PRAGMA busy_timeout=50;');
+  if (empty) transaction(() => { db.exec(SCHEMA + GUARDS); db.prepare('INSERT INTO binding VALUES(1,?)').run(bindingText); db.exec('INSERT INTO clock VALUES(1,0)'); });
+  let admitted = 0, active = 0;
+  const flights = new Map<string, Promise<Uint8Array>>();
+  function now(): number {
+    const time = ports.now(); integer(time);
+    const previous = get('SELECT value FROM clock WHERE id=1')!.value;
+    check(time >= previous, 'clock regression');
+    db.prepare('UPDATE clock SET value=? WHERE id=1').run(time); return time;
+  }
+  function load(id: string): ReadGrant {
+    const row = get('SELECT body FROM grants WHERE id=?',id); check(row, 'grant missing');
+    return validateGrant(JSON.parse(row.body));
+  }
+  function local(grant: ReadGrant, principal: string) {
+    check(grant.principalRef === principal, 'authenticated principal mismatch');
+    check(!get('SELECT id FROM revoked WHERE id=?',grant.grantId), 'grant revoked');
+    check(same(load(grant.grantId),grant), 'current grant mismatch');
+    check(grant.expiresAt > now(), 'grant expired');
+  }
+  function current(grant: ReadGrant, principal: string) {
+    local(grant,principal);
+    const before = now();
+    const value = snapshot(ports.observeCurrent(grant));
+    const after = now();
+    record(value,['grant','status','revoked','observedAt','expiresAt']);
+    check(value.status === 'authorized' && value.revoked === false && same(validateGrant(value.grant),grant), 'current authority fence mismatch');
+    integer(value.observedAt); integer(value.expiresAt);
+    check(value.observedAt >= before && value.observedAt <= after && value.expiresAt > after, 'authority observation stale/expired');
+    local(grant,principal);
+  }
+  function issue(input: unknown): ReadGrant {
+    const grant = validateGrant(input);
+    return transaction(() => {
+      const old = get('SELECT body FROM grants WHERE id=?',grant.grantId);
+      if (old) { check(old.body === canonical(grant), 'immutable grant identity conflict'); return grant; }
+      const time = now(); check(grant.expiresAt > time && grant.expiresAt - time <= limits.maxGrantLifetimeMs, 'grant lifetime');
+      check(grant.object.sizeBytes <= limits.maxReadBytes && grant.byteBudget <= limits.maxStoredBytes, 'grant limits');
+      // Issuer must obtain the same CURRENT authorization as the reader; no self-grants.
+      const observed = snapshot(ports.observeCurrent(grant));
+      record(observed,['grant','status','revoked','observedAt','expiresAt']);
+      const after = now(); integer(observed.observedAt); integer(observed.expiresAt);
+      check(observed.status === 'authorized' && observed.revoked === false && same(validateGrant(observed.grant),grant) && observed.observedAt >= time && observed.observedAt <= after && observed.expiresAt > after && grant.expiresAt > after, 'issue authorization');
+      db.prepare('INSERT INTO grants VALUES(?,?,?)').run(grant.grantId,canonical(grant),grant.byteBudget); return grant;
+    });
+  }
+  function revokeGrant(input: RevokeGrantCommand): RevocationReceipt {
+    const command = snapshot(input); record(command,['key','grantId','expectedBinding','evidenceId','reason']);
+    for (const field of ['key','grantId','evidenceId','reason']) identifier(command[field]);
+    const expected = command.expectedBinding;
+    record(expected,['projectId','authorizationGeneration','compute','policyHash']);
+    identifier(expected.projectId); integer(expected.authorizationGeneration,Number.MAX_SAFE_INTEGER,1); computeCheck(expected.compute); hash(expected.policyHash);
+    const typed = command as unknown as RevokeGrantCommand, text = canonical(command);
+    return transaction(() => {
+      const old = get('SELECT command,reply FROM revocation_commands WHERE key=?',typed.key);
+      if (old) { check(old.command === text,'revocation key conflict'); return freeze(JSON.parse(old.reply)); }
+      const grant = get('SELECT body FROM grants WHERE id=?',typed.grantId);
+      const tombstone = get('SELECT binding FROM revoked WHERE id=?',typed.grantId);
+      const matches = (!grant || same(grantRevocationBinding(JSON.parse(grant.body)),expected)) && (!tombstone || tombstone.binding === canonical(expected));
+      const first = matches && !tombstone;
+      const count = get('SELECT count(*) AS n FROM revocation_commands')!.n;
+      // Reserve one durable first-revocation receipt per possible grant/tombstone even when journal is full.
+      check(count < limits.maxRevocationCommands || first, 'revocation history full');
+      const reply: RevocationReceipt = { status: !matches ? 'superseded' : tombstone ? 'already-revoked' : 'revoked', key: typed.key, grantId: typed.grantId, evidenceId: typed.evidenceId };
+      if (first) db.prepare('INSERT INTO revoked VALUES(?,?)').run(typed.grantId,canonical(expected));
+      db.prepare('INSERT INTO revocation_commands VALUES(?,?,?)').run(typed.key,text,canonical(reply));
+      return freeze(reply);
+    });
+  }
+  function unknown(grantId: string, requestId: string) {
+    db.prepare("UPDATE reads SET state='unknown' WHERE grant_id=? AND request_id=? AND state='reserved'").run(grantId,requestId);
+  }
+  async function execute(grant: ReadGrant, principal: string, request: ReadRequest): Promise<Uint8Array> {
+    // Reserve budget and result-storage capacity synchronously, before the first async operation.
+    const startedAt = now();
+    transaction(() => { current(grant,principal); db.prepare("INSERT INTO reads VALUES(?,?,?,'reserved',NULL)").run(grant.grantId,request.requestId,grant.object.sizeBytes); });
+    active++;
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let provider: Promise<unknown>;
+    try { provider = Promise.resolve(ports.readObject(grant.object,grant.object.sizeBytes,controller.signal)); }
+    catch (error) { active--; unknown(grant.grantId,request.requestId); throw error; }
+    // A timed-out uncooperative adapter keeps its resource slot until it actually settles.
+    provider = provider.finally(() => { active--; });
+    try {
+      const deadline = new Promise<never>((_, reject) => { timer = setTimeout(() => { controller.abort(); reject(new Error('storage-broker: provider timeout')); }, limits.timeoutMs); });
+      const envelope = readResult(await Promise.race([provider,deadline]));
+      check(now() - startedAt < limits.timeoutMs,'provider deadline');
+      check(same(snapshot(envelope.ref),grant.object),'provider immutable reference mismatch');
+      const bytes = boundedBytes(envelope.bytes,grant.object.sizeBytes);
+      check(bytes.length === grant.object.sizeBytes && sha256(bytes) === grant.object.sha256,'provider byte digest/size mismatch');
+      transaction(() => {
+        current(grant,principal);
+        const result = db.prepare("UPDATE reads SET state='completed',bytes=? WHERE grant_id=? AND request_id=? AND state='reserved'").run(bytes,grant.grantId,request.requestId);
+        check(result.changes === 1,'unknown reservation');
+      });
+      return bytes;
+    } catch (error) { unknown(grant.grantId,request.requestId); throw error; }
+    finally { if (timer !== undefined) clearTimeout(timer); }
+  }
+  async function read(principal: string, input: unknown): Promise<Uint8Array> {
+    identifier(principal);
+    const value = snapshot(input); record(value,['grantId','requestId']); identifier(value.grantId); identifier(value.requestId);
+    const request = value as unknown as ReadRequest;
+    check(admitted < limits.maxAdmittedCalls,'admission full'); admitted++;
+    try {
+      const grant = load(request.grantId); current(grant,principal);
+      const key = canonical(request);
+      let flight = flights.get(key);
+      if (!flight) {
+        const row = get('SELECT state,bytes FROM reads WHERE grant_id=? AND request_id=?',request.grantId,request.requestId);
+        if (row) {
+          if (row.state !== 'completed') { unknown(request.grantId,request.requestId); throw new Error('storage-broker: outcome unknown; execution blocked'); }
+          const bytes = boundedBytes(row.bytes,grant.object.sizeBytes);
+          check(bytes.length === grant.object.sizeBytes && sha256(bytes) === grant.object.sha256,'sealed result corrupt');
+          current(grant,principal); return bytes;
+        }
+        check(active < limits.maxActiveReads,'provider capacity');
+        flight = execute(grant,principal,request); flights.set(key,flight);
+        // Register both settlement handlers; do not leak an unhandled rejected finally promise.
+        void flight.then(() => flights.delete(key),() => flights.delete(key));
+      }
+      const bytes = await flight;
+      current(grant,principal); // EACH waiter, including cached replay, is independently fenced.
+      return boundedBytes(bytes,grant.object.sizeBytes);
+    } finally { admitted--; }
+  }
+  return Object.freeze({ admin: Object.freeze({ issue,revokeGrant }), reader: Object.freeze({ read }) });
+}

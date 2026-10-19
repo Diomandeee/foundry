@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "disposition": "bounded-source-review-complete-validation-HOLD",
+  "review": "six independent lenses, S1 synthesis, contrarian challenge and bounded repair reviews; parent adjudication",
+  "unresolvedActionableSourceFindingsInThisScope": 0,
+  "operationalAcceptance": false,
+  "items": [
+    {
+      "id": "IR-01",
+      "severity": "medium",
+      "issue": "Census replacement rejects valid unlinked descriptor",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Three bounded close/reopen attempts for zero-link census descriptors; trust checks retained.",
+      "evidence": "packages/build-runtime/src/linux-isolated-census.ts:11"
+    },
+    {
+      "id": "IR-02",
+      "severity": "high",
+      "issue": "External same-UID procfs access bypasses private ancestry and cgroup-only write exclusion",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Require daemon userns-remap without host override, private mapped work ownership, explicit pinned enforcing AppArmor policy, and global readonly ext4 capture seal. Trusted-root runtime/mapping acceptance pending.",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:158"
+    },
+    {
+      "id": "IR-03",
+      "severity": "medium",
+      "issue": "Unauthenticated socket peer consumes single broker connection",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Unauthorized peers closed inside accept loop; authenticated single-attempt lifecycle retained.",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:695"
+    },
+    {
+      "id": "IR-04",
+      "severity": "medium",
+      "issue": "Alternating packed/large objects exhaust input reader operation budget",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Group final-object consumers and retain the shared object across other chunks; operation limits unchanged.",
+      "evidence": "packages/build-runtime/src/linux-isolated-input.ts:33"
+    },
+    {
+      "id": "IR-05",
+      "severity": "medium",
+      "issue": "Working source cannot fit configured filesystem but slot already consumed",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Conservative image preadmission plus actual work blocks/inodes; host bytes/inodes before slot. File-count-dependent false rejection explicitly documented.",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:248"
+    },
+    {
+      "id": "IR-06",
+      "severity": "medium",
+      "issue": "Quadratic root input collision detection",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Bounded path-prefix indexes and original component spelling; no all-prior-path scan.",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:410"
+    },
+    {
+      "id": "IR-07",
+      "severity": "medium",
+      "issue": "Privileged Mac CAS absent from liveness accounting",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Fresh root-authenticated nonce/pin census, actual bounded scan, serialized physical occupancy, factory/liveness accounting and unknown fallback.",
+      "evidence": "packages/build-storage/src/mac-isolated-store.ts:117"
+    },
+    {
+      "id": "IR-08",
+      "severity": "medium",
+      "issue": "Lost-response UI recovery blocked by new placement eligibility",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Authenticated durable-intent listing/recovery/ack independent of placement; original identity only; separate original-request retry for pre-journal failure.",
+      "evidence": "tools/foundry-pilot/build-submission.ts:48"
+    },
+    {
+      "id": "IR-09",
+      "severity": "medium",
+      "issue": "Cgroup-v2 alone does not establish kill interface",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Actual domain type, writable kill/freeze controls and initial events before launch.",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:287"
+    },
+    {
+      "id": "IR-10",
+      "severity": "medium",
+      "issue": "Pinned Docker CLI may not support nonrecursive binds",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Actual CLI/Engine major>=25 before listen; later daemon/cgroup/security checks retained.",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:679"
+    },
+    {
+      "id": "IR-11",
+      "severity": "high",
+      "issue": "Narrowed publish port conflicts with explicit extra properties at caller",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Pass actual route directly to narrowed publication ports; local storage remains separate.",
+      "evidence": "packages/build-storage/src/project-input-io.ts:86"
+    },
+    {
+      "id": "IR-12",
+      "severity": "low",
+      "issue": "Multiple current route stops and stale schema/review gate wording",
+      "state": "source-repaired-validation-pending",
+      "validation": "not-run-gated",
+      "resolution": "Single current route and current checklist summary; historical stops labeled; schema receipt prose corrected.",
+      "evidence": "docs/cloud-workspaces/ROUTE.json"
+    },
+    {
+      "id": "CH-01",
+      "severity": "medium",
+      "issue": "Conservative file-count estimate rejects some small flat inputs",
+      "state": "accepted-explicit-pilot-limit",
+      "resolution": "Document formula and 8192-file/256MiB example; no automatic capacity expansion.",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "CH-02",
+      "severity": "medium",
+      "issue": "Host filesystem inode admission missing",
+      "state": "source-repaired-validation-pending",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:248",
+      "resolution": "Check host f_favail before slot creation, for all recipes.",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "CH-03",
+      "severity": "low",
+      "issue": "Casefold directory spelling parity",
+      "state": "source-repaired-validation-pending",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:422",
+      "resolution": "Bounded original-spelling map.",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "CH-04",
+      "severity": "low",
+      "issue": "Seal/containment and early constructor errors lack classified evidence",
+      "state": "source-repaired-validation-pending",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:283",
+      "resolution": "Intent journal before cgroup setup, fixed operation-failed codes and actual flags; journal creation/IO failure remains best effort.",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "SEC-02",
+      "severity": "medium",
+      "issue": "Global AppArmor complain mode not rejected",
+      "state": "source-repaired-validation-pending",
+      "evidence": "packages/build-runtime/native/linux-isolation.py:167",
+      "resolution": "Require global enforce as well as selected profile enforce; missing field fails closed.",
+      "validation": "not-run-gated"
+    },
+    {
+      "id": "FLOW-01",
+      "severity": "medium",
+      "issue": "Same-page pending submission stranded when failure precedes journal",
+      "state": "source-repaired-validation-pending",
+      "evidence": "tools/foundry-pilot/operator/builds.js:61",
+      "resolution": "Explicit unchanged-request retry independent of preview, separate from creation-free existing-intent recovery.",
+      "validation": "not-run-gated"
+    }
+  ]
+}

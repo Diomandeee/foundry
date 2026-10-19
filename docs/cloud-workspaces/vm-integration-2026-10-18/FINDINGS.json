@@ -1,0 +1,101 @@
+{
+  "review": "six inline passes plus inline counterexamples; not independent or executed",
+  "findings": [
+    {
+      "id": "M3-01",
+      "finding": "Duplicate supervisor/VM host reservation",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "host.ts, supervisor.ts, mac-vm.ts: branded shared reservation and separate durable observation"
+    },
+    {
+      "id": "M3-02",
+      "finding": "VM permits lacked supervisor runway in RuntimeAdapter",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "types.ts/supervisor.ts/mac-vm-adapter.ts: current request-start anchored remainingMs and signal"
+    },
+    {
+      "id": "M3-03",
+      "finding": "VM stop could be confused with successful build",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "mac-vm-adapter.ts: successful completion only after private accepted intake"
+    },
+    {
+      "id": "M3-04",
+      "finding": "Host Xcode could be mistaken for guest capability",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "mac-vm-capability.ts/liveness.ts/authority.ts/operator/builds.js: separate owner-pinned guest descriptor and matching"
+    },
+    {
+      "id": "M3-05",
+      "finding": "Image/runner drift was not bound through result intake",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "host config v2 boot hash, guest job v2, runner self-hash, result v3, exact acceptance"
+    },
+    {
+      "id": "M3-06",
+      "finding": "No concrete controller path joined M1/M2",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "mac-vm-worker.ts/mac-vm-adapter.ts/controller.ts: concrete composition and authenticated stop/publication/stage"
+    },
+    {
+      "id": "M3-07",
+      "finding": "Owner I/O had no worker request/receipt bridge",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "mac-vm-mailbox.ts/native/mac-vm-io.py: durable exact requests, exclusive public receipt, guarded acceptance"
+    },
+    {
+      "id": "M3-08",
+      "finding": "Immediate poll\u2192claim census violates authority pacing",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "liveness.ts: signal-aware delay after acknowledged census and serialized refresh"
+    },
+    {
+      "id": "M3-09",
+      "finding": "VM files omitted from workspace/capacity observations",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "storage-inventory.ts/liveness.ts: mixed-owner VM metadata inventory, unknown incomplete, lower free bytes"
+    },
+    {
+      "id": "M3-10",
+      "finding": "Guest capability changes did not fence renewal",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "authority.ts: current revision/incarnation/freshness/exact capability rechecked before renew"
+    },
+    {
+      "id": "M3-11",
+      "finding": "Long asynchronous adapter preparation/start could outlive admission",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "supervisor.ts: bounded prepare/start, closed scope, late-return stop and retained slot"
+    },
+    {
+      "id": "M3-12",
+      "finding": "Activation-disabled controller could begin claim traffic",
+      "state": "resolved-in-source-validation-pending",
+      "evidence": "controller.ts: explicit local activation refusal before run/poll side effects"
+    },
+    {
+      "id": "M3-H1",
+      "finding": "Compilation and operational acceptance",
+      "state": "gated-not-started",
+      "evidence": "DEFERRED-ACCEPTANCE.md"
+    },
+    {
+      "id": "M3-H2",
+      "finding": "Generic writable CAS/materialization seal and inherited integration HOLD",
+      "state": "inherited-open",
+      "evidence": "../ROUTE.json; ../continuation-2026-10-18/CUMULATIVE-REVIEW.md"
+    },
+    {
+      "id": "M3-H3",
+      "finding": "Owner-approved images/accounts/helpers/storage headroom, source/capability seals, actual broker mapping and publication capacity",
+      "state": "operational-prerequisite-not-provisioned",
+      "evidence": "README.md"
+    },
+    {
+      "id": "M3-H4",
+      "finding": "Unattended privileged I/O and image provisioning",
+      "state": "explicitly-unsupported-operator-mediated-pilot",
+      "evidence": "README.md"
+    }
+  ]
+}

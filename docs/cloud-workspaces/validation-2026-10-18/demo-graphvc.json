@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "demo:graphvc",
+    "--",
+    "--root",
+    "/var/folders/57/d047wvwx1l5dnyjn5hkqs0n40000gn/T/foundry-graphvc-validation-qm40s857",
+    "--lkg",
+    ""
+  ],
+  "exit": 1,
+  "fixtureRoot": "/var/folders/57/d047wvwx1l5dnyjn5hkqs0n40000gn/T/foundry-graphvc-validation-qm40s857",
+  "networkGraphWrites": false
+}

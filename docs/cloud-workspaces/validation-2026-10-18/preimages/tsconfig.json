@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@foundry/artifacts-port": ["./packages/artifacts-port/src/index.ts"],
+      "@foundry/artifacts-port/node": ["./packages/artifacts-port/src/node.ts"],
+      "@foundry/stores": ["./packages/stores/src/index.ts"],
+      "@foundry/gate-ts": ["./packages/gate-ts/src/index.ts"],
+      "@foundry/lkg-client": ["./packages/lkg-client/src/index.ts"],
+      "@foundry/plan-check": ["./packages/plan-check/src/index.ts"],
+      "@foundry/verify": ["./packages/verify/src/index.ts"],
+      "@foundry/evidence": ["./packages/evidence/src/index.ts"]
+    },
+    "lib": ["ESNext"],
+    "types": ["@cloudflare/workers-types", "node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "exclude": ["node_modules", "dist", ".wrangler"]
+}

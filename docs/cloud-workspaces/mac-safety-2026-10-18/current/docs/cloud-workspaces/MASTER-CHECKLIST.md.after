@@ -1,0 +1,95 @@
+# Cloud workspaces master checklist
+
+Status vocabulary: **implemented**, **source-reviewed**, **validation-pending**, **validated**, **activated**, **blocked**. Source review never substitutes for execution evidence. No task in this route is validated or activated by this implementation session.
+
+## R1 — Baseline and evidence
+- [x] R1.1 Capture base commit, branch, scoped dirty boundary and pre-edit hashes (`BASELINE.json`).
+- [x] R1.2 Reconcile inherited findings without accepting another implementer's claimed closure (`R1-FINDINGS.json`).
+- [x] R1.3 Inventory catalog project markers, lockfiles and missing-input uncertainty (`R1-PROJECT-READINESS.json`).
+- [x] R1.4 Observe Mac disk/toolchain metadata without builds or cleanup (`R1-CAPACITY.json`).
+- [x] R1.5 Establish dependency route and approval boundaries (this file, `ARCHITECTURE.md`).
+
+## R2 — Library and preservation (depends R1)
+- [x] R2.1 Extend catalog with conservative reconstructability and explicit source lineage.
+- [x] R2.2 Prepare immutable changed-workspace snapshots without uploading or overwriting.
+- [x] R2.3 Implement independently authenticated bounded broker reads; retain revoked/cache reauthorization.
+- [x] R2.4 Implement unpublished bounded chunk-package preparation and pinned reassembly; never fabricate cloud generations or grants.
+- [x] R2.5 Source-review catalog/pull/snapshot/broker flow and record limits.
+- [ ] R2.6 **GATED:** validate restores, authorize package publication and device identities, install/activate clients.
+
+## R3 — Durable build authority (depends R1 and R2 contracts)
+- [x] R3.1 Add versioned build profiles, approved inputs, worker approvals and exact structured commands.
+- [x] R3.2 Add durable jobs/attempts, one-host slots and legacy reservation exclusion in the same authority transaction namespace.
+- [x] R3.3 Implement renewable 60-second leases, one-hour execution cap, cancellation, stale-result fencing and explicit stop reconciliation.
+- [x] R3.4 Separate staging from independent bounded artifact verification and immutable receipts.
+- [x] R3.5 Wire authenticated `/v1/builds/*` routes disabled by default; preserve old short-job route/profile contracts.
+- [x] R3.6 Close independent static review findings; carry runtime checks forward unexecuted.
+
+## R4 — Host execution and artifact storage (depends R2/R3)
+- [x] R4.1 Implement owner-branded Linux and unsigned native-Xcode execution plans.
+- [x] R4.2 Implement durable host lock/pre-run evidence, cancellation/renewal supervisor and restart quarantine.
+- [x] R4.3 Implement actual host discovery, toolchain matching and storage admission code, without invoking it.
+- [x] R4.4 Implement bounded immutable output packaging, create-only writer and pinned readback verification.
+- [x] R4.5 Wire controller to claim/renew/stop/stage with exact input/profile lineage.
+- [x] R4.6 Source-review concrete stop-proof boundaries and all deferred dependencies; do not invent containment proof.
+- [ ] R4.7 **GATED:** dedicate accounts/roots, install agents/tools, authorize dependencies, provision host and identities.
+
+## R5 — Operator journey (depends R2–R4 interfaces)
+- [x] R5.1 Add project/input/profile selection and read-only placement explanation.
+- [x] R5.2 Add separately enabled submission/cancellation, preserving uncertain request identities.
+- [x] R5.3 Show census/toolchains/capacity, bounded job windows and verification state.
+- [x] R5.4 Retrieve independently verified artifacts through scoped server-side reads; no grants/credentials in browser responses.
+- [x] R5.5 Source-review UI→handler→authority→runtime→artifact boundaries and honest unavailable states.
+
+## R6 — Review and handover (depends R1–R5)
+- [x] R6.1 Freeze scoped source hashes/diff and reconcile baseline drift.
+- [x] R6.2 Record cumulative source review, supported operations, residual blockers and deferred validation protocol.
+- [x] R6.3 Prepare exact GCP resource proposal, cost/credit verification gate, rollback/shutdown and credential reference inventory.
+- [x] R6.4 Update route with exact stop. **STOP before validation or external activation.**
+
+## R7 — Activation and space recovery (all externally gated)
+- [ ] R7.1 Obtain validation authorization; run deferred acceptance after required installation/provisioning approvals.
+- [ ] R7.2 Publish catalog and activate one client, then all three Macs.
+- [ ] R7.3 Provision approved GCP resource and Linux worker; no automatic additional resources.
+- [ ] R7.4 Approve specific regenerable cleanup to establish Mac headroom; no assumed reclaimable space.
+- [ ] R7.5 Activate one compatible Mac build worker, then a second after acceptance.
+- [ ] R7.6 Demonstrate recoverability before requesting removal of individual original project copies.
+- [ ] R7.7 Record operating receipts, quotas, identity/fencing evidence, retention approvals and exact next gate.
+
+The original Foundry R2–R7 integration route remains separate: this feature route does not close inherited merge-gate HOLD findings or grant merge/deployment approval.
+
+## Current stop — R6 Mac safety source batch, production HOLD
+
+The `mac-safety-2026-10-18` batch supersedes the previous native execution direction. Native adapter/client launch now rejects locally. Concrete Swift whole-VM containment, branded guest jobs, bounded guest runner and a separate kernel-read-only volume guard exist as source. The optional read-side packaging capability is wired without claiming a mutable-tree seal. Independent static reviews and scoped receipts describe the exact coverage. No compiler, test or runtime evidence exists for this batch.
+
+Production Mac builds remain ineligible. Verified immutable guest staging, stop-gated read-only result intake, production controller/adapter/guest capability wiring, generic writable CAS/materialization isolation, resources and inherited integration HOLD items remain open. All operational acceptance and R7 activation remain unexecuted. See `mac-safety-2026-10-18/README.md` for the ordered M1–M4 continuation.
+
+No tests, builds, typechecks, runtime imports/probes, trial restores, helpers/VMs/services, installations, provider operations, provisioning, spending, secret changes, commits/pushes/merges, deployments, publication or cleanup were performed. Source/metadata reads, public primary research, source/document edits and local review/hash artifacts are the evidence.
+
+## Authorized continuation tasks (dependencies are explicit)
+
+- [x] C1.1 Preserve fresh baseline/preimages before source edits.
+- [x] C1.2 Implement separate online broker mode, nonce/source-pinned access and current denial classification.
+- [x] C1.3 Persist exact-key capacity reservations, grant intents, local deny markers and command-bound revocation delivery.
+- [x] C1.4 Compose actual existing GCS adapters and finite approved namespace routing; no provider invocation.
+- [x] C2.1 After C1 contracts, implement v2 bounded root/segments/packed file blobs and sharded local CAS.
+- [x] C2.2 Propagate actual claim context into restoration and independently verify actual local bytes/metadata and undeclared entries.
+- [x] C3.1 Add real Apple ES collector source and signed journal verification/recovery diagnostics.
+- [ ] C3.2 Full native supervisor, service containment, current-fence physical launch and confirmed termination. **BLOCKED; source protocol is not a supplied supervisor.**
+- [x] C4.1 Repair cumulative source-review findings and freeze the new scoped delta/hashes; independent approvals are bounded, and C3.2/native/integration HOLD remains.
+- [ ] C4.2 Operational acceptance. **GATED; no tests or activation authorized.**
+
+## Mac safety source substeps — no operational completion implied
+
+- [x] MS1 Preserve fresh source preimages and exact baseline before implementation.
+- [x] MS2 Deny incomplete native launch at local API boundaries; retain diagnostic recovery reads and authority denial.
+- [x] MS3 Implement concrete whole-VM lifecycle source, one-use continuous-time authority-budget permits, terminal admission closure and callback-drained stop observation.
+- [x] MS4 Encode branded guest-job metadata; implement bounded same-descriptor guest staging/build/log/output/receipt handling.
+- [x] MS5 Implement root-mounted kernel-read-only volume guard, explicit identity/ACL checks, poisoned uncertainty and separate read-side packaging integration.
+- [x] MS6 Repair bounded independent source findings and record final diff/hash/review coverage. Compilation/runtime remain unverified.
+- [ ] M1 Verified immutable snapshot → complete guest job/input staging. **LOCAL ENGINEERING OPEN.**
+- [ ] M2 After actual VM stop, approved read-only output-disk intake and independent artifact/receipt/lineage verification. **LOCAL ENGINEERING OPEN.**
+- [ ] M3 Production VM adapter/controller and truthful guest capability wiring; resolve writable isolation/inherited HOLD and re-review. **LOCAL ENGINEERING OPEN.**
+- [ ] M4 Compile/test/operational acceptance and activation. **SEPARATELY GATED, NOT STARTED.**
+
+The checked source substeps do not mean R4 or the overall end goal is complete. A VM session always reports `not-collected` and retains its durable host slot, including after a clean observed VM stop.

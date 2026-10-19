@@ -1,0 +1,91 @@
+{
+  "files": [
+    {
+      "path": "ARTIFACT-READBACK.json",
+      "bytes": 209,
+      "sha256": "8b9c603c22de1275dc6eac8e1eb13f008de61830372fcda0de19e4e4be2d07bb"
+    },
+    {
+      "path": "BASELINE.json",
+      "bytes": 16896,
+      "sha256": "b204e5572fe51d91c3e6a5ca62280840b1da9fda92f0dc16b02348483038658c"
+    },
+    {
+      "path": "BROKER-INDEPENDENT-REVIEW.md",
+      "bytes": 12694,
+      "sha256": "1050fd134526303eba4387387214ce3a81ca9830c9ba4accdd4d0ec016d626ce"
+    },
+    {
+      "path": "BROKER-REVIEW-FINAL.md",
+      "bytes": 7616,
+      "sha256": "40667d1442172848a615238160eb3ebf7d9198999d679b6a22d92381b0f80fa8"
+    },
+    {
+      "path": "BROKER-REVIEW-ROUND2.md",
+      "bytes": 12967,
+      "sha256": "f0d56aff25fa9a9d20d7ea80839355823f232ee54c3281b391fb58ff3a7ec80e"
+    },
+    {
+      "path": "BROKER-REVIEW.md",
+      "bytes": 5987,
+      "sha256": "88e6ffe36a7fc023953ed51c790dcd420b340e4cc0b35d272e0ecb1dd464c7a3"
+    },
+    {
+      "path": "CHANGE-RECEIPT.json",
+      "bytes": 12691,
+      "sha256": "ee57c162c69a3ce261b3acc15fd5ed9c4b6849758ba1a3535d6e81458514a2d1"
+    },
+    {
+      "path": "CHANGES.patch",
+      "bytes": 223364,
+      "sha256": "95365feff83ab24ed8d5c0e0164667ef52e844e058a92cdb92cabc11ecf82cd8"
+    },
+    {
+      "path": "CUMULATIVE-REVIEW.md",
+      "bytes": 6818,
+      "sha256": "77f8a76ed9ffed1759e1d98ab12fd40233eb4e34b19f303cdadbde91a2273e28"
+    },
+    {
+      "path": "DEFERRED-VALIDATION.md",
+      "bytes": 2744,
+      "sha256": "bdbe4e3715d290fd60851fe610f75668c5d3879533917dab57ae904576c371b6"
+    },
+    {
+      "path": "FINAL-SUMMARY.json",
+      "bytes": 508,
+      "sha256": "7d344b211631c0d732e7e038bd5d9ce09fe35cb0fcac1a30ad46a103833568b4"
+    },
+    {
+      "path": "INPUTS-INDEPENDENT-REVIEW.md",
+      "bytes": 13115,
+      "sha256": "bf4153045af525e7412975d27d2814aa0e0c30a5f3f959455aed6d8dd7f11320"
+    },
+    {
+      "path": "INPUTS-REVIEW-ROUND2.md",
+      "bytes": 10187,
+      "sha256": "ea8b679734367b8ce732344990086d843961659af9d6a651dfd48cb735ba39a0"
+    },
+    {
+      "path": "MAC-ATTESTATION.md",
+      "bytes": 13189,
+      "sha256": "836aecbcadad4798a592b6ecc73801e6b3a749f2ef46ddaf956eb69f3d58b966"
+    },
+    {
+      "path": "PROJECT-INPUTS.md",
+      "bytes": 16199,
+      "sha256": "842abfad1edf9862b5c51eb2a5cd771b834e2df13655b925f0059c3947869ab7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2885,
+      "sha256": "82424f45c972028a1a7383c67393156e698896234293a30f3eaf104b87b37bb6"
+    },
+    {
+      "path": "SOURCE-HASHES.json",
+      "bytes": 22347,
+      "sha256": "95cff9d19f1c3b404be8cce16c820a1999649f0af92ad4bac65660293444d52f"
+    }
+  ],
+  "preimages": "identity recorded in BASELINE.json; inert .before copies",
+  "selfExcluded": true
+}

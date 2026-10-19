@@ -1,0 +1,46 @@
+[
+  {
+    "command": [
+      "xcrun",
+      "clang",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-c",
+      "packages/build-runtime/native/mac-es-observer.c",
+      "-o",
+      "docs/cloud-workspaces/validation-2026-10-18/native-build/mac-es-observer.o"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "xcrun",
+      "clang",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "packages/build-storage/native/mac-tree-guard.c",
+      "-o",
+      "docs/cloud-workspaces/validation-2026-10-18/native-build/mac-tree-guard"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "xcrun",
+      "swiftc",
+      "-module-cache-path",
+      "docs/cloud-workspaces/validation-2026-10-18/compiler-cache",
+      "-import-objc-header",
+      "packages/build-runtime/native/mac-es-observer.h",
+      "packages/build-runtime/native/mac-vm-host.swift",
+      "docs/cloud-workspaces/validation-2026-10-18/native-build/mac-es-observer.o",
+      "-framework",
+      "EndpointSecurity",
+      "-o",
+      "docs/cloud-workspaces/validation-2026-10-18/native-build/mac-vm-host"
+    ],
+    "exit": 1
+  }
+]

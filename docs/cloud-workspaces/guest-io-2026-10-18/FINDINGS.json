@@ -1,0 +1,104 @@
+{
+  "verdict": "M1/M2-source-reviewed-validation-pending; production-HOLD",
+  "method": "six inline source review passes; no tests/compilation/runtime probes",
+  "findings": [
+    {
+      "id": "GIO01",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Approved input could be replaced under the same claim context",
+      "resolution": "Controller now privately pins inputHash/projectId; full approved metadata and actual tree are verified."
+    },
+    {
+      "id": "GIO02",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Whole-file hashes alone did not prove underlying chunk/packed-object consistency",
+      "resolution": "Reconstruct every referenced data object from actual readonly file ranges and check its SHA; cap metadata and per-segment memory."
+    },
+    {
+      "id": "GIO03",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "No concrete physical staging or mandatory launch binding",
+      "resolution": "Supplied create-only root assembler, exact byte/tree acceptance, private staging receipt and fresh guard held through stop."
+    },
+    {
+      "id": "GIO04",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "New readonly input image conflicted with native same-device admission",
+      "resolution": "Native input now requires its own root-mounted readonly volume; all children stay on its pinned device."
+    },
+    {
+      "id": "GIO05",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Stop proof was structural and lacked start/output provenance",
+      "resolution": "Private positive-stop binding includes actual startup, plan/job/helper and opened output identity; JSON/PID/guest exit cannot authorize intake."
+    },
+    {
+      "id": "GIO06",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "No protected stopped-disk extraction backend",
+      "resolution": "Root helper copies exact expected raw bytes before readonly mounting, sanitizes bounded envelope, rehashes raw copy and seals final image."
+    },
+    {
+      "id": "GIO07",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Empty bundles and executable file modes were lost",
+      "resolution": "Guest result v2 records directories/modes; collector preserves empty directories and 0555 executable content; host independently checks both."
+    },
+    {
+      "id": "GIO08",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Guard rejection could leave later asynchronous activation/publication running",
+      "resolution": "Internal abort propagation cancels pending operations; public stop includes guard postflight; no late success promotion."
+    },
+    {
+      "id": "GIO09",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Separate accepted result handles could publish the same intake twice",
+      "resolution": "One-shot publication latch belongs to the shared request, set before awaited work; ambiguous writes remain retained."
+    },
+    {
+      "id": "GIO10",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Default guard lifetime was shorter than a long job",
+      "resolution": "Stage launch requires timeout plus two-minute margin; configurable guard upper bound65min."
+    },
+    {
+      "id": "GIO11",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Darwin ACL removal sentinel was initially wrong in the new Python binding",
+      "resolution": "Read installed SDK declarations; use FILESEC_ACL5, ACL_FIRST_ENTRY0, sentinel1 and explicit ctypes prototypes."
+    },
+    {
+      "id": "GIO12",
+      "status": "resolved-in-source-validation-pending",
+      "finding": "Staging byte/host bounds and authority-success wording needed alignment",
+      "resolution": "Admit job/provenance overhead; align TS/native disk/RAM/UID limits; publication returns claim only and does not release quarantine."
+    }
+  ],
+  "open": [
+    {
+      "id": "GIO13",
+      "status": "open-M3",
+      "finding": "Production RuntimeAdapter/controller, lease during IO, guest census, authority stage/verification and reconciliation are not wired."
+    },
+    {
+      "id": "GIO14",
+      "status": "inherited-open",
+      "finding": "Generic writable CAS/materialization seal and inherited integration HOLD remain."
+    },
+    {
+      "id": "GIO15",
+      "status": "gated-validation-pending",
+      "finding": "C/Swift/Python ABI, compilation, disk-image and readonly mount behavior, VZ lifecycle and provider/recovery acceptance have not been executed."
+    }
+  ],
+  "forbiddenClaims": [
+    "tests pass",
+    "operational Mac builds",
+    "installed or activated helper",
+    "authority-verified build success",
+    "fully working fleet",
+    "source archives are complete Git backups",
+    "zero runtime defects"
+  ]
+}
