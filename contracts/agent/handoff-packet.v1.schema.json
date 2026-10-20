@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://uctm.studio/schemas/handoff-packet-v1.json",
+  "title": "Stateless Handoff Packet v1",
+  "description": "Continuity unit for stateless workers (DeepSeek turns, compact-export, global overview). A turn without a valid packet is a failed turn.",
+  "type": "object",
+  "required": ["handoff_id", "generated_at", "lifecycle", "objective", "evidence", "next_prompt", "stop_condition"],
+  "properties": {
+    "handoff_id": { "type": "string", "minLength": 8 },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "parent_handoff_id": { "type": ["string", "null"] },
+    "turn_index": { "type": "integer", "minimum": 0 },
+    "scope": { "type": "string", "enum": ["turn", "compaction", "overview"] },
+    "lifecycle": {
+      "type": "object",
+      "required": ["continuity_assumed"],
+      "properties": {
+        "continuity_assumed": { "type": "boolean", "const": false },
+        "previous_worker_ended": { "type": "boolean" }
+      }
+    },
+    "objective": {
+      "type": "object",
+      "required": ["statement"],
+      "properties": {
+        "statement": { "type": "string", "minLength": 1 },
+        "route": { "type": "array", "items": { "type": "string" } },
+        "stop_gates": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["items"],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["claim", "artifact"],
+            "properties": {
+              "claim": { "type": "string", "minLength": 1 },
+              "artifact": { "type": "string", "minLength": 1 },
+              "command": { "type": "string" }
+            }
+          }
+        },
+        "still_false": { "type": "array", "items": { "type": "string" } },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "next_prompt": { "type": "string", "minLength": 1 },
+    "stop_condition": { "type": "string", "minLength": 1 },
+    "lookup_policy": {
+      "type": "object",
+      "properties": {
+        "backward_lookup": { "type": "string", "enum": ["default-off", "named-artifact-only"] }
+      }
+    },
+    "writer": {
+      "type": "object",
+      "properties": {
+        "model": { "type": "string" },
+        "worker": { "type": "string" }
+      }
+    }
+  }
+}

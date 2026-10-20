@@ -27,6 +27,9 @@
       ],
       "@foundry/evidence": [
         "./packages/evidence/src/index.ts"
+      ],
+      "@foundry/agent-fabric": [
+        "./packages/agent-fabric/src/index.ts"
       ]
     },
     "lib": [

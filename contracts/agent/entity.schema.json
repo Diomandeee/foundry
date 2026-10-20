@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.motionmix/contracts/agent/entity.v1.json",
+  "title": "agent.entity.v1",
+  "description": "A durable agent identity (a lane). Never a terminal, pid, tty or harness session id: those are attributes of the current attachment and keep a history.",
+  "type": "object",
+  "required": ["eid", "harness", "machine", "cwd", "status", "assignment", "attachment", "session_history", "heartbeat_seq", "heartbeat_at", "created_by", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "eid": { "type": "string", "pattern": "^(claude|codex|muse|opencode)-[a-z0-9][a-z0-9-]{1,62}(/[a-z0-9][a-z0-9-]{1,62})*$" },
+    "harness": { "type": "string", "enum": ["claude", "codex", "muse", "opencode"] },
+    "parent_eid": { "type": ["string", "null"] },
+    "machine": { "type": "string", "pattern": "^(mac[1-5]|k11|vm-[a-z0-9-]+)$" },
+    "cwd": { "type": "string", "minLength": 1 },
+    "repo": { "type": ["string", "null"] },
+    "branch": { "type": ["string", "null"] },
+    "assignment": {
+      "type": "object",
+      "required": ["project", "objective", "gate_handle", "role", "lane_id"],
+      "properties": {
+        "project": { "type": ["string", "null"] },
+        "objective": { "type": ["string", "null"] },
+        "gate_handle": { "type": ["string", "null"], "pattern": "^gate://" },
+        "role": { "type": "string", "enum": ["head", "architect", "research", "builder", "consolidator", "tester", "reviewer", "integrator", "operator", "archivist", "service", "skill"] },
+        "lane_id": { "type": "string" }
+      }
+    },
+    "attachment": {
+      "type": "object",
+      "required": ["tmux_session", "session_id"],
+      "properties": {
+        "tmux_session": { "type": ["string", "null"] },
+        "session_id": { "type": ["string", "null"], "description": "harness session id to resume (claude --resume <id>)" },
+        "pid": { "type": ["integer", "null"] },
+        "tty": { "type": ["string", "null"] },
+        "name": { "type": ["string", "null"], "description": "harness-visible session name; equals eid when the reconciler set it" }
+      }
+    },
+    "session_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["session_id", "from"],
+        "properties": {
+          "session_id": { "type": "string" },
+          "from": { "type": "string", "format": "date-time" },
+          "to": { "type": ["string", "null"], "format": "date-time" }
+        }
+      }
+    },
+    "status": { "type": "string", "enum": ["queued", "active", "idle", "waiting", "blocked", "parked", "ended"] },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "model_tier": { "type": "string", "enum": ["top", "sonnet", "haiku"] },
+        "max_subagents": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "token_budget": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "heartbeat_seq": { "type": "integer", "minimum": 0 },
+    "heartbeat_at": { "type": "string", "format": "date-time" },
+    "last_handoff_ref": { "type": ["string", "null"] },
+    "created_by": { "type": "string", "description": "eid of the creator, or 'mohamed'" },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}

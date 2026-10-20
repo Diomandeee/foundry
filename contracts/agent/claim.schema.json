@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.motionmix/contracts/agent/claim.v1.json",
+  "title": "agent.claim.v1",
+  "description": "Advisory claim on shared paths (UCTM claims-board semantics): TTL with heartbeat, and the second arriver verifies instead of re-implementing. The gate's no-shared-edits check stays the backstop.",
+  "type": "object",
+  "required": ["claim_id", "eid", "paths", "intent", "ttl_s", "created_at", "heartbeat_at", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "claim_id": { "type": "string", "minLength": 8 },
+    "eid": { "type": "string" },
+    "task_id": { "type": ["string", "null"] },
+    "paths": { "type": "array", "minItems": 1, "maxItems": 64, "items": { "type": "string", "minLength": 1 } },
+    "intent": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "ttl_s": { "type": "integer", "minimum": 60, "maximum": 86400 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "heartbeat_at": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["active", "released", "expired", "superseded"] },
+    "decision_ref": { "type": ["string", "null"], "description": "decisions.jsonl entry when two claims overlapped and a design was chosen" }
+  }
+}

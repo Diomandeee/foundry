@@ -9,7 +9,7 @@ const root = dirname(fileURLToPath(import.meta.url));
 const local = (path: string) => join(root, path);
 const alias = [
   { find: /^@foundry\/artifacts-port\/node$/, replacement: local("packages/artifacts-port/src/node.ts") },
-  ...["artifacts-port", "stores", "gate-ts", "lkg-client", "plan-check", "verify", "evidence"].map(name => ({
+  ...["artifacts-port", "stores", "gate-ts", "lkg-client", "plan-check", "verify", "evidence", "agent-fabric"].map(name => ({
     find: new RegExp(`^@foundry/${name}$`),
     replacement: local(`packages/${name}/src/index.ts`),
   })),

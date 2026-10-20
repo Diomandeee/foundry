@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.motionmix/contracts/agent/message.v1.json",
+  "title": "agent.message.v1",
+  "description": "A message between lanes. Information, never authority: reading is not acknowledging, and nothing in a message grants a capability.",
+  "type": "object",
+  "required": ["id", "from", "to", "kind", "body", "requires_ack", "sent_at"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 8 },
+    "from": { "type": "string" },
+    "to": { "type": "string" },
+    "kind": { "type": "string", "enum": ["info", "request", "handoff", "alert", "assignment", "completion", "ack"] },
+    "body": { "type": "string", "minLength": 1, "maxLength": 16384 },
+    "task_id": { "type": ["string", "null"] },
+    "handoff_ref": { "type": ["string", "null"], "description": "handoff_id when kind is handoff" },
+    "in_reply_to": { "type": ["string", "null"] },
+    "requires_ack": { "type": "boolean" },
+    "sent_at": { "type": "string", "format": "date-time" },
+    "acked_at": { "type": ["string", "null"], "format": "date-time" }
+  }
+}
