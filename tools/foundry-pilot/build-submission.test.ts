@@ -1,13 +1,25 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {randomUUID} from 'node:crypto';
-import {chmod, lstat, mkdtemp, readFile, realpath} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {chmod, lstat, mkdir, mkdtemp, readFile, realpath} from 'node:fs/promises';
+import {homedir, tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {isDeepStrictEqual} from 'node:util';
 import * as handlers from './build-submission';
 import {validateOperatorConfig, type OperatorConfig} from './operator-config';
 import {AuthorityTransport} from './transport';
 import {safeError} from './private-state';
+
+// private-state rejects shared or sticky writable ancestors on purpose. macOS
+// gives each user a private temp dir; Linux (CI) uses world-writable /tmp,
+// so fall back to an owner-only directory under the home cache there.
+async function privateFixtureBase(): Promise<string> {
+  const temp = await realpath(tmpdir());
+  if (((await lstat(temp)).mode & 0o022) === 0) return temp;
+  const base = join(await realpath(homedir()), '.cache', 'foundry-tests');
+  await mkdir(base, {recursive: true, mode: 0o700});
+  await chmod(base, 0o700);
+  return base;
+}
 
 const inputHash = '1'.repeat(64);
 const profileHash = '2'.repeat(64);
@@ -99,7 +111,7 @@ describe('build submission handlers with real private journals', () => {
     vi.stubGlobal('fetch', vi.fn(() => { throw new Error('network-forbidden-in-submission-tests'); }));
     // Resolve macOS /var aliases before exercising canonicalPath. The real
     // private-state module still checks ownership and all ancestor permissions.
-    const stateRoot = await mkdtemp(join(await realpath(tmpdir()), 'foundry-submission-test-'));
+    const stateRoot = await mkdtemp(join(await privateFixtureBase(), 'foundry-submission-test-'));
     await chmod(stateRoot, 0o700);
     config = validateOperatorConfig({
       version: 1, origin: 'https://authority.invalid', environment: 'fixture', authorityId: 'fixture-authority',
