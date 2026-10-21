@@ -2,6 +2,7 @@
 Run only inside an owner-provisioned, secret-free, offline Foundry VM image.
 The host must stop the entire VM before trusting any output for intake.
 """
+import errno
 import hashlib
 import json
 import os
@@ -38,6 +39,31 @@ def relative(value):
 def token(value):
     require(isinstance(value, str) and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,127}', value), 'recipe-token')
     return value
+
+
+def input_read_only(path):
+    """The input share must be read-only to the guest.
+
+    The host shares it with VZSharedDirectory(readOnly: true), but a macOS 27
+    guest does not report ST_RDONLY for that virtio-fs mount (observed
+    2026-10-20: f_flag 2, writes refused with EPERM). So accept either the flag
+    or proof by refusal: an exclusive create must fail with a write-protection
+    error. If the probe is ever created, the share is writable: remove the
+    probe and fail closed.
+    """
+    if os.statvfs(path).f_flag & os.ST_RDONLY:
+        return True
+    probe = path / ('.foundry-readonly-probe-' + os.urandom(8).hex())
+    try:
+        fd = os.open(probe, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    except OSError as e:
+        return e.errno in (errno.EROFS, errno.EPERM, errno.EACCES)
+    os.close(fd)
+    try:
+        os.unlink(probe)
+    except OSError:
+        pass
+    return False
 
 
 def deadline_check(deadline):
@@ -227,7 +253,7 @@ def run():
     started = time.monotonic()
     deadline = started + 3600
     require(os.getuid() == 0 and os.uname().machine == 'arm64', 'guest-root-arm64-only')
-    require(INPUT.is_mount() and OUTPUT.is_mount() and os.statvfs(INPUT).f_flag & os.ST_RDONLY, 'guest-volumes-required')
+    require(INPUT.is_mount() and OUTPUT.is_mount() and input_read_only(INPUT), 'guest-volumes-required')
     require(not WORK.exists() and not (OUTPUT / 'result.json').exists(), 'guest-never-replay')
     input_fd = open_directory(INPUT)
     output_fd = open_directory(OUTPUT)
