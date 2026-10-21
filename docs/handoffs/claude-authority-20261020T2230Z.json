@@ -1,0 +1,40 @@
+{
+  "handoff_id": "claude-authority-20261020T2230Z",
+  "generated_at": "2026-10-21T02:30:00Z",
+  "lifecycle": { "continuity_assumed": false, "previous_worker_ended": false },
+  "scope": "overview",
+  "writer": { "model": "claude-fable-5-1", "worker": "claude-foundry (session 041267dc)" },
+  "objective": {
+    "statement": "Run the fleet-authority lane: finish S0 (revoke and rotate every secret an agent could read; close F2-F5), roll S1 (fleet-authority daemon) to Mac4, Mac1 and the Pi, enrol Mohamed's phone keys as approvers, and move the iPhone shortcut off the stored password. Mohamed is revoking everything; this lane owns the ordered, verified rotation. The Foundry/Canonical fabric work stays in the claude-foundry lane.",
+    "route": ["read docs/DELEGATED-AUTHORITY.md §1 findings and §6 ceremony", "read the S1 entry at the end of docs/cloud-workspaces/CLAUDE-TAKEOVER-BOARD.md", "read ~/memory/active-tasks.md section '2026-10-20 night: fleet-authority'", "then act"],
+    "stop_gates": ["no secret value is ever printed, logged or pasted into a shared file", "every revocation is followed by a verification that the old credential no longer works", "no lane loses access without a replacement path tested first"]
+  },
+  "evidence": {
+    "items": [
+      { "claim": "The security design, findings F1-F8, threat model, attacks table and build order S0-S7 exist", "artifact": "/Users/mohameddiomande/Developer/foundry-integration/lockfix/docs/DELEGATED-AUTHORITY.md" },
+      { "claim": "fleet-authority daemon source (Swift) and installer; installed and adversarially tested on Mac5; F1 closed through it", "artifact": "/Users/mohameddiomande/Developer/foundry-integration/lockfix/tools/fleet-authority/FleetAuthority.swift", "command": "ssh mac5 /Library/FleetAuthority/bin/fleet-authority status" },
+      { "claim": "Installer (creates fleetapprover uid 450, adds it to com.apple.access_ssh, sshd forced command, policy, launchd)", "artifact": "/Users/mohameddiomande/Developer/foundry-integration/lockfix/tools/fleet-authority/install-fleet-authority.sh" },
+      { "claim": "Mac4 install bundle staged, Mac1 bundle in the fleet backup dir", "artifact": "/Users/mohameddiomande/.fleet-backup/fleet-authority/fleet-authority", "command": "ssh mac4 ls -la /tmp/fleet-authority /tmp/install-fleet-authority.sh" },
+      { "claim": "Board entry with hashes, test results and open items", "artifact": "/Users/mohameddiomande/Developer/foundry-integration/lockfix/docs/cloud-workspaces/CLAUDE-TAKEOVER-BOARD.md" },
+      { "claim": "Owner steps and pending daemon request 21fa0f4c recorded", "artifact": "/Users/mohameddiomande/memory/active-tasks.md" },
+      { "claim": "Memory of the design and S1 state", "artifact": "/Users/mohameddiomande/.claude/projects/-Users-mohameddiomande/memory/delegated-authority-design-2026-10-20.md" },
+      { "claim": "Inventory of secrets to rotate (names only): Comp-Core .env history holds OPENAI_API_KEY, ANTHROPIC_API_KEY, CLOUDINARY_*, SUPABASE_{ANON_KEY,ACCESS_TOKEN,SECRET,SERVICE_KEY,DB_PASSWORD}, GOOGLE_AI_API_KEY_STUDIO, TWILIO_{AUTH_TOKEN,...}, PYPI_API_TOKEN; ~/.zshenv holds SUPABASE_SERVICE_KEY; ~/.config/eero/token; 12 SSH keys in ~/.ssh (google_compute_engine, id_ed25519, id_k11_auto, id_mac1_loopback, id_mac4_auto, id_mac5_auto, id_openclaw_mesh, id_vastai, mac3_clawdbot, minenode_ed25519, vast_rsa, vps_key); authorized_keys on mac4/mac5/mac1 carry stale entries (vm-alpha@claude-code, diommoney@icloud.com, duplicates, and a literal PASTE_THE_COMPLETE_PUBLIC_KEY_HERE line on mac1)", "artifact": "/Users/mohameddiomande/.ssh" }
+    ],
+    "still_false": [
+      "No phone key is enrolled on Mac5 yet: root there is reachable only by Mohamed's password (via the password-holding shortcut) until enrollment",
+      "Mac4, Mac1, Pi, K11 and the GCP VM have no fleet-authority daemon",
+      "No secret has been rotated yet; the inventory above is names, not a completed revocation",
+      "The fleet-signal Worker (push, receipt mirror) and the phone app (Secure Enclave signing, Face ID) do not exist",
+      "The fleet-authority code is uncommitted in ~/Developer/foundry-integration/lockfix (Mohamed has not said commit)",
+      "lanes still run with --dangerously-skip-permissions; hooks remain advisory"
+    ],
+    "open_questions": [
+      "Which GitHub deploy/push keys exist on the account (needs `gh auth refresh -s admin:public_key` or the web UI)?",
+      "Which running services consume SUPABASE_SERVICE_KEY from ~/.zshenv (hub, shippers, prompt-logger)? They must get the new key via a root-only template, not the shell env",
+      "Does Mohamed want the Comp-Core history rewritten after rotation (private repo; rewriting breaks the a1 branch push story) or just rotated and left?",
+      "Phone SSH key for interactive access (Termius/Blink) vs the Shortcuts approver key: enrol both, with the interactive one as a normal user key and the approver one only in /etc/ssh/fleet_authorized_keys"
+    ]
+  },
+  "next_prompt": "You are the claude-authority lane. Read docs/DELEGATED-AUTHORITY.md (§1, §6), the last board entry in docs/cloud-workspaces/CLAUDE-TAKEOVER-BOARD.md, and the fleet-authority section of ~/memory/active-tasks.md. Then: (1) produce the rotation plan as an ordered table (secret, where used, who rotates, verification); (2) walk Mohamed through enrolling his phone's SSH key as the Mac5 approver and deleting the stored password; (3) install the daemon on Mac4 via the approve flow; (4) rotate secrets one at a time, verifying each; (5) clean stale authorized_keys entries only after replacement keys are proven. Never print a secret value.",
+  "stop_condition": "Every item in the rotation table is verified rotated or explicitly deferred by Mohamed; daemons run on Mac5, Mac4 and Mac1 with Mohamed's phone key enrolled; the iPhone shortcut holds no password; receipts for every approval exist."
+}
