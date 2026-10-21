@@ -13,6 +13,7 @@ import selectors
 import signal
 import stat
 import subprocess
+import tarfile
 import sys
 import time
 
@@ -22,7 +23,13 @@ WORK = Path('/private/var/foundry/work')
 BUILD_USER = 'foundry-build'
 MAX_FILES = 8192
 MAX_INPUT = 4 * 1024 ** 3
-MAX_RESULT = 7 * 1024 ** 2
+# Whole approved output selection (an .app bundle with its resources). The
+# output disk and host intake bound it again; the build log is capped separately.
+MAX_RESULT = 4 * 1024 ** 3
+MAX_LOG = 64 * 1024 ** 2
+# Owner-prefetched Swift package state rides in the sealed source as ordered
+# tar parts (each <= 64 MiB like every input file): .foundry/spm.tar.partNNN.
+SPM_PARTS = re.compile(r'\.foundry/spm\.tar\.part[0-9]{3}')
 
 
 def require(ok, code):
@@ -31,8 +38,13 @@ def require(ok, code):
 
 
 def relative(value):
-    require(isinstance(value, str) and re.fullmatch(r'[A-Za-z0-9_./-]{1,240}', value)
-            and not value.startswith(('/', '-')) and all(p not in ('', '.', '..') for p in value.split('/')), 'relative-path')
+    # Same structural rule as the host tools (mac-vm-io.py): no absolute paths,
+    # no empty/'.'/'..' components, no control characters, bounded length. Real
+    # projects use names like 'ModelContext+Save.swift' and 'Icon@2x.png'.
+    require(isinstance(value, str) and 0 < len(value.encode()) <= 4096 and not value.startswith(('/', '-'))
+            and len(value.split('/')) <= 64
+            and all(p not in ('', '.', '..') and len(p.encode()) <= 255 and not any(ord(c) < 32 or ord(c) == 127 for c in p)
+                    for p in value.split('/')), 'relative-path')
     return value
 
 
@@ -186,6 +198,58 @@ def copy_regular(source_root, path, destination_root, dest_path, maximum, deadli
             os.close(parent)
 
 
+def seed_dependencies(paths, deadline):
+    """Unpack owner-prefetched Swift package state into WORK/dependencies.
+
+    Parts are concatenated in order into one private archive, then every member
+    is checked before extraction: relative names only, no '..', regular files,
+    directories and in-tree relative symlinks only, nothing beneath a symlink.
+    The result is chowned to the build user with the rest of WORK.
+    """
+    parts = sorted(p for p in paths if SPM_PARTS.fullmatch(p))
+    if not parts:
+        return
+    require([p for p in parts] == ['.foundry/spm.tar.part%03d' % i for i in range(len(parts))], 'spm-part-sequence')
+    archive = WORK / 'tmp' / 'spm.tar'
+    with open(archive, 'xb') as out:
+        for part in parts:
+            deadline_check(deadline)
+            with open(WORK / 'source' / part, 'rb') as f:
+                while True:
+                    chunk = f.read(8 * 1024 * 1024)
+                    if not chunk:
+                        break
+                    out.write(chunk)
+    root = WORK / 'dependencies'
+    links = set()
+    with tarfile.open(archive, 'r:') as tar:
+        members = tar.getmembers()
+        require(0 < len(members) <= 200000, 'spm-member-count')
+        for m in members:
+            name = m.name
+            while name.startswith('./'):
+                name = name[2:]
+            if name in ('', '.'):
+                require(m.isdir(), 'spm-root')
+                continue
+            relative(name)
+            require(not any(name == l or name.startswith(l + '/') for l in links), 'spm-beneath-link')
+            if m.issym():
+                target = os.path.normpath(os.path.join(os.path.dirname(name), m.linkname))
+                require(not m.linkname.startswith('/') and target != '..' and not target.startswith('../'), 'spm-link-target')
+                links.add(name)
+            else:
+                require(m.isreg() or m.isdir(), 'spm-member-type')
+            m.name = name
+            m.mode = (m.mode & 0o755) | (0o700 if m.isdir() else 0o600)
+            m.uid = m.gid = 0
+            m.uname = m.gname = ''
+        for m in members:
+            deadline_check(deadline)
+            if m.name not in ('', '.'):
+                tar.extract(m, root, set_attrs=False)
+    archive.unlink()
+
 def capture(argv, cwd, env, deadline, maximum, preexec=None):
     deadline_check(deadline)
     proc = subprocess.Popen(argv, env=env, cwd=cwd, stdin=subprocess.DEVNULL,
@@ -315,11 +379,16 @@ def run():
         require(total <= MAX_INPUT, 'input-total')
         copy_regular(input_fd, 'source/'+path, work_fd, 'source/'+path, entry['sizeBytes'], deadline,
                      (entry['sha256'], entry['sizeBytes']), entry['mode'])
+    seed_dependencies([e['path'] for e in files], deadline)
     for parent, dirs, names in os.walk(WORK, followlinks=False):
         os.chown(parent, user.pw_uid, user.pw_gid)
         for name in names:
-            os.chown(Path(parent) / name, user.pw_uid, user.pw_gid)
-    env = {'PATH': '/usr/bin:/bin', 'LANG': 'C', 'LC_ALL': 'C', 'HOME': str(WORK / 'home'),
+            # lchown: prefetched package trees may carry in-tree symlinks.
+            os.lchown(Path(parent) / name, user.pw_uid, user.pw_gid)
+    # The build user's passwd home is not writable; SwiftPM and Xcode resolve the
+    # home through CoreFoundation, not $HOME. CFFIXED_USER_HOME pins it to the
+    # attempt's private home so manifest/cache/config writes stay inside WORK.
+    env = {'PATH': '/usr/bin:/bin', 'LANG': 'C', 'LC_ALL': 'C', 'HOME': str(WORK / 'home'), 'CFFIXED_USER_HOME': str(WORK / 'home'),
            'TMPDIR': str(WORK / 'tmp'), 'DEVELOPER_DIR': r['developerDir'],
            'CLANG_MODULE_CACHE_PATH': str(WORK / 'modules'), 'SWIFT_MODULECACHE_PATH': str(WORK / 'swift-modules')}
     exe = r['developerDir'] + '/usr/bin/xcodebuild'
@@ -330,14 +399,18 @@ def run():
     argv = [exe, '-workspace' if r['project'].endswith('.xcworkspace') else '-project', str(WORK / 'source' / r['project']),
             '-scheme', r['scheme'], '-configuration', r['configuration'], '-sdk', r['sdk'], '-destination', r['destination'],
             '-derivedDataPath', str(WORK / 'DerivedData'), '-clonedSourcePackagesDirPath', str(WORK / 'dependencies'),
+            '-packageCachePath', str(WORK / 'home' / 'package-cache'),
             '-disableAutomaticPackageResolution', '-onlyUsePackageVersionsFromResolvedFile', '-skipPackageUpdates',
+            # Owner-trusted project: its package macros/plugins are part of the
+            # sealed, reviewed input; xcodebuild otherwise prompts and fails.
+            '-skipMacroValidation', '-skipPackagePluginValidation',
             '-jobs', str(limits['cpu']), 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'CODE_SIGN_IDENTITY=',
             'DEVELOPMENT_TEAM=', 'COMPILER_INDEX_STORE_ENABLE=NO', 'build']
     def drop():
         os.setgroups([])
         os.setgid(user.pw_gid)
         os.setuid(user.pw_uid)
-    code, log, limited = capture(argv, WORK / 'source', env, deadline, limits['maxOutputBytes'], drop)
+    code, log, limited = capture(argv, WORK / 'source', env, deadline, min(limits['maxOutputBytes'], MAX_LOG), drop)
     # Root collection is descriptor-relative, bounded, and never reopens checked
     # files by pathname. Descendants may still mutate guest data; reject unstable
     # bytes. Only host VZ whole-VM stop can close their execution lifetime.

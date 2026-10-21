@@ -34,7 +34,7 @@ URL=http://100.84.118.106:9876
 [[ $EUID -eq 0 ]] || { echo "run as root" >&2; exit 1; }
 [[ -d $VM/attempts ]] || { echo "$VM/attempts missing (run mount-vm-volume.sh first)" >&2; exit 1; }
 : >> "$LOG"; chmod 0644 "$LOG"
-exec > >(tee -a "$LOG" | curl -s -m 60 -X POST --data-binary @- "$URL/provision" >/dev/null 2>&1) 2>&1
+exec > >(tee -a "$LOG" | curl -s --connect-timeout 5 -m 60 -X POST --data-binary @- "$URL/provision" >/dev/null 2>&1) 2>&1
 log() { echo "== $(date -u +%H:%M:%SZ) $*"; }
 trap 'echo "!! FAILED line $LINENO: $BASH_COMMAND"' ERR
 log "provision $NAME on $(hostname) start"

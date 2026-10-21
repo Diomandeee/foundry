@@ -7,7 +7,8 @@
 #             the published snapshotHash to this tree, the name is not checked)
 #   @SRC@     staged copy of the files on this host, readable by root
 #   @DIGEST@  sha256 of the FILES text below (binds the request to exact content)
-#   @FILES@   one "relative/path sha256 sizeBytes" line per regular file
+#   @FILES@   one "relative/path sha256 sizeBytes [mode]" line per regular file
+#             (mode 644 or 755, octal; recorded for the job, the sealed copy is 0444)
 #
 # Layout: the APFS volume fsrc-<digest12> is mounted read-only BY ROOT at
 #   /Library/Foundry/VM/sources/<NAME>            (mount point)
@@ -41,7 +42,7 @@ URL=http://100.84.118.106:9876
 [[ $EUID -eq 0 ]] || { echo "run as root" >&2; exit 1; }
 [[ -d $VM/sources ]] || { echo "$VM/sources missing" >&2; exit 1; }
 : >> "$LOG"; chmod 0644 "$LOG"
-exec > >(tee -a "$LOG" | curl -s -m 60 -X POST --data-binary @- "$URL/source-seal" >/dev/null 2>&1) 2>&1
+exec > >(tee -a "$LOG" | curl -s --connect-timeout 5 -m 60 -X POST --data-binary @- "$URL/source-seal" >/dev/null 2>&1) 2>&1
 log() { echo "== $(date -u +%H:%M:%SZ) $*"; }
 trap 'echo "!! FAILED line $LINENO: $BASH_COMMAND"' ERR
 log "seal source tree $NAME start"
@@ -58,9 +59,9 @@ count=$(printf '%s\n' "$FILES" | grep -c .)
 log "container $container, $count files, content digest $CONTENT_DIGEST"
 
 # Source check before touching anything: every listed file exists with the exact bytes.
-while read -r path sha size; do
+while read -r path sha size mode; do
   [[ -n $path ]] || continue
-  [[ $path != /* && $path != *..* && $sha =~ ^[0-9a-f]{64}$ && $size =~ ^[0-9]+$ ]] || { echo "bad FILES line: $path" >&2; exit 1; }
+  [[ $path != /* && $path != *..* && $sha =~ ^[0-9a-f]{64}$ && $size =~ ^[0-9]+$ && ${mode:-644} =~ ^(644|755)$ ]] || { echo "bad FILES line: $path" >&2; exit 1; }
   [[ -f $SRC/$path && ! -L $SRC/$path ]] || { echo "missing or not a regular file: $SRC/$path" >&2; exit 1; }
   [[ $(stat -f %z "$SRC/$path") == "$size" && $(shasum -a 256 "$SRC/$path" | cut -c1-64) == "$sha" ]] || { echo "content mismatch: $path" >&2; exit 1; }
 done <<< "$FILES"
@@ -104,7 +105,7 @@ if [[ $(mounted_at "$dev") != "$MOUNT" ]]; then
     log "tree already present; verifying it instead of rewriting"
   else
     install -d -o root -g wheel -m 0755 "$TMP/tree"
-    while read -r path sha size; do
+    while read -r path sha size mode; do
       [[ -n $path ]] || continue
       install -d -o root -g wheel -m 0755 "$TMP/tree/$(dirname "$path")"
       install -o root -g wheel -m 0444 "$SRC/$path" "$TMP/tree/$path"
@@ -137,14 +138,14 @@ expected=$(printf '%s\n' "$FILES" | awk '{print $1}' | sort)
 [[ -z $(find "$TREE" -not -type f -not -type d) ]] || { echo "non-regular entry in tree" >&2; exit 1; }
 [[ -z $(find "$TREE" -type d \( -not -user root -o -not -perm 0555 \)) ]] || { echo "directory owner/mode violation" >&2; exit 1; }
 [[ -z $(find "$TREE" -type f \( -not -user root -o -not -perm 0444 -o -links +1 \)) ]] || { echo "file owner/mode/link violation" >&2; exit 1; }
-while read -r path sha size; do
+while read -r path sha size mode; do
   [[ -n $path ]] || continue
   [[ $(stat -f %z "$TREE/$path") == "$size" && $(shasum -a 256 "$TREE/$path" | cut -c1-64) == "$sha" ]] || { echo "sealed content mismatch: $path" >&2; exit 1; }
 done <<< "$FILES"
 guard_sha=$(shasum -a 256 "$GUARD" | cut -c1-64)
 frame=$("$GUARD" --describe-readonly-v1 "$GUARD" "$TREE" "$MOUNT")
 echo "$frame"
-files_json=$(printf '%s\n' "$FILES" | awk 'BEGIN{printf "["} NF==3{if(n++)printf ","; printf "{\"path\":\"%s\",\"sha256\":\"%s\",\"sizeBytes\":%s}",$1,$2,$3} END{printf "]"}')
+files_json=$(printf '%s\n' "$FILES" | awk 'BEGIN{printf "["} NF>=3{if(n++)printf ","; m=(NF>=4)?$4:"644"; printf "{\"path\":\"%s\",\"sha256\":\"%s\",\"sizeBytes\":%s,\"mode\":%d}",$1,$2,$3,(m=="755")?493:420} END{printf "]"}')
 printf '{"name":"%s","contentDigest":"%s","files":%s,"volume":"%s","device":"/dev/%s","volumeUuid":"%s","fstab":"UUID=%s %s apfs ro","guard":{"path":"%s","sha256":"%s"},"observed":%s}\n' \
   "$NAME" "$CONTENT_DIGEST" "$files_json" "$VOL" "$dev" "$uuid" "$uuid" "$MOUNT" "$GUARD" "$guard_sha" "$frame" > "$RECEIPT"
 chown root:wheel "$RECEIPT"; chmod 0644 "$RECEIPT"

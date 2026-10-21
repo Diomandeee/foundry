@@ -231,7 +231,9 @@ private final class Artifacts {
         let root = try directory("/Library/Foundry/VM/attempts/" + c.attemptId)
         boot = try file(root, "boot.raw", writable: true, limit: c.bootLimit)
         output = try file(root, "outputs.raw", writable: true, limit: c.outputLimit)
-        aux = try file(root, "auxiliary.bin", writable: true, limit: 16 * 1024 * 1024)
+        // VZMacAuxiliaryStorage for a real macOS 27 guest is ~32 MiB (r2: 33,579,164 B);
+        // 64 MiB bounds it without refusing every actual image.
+        aux = try file(root, "auxiliary.bin", writable: true, limit: 64 * 1024 * 1024)
         let hardware = try file(root, "hardware-model.bin", writable: false, limit: 4096)
         let machine = try file(root, "machine-identifier.bin", writable: false, limit: 4096)
         input = try directory(c.input)
@@ -295,6 +297,23 @@ private final class Artifacts {
     }
     func verifyGuestJob() throws {
         try require(job.sha256(maximum: 262144) == guestJobSha256, "guest-job-digest-mismatch")
+    }
+    // Virtualization.framework takes its OWN exclusive flock on every writable
+    // disk and on the auxiliary storage when the VM starts, and refuses to start
+    // ("storage device attachment is invalid", "Failed to lock auxiliary
+    // storage") while another open file description holds one. Hand the
+    // exclusion over: release ours immediately before vm.start, and after a
+    // successful start prove VZ now holds each lock (our non-blocking exclusive
+    // request must be refused). Descriptors stay open and pinned throughout.
+    func releaseWritableLocks() {
+        for pin in [boot, output, aux] { _ = flock(pin.fd, LOCK_UN) }
+    }
+    func virtualizationHoldsWritableLocks() -> Bool {
+        for pin in [boot, output, aux] {
+            if flock(pin.fd, LOCK_EX | LOCK_NB) == 0 { _ = flock(pin.fd, LOCK_UN); return false }
+            if errno != EWOULDBLOCK { return false }
+        }
+        return true
     }
 }
 
@@ -466,6 +485,7 @@ private final class Host: NSObject, VZVirtualMachineDelegate {
                         // The ONLY physical start site, immediately behind the
                         // generation/continuous-time/terminal fence on VZ's queue.
                         startIssued = true; startPending = true
+                        artifacts.releaseWritableLocks()
                         vm.start { [self] result in
                             dispatchPrecondition(condition: .onQueue(.main))
                             // An extra queue turn means the callback has RETURNED
@@ -477,6 +497,7 @@ private final class Host: NSObject, VZVirtualMachineDelegate {
                                 case .success:
                                     if !terminal {
                                         if expired(clock.now()) { end("activation-expired", failed: true) }
+                                        else if !artifacts.virtualizationHoldsWritableLocks() { end("vz-lock-not-held", failed: true) }
                                         else if !output(["event": "started"]) { end("channel-write", failed: true) }
                                     }
                                 }
@@ -518,6 +539,10 @@ private final class Host: NSObject, VZVirtualMachineDelegate {
             guard output(["event": "stopped"]) else { diagnostic("stopped-write-failed"); exit(2) }
             exit(fault ? 2 : 0) // Complete write accepted; no stdio/user-space buffer.
         }
+        // A failed start leaves the VM in .error: nothing runs and nothing can
+        // stop it. Exit as UNKNOWN (fault, no "stopped" proof) instead of
+        // observing forever; the parent quarantines the attempt.
+        if vm.state == .error { diagnostic("vm-error-state"); exit(2) }
         if !stopFailed && vm.canStop {
             stopPending = true
             vm.stop { [self] error in

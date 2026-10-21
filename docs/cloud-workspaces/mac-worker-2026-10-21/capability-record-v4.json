@@ -1,0 +1,29 @@
+{
+ "sha256": "57662850255d3a0100923b956355dbdd661a56e44131e10c12634e787cff1385",
+ "path": "/Library/Foundry/VM/capabilities/57662850255d3a0100923b956355dbdd661a56e44131e10c12634e787cff1385",
+ "canonical": "{\"architecture\":\"arm64\",\"backend\":\"apple-vz-macos-v1\",\"bootSha256\":\"f28a18479d250739fbb9019262b1ff506c57f0e3074827e952a6ae3b9936dc2d\",\"developerDir\":\"/Applications/Xcode.app/Contents/Developer\",\"guestRunnerSha256\":\"ecd420d1c0e49651e6187789efdd88f047c92aa04d0b8d87568aefbe2ed1822d\",\"macos\":\"27.0.1\",\"sdks\":[\"appletvos27.0\",\"appletvsimulator27.0\",\"driverkit27.0\",\"iphoneos27.1\",\"iphonesimulator27.1\",\"macosx27.0\",\"watchos27.0\",\"watchsimulator27.0\",\"xros27.0\",\"xrsimulator27.0\"],\"treeGuardSha256\":\"703035a4fd974f1a3b9da67228ad8ef60d0a21847b679bda1d05f771e2a2b898\",\"version\":1,\"vmHelperSha256\":\"10af1eb5d20b792eaa216c680e69e55814e876bbd885d849855fea7b1a0778a2\",\"xcodeBuild\":\"27A9275\"}",
+ "capability": {
+  "version": 1,
+  "backend": "apple-vz-macos-v1",
+  "architecture": "arm64",
+  "bootSha256": "f28a18479d250739fbb9019262b1ff506c57f0e3074827e952a6ae3b9936dc2d",
+  "guestRunnerSha256": "ecd420d1c0e49651e6187789efdd88f047c92aa04d0b8d87568aefbe2ed1822d",
+  "vmHelperSha256": "10af1eb5d20b792eaa216c680e69e55814e876bbd885d849855fea7b1a0778a2",
+  "treeGuardSha256": "703035a4fd974f1a3b9da67228ad8ef60d0a21847b679bda1d05f771e2a2b898",
+  "macos": "27.0.1",
+  "developerDir": "/Applications/Xcode.app/Contents/Developer",
+  "xcodeBuild": "27A9275",
+  "sdks": [
+   "appletvos27.0",
+   "appletvsimulator27.0",
+   "driverkit27.0",
+   "iphoneos27.1",
+   "iphonesimulator27.1",
+   "macosx27.0",
+   "watchos27.0",
+   "watchsimulator27.0",
+   "xros27.0",
+   "xrsimulator27.0"
+  ]
+ }
+}
