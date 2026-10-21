@@ -1,0 +1,15 @@
+{
+ "image": "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+ "architecture": "amd64",
+ "commands": [
+  ["/usr/local/bin/python3", "-m", "pip", "install", "--no-index", "--no-cache-dir", "--find-links", "/work/source/wheels", "--target", "/work/site", "numpy", "pytest"],
+  ["/usr/local/bin/python3", "-m", "pytest", "-q", "-p", "no:cacheprovider", "--junitxml=/work/out/junit.xml", "/work/source/calibrate_extrinsics"]
+ ],
+ "env": {
+  "PATH": "/usr/local/bin:/usr/bin:/bin", "LANG": "C", "LC_ALL": "C", "HOME": "/work", "TMPDIR": "/tmp",
+  "PYTHONPATH": "/work/site:/work/source", "PYTHONDONTWRITEBYTECODE": "1", "PIP_DISABLE_PIP_VERSION_CHECK": "1", "PYTHONHASHSEED": "0"
+ },
+ "cpu": 2, "ramMib": 3072, "pids": 512, "tmpMib": 512, "timeoutMs": 900000,
+ "maxOutputBytes": 8388608, "maxInputBytes": 67108864,
+ "outputPaths": ["out/junit.xml"], "sourceCopy": true
+}

@@ -1,0 +1,14 @@
+{
+ "policy": "/var/lib/foundry-linux/policy.json",
+ "profileHash": "123aca510510c22a6eaf5cb59b0cedf682a229e43670f7b37c019e3628513fa6",
+ "brokerSha256": "5a77888a5a8a63a8ecae05ab430bc1466f5d65cab3ff0669bb6ec380fb1379e5",
+ "apparmorCompiledSha256": "cdb754cf7cbe6e1808fbc16641af0e0e5e0ff35c2f52e341d7e4dd1f265cb79b",
+ "executables": {
+  "docker": "84a8553077099a6a56b5ec36651dc17f5a1b89c26e33971e02906818c2f2626d",
+  "mkfs": "07cd24ce58a410cc9cee93c55ae5ac95986df016c5907dc7a49b55389bd41ed2",
+  "mount": "fde2b1540ca79ea42df942653bdfd09b9b3e3ff1d4713602bd280f754033957a"
+ },
+ "mappedBuildUid": 101200,
+ "loadPolicy": "PASS",
+ "apparmorPolicy": "PASS"
+}

@@ -112,6 +112,11 @@ apparmor_parser -r -W "/etc/apparmor.d/$APPARMOR_PROFILE"
 step "broker pinned at /usr/local/libexec"
 install -d -o root -g root -m 0755 /usr/local/libexec
 install -o root -g root -m 0755 "$NATIVE/linux-isolation.py" /usr/local/libexec/foundry-linux-isolation.py
+# 2026-10-20: the first pilot install lost both install(1)-written files to a
+# VM stop two minutes later (ext4 delayed allocation left them zero-length).
+# Force them to disk before anything records their hashes.
+sync -f "/etc/apparmor.d/$APPARMOR_PROFILE" /usr/local/libexec/foundry-linux-isolation.py
+sync
 
 step "receipt"
 python3 - "$ROOT" "$APPARMOR_PROFILE" <<'PY'

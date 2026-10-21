@@ -1,0 +1,14 @@
+{"event":"intent","identity":"990b0aaa71c8b06b567d48cbe05565bc6ce34deb99fbe9bb49fa56a2defc8232"}
+{"event":"prepared-disk"}
+{"event":"input-verified","filesHash":"e60940aba8857ef9a90524f737913f605a7664720eaaf635d5282069f4a722a5"}
+{"event":"create-intent","container":"foundry-isolated-990b0aaa71c8b06b567d48cbe05565bc6ce34deb99fbe9bb49fa56a2defc8232-0","phase":0}
+{"event":"container-created","container":"620211c52556cfdd82f686a37a5aabdbac052374ef2ae756464efb6a4acf93d6"}
+{"event":"start-client","pid":3025,"container":"620211c52556cfdd82f686a37a5aabdbac052374ef2ae756464efb6a4acf93d6"}
+{"event":"create-intent","container":"foundry-isolated-990b0aaa71c8b06b567d48cbe05565bc6ce34deb99fbe9bb49fa56a2defc8232-1","phase":1}
+{"event":"container-created","container":"99d6a80a2c95cc84c0e6beda3d303d5747f4221a2d7b9af1be3311e5fdb4c20e"}
+{"event":"start-client","pid":3122,"container":"99d6a80a2c95cc84c0e6beda3d303d5747f4221a2d7b9af1be3311e5fdb4c20e"}
+{"event":"stopped","success":true,"container":"99d6a80a2c95cc84c0e6beda3d303d5747f4221a2d7b9af1be3311e5fdb4c20e"}
+{"event":"workspace-readonly"}
+{"event":"captured","outputs":[{"path":"out/junit.xml","sha256":"99b1e6bc5bfe69b2a4fde29850c93bc0569fca534441527c9f03a120cc1c17aa","sizeBytes":5946}],"logSha256":"3e063371c4007bd735b9e676bca1bfb1e9d11dac1cfd0bbaec83fafd63106004","logBytes":747}
+{"event":"operation-failed","operation":"tick","containmentConfirmed":true,"captureComplete":true}
+{"event":"stopped","success":false,"container":"99d6a80a2c95cc84c0e6beda3d303d5747f4221a2d7b9af1be3311e5fdb4c20e"}

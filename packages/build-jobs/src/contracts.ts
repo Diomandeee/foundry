@@ -5,7 +5,7 @@ export interface ObjectRef {projectId:string;objectKey:string;generation:string;
 export interface InputApproval {projectId:string;snapshotHash:string;manifest:ObjectRef;git:{remote:string|null;revision:string|null;historyPreserved:boolean};requiredInputs:string[];missingInputs:string[];reconstructable:boolean}
 export interface Limits {cpu:number;ramMib:number;estimatedAdditionalBytes:number;timeoutMs:number;maxOutputBytes:number}
 export interface XcodeRecipe {projectPath:string;workspace:boolean;scheme:string;configuration:string;sdk:string;destination:string;developerDir:string;xcodeBuild:string;macos:string}
-export interface LinuxRecipe {image:string;architecture:'arm64'|'x64';tool:'npm'|'cargo'|'cmake';args:string[];network:'none'|'approved-dependencies'}
+export interface LinuxRecipe {image:string;architecture:'arm64'|'x64';tool:'npm'|'cargo'|'cmake'|'python';args:string[];network:'none'|'approved-dependencies';installArgs?:string[]}
 /** Owner-approved recipes are immutable; submitters select hashes rather than commands. */
 export interface BuildProfile {version:1;projectId:string;kind:BuildKind;limits:Limits;recipe:XcodeRecipe|LinuxRecipe;outputPaths:string[];trustedProject:true;workerOptInRequired:boolean}
 export interface BuildJob {id:string;projectId:string;inputHash:string;profileHash:string;maxAttempts:number}

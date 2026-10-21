@@ -1,0 +1,11 @@
+ProductName:		macOS
+ProductVersion:		27.0.1
+BuildVersion:		26A434
+Xcode 27.1
+Build version 27A9275
+156bf694d52041801cc2bacdf71a3c6cfc2e1f7ee6b960423d82b18886fc34c8  /Library/Foundry/guest/mac-vm-guest.py
+total 56
+drwxr-xr-x  4 root  wheel    128 Oct 20 20:36 .
+drwxr-xr-x  3 root  wheel     96 Oct 20 19:39 ..
+-rwxr-xr-x  1 root  wheel    642 Oct 20 19:40 boot-runner.sh
+-rw-r--r--  1 root  wheel  21428 Oct 20 20:36 mac-vm-guest.py

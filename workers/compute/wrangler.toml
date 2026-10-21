@@ -1,0 +1,56 @@
+name = "foundry-compute"
+main = "src/index.ts"
+compatibility_date = "2026-10-05"
+compatibility_flags = ["nodejs_compat"]
+
+# One fixed authority object per environment; clients cannot select objects.
+[[durable_objects.bindings]]
+name = "AUTHORITY"
+class_name = "ComputeAuthority"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ComputeAuthority"]
+
+# Secrets, set with `wrangler secret put --env <env>` by scripts/provision.sh,
+# never here: COMPUTE_ISSUER_ID, COMPUTE_ISSUER_KEY, COMPUTE_AUTH_CONFIG
+# (SHA-256 digests of the owner/verifier bearers, no bearer values).
+#
+# COMPUTE_ENROLLMENT_ENABLED is one-way: once the authority database enters
+# managed mode it refuses to start with the flag off. COMPUTE_BUILDS_ENABLED
+# stays "false" until the Linux broker credential and the build route are
+# approved; flipping it is a separate owner go.
+[vars]
+COMPUTE_ENVIRONMENT = "dev"
+COMPUTE_AUTHORITY_NAME = "fleet"
+COMPUTE_TRANSPORT_ENABLED = "false"
+COMPUTE_ENROLLMENT_ENABLED = "false"
+COMPUTE_BUILDS_ENABLED = "false"
+
+[env.staging]
+[[env.staging.durable_objects.bindings]]
+name = "AUTHORITY"
+class_name = "ComputeAuthority"
+[[env.staging.migrations]]
+tag = "v1"
+new_sqlite_classes = ["ComputeAuthority"]
+[env.staging.vars]
+COMPUTE_ENVIRONMENT = "staging"
+COMPUTE_AUTHORITY_NAME = "fleet"
+COMPUTE_TRANSPORT_ENABLED = "true"
+COMPUTE_ENROLLMENT_ENABLED = "true"
+COMPUTE_BUILDS_ENABLED = "false"
+
+[env.production]
+[[env.production.durable_objects.bindings]]
+name = "AUTHORITY"
+class_name = "ComputeAuthority"
+[[env.production.migrations]]
+tag = "v1"
+new_sqlite_classes = ["ComputeAuthority"]
+[env.production.vars]
+COMPUTE_ENVIRONMENT = "production"
+COMPUTE_AUTHORITY_NAME = "fleet"
+COMPUTE_TRANSPORT_ENABLED = "false"
+COMPUTE_ENROLLMENT_ENABLED = "false"
+COMPUTE_BUILDS_ENABLED = "false"
