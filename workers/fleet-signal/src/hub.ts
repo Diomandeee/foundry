@@ -58,6 +58,10 @@ export class SignalHub {
   constructor(private sql: SqlPort, private now: () => number = () => Math.floor(Date.now() / 1000),
               private push?: PushPort) {
     for (const s of SCHEMA) this.sql.exec(s);
+    // v2: a device has two keys. `spki` authenticates HTTP calls (no user prompt); `decision_spki`
+    // (Secure Enclave, Face ID gated) signs approve/deny. Older rows fall back to `spki`.
+    const cols = this.all("SELECT name FROM pragma_table_info('devices')").map(r => String(r.name));
+    if (!cols.includes('decision_spki')) this.sql.exec('ALTER TABLE devices ADD COLUMN decision_spki TEXT');
   }
 
   private one(q: string, ...b: unknown[]): Record<string, unknown> | undefined {
@@ -82,11 +86,12 @@ export class SignalHub {
     this.sql.exec('INSERT INTO nodes (node_id, host, spki, enrolled_at) VALUES (?, ?, ?, ?)', nodeId, host, spki, this.now());
     this.event('owner', 'node.enrolled', { nodeId, host });
   }
-  enrollDevice(deviceId: string, spki: string, label: string | null, apnsToken: string | null, apnsEnv: string | null): void {
+  enrollDevice(deviceId: string, spki: string, label: string | null, apnsToken: string | null, apnsEnv: string | null,
+               decisionSpki: string | null = null): void {
     if (!ID.test(deviceId) || !spki) throw new HubError(400, 'invalid-device');
     if (apnsEnv && !['sandbox', 'production'].includes(apnsEnv)) throw new HubError(400, 'invalid-apns-env');
-    this.sql.exec('INSERT INTO devices (device_id, spki, label, apns_token, apns_env, enrolled_at) VALUES (?, ?, ?, ?, ?, ?)',
-      deviceId, spki, label, apnsToken, apnsEnv, this.now());
+    this.sql.exec('INSERT INTO devices (device_id, spki, label, apns_token, apns_env, enrolled_at, decision_spki) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      deviceId, spki, label, apnsToken, apnsEnv, this.now(), decisionSpki);
     this.event('owner', 'device.enrolled', { deviceId, label });
   }
   revoke(kind: 'node' | 'device', id: string): void {
@@ -164,14 +169,15 @@ export class SignalHub {
     if (p.kind !== 'device') throw new HubError(403, 'device-only');
     return this.all(`SELECT r.host, r.request_id, r.tier, r.description, r.expires_at FROM requests r
       LEFT JOIN decisions d ON d.host = r.host AND d.request_id = r.request_id
+      JOIN nodes n ON n.host = r.host AND n.revoked_at IS NULL
       WHERE d.request_id IS NULL AND r.expires_at > ? ORDER BY r.received_at DESC LIMIT 50`, this.now());
   }
 
   // ── device: submit a signed decision ────────────────────────────────────────
   async submitDecision(p: Principal, message: string, signature: string): Promise<{ seq: number }> {
     if (p.kind !== 'device') throw new HubError(403, 'device-only');
-    const dev = this.one('SELECT spki FROM devices WHERE device_id = ? AND revoked_at IS NULL', p.id);
-    if (!dev || !(await verifyP256(String(dev.spki), signature, message))) throw new HubError(400, 'bad-decision-signature');
+    const dev = this.one('SELECT spki, decision_spki FROM devices WHERE device_id = ? AND revoked_at IS NULL', p.id);
+    if (!dev || !(await verifyP256(String(dev.decision_spki ?? dev.spki), signature, message))) throw new HubError(400, 'bad-decision-signature');
     let m: Record<string, unknown>;
     try { m = JSON.parse(message); } catch { throw new HubError(400, 'message-not-json'); }
     if (canonical(m) !== message) throw new HubError(400, 'message-not-canonical');
@@ -189,6 +195,14 @@ export class SignalHub {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, m.host, m.request_id, message, signature, p.id, m.decision, this.now(), seq);
     this.event(p.id, 'decision.' + m.decision, { host: m.host, request_id: m.request_id });
     return { seq };
+  }
+
+  /** Device registers (or rotates) its APNs token. Device-signed, so only the enrolled phone can redirect its pushes. */
+  setPushToken(p: Principal, token: string, env: string): void {
+    if (p.kind !== 'device') throw new HubError(403, 'device-only');
+    if (!/^[0-9a-f]{32,200}$/.test(token) || !['sandbox', 'production'].includes(env)) throw new HubError(400, 'invalid-push-token');
+    this.sql.exec('UPDATE devices SET apns_token = ?, apns_env = ? WHERE device_id = ?', token, env, p.id);
+    this.event(p.id, 'device.push-token', { env });
   }
 
   /** Node polls decisions for its own host after a sequence number. */

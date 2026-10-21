@@ -70,6 +70,8 @@ describe('fleet-signal hub', () => {
     const got = s.hub.getRequest(dev, 'mac5', 'c94065cb9815395f');
     expect(got.payload).toBe(s.payload);
     expect(s.hub.pending(dev)).toHaveLength(1);
+    s.hub.revoke('node', 'mac5-node');
+    expect(s.hub.pending(dev)).toHaveLength(0); // a revoked Mac's requests are not shown
   });
 
   it('refuses a request not signed by the enrolled node key (relay cannot forge)', async () => {
@@ -123,6 +125,23 @@ describe('fleet-signal hub', () => {
     expect(s.hub.appendReceipts(np, [{ seq: 1, hash: h('1'), prev: '' }, { seq: 2, hash: h('2'), prev: h('1') }]).stored).toBe(2);
     expect(s.hub.appendReceipts(np, [{ seq: 2, hash: h('2'), prev: h('1') }]).stored).toBe(0);
     expect(() => s.hub.appendReceipts(np, [{ seq: 3, hash: h('3'), prev: h('9') }])).toThrow(HubError);
+  });
+
+  it('checks decisions against the separate Face ID decision key when enrolled', async () => {
+    const s = await setup();
+    const auth = await keypair(), face = await keypair();
+    s.hub.enrollDevice('phone2', auth.spki, 'two-key phone', null, null, face.spki);
+    const np = await s.hub.authenticate(await signed(s.node, 'mac5-node', 'POST', '/v1/requests', '{}', s.now()), 'POST', '/v1/requests', '{}');
+    await s.hub.publishRequest(np, s.payload, await s.node.sign(s.payload));
+    const r = JSON.parse(s.payload);
+    const msg = canonical({ v: 1, host: 'mac5', request_id: r.request_id, fp: r.fp, tier: r.tier, nonce: r.nonce,
+      expires_at: r.expires_at, issued_at: s.now(), decision: 'approve' });
+    const dev = async () => s.hub.authenticate(await signed(auth, 'phone2', 'POST', '/v1/decisions', '{}', s.now()), 'POST', '/v1/decisions', '{}');
+    await expect(s.hub.submitDecision(await dev(), msg, await auth.sign(msg))).rejects.toThrow('bad-decision-signature');
+    expect((await s.hub.submitDecision(await dev(), msg, await face.sign(msg))).seq).toBe(1);
+    const pp = await s.hub.authenticate(await signed(auth, 'phone2', 'POST', '/v1/devices/push', '{}', s.now()), 'POST', '/v1/devices/push', '{}');
+    s.hub.setPushToken(pp, 'ab'.repeat(32), 'sandbox');
+    expect(() => s.hub.setPushToken(pp, 'not-hex', 'sandbox')).toThrow('invalid-push-token');
   });
 
   it('only devices read the feed; nodes cannot decide', async () => {

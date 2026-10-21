@@ -9,7 +9,8 @@
 // Routes
 //  GET  /v1/health
 //  POST /v1/admin/nodes      {node_id, host, spki}                     owner
-//  POST /v1/admin/devices    {device_id, spki, label?, apns_token?, apns_env?}  owner
+//  POST /v1/admin/devices    {device_id, spki, decision_spki?, label?, apns_token?, apns_env?}  owner
+//  POST /v1/devices/push     {token, env}                              device
 //  POST /v1/admin/revoke     {kind: node|device, id}                   owner
 //  POST /v1/events           {kind, body}                              owner or node
 //  POST /v1/requests         {payload, signature}                      node
@@ -61,7 +62,7 @@ export class SignalHubObject extends DurableObject<Env> {
       if (path.startsWith('/v1/admin/')) {
         if (!isOwner) return json(401, { error: 'owner-only' });
         if (path === '/v1/admin/nodes') this.hub.enrollNode(data.node_id, data.host, data.spki);
-        else if (path === '/v1/admin/devices') this.hub.enrollDevice(data.device_id, data.spki, data.label ?? null, data.apns_token ?? null, data.apns_env ?? null);
+        else if (path === '/v1/admin/devices') this.hub.enrollDevice(data.device_id, data.spki, data.label ?? null, data.apns_token ?? null, data.apns_env ?? null, data.decision_spki ?? null);
         else if (path === '/v1/admin/revoke') this.hub.revoke(data.kind, data.id);
         else return json(404, { error: 'not-found' });
         return json(200, { ok: true });
@@ -80,6 +81,7 @@ export class SignalHubObject extends DurableObject<Env> {
       if (req.method === 'POST' && path === '/v1/decisions') return json(200, await this.hub.submitDecision(p, data.message, data.signature));
       if (req.method === 'GET' && path === '/v1/decisions') return json(200, { decisions: this.hub.decisionsFor(p, Number(url.searchParams.get('after') ?? 0)) });
       if (req.method === 'POST' && path === '/v1/receipts') return json(200, this.hub.appendReceipts(p, data.entries ?? []));
+      if (req.method === 'POST' && path === '/v1/devices/push') { this.hub.setPushToken(p, data.token, data.env); return json(200, { ok: true }); }
       if (req.method === 'GET' && path === '/v1/feed') return json(200, this.hub.feed(p, Number(url.searchParams.get('after') ?? 0)));
       if (req.method === 'POST' && path === '/v1/events' && p.kind === 'node') {
         this.hub.postEvent(p.id, data.kind, data.body ?? {});
