@@ -196,3 +196,9 @@ D. foundry-compute-staging builds ON + enrol Mac5 and the Linux VM.
 E. Gate: register MotionMix-Ableton (text tree 11b5d1f + binaries Drive bundle), then Mo en Movimiento / Coltivare repos; lanes land code through the gate.
 F. Commit today's runtime changes (helper lock hand-over, error-state exit, aux 64 MiB, mac-vm-io plist/MAX_TREE, guest runner v3, build-job.sh, seal/source tooling) on fix/lockfile-sync-20261020; main via the G3 gate.
 G. Mac5 Tailscale -> system tailscaled (one root tap + login link). Authority lane S1.1 (approver reply text, longer expiry).
+
+## NEXT TRACK (Mohamed 2026-10-21 21:33Z: "start building the approval app after the builds")
+After the three app builds (Mo en Movimiento, Air Deck, Coltivare) land: build DELEGATED-AUTHORITY S2 + S3.
+- S2 fleet-signal: Cloudflare Worker inside Foundry; enrolled nodes post events/receipts; APNs push on every staged request; receipts mirrored to D1; not an authority.
+- S3 approval app = Pebble successor (GitHub Diomandeee/Pebble private; Desktop/Pebble archived 10-18): Secure Enclave P-256 key (Face ID per Tier 2/3 signature), App Attest at enrollment, actionable push -> app fetches the canonical request from the daemon over Tailscale (pinned per-node identity), renders the exact script, signs {v,host,request_id,fp,tier,nonce,issued_at,expires_at,decision}; daemon side: fleet-authority verifies P-256 signatures (new approve path beside the SSH-key approver-shell, which stays as fallback).
+- Learned today for the app: daemon requires show-before-decision; 600 s expiry is too short for human flow (S1.1 in the authority lane); Mac4 has no id-taking shortcut; approver-shell replies only an exit code.

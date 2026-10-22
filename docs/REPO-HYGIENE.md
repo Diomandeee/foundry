@@ -2,7 +2,7 @@
 status: current
 describes: [tools/repo-hygiene/]
 verified_at: 2026-10-22
-verified_commit: HEAD-at-commit
+verified_commit: 8e6525d
 owner_lane: fleet-supervisor-plan
 ---
 
