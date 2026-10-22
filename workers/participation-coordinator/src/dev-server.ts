@@ -16,11 +16,18 @@ import { buildCoordinator, run } from "./app.js";
 import { HttpGraphEmitter } from "./graph.js";
 import { deviceTokenAuth, issueDeviceToken, TokenError } from "./token.js";
 import { ensureFirstUser } from "./bootstrap.js";
+import { audit, digestEquals, issueRecoveryGrant } from "./security.js";
+import { sha256hex } from "./ids.js";
+import { OpError } from "./errors.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT ?? 8791);
 const TOKEN_SECRET = process.env.COORD_TOKEN_SECRET;
 const TOKEN_PATHS = new Set(["/participation/v1/token", "/token"]);
+// Operator recovery grants, exactly as the Worker serves them. Set
+// OPERATOR_BEARER_SHA256 (sha256 hex of the bearer) to enable locally.
+const OPERATOR_SHA = process.env.OPERATOR_BEARER_SHA256?.toLowerCase();
+const OPERATOR_GRANT_PATHS = new Set(["/participation/v1/operator/recovery-grant", "/operator/recovery-grant"]);
 
 async function main() {
   const db = await SqliteStore.open(process.env.COORD_DB ?? join(here, "..", ".dev.sqlite"));
@@ -50,7 +57,7 @@ async function main() {
       const path = (req.url ?? "").split("?")[0];
       if (req.method === "GET" && path === "/health") {
         res.writeHead(200, { "content-type": "application/json" });
-        res.end(JSON.stringify({ ok: true, worker: "participation-coordinator", mode: "local", tokenIssuer: !!TOKEN_SECRET }));
+        res.end(JSON.stringify({ ok: true, worker: "participation-coordinator", mode: "local", protocol: 2, tokenIssuer: !!TOKEN_SECRET, operator: !!OPERATOR_SHA }));
         return;
       }
       if (req.method !== "POST") { res.writeHead(405); res.end(); return; }
@@ -71,6 +78,24 @@ async function main() {
       }
 
       const bearer = (req.headers["authorization"] as string | undefined)?.replace(/^Bearer\s+/i, "") ?? null;
+
+      if (OPERATOR_GRANT_PATHS.has(path)) {
+        const reply = (status: number, payload: unknown) => { res.writeHead(status, { "content-type": "application/json" }); res.end(JSON.stringify(payload)); };
+        if (!OPERATOR_SHA) return reply(503, { ok: false, failure: { code: "operator_unconfigured" } });
+        if (!bearer || !digestEquals(await sha256hex(bearer), OPERATOR_SHA)) return reply(401, { ok: false, failure: { code: "unauthorized" } });
+        let parsed: any; try { parsed = JSON.parse(body); } catch { return reply(400, { ok: false, failure: { code: "bad_json" } }); }
+        if (typeof parsed?.actorID !== "string") return reply(400, { ok: false, failure: { code: "bad_actor" } });
+        const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+        try {
+          const grant = await issueRecoveryGrant(db, parsed.actorID, "operator", typeof parsed.label === "string" ? parsed.label.slice(0, 64) : "operator", now, parsed.ttlSeconds);
+          await audit(db, now, "operator_recovery_grant", parsed.actorID, null, { grantID: grant.grantID });
+          return reply(200, { ok: true, ...grant });
+        } catch (e) {
+          if (e instanceof OpError) return reply(404, { ok: false, failure: { code: e.code, message: e.message } });
+          throw e;
+        }
+      }
+
       const out = await run(db, body, bearer, ctx);
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify(out));

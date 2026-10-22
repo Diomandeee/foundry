@@ -20,4 +20,12 @@ PARTICIPATION_ENV = "production"
 #   COORD_TOKEN_SECRET                      - signs short-lived device-bound bearers
 # K11 Graph Kernel (participation facts; same graph as foundry gate/orchestrator),
 # reached through the Cloudflare Tunnel on k11 (quick tunnel; URL rotates on restart).
-LKG_URL = "https://assets-protective-burning-submissions.trycloudflare.com"
+# Coordinator protocol/version reported by /health. Set to the base SHA at deploy.
+COORD_VERSION = "v2-dev"
+# LKG_URL (the K11 graph tunnel) and OPERATOR_BEARER_SHA256 are secrets (v2):
+#   wrangler secret put LKG_URL
+#   wrangler secret put OPERATOR_BEARER_SHA256   # sha256 hex of the operator bearer
+
+[triggers]
+# Hourly garbage collection of expired challenges, nonces and grants (src/security.ts gcExpired).
+crons = ["23 * * * *"]

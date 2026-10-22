@@ -194,11 +194,11 @@ export function deviceTokenAuth(
   db: Db,
   secretB64url: string,
   nowSeconds: () => number = () => Math.floor(Date.now() / 1000),
-): (bearer: string | null) => Promise<{ principal: string } | null> {
+): (bearer: string | null) => Promise<{ principal: string; deviceKeyId: string } | null> {
   return async (bearer) => {
     const claims = await verifyToken(secretB64url, bearer, nowSeconds());
     if (!claims) return null;
     const dev: any = await db.get(`SELECT actor_id FROM devices WHERE key_id=?`, [claims.dk]);
-    return { principal: dev?.actor_id ?? claims.sub };
+    return { principal: dev?.actor_id ?? claims.sub, deviceKeyId: claims.dk };
   };
 }

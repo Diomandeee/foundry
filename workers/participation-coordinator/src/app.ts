@@ -7,7 +7,7 @@ import { iso } from "./canonical.js";
 import { GraphEmitter } from "./graph.js";
 
 export interface BuildOpts {
-  auth?: (bearer: string | null) => Promise<{ principal: string; deviceSessionId?: string } | null>;
+  auth?: (bearer: string | null) => Promise<{ principal: string; deviceKeyId?: string; deviceSessionId?: string } | null>;
   key?: ServerKey;
   now?: () => string;
   graph?: GraphEmitter;

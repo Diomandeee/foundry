@@ -16,6 +16,7 @@ import {
 } from "../src/token.js";
 import { call } from "./client.js";
 import { deviceKey, signBytes, provePossession } from "./p256.js";
+import { operatorGrant } from "./v2.js";
 
 const SECRET = b64url(crypto.getRandomValues(new Uint8Array(32)));
 const OTHER_SECRET = b64url(crypto.getRandomValues(new Uint8Array(32)));
@@ -144,14 +145,15 @@ describe("token issuer: authenticates real operations", () => {
     expect(before.ok).toBe(true);
     expect(before.payload.actor).toBeNull();
 
-    // Recover into the seeded actor by account hint.
-    const begin = await callf("begin_actor_recovery", { accountHint: HINT, deviceKey: dev });
+    // Recover into the seeded actor with an operator grant (the hint is a label only).
+    const recoverySecret = await operatorGrant(db, ACTOR, NOW_ISO);
+    const begin = await callf("begin_actor_recovery", { accountHint: HINT, deviceKey: dev, recoverySecret });
     expect(begin.ok).toBe(true);
     const proof = {
       challengeID: begin.payload.challengeID, purpose: "account_recovery", keyID: dev.keyID,
       algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(dev._pair, begin.payload),
     };
-    const done = await callf("complete_actor_recovery", { request: { accountHint: HINT, deviceKey: dev }, proof });
+    const done = await callf("complete_actor_recovery", { request: { accountHint: HINT, deviceKey: dev, recoverySecret }, proof });
     expect(done.ok).toBe(true);
     expect(done.payload.actorID).toBe(ACTOR);
 

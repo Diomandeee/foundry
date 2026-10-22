@@ -315,3 +315,37 @@ App-side companion fix: `ParticipationStore.protectTransientState()` re-seeds
 `recoveryAccountHint = defaultAccountHint` instead of blanking it, because
 `open(.home)` calls that reset before the Recovery screen is shown — blanking it
 left the pre-filled `mo-motionmix` hint empty on first open.
+
+## 13. v2 security core (2026-10-22)
+
+Security review C1 (anyone on the internet could become an existing actor) and
+its neighbours are closed in code, not by the kill switch. The wire shape of the
+19 v1 operations is unchanged; three operations are added and two payloads gain
+a field. `/health` reports `protocol: 2`.
+
+| Rule | Where | Wire effect |
+|---|---|---|
+| Device keys are insert-only; `keyID` must be `sha256(pub)`; a second registration must present the same bytes | `security.ts registerDeviceInsertOnly` | `key_id_mismatch`, `device_key_conflict` |
+| A bearer may only introduce the key it was minted for | `requireOwnKey` (token `dk`) | `key_not_bearer` |
+| Recovery needs a single-use, short-lived **grant**; the account hint is a label, never a lookup | `recovery_grants`, `begin_actor_recovery { recoverySecret }` | `recovery_grant_required / _invalid / _consumed / _expired`, `device_bound_elsewhere` |
+| A bound device vouches for the next one | `issue_recovery_grant {}` → `{ recoverySecret, expiresAt }` (show as QR) | new op |
+| The operator issues a grant when no bound device is at hand | `POST /participation/v1/operator/recovery-grant { actorID }` with the operator bearer (server stores `OPERATOR_BEARER_SHA256`) | new route; `tools/operator-grant.ts` |
+| Admission needs a server-issued **invitation**; scopes come from it; the organizer mints it | `create_invitation { sphereID, role, scopes?, maxUses?, ttlSeconds? }` → `{ reference, url, grantedScopes, expiresAt }`; `revoke_invitation { invitationID }` | new ops; `begin_admission` returns `unknown_invitation / invitation_expired / _exhausted / _revoked / role_mismatch` |
+| A guest with no actor gets one at admission, with exactly the invited role | `complete_admission` | guest `actorID` ≠ organizer |
+| A receipt is checked against the authenticated principal and the stored session | `requireMembership` | `membership_not_yours`, `receipt_mismatch` |
+| The handoff exchange is the one path that binds the full app's new key; resume requires a bound key | `exchange_full_app_handoff`, `resume_full_app_session` | `actor_mismatch` |
+| Organizer objects need an actor with the organizer role | `requireActor` | `actor_required`, `role_denied` |
+| Every mutation leaves an audit row | `audit_log` | — |
+| Expired nonces, challenges, grants are collected hourly | `scheduled` + `[triggers] crons` | — |
+
+Schema: `migrations/0002_v2_security_core.sql` (two tables, three columns).
+Tests: `npm test` (53) and `npm run smoke` (HTTP, real issuer, operator route).
+Live D1 cleanup of bring-up residue: `tools/collapse-stray-actors.ts` prints the
+reviewed SQL; it is applied through a gated, receipted step, never from a shell.
+
+**App consequences (build 130+, work item 3):** send `recoverySecret` on
+recovery (scanned from a sibling's QR or an operator QR); an Organizer "Invite"
+screen that calls `create_invitation` and shows `url` as a QR; the App Clip uses
+the invitation reference from the link exactly as today. Phones on build 127
+keep working for `load_home`, consent and sources with their existing receipts;
+they cannot recover or join until rebuilt, which is the intended state.

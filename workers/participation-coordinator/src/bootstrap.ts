@@ -48,7 +48,7 @@ export const DEFAULT_FIRST_USER: PrescribedFirstUser = {
 export const RESET_TABLES = [
   "admission_receipts", "audit_log", "challenges", "consents", "device_sessions",
   "devices", "handoffs", "idempotency", "join_attempts", "memberships", "series",
-  "sessions", "sources", "spheres", "subscriptions", "token_nonces", "actors",
+  "sessions", "sources", "spheres", "subscriptions", "token_nonces", "invitations", "recovery_grants", "actors",
 ] as const;
 
 export interface Statement { sql: string; params: unknown[] }

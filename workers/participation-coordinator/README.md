@@ -3,6 +3,8 @@
 Native coordinator for the MotionMix Participation Network. Implements the
 `ParticipationGateway` protocol (20 ops) over D1 (Cloudflare) or local SQLite.
 
+**Protocol v2 (2026-10-22):** recovery by single-use grant (vouch or operator), server-issued invitations, principal-checked membership, audit, hourly GC. See `WIRING.md` §13 and `migrations/0002_v2_security_core.sql`.
+
 **Deployed:** https://participation-coordinator.motionmix-participation.workers.dev
 (D1 `participation`, region ENAM). Auth is a signed, short-lived, device-bound
 bearer issued at `POST /participation/v1/token` (no dev prefix). See `WIRING.md`
@@ -29,6 +31,8 @@ wrangler d1 execute participation --file schema.sql --remote
 wrangler secret put COORD_SERVER_PKCS8   # P-256 pkcs8, base64url
 wrangler secret put COORD_SERVER_SPKI    # matching public key, base64url
 wrangler secret put COORD_TOKEN_SECRET   # >=32 random bytes, base64url (signs bearers)
+wrangler secret put OPERATOR_BEARER_SHA256  # sha256 hex of the operator bearer (recovery grants)
+wrangler d1 execute participation --remote --file migrations/0002_v2_security_core.sql   # v1 -> v2 once
 # optional: expose K11's graph so facts land in the knowledge graph
 # LKG_URL = "https://<tunnel>.trycloudflare.com"   (see WIRING.md §10)
 npm run deploy

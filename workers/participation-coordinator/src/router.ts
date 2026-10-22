@@ -27,8 +27,8 @@ function normalizeDates(v: any): any {
 export interface RouterCtx {
   db: Db;
   key: ServerKey;
-  /** Resolve the bearer to an authenticated principal (actor id) + device session. */
-  auth: (bearer: string | null) => Promise<{ principal: string; deviceSessionId?: string } | null>;
+  /** Resolve the bearer to an authenticated principal (actor id), the device key it was minted for, and a device session. */
+  auth: (bearer: string | null) => Promise<{ principal: string; deviceKeyId?: string; deviceSessionId?: string } | null>;
   /** Optional Knowledge Graph sink. Absent = fully offline (CI default). */
   graph?: GraphEmitter;
   /** Optional deferral hook (Workers: ctx.waitUntil) so emission never blocks. */
@@ -57,7 +57,7 @@ export async function handleRequest(raw: string, bearer: string | null, ctx: Rou
   if (req.payload === undefined) return fail(req, id, digest, "bad_payload", "Missing payload.");
 
   const now = (ctx.now ?? (() => iso(new Date())))();
-  const r: Req = { operation: req.operation, payload: req.payload, principal: who.principal, deviceSessionId: who.deviceSessionId, now };
+  const r: Req = { operation: req.operation, payload: req.payload, principal: who.principal, deviceKeyId: who.deviceKeyId, deviceSessionId: who.deviceSessionId, now };
   try {
     const payload = normalizeDates(await dispatch(ctx.db, r, ctx.key));
     const payloadData = canonicalJson(payload);

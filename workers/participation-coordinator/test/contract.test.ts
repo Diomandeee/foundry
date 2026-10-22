@@ -8,6 +8,7 @@ import { canonicalJson, iso } from "../src/canonical.js";
 import { b64url, b64urlDecode } from "../src/ids.js";
 import { call } from "./client.js";
 import { deviceKey, proveAdmission, provePossession, sign } from "./p256.js";
+import { invite, operatorGrant } from "./v2.js";
 
 const NOW = "2026-10-11T17:30:00Z";
 const ALICE = "alice-actor-0001";
@@ -63,7 +64,8 @@ describe("DER device signatures (the iOS wire format)", () => {
 describe("coordinator invariants", () => {
   it("consumes a device challenge exactly once (no proof replay)", async () => {
     const dev = await deviceKey();
-    const begin = await callf("begin_actor_recovery", { accountHint: "replay@example.com", deviceKey: dev });
+    const recoverySecret = await operatorGrant(db, ALICE, NOW);
+    const begin = await callf("begin_actor_recovery", { accountHint: "replay@example.com", deviceKey: dev, recoverySecret });
     const proof = { challengeID: begin.payload.challengeID, purpose: "account_recovery", keyID: dev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(dev._pair, begin.payload) };
     const first = await callf("complete_actor_recovery", { request: { accountHint: "replay@example.com", deviceKey: dev }, proof });
     expect(first.ok).toBe(true);
@@ -95,19 +97,21 @@ describe("participation -> knowledge graph emission", () => {
     const sink = new RecordingGraphEmitter();
     const ctx = await buildCoordinator(db2, { key: await loadServerKey(), now: () => NOW, graph: sink });
     await db2.run(`INSERT INTO actors (actor_id,account_id,display_name,roles_json,created_at) VALUES (?,?,?,?,?)`,
-      [ALICE, "acct-alice", "Alice", JSON.stringify(["participant"]), NOW]);
+      [ALICE, "acct-alice", "Alice", JSON.stringify(["organizer", "participant"]), NOW]);
     const run2 = (op: string, p: any) => call((b, bb) => runCtx(db2, b, bb, ctx), `dev:${ALICE}`, op, p);
 
+    const sphere = await run2("create_sphere", { draft: { seriesID: null, title: "Graph", summary: "", startsAt: null }, idempotencyKey: "graph-sphere" });
+    const sphereId = sphere.payload.id;
+    const inv = await invite(run2, sphereId);
     const dev = await deviceKey();
-    await run2("begin_admission", { invitation: { sphereID: "sphere-1", joinAttemptReference: "join-xyz", requestedRole: "participant" }, deviceKey: dev });
-    await db2.run(`UPDATE devices SET actor_id=? WHERE key_id=?`, [ALICE, dev.keyID]);
+    await run2("begin_admission", { invitation: { sphereID: sphereId, joinAttemptReference: inv.reference, requestedRole: "participant" }, deviceKey: dev });
     const ch: any = await db2.get(`SELECT * FROM challenges WHERE purpose='admission' ORDER BY issued_at DESC LIMIT 1`);
     const proof = { challengeID: ch.challenge_id, purpose: "admission", keyID: dev.keyID, algorithm: "p256-sha256", signatureDERBase64URL: await proveAdmission(dev._pair, { challengeID: ch.challenge_id, joinAttemptID: ch.join_attempt_id, joinAttemptReferenceSHA256: ch.subject_ref_sha256, deviceSessionID: ch.device_session_id, deviceKeyID: ch.device_key_id, challengeSHA256: ch.challenge_sha256, challengeBase64URL: ch.challenge_b64url }) };
     const adm = await run2("complete_admission", proof);
     expect(adm.ok).toBe(true);
 
     const subjects = sink.triples.map((t) => `${t.subject} ${t.predicate} ${t.object}`);
-    expect(subjects).toContain(`actor:${ALICE} admitted_to sphere:sphere-1`);
+    expect(subjects).toContain(`actor:${adm.payload.actorID} admitted_to sphere:${sphereId}`);
     expect(subjects.some((s) => s.includes("granted_scope upload"))).toBe(true);
     expect(sink.triples.every((t) => t.source === "participation")).toBe(true);
 

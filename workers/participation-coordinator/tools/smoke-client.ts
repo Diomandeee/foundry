@@ -70,13 +70,14 @@ async function main() {
   check("payload_sha256 matches re-encode", await sha256hex(new TextEncoder().encode(canonicalJson(home.body.payload))) === home.body.payload_sha256);
   check("fresh device -> actor null (no fabrication)", home.body.payload.actor === null, home.body.payload.actor);
 
-  // Durable write + read over the same wire (mutation envelope + canonical digest).
+  // v2: a device that has not recovered or been admitted is not an actor and
+  // cannot create organizer objects. The durable write path is proven by
+  // admit-first-user.ts (invitation -> membership) with a real actor.
   const key = `smoke-${crypto.randomUUID()}`;
   const created = await post("create_sphere", { draft: { seriesID: null, title: "Smoke Room", summary: "", startsAt: null }, idempotencyKey: key }, token);
-  check("create_sphere ok", created.body.ok === true, created.body.failure);
-  const after = await post("load_home", {}, token);
-  const ids = (after.body.payload?.spheres ?? []).map((s: any) => s.id);
-  check("created sphere visible in load_home", ids.includes(created.body.payload?.id), { want: created.body.payload?.id, ids });
+  check("unbound device cannot create a sphere (actor_required)", created.body.ok === false && created.body.failure?.code === "actor_required", created.body.failure);
+  const hintOnly = await post("begin_actor_recovery", { accountHint: "mo-motionmix", deviceKey: {} }, token);
+  check("hint-only recovery closed (C1)", hintOnly.body.ok === false && hintOnly.body.failure?.code !== "internal", hintOnly.body.failure);
 
   console.log(failures === 0 ? "\nSMOKE PASS" : `\nSMOKE FAIL (${failures})`);
   process.exit(failures === 0 ? 0 : 1);

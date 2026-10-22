@@ -66,7 +66,9 @@ CREATE TABLE IF NOT EXISTS join_attempts (
   reference_sha256 TEXT NOT NULL,       -- sha256 of the client-issued reference
   requested_role   TEXT NOT NULL,
   created_at       TEXT NOT NULL,
-  consumed_at      TEXT
+  consumed_at      TEXT,
+  invitation_id    TEXT,                -- v2: the server-issued invitation this attempt resolved
+  device_key_id    TEXT                 -- v2: the key that began the attempt
 );
 
 CREATE TABLE IF NOT EXISTS challenges (
@@ -80,7 +82,8 @@ CREATE TABLE IF NOT EXISTS challenges (
   issued_at      TEXT NOT NULL,
   expires_at     TEXT NOT NULL,
   consumed_at    TEXT,
-  join_attempt_id TEXT              -- admission challenges only (bound into the signed message)
+  join_attempt_id TEXT,             -- admission challenges only (bound into the signed message)
+  recovery_grant_id TEXT            -- account_recovery challenges only (v2)
 );
 
 CREATE TABLE IF NOT EXISTS consents (          -- append-only; a new row per decision
@@ -187,4 +190,29 @@ CREATE TABLE IF NOT EXISTS token_nonces (     -- single-use device token request
   nonce      TEXT PRIMARY KEY,
   key_id     TEXT NOT NULL,
   issued_at  TEXT NOT NULL
+);
+
+-- v2 security core (2026-10-22) ---------------------------------------------
+CREATE TABLE IF NOT EXISTS invitations (      -- organizer-minted; only the hash of the reference is stored
+  invitation_id   TEXT PRIMARY KEY,
+  sphere_id       TEXT NOT NULL,
+  organizer_actor_id TEXT NOT NULL,
+  role            TEXT NOT NULL,          -- participant|viewer
+  scopes_json     TEXT NOT NULL,          -- sorted JSON array of CapabilityScope
+  reference_sha256 TEXT NOT NULL UNIQUE,
+  max_uses        INTEGER NOT NULL,
+  used_count      INTEGER NOT NULL DEFAULT 0,
+  expires_at      TEXT NOT NULL,
+  revoked_at      TEXT,
+  created_at      TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS recovery_grants (  -- single-use; vouched by a bound device or issued by the operator
+  grant_id        TEXT PRIMARY KEY,
+  actor_id        TEXT NOT NULL,
+  secret_sha256   TEXT NOT NULL UNIQUE,
+  issued_by_kind  TEXT NOT NULL,          -- device|operator
+  issued_by_ref   TEXT NOT NULL,          -- device key id, or operator label
+  expires_at      TEXT NOT NULL,
+  consumed_at     TEXT,
+  created_at      TEXT NOT NULL
 );

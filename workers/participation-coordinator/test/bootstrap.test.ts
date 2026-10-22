@@ -14,6 +14,7 @@ import { call } from "./client.js";
 import { deviceKey, provePossession, proveAdmission } from "./p256.js";
 import { tokenRequestMessage } from "../src/token.js";
 import { signBytes } from "./p256.js";
+import { invite, operatorGrant } from "./v2.js";
 
 const SECRET = b64url(crypto.getRandomValues(new Uint8Array(32)));
 const NOW_S = 1791780000;
@@ -41,12 +42,13 @@ async function token(dev: any): Promise<string> {
 async function recover(hint: string, dev: any): Promise<any> {
   const bearer = await token(dev);
   const callf = (op: string, payload: any) => call((b, bb) => runCtx(db, b, bb, ctx), bearer, op, payload);
-  const begin = await callf("begin_actor_recovery", { accountHint: hint, deviceKey: dev });
+  const recoverySecret = await operatorGrant(db, DEFAULT_FIRST_USER.actorID, NOW_ISO);
+  const begin = await callf("begin_actor_recovery", { accountHint: hint, deviceKey: dev, recoverySecret });
   const proof = {
     challengeID: begin.payload.challengeID, purpose: "account_recovery", keyID: dev.keyID,
     algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(dev._pair, begin.payload),
   };
-  const done = await callf("complete_actor_recovery", { request: { accountHint: hint, deviceKey: dev }, proof });
+  const done = await callf("complete_actor_recovery", { request: { accountHint: hint, deviceKey: dev, recoverySecret }, proof });
   return { bearer, callf, done };
 }
 
@@ -144,8 +146,9 @@ describe("account recovery binds the challenged device session", () => {
     const dev = await deviceKey();
     const bearer = await token(dev);
     const callf = (op: string, payload: any) => call((b, bb) => runCtx(db, b, bb, ctx), bearer, op, payload);
+    const recoverySecret = await operatorGrant(db, DEFAULT_FIRST_USER.actorID, NOW_ISO);
     const begin = await callf("begin_actor_recovery", {
-      accountHint: DEFAULT_FIRST_USER.displayName, deviceKey: dev,
+      accountHint: DEFAULT_FIRST_USER.displayName, deviceKey: dev, recoverySecret,
     });
     expect(begin.ok).toBe(true);
     // The iOS client rejects recovery when the challenge carries a placeholder.
@@ -158,7 +161,7 @@ describe("account recovery binds the challenged device session", () => {
       algorithm: "p256-sha256", signatureDERBase64URL: await provePossession(dev._pair, begin.payload),
     };
     const done = await callf("complete_actor_recovery", {
-      request: { accountHint: DEFAULT_FIRST_USER.displayName, deviceKey: dev }, proof,
+      request: { accountHint: DEFAULT_FIRST_USER.displayName, deviceKey: dev, recoverySecret }, proof,
     });
     expect(done.ok).toBe(true);
     // ParticipationStore.recoverActor guards this equality; a mismatch surfaces
@@ -175,8 +178,9 @@ describe("the first user can be admitted to the prescribed sphere", () => {
     const dev = await deviceKey();
     const { callf } = await recover(DEFAULT_FIRST_USER.displayName, dev);
 
+    const inv = await invite(callf, "sphere-mo-studio");
     const adm = await callf("begin_admission", {
-      invitation: { sphereID: "sphere-mo-studio", joinAttemptReference: "first-admission-test", requestedRole: "participant" },
+      invitation: { sphereID: "sphere-mo-studio", joinAttemptReference: inv.reference, requestedRole: "participant" },
       deviceKey: dev,
     });
     expect(adm.ok).toBe(true);
