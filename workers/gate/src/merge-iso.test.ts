@@ -118,6 +118,15 @@ describe("file modes", () => {
     expect(await modeOf("run.sh")).toBe(0o100644);
   });
 
+  it("lands a mode-only change (chmod +x with identical content)", async () => {
+    const before = await git.resolveRef({ fs, dir, ref: "HEAD" });
+    const sha = await commitForkFiles(fs, dir, { "app.txt": "v1\n" }, "M", "foundry", "d".repeat(40), [], { "app.txt": "100755" });
+    expect(sha).not.toBe(before);
+    expect(await modeOf("app.txt")).toBe(0o100755);
+    // Redelivery of the same decision is still idempotent.
+    expect(await commitForkFiles(fs, dir, { "app.txt": "v1\n" }, "M", "foundry", "d".repeat(40), [], { "app.txt": "100755" })).toBe(sha);
+  });
+
   it("reads modes from the proposal commit and refuses symlinks and substituted text", async () => {
     fs.mkdirSync(join(dir, "bin"));
     fs.writeFileSync(join(dir, "bin/tool"), "#!/bin/sh\n", { mode: 0o755 });

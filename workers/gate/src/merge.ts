@@ -171,10 +171,26 @@ export async function commitForkFiles(
   }
   // Idempotent redelivery: the merge already landed (crash between push
   // and record) — return the current head instead of an empty commit.
+  // statusMatrix compares content only, so a mode-only change (chmod +x) would read
+  // as clean and return the base. Compare each admitted path's mode too.
   const matrix = await git.statusMatrix({ fs, dir });
-  const dirty = matrix.some(
+  let dirty = matrix.some(
     ([, head, workdir, stage]) => !(head === 1 && workdir === 1 && stage === 1),
   );
+  if (!dirty && Object.keys(files).length) {
+    const head = await git.resolveRef({ fs, dir, ref: "HEAD" }).catch(() => null);
+    const headModes = new Map<string, string>();
+    if (head) {
+      await git.walk({ fs, dir, trees: [git.TREE({ ref: head })],
+        map: async (path, [e]) => {
+          if (e && Object.hasOwn(files, path) && (await e.type()) === "blob") {
+            headModes.set(path, ((await e.mode()) as number).toString(8));
+          }
+          return true;
+        } });
+    }
+    dirty = Object.keys(files).some((name) => headModes.get(name) !== (modes[name] ?? "100644"));
+  }
   if (!dirty) return git.resolveRef({ fs, dir, ref: "HEAD" });
   return git.commit({
     fs,
