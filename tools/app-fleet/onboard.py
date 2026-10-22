@@ -33,11 +33,13 @@ def gh_json(args):
     return json.loads(out.stdout), None
 
 
-def tree(owner_repo):
+def tree(owner_repo, seed_branch=None):
     meta, err = gh_json([f"repos/{owner_repo}"])
     if err:
         return None, None, err
-    branch = meta.get("default_branch", "main")
+    # A record's seed_branch names the live trunk when GitHub's default branch is stale
+    # (MotionMix: main last moved 2026-04, the work lives on an unrelated branch).
+    branch = seed_branch or meta.get("default_branch", "main")
     t, err = gh_json([f"repos/{owner_repo}/git/trees/{branch}?recursive=1"])
     if err:
         return branch, None, err
@@ -65,7 +67,7 @@ def plan_record(rec, namespace):
         return {"id": rec["id"], "skip": "no GitHub origin"}
     owner_repo = re.sub(r"^https://github.com/", "", origin).rstrip("/")
     base = re.sub(r"[^A-Za-z0-9._-]", "-", rec["title"]).lower()[:64]
-    branch, t, err = tree(owner_repo)
+    branch, t, err = tree(owner_repo, rec.get("seed_branch"))
     if err:
         return {"id": rec["id"], "skip": f"github: {err}"}
     n, text_bytes, offenders = lint(t.get("tree", []))
