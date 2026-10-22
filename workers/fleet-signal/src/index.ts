@@ -62,6 +62,7 @@ export class SignalHubObject extends DurableObject<Env> {
         (await sha256Hex(auth.slice(7))) === this.env.FLEET_SIGNAL_OWNER_SHA256;
       if (path.startsWith('/v1/admin/')) {
         if (!isOwner) return json(401, { error: 'owner-only' });
+        if (req.method === 'GET' && path === '/v1/admin/devices') return json(200, { devices: this.hub.devicesSummary() });
         if (req.method === 'GET' && path === '/v1/admin/receipts')
           return json(200, { receipts: this.hub.receiptsFor(url.searchParams.get('host') ?? '', Number(url.searchParams.get('limit') ?? 50)) });
         if (path === '/v1/admin/nodes') this.hub.enrollNode(data.node_id, data.host, data.spki);

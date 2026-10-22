@@ -174,10 +174,14 @@ export class SignalHub {
   /** Device lists what is waiting (unexpired, undecided), newest first. */
   pending(p: Principal) {
     if (p.kind !== 'device') throw new HubError(403, 'device-only');
+    // Only requests this device may approve (it is in the node-signed approver_key_ids). Anything else
+    // (e.g. its own enrollment, which must come from an existing approver) would only fail with 403.
     return this.all(`SELECT r.host, r.request_id, r.tier, r.description, r.expires_at FROM requests r
       LEFT JOIN decisions2 d ON d.host = r.host AND d.request_id = r.request_id AND d.key_id = ?
       JOIN nodes n ON n.host = r.host AND n.revoked_at IS NULL
-      WHERE d.request_id IS NULL AND r.expires_at > ? ORDER BY r.received_at DESC LIMIT 50`, p.id, this.now());
+      WHERE d.request_id IS NULL AND r.expires_at > ?
+        AND EXISTS (SELECT 1 FROM json_each(json_extract(r.payload, '$.approver_key_ids')) a WHERE a.value = ?)
+      ORDER BY r.received_at DESC LIMIT 50`, p.id, this.now(), p.id);
   }
 
   // ── device: submit a signed decision ────────────────────────────────────────
@@ -238,6 +242,12 @@ export class SignalHub {
       stored++;
     }
     return { stored, head: last ?? null };
+  }
+
+  /** Owner view of enrolled devices: never returns keys or push tokens, only whether push is set up. */
+  devicesSummary() {
+    return this.all(`SELECT device_id, label, biometric, apns_env, apns_token IS NOT NULL AS has_push, enrolled_at, revoked_at
+      FROM devices ORDER BY enrolled_at DESC LIMIT 50`);
   }
 
   /** Owner (operator) view of a host's mirrored receipt chain, newest first. */
