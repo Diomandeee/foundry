@@ -232,13 +232,16 @@ EVIDENCE=intake; [[ ${M:-} && $T == "$M" ]] && EVIDENCE=diagnostic
 import hashlib, json, os, shutil, sys, time
 tree, outd, base, evidence = sys.argv[1:5]
 rec = []
+# mac-vm-io intake writes the guest's files/ under payload/ (and build.log as payload/.foundry-vm.log);
+# the diagnostic raw mount keeps files/. Read from whichever this tree has.
+pdir = 'payload' if os.path.isdir(os.path.join(tree, 'payload')) else 'files'
 r = json.load(open(os.path.join(tree, 'result.json')))
 if r.get('exitCode') != 0 or r.get('limited'):
     print('build did not succeed; nothing delivered'); sys.exit(0)
 os.makedirs(outd, exist_ok=False)
 for d in r.get('directories', []): os.makedirs(os.path.join(outd, 'files', d), exist_ok=True)
 for o in r['outputs']:
-    src = os.path.join(tree, 'files', o['path']); dst = os.path.join(outd, 'files', o['path'])
+    src = os.path.join(tree, pdir, o['path']); dst = os.path.join(outd, 'files', o['path'])
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     h = hashlib.sha256()
     with open(src, 'rb') as f, open(dst, 'xb') as g:
