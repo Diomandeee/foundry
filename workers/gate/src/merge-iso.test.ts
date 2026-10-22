@@ -7,7 +7,7 @@ import { join } from "node:path";
 import * as fs from "node:fs";
 import git from "isomorphic-git";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { commitForkFiles, tokenSecret } from "./merge.js";
+import { commitForkFiles, proposalModes, tokenSecret } from "./merge.js";
 
 let dir: string;
 
@@ -94,5 +94,41 @@ describe("commitForkFiles idempotency", () => {
     expect(second).toBe(first);
     const log = await git.log({ fs, dir, depth: 3 });
     expect(log.length).toBe(2); // seed + one merge, not two
+  });
+});
+
+describe("file modes", () => {
+  async function modeOf(path: string) {
+    const head = await git.resolveRef({ fs, dir, ref: "HEAD" });
+    const files = await git.walk({ fs, dir, trees: [git.TREE({ ref: head })],
+      map: async (p, [e]) => (p === path ? e!.mode() : undefined) });
+    return (files as number[]).find((m) => m !== undefined);
+  }
+
+  it("lands a new executable as 100755 and keeps an edited file 100644", async () => {
+    await commitForkFiles(fs, dir, { "run.sh": "#!/bin/sh\n", "app.txt": "v2\n" }, "Merge", "foundry",
+      "f".repeat(40), [], { "run.sh": "100755", "app.txt": "100644" });
+    expect(await modeOf("run.sh")).toBe(0o100755);
+    expect(await modeOf("app.txt")).toBe(0o100644);
+  });
+
+  it("drops the bit when the proposal made a file non-executable", async () => {
+    await commitForkFiles(fs, dir, { "run.sh": "#!/bin/sh\n" }, "M", "foundry", "f".repeat(40), [], { "run.sh": "100755" });
+    await commitForkFiles(fs, dir, { "run.sh": "#!/bin/sh\necho\n" }, "M", "foundry", "e".repeat(40), [], { "run.sh": "100644" });
+    expect(await modeOf("run.sh")).toBe(0o100644);
+  });
+
+  it("reads modes from the proposal commit and refuses symlinks and substituted text", async () => {
+    fs.mkdirSync(join(dir, "bin"));
+    fs.writeFileSync(join(dir, "bin/tool"), "#!/bin/sh\n", { mode: 0o755 });
+    fs.symlinkSync("../app.txt", join(dir, "bin/link"));
+    await git.add({ fs, dir, filepath: "bin/tool" });
+    await git.add({ fs, dir, filepath: "bin/link" });
+    const sha = await git.commit({ fs, dir, message: "p", author: { name: "t", email: "t@t" } });
+    expect(await proposalModes(fs, dir, sha, { "bin/tool": "#!/bin/sh\n", "app.txt": "v1\n" }))
+      .toEqual({ "bin/tool": "100755", "app.txt": "100644" });
+    await expect(proposalModes(fs, dir, sha, { "bin/link": "../app.txt" })).rejects.toThrow(/unsupported proposal entry/);
+    await expect(proposalModes(fs, dir, sha, { "app.txt": "other\n" })).rejects.toThrow(/differs from proposal blob/);
+    await expect(proposalModes(fs, dir, sha, { "nope/x": "x" })).rejects.toThrow(/no directory|unsupported/);
   });
 });

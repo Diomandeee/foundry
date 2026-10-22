@@ -121,6 +121,7 @@ export async function handlePush(
           baseBranch: baseInfo.defaultBranch,
           forkRemote: forkHandle.remote,
           forkToken: await forkHandle.createToken("read", 600),
+          forkBranch: push.ref.replace(/^refs\/heads\//, ""),
           forkHeadSha: push.after,
           files: decision.files,
           deletedFiles: decision.deletedFiles,
