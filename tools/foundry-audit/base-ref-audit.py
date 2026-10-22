@@ -20,6 +20,17 @@ CACHE = os.path.expanduser("~/.cache/foundry-base-audit")
 FETCH = os.path.expanduser("~/.config/foundry/bin/foundry-fetch")
 FLEET_WATCH = os.path.expanduser("~/.claude/fleet-watch/fleet_watch.py")
 EXTRA_REPOS = ["airdeck", "nko-speech"]
+# The app-fleet registry (security/app-fleet lane) records each seeded base as foundry_base.
+APP_REGISTRY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "docs", "app-fleet", "apps.v1.json")
+
+
+def registry_bases():
+    try:
+        d = json.load(open(APP_REGISTRY))
+    except Exception:
+        return []
+    rows = d.get("apps", d) if isinstance(d, dict) else d
+    return sorted({r["foundry_base"] for r in rows if isinstance(r, dict) and r.get("foundry_base")})
 
 
 def d1(sql):
@@ -51,7 +62,7 @@ def main():
     by_base = {}
     for m in merges:
         by_base.setdefault(m["base"], set()).add(m["sha"])
-    repos = sys.argv[1:] or sorted(set(by_base) | set(EXTRA_REPOS))
+    repos = sys.argv[1:] or sorted(set(by_base) | set(EXTRA_REPOS) | set(registry_bases()))
     findings, report = [], []
     for repo in repos:
         ref = "refs/audit/%s/main" % repo
