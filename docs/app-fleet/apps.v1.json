@@ -7725,7 +7725,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "nko-speech"
   },
   {
    "id": "notification-philosopher",
