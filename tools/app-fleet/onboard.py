@@ -22,6 +22,47 @@ BIN_EXT = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".heic", ".pdf", ".zip", ".
            ".psd", ".ai", ".sketch", ".fig", ".blend", ".fbx", ".obj", ".usdz", ".glb", ".gltf", ".ply"}
 PER_FILE = 4 * 1024 * 1024
 PER_MERGE = 8 * 1024 * 1024
+
+# Secrets never enter a base. A withheld file is listed in .foundry/assets.json by path and rule only
+# (no hash, no bytes). Public-by-design values (Supabase anon JWTs, *.example env files) stay.
+SECRET_NAME = re.compile(r"(^|/)(\.env(\.[^/]*)?|[^/]*\.(pem|p8|p12|pfx|key|keystore|jks|mobileprovision)|id_(rsa|ed25519|ecdsa)[^/]*|"
+                         r"credentials\.json|service[-_]account[^/]*\.json|\.netrc|\.npmrc|\.pypirc)$", re.I)
+SECRET_NAME_OK = re.compile(r"\.(example|sample|template|dist)$|\.pub$", re.I)
+SECRET_TEXT = [
+    ("private-key", re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----")),
+    ("anthropic-key", re.compile(r"sk-ant-[A-Za-z0-9_-]{20,}")),
+    ("openai-key", re.compile(r"\bsk-(?:proj-)?[A-Za-z0-9]{32,}")),
+    ("aws-key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
+    ("github-token", re.compile(r"\b(?:ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{30,}")),
+    ("slack-token", re.compile(r"\bxox[abprs]-[A-Za-z0-9-]{10,}")),
+    ("google-api-key", re.compile(r"\bAIza[0-9A-Za-z_-]{35}\b")),
+    ("stripe-secret", re.compile(r"\b[sr]k_live_[A-Za-z0-9]{20,}")),
+    ("supabase-secret", re.compile(r"\bsb_secret_[A-Za-z0-9_-]{20,}")),
+    ("cloudflare-token", re.compile(r"\bart_v\d_[A-Za-z0-9_]{20,}")),
+]
+JWT = re.compile(r"eyJ[A-Za-z0-9_-]{10,}\.(eyJ[A-Za-z0-9_-]{10,})\.[A-Za-z0-9_-]{10,}")
+
+
+def secret_rule(rel, data):
+    """Name of the first secret rule a file trips, or None. Never returns the matched text."""
+    if SECRET_NAME.search(rel) and not SECRET_NAME_OK.search(rel):
+        return "secret-file-name"
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        return None
+    for name, rx in SECRET_TEXT:
+        if rx.search(text):
+            return name
+    import base64
+    for m in JWT.finditer(text):
+        try:
+            payload = json.loads(base64.urlsafe_b64decode(m.group(1) + "=" * (-len(m.group(1)) % 4)))
+        except Exception:
+            continue
+        if isinstance(payload, dict) and payload.get("role") not in (None, "anon"):
+            return "jwt-" + str(payload.get("role"))[:20]
+    return None
 FOUNDRY_BIN = pathlib.Path.home() / ".config/foundry/bin"
 LOCKFIX = pathlib.Path(__file__).resolve().parents[2]
 
@@ -67,7 +108,16 @@ def plan_record(rec, namespace):
         return {"id": rec["id"], "skip": "no GitHub origin"}
     owner_repo = re.sub(r"^https://github.com/", "", origin).rstrip("/")
     base = re.sub(r"[^A-Za-z0-9._-]", "-", rec["title"]).lower()[:64]
-    branch, t, err = tree(owner_repo, rec.get("seed_branch"))
+    if rec.get("seed_local"):
+        # Seed from a local commit when the live line cannot reach GitHub (Comp-Core: history holds .env files,
+        # so its pre-push guard refuses). Only the snapshot enters the base, after the secret filter.
+        loc = rec["seed_local"]
+        rows = sh(["git", "-C", loc["path"], "ls-tree", "-r", "-l", "-z", loc["rev"]]).stdout.split("\0")
+        t = {"tree": [{"path": r.split("\t", 1)[1], "type": r.split()[1], "mode": r.split()[0],
+                       "size": int(r.split()[3]) if r.split()[3] != "-" else 0} for r in rows if r]}
+        branch, err = f"{loc['path']}@{loc['rev']}", None
+    else:
+        branch, t, err = tree(owner_repo, rec.get("seed_branch"))
     if err:
         return {"id": rec["id"], "skip": f"github: {err}"}
     n, text_bytes, offenders = lint(t.get("tree", []))
@@ -106,8 +156,15 @@ def seed_one(rec, plan, a):
     src = work / f"{base}.src"; snap = work / f"{base}.seed"
     for d in (src, snap):
         shutil.rmtree(d, ignore_errors=True)
-    sh(["git", "clone", "--quiet", "--depth", "1", "--branch", branch, rec["origin"], str(src)])
-    origin_sha = sh(["git", "rev-parse", "HEAD"], cwd=src).stdout.strip()
+    if rec.get("seed_local"):
+        loc = rec["seed_local"]
+        origin_sha = sh(["git", "-C", loc["path"], "rev-parse", loc["rev"] + "^{commit}"]).stdout.strip()
+        src.mkdir()
+        arch = subprocess.run(["git", "-C", loc["path"], "archive", "--format=tar", origin_sha], capture_output=True, check=True).stdout
+        subprocess.run(["tar", "-x", "-C", str(src)], input=arch, check=True)
+    else:
+        sh(["git", "clone", "--quiet", "--depth", "1", "--branch", branch, rec["origin"], str(src)])
+        origin_sha = sh(["git", "rev-parse", "HEAD"], cwd=src).stdout.strip()
     offenders = {o["path"] for o in plan["offenders"]}
     assets = []
     snap.mkdir()
@@ -126,6 +183,10 @@ def seed_one(rec, plan, a):
                 data.decode("utf-8")
             except UnicodeDecodeError:
                 is_text = False
+            rule = secret_rule(rel, data)
+            if rule:
+                assets.append({"path": rel, "withheld": rule})
+                continue
             if rel in offenders or not is_text or len(data) > PER_FILE:
                 assets.append({"path": rel, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
                 continue
