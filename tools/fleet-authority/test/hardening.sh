@@ -62,6 +62,21 @@ for i in 1 2 3 4 5; do python3 -c "
 import socket;s=socket.socket(socket.AF_UNIX);s.connect('$T/fleet-authority.sock');s.sendall(b'{\"op\":\"list\"}\n');s.close()"; done
 sleep 1; $FA status | grep -q '"ok" : true' && pass "H9 survives clients hanging up (SIGPIPE)" || fail "H9 daemon died"
 
+# 1.4 attachments (review C2): exact bytes travel with the request; the script uses $FLEET_FILES
+printf 'echo "from the attachment: $1"\n' > $T/helper.sh
+ID=$($FA stage "attachment run" --attach helper.sh=$T/helper.sh <<<'bash "$FLEET_FILES/helper.sh" ok' | idof)
+$FA show $ID | grep -q "attached file \$FLEET_FILES/helper.sh" && $FA show $ID | grep -q 'from the attachment' && pass "C2 render shows attached file contents" || fail "C2 attach render"
+$FA approve $ID >/dev/null; grep -q "from the attachment: ok" $T/log/$ID.out && pass "C2 script runs the root-only attached copy" || fail "C2 attach run: $(cat $T/log/$ID.out)"
+rm -f $T/helper.sh
+FP1=$(stage "fp a" 'bash "$FLEET_FILES/helper.sh"' | python3 -c "import sys,json;print(json.load(sys.stdin)['fp'])")
+printf 'echo other\n' > $T/helper.sh
+FP2=$($FA stage "fp b" --attach helper.sh=$T/helper.sh <<<'bash "$FLEET_FILES/helper.sh"' | python3 -c "import sys,json;print(json.load(sys.stdin)['fp'])")
+[ "$FP1" != "$FP2" ] && pass "C2 attachment is part of the fingerprint" || fail "C2 fp"
+ID=$($FA stage "tamper" --attach helper.sh=$T/helper.sh <<<'bash "$FLEET_FILES/helper.sh"' | idof); $FA show $ID >/dev/null
+chmod 600 $T/pending/$ID/files/helper.sh; printf 'echo EVIL\n' > $T/pending/$ID/files/helper.sh; chmod 400 $T/pending/$ID/files/helper.sh
+$FA approve $ID | grep -q "attachment-changed:helper.sh" && pass "C2 tampered attachment refused" || fail "C2 tamper ran"
+printf '/Library/FleetAuthority/bin/fleet-authority keys-add x y\n' > $T/sneaky.sh
+$FA stage "smuggle" --attach s.sh=$T/sneaky.sh <<<'bash "$FLEET_FILES/s.sh"' | grep -q protected-change-needs-typed-op && pass "C4 protected change in an attachment refused" || fail "C4 attach smuggle"
 # H9: caps
 for i in $(seq 1 12); do stage "flood $i" 'echo x' >/dev/null; done
 stage "flood 13" 'echo x' | grep -q too-many-pending && pass "H9 per-user pending cap" || fail "H9 cap"
@@ -73,4 +88,4 @@ import json,sys; p=sys.argv[1]; d=json.load(open(p)); d['state']='running'; json
 EOF
 pkill -f "$T/bin/fleet-authority daemon"; sleep 1; ($FA daemon >> $T/daemon.log 2>&1 &); sleep 2
 grep -q '"state":"orphaned"' $T/pending/$ID/request.json && grep -q '"kind":"orphaned"' $T/log/receipts.jsonl && pass "H9 running request marked orphaned on restart" || fail "H9 orphan"
-echo "PASS: fleet-authority 1.3 hardening"
+echo "PASS: fleet-authority 1.3 hardening + 1.4 attachments"

@@ -32,7 +32,11 @@ if (cmd === 'keygen') {
   const pub = await c.subtle.importKey('spki', Buffer.from(nodeSpki, 'base64'), { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
   const ok = await c.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, pub, derToRaw(new Uint8Array(Buffer.from(g.json.signature, 'base64'))), enc.encode(g.json.payload));
   const p = JSON.parse(g.json.payload);
-  const fp = await hex(canonical({ host: p.host, script: p.script, args: p.args, run_as: p.run_as, timeout_s: p.timeout_s, template: p.template }));
+  const fpo = { host: p.host, script: p.script, args: p.args, run_as: p.run_as, timeout_s: p.timeout_s, template: p.template };
+  const att = p.attachments ?? {};
+  for (const [n, a] of Object.entries(att)) if (a.text !== undefined && (await hex(a.text)) !== a.sha256) { console.log('attachment text/hash mismatch', n); process.exit(2); }
+  if (Object.keys(att).length) fpo.attachments = Object.fromEntries(Object.entries(att).map(([n, a]) => [n, a.sha256]));
+  const fp = await hex(canonical(fpo));
   console.log('node signature valid:', ok, '| fp recomputed matches:', fp === p.fp, '| script sha matches:', (await hex(p.script)) === p.script_sha256);
   console.log('script the phone shows:\n----\n' + p.script + '----');
   if (!ok || fp !== p.fp) process.exit(2);

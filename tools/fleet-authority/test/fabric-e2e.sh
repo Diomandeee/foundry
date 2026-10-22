@@ -42,7 +42,8 @@ $FA keys-add $H-phone "$DEVSPKI" e2e --biometric >/dev/null
 $FA relay-config "$R" $H-node >/dev/null
 
 id_of() { python3 -c "import sys,json;print(json.load(sys.stdin)['request_id'])"; }
-A=$(printf 'echo "fabric e2e: café ✓"\t# tab\necho back\\\\slash \x27quote\x27\n' | $FA stage "e2e approve" | id_of)
+printf 'echo "from attachment: $1"\n' > $DEV/helper.sh
+A=$(printf 'echo "fabric e2e: café ✓"\t# tab\necho back\\\\slash \x27quote\x27\nbash "$FLEET_FILES/helper.sh" yes\n' | $FA stage "e2e approve" --attach helper.sh=$DEV/helper.sh | id_of)
 # Enrolling another key while A is pending must not kill A (keys.json is outside the policy hash).
 K2=$(node -e "const {webcrypto:c}=require('node:crypto');c.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign']).then(k=>c.subtle.exportKey('spki',k.publicKey)).then(b=>console.log(Buffer.from(b).toString('base64')))")
 $FA keys-add spare "$K2" --biometric >/dev/null
@@ -54,6 +55,7 @@ phone decide $H-phone $H $D deny "$NODE" >/dev/null
 OUT=$(phone decide $H-phone $H $D approve "$NODE" || true); grep -q already-decided <<<"$OUT" || fail "replay not refused: $OUT"
 sleep 8
 grep -q 'fabric e2e: café ✓' $T/log/$A.out || fail "A did not run"
+grep -q 'from attachment: yes' $T/log/$A.out || fail "A attachment did not run"
 [ ! -e $T/log/$D.out ] || fail "denied request ran"
 python3 - "$T" "$H" "$D" <<'EOF' || fail "forged signature accepted"
 import json,socket,sys,time,base64

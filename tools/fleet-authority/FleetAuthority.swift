@@ -33,7 +33,7 @@ import CryptoKit
 import Darwin
 import Foundation
 
-let VERSION = "fleet-authority/1.3.0"
+let VERSION = "fleet-authority/1.4.0"
 let TEST_ROOT: String? = getuid() != 0 ? ProcessInfo.processInfo.environment["FLEET_AUTHORITY_TEST_ROOT"] : nil
 let ROOT = TEST_ROOT ?? "/Library/FleetAuthority"
 let SOCK = TEST_ROOT.map { $0 + "/fleet-authority.sock" } ?? "/var/run/fleet-authority.sock"
@@ -154,14 +154,36 @@ struct StagedRequest {
     var id: String, fp: String, nonce: String, tier: Int, stagedAt: Double, expiresAt: Double
     var stagedByUid: Int, description: String, template: String?, args: [String], script: String
     var runAs: String, timeoutS: Int, shownAt: Double?, state: String, policyHash: String
+    /// Review C2 (1.4): files the script uses, stored root-only in pending/<id>/files and hashed into the
+    /// fingerprint. name -> sha256. The script reaches them as "$FLEET_FILES/<name>".
+    var attachments: [String: String] = [:]
 
     var dir: String { ROOT + "/pending/" + id }
+    var filesDir: String { dir + "/files" }
+
+    /// The fingerprint body. `attachments` appears only when there are some, so pre-1.4 fingerprints are unchanged.
+    static func fpBody(host: String, script: String, args: [String], runAs: String, timeoutS: Int, template: String?,
+                       attachments: [String: String]) throws -> Data {
+        var o: [String: Any] = ["host": host, "script": script, "args": args, "run_as": runAs, "timeout_s": timeoutS, "template": template ?? ""]
+        if !attachments.isEmpty { o["attachments"] = attachments }
+        return try canonical(o)
+    }
+
+    /// Re-hash every attachment on disk; nil when all match.
+    func attachmentMismatch() -> String? {
+        for (name, want) in attachments {
+            let path = filesDir + "/" + name
+            guard trustedFile(path), let d = readFile(path), sha256Hex(d) == want else { return name }
+        }
+        return nil
+    }
     func toDict() -> [String: Any] {
         var d: [String: Any] = ["id": id, "fp": fp, "nonce": nonce, "tier": tier, "staged_at": stagedAt, "expires_at": expiresAt,
                                 "staged_by_uid": stagedByUid, "description": description, "args": args, "script": script,
                                 "run_as": runAs, "timeout_s": timeoutS, "state": state, "policy_hash": policyHash]
         if let t = template { d["template"] = t }
         if let s = shownAt { d["shown_at"] = s }
+        if !attachments.isEmpty { d["attachments"] = attachments }
         return d
     }
     static func from(_ d: [String: Any]) -> StagedRequest? {
@@ -170,9 +192,11 @@ struct StagedRequest {
               let desc = d["description"] as? String, let args = d["args"] as? [String], let script = d["script"] as? String,
               let runAs = d["run_as"] as? String, let to = d["timeout_s"] as? Int, let state = d["state"] as? String, let ph = d["policy_hash"] as? String
         else { return nil }
-        return StagedRequest(id: id, fp: fp, nonce: nonce, tier: tier, stagedAt: sa, expiresAt: ea, stagedByUid: uid, description: desc,
-                             template: d["template"] as? String, args: args, script: script, runAs: runAs, timeoutS: to,
-                             shownAt: d["shown_at"] as? Double, state: state, policyHash: ph)
+        var r = StagedRequest(id: id, fp: fp, nonce: nonce, tier: tier, stagedAt: sa, expiresAt: ea, stagedByUid: uid, description: desc,
+                              template: d["template"] as? String, args: args, script: script, runAs: runAs, timeoutS: to,
+                              shownAt: d["shown_at"] as? Double, state: state, policyHash: ph)
+        r.attachments = d["attachments"] as? [String: String] ?? [:]
+        return r
     }
     func save() throws {
         try FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
@@ -198,7 +222,13 @@ struct StagedRequest {
          "staged_at": Int(stagedAt), "description": description, "script": script, "script_sha256": sha256Hex(Data(script.utf8)),
          "args": args, "template": template ?? "", "run_as": runAs, "timeout_s": timeoutS,
          "approver_key_ids": ((try? Policy.load())?.enrolledKeys ?? []).filter { $0["biometric"] == "true" }.compactMap { $0["id"] }.sorted(),
-         "unpinned": unpinnedRefs(script)]
+         "unpinned": unpinnedRefs(script),
+         "attachments": attachments.isEmpty ? [String: Any]() : Dictionary(uniqueKeysWithValues: attachments.map { (name, sha) -> (String, Any) in
+             let d = readFile(filesDir + "/" + name) ?? Data()
+             var e: [String: Any] = ["sha256": sha, "bytes": d.count]
+             if d.count <= 65536, !d.contains(0), let t = String(data: d, encoding: .utf8) { e["text"] = t }
+             return (name, e)
+         })]
     }
     func render(host: String) -> String {
         let lines = script.split(separator: "\n", omittingEmptySubsequences: false).count
@@ -212,6 +242,13 @@ struct StagedRequest {
         if !unpinned.isEmpty { s += "WARNING UNPINNED: this script refers to files outside root control (\(unpinned.joined(separator: " "))). What runs depends on them, not only on the text below.\n" }
         s += "exactly what runs as \(runAs) (timeout \(timeoutS) s), \(lines) lines, sha256 \(sha256Hex(Data(script.utf8)).prefix(16)):\n"
         s += "---- begin \(id) ----\n\(script)\n---- end \(id) ----\n"
+        for name in attachments.keys.sorted() {
+            let d = readFile(filesDir + "/" + name) ?? Data()
+            s += "attached file $FLEET_FILES/\(name): \(d.count) bytes, sha256 \(attachments[name]!.prefix(16)) (root-only, part of the fingerprint)\n"
+            if d.count <= 65536, !d.contains(0), let t = String(data: d, encoding: .utf8) {
+                s += "---- begin \(id)/\(name) ----\n\(t)\n---- end \(id)/\(name) ----\n"
+            } else { s += "  (binary: check the sha256 against the build you expect)\n" }
+        }
         s += "to decide: send approve or deny (within 5 min of this screen, only while it is the one request waiting),\nor approve \(id) / deny \(id)\n"
         return s
     }
@@ -312,7 +349,8 @@ func execute(_ r: StagedRequest, host: String) -> (exit: Int32, out: Data, limit
     let argv = ["/bin/bash", r.dir + "/script.sh"] + r.args
     // 1.3 (review H1): no /opt/homebrew/bin. It is owned by the login user, so anything resolved from it ran
     // as root. Approved scripts call non-system tools by absolute path, and the render flags them.
-    var env = ["PATH=/usr/bin:/bin:/usr/sbin:/sbin", "HOME=/var/root", "LANG=en_US.UTF-8", "FLEET_REQUEST_ID=" + r.id, "FLEET_HOST=" + host]
+    var env = ["PATH=/usr/bin:/bin:/usr/sbin:/sbin", "HOME=/var/root", "LANG=en_US.UTF-8", "FLEET_REQUEST_ID=" + r.id, "FLEET_HOST=" + host,
+               "FLEET_FILES=" + r.filesDir]
     if let t = TEST_ROOT { env.append("FLEET_AUTHORITY_TEST_ROOT=" + t) }  // test mode only (non-root); never set in production
     let cargv = argv.map { strdup($0) } + [nil]
     let cenv = env.map { strdup($0) } + [nil]
@@ -404,12 +442,39 @@ final class Daemon {
         }
         let tier = deriveTier(policy: policy, template: template, script: script)
         let id = randomHex(8), nonce = randomHex(16)
-        let fpBody = try canonical(["host": policy.host, "script": script, "args": args, "run_as": runAs, "timeout_s": timeoutS, "template": template ?? ""])
-        let fp = sha256Hex(fpBody)
+        // Attachments (review C2): exact bytes travel with the request, so nothing under /Users is executed.
+        var files: [String: Data] = [:]
+        if let a = req["attachments"] as? [String: String], !a.isEmpty {
+            try require(a.count <= 16, "too-many-attachments")
+            var total = 0
+            for (name, b64) in a {
+                try require(name.range(of: "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", options: .regularExpression) != nil, "attachment-name")
+                guard let d = Data(base64Encoded: b64) else { throw Refusal(code: "attachment-not-base64") }
+                total += d.count
+                try require(d.count <= 16 << 20 && total <= 24 << 20, "attachments-too-large")
+                if let t = String(data: d, encoding: .utf8), !d.contains(0) {
+                    try require(!hasDisplayTrick(t, allowNewlines: true), "attachment-has-control-or-bidi-characters:" + name)
+                    if !typed {
+                        for p in ["keys-add", "keys-revoke", "keys.json", "fleet_authorized_keys", "policy.json", "approver_uids"] where t.contains(p) {
+                            throw Refusal(code: "protected-change-needs-typed-op:" + p)
+                        }
+                    }
+                }
+                files[name] = d
+            }
+        }
+        let attach = files.mapValues { sha256Hex($0) }
+        let fp = sha256Hex(try StagedRequest.fpBody(host: policy.host, script: script, args: args, runAs: runAs, timeoutS: timeoutS,
+                                                    template: template, attachments: attach))
         var r = StagedRequest(id: id, fp: fp, nonce: nonce, tier: tier, stagedAt: now(), expiresAt: now() + policy.expiryS, stagedByUid: uid,
                               description: desc, template: template, args: args, script: script, runAs: runAs, timeoutS: timeoutS,
                               shownAt: nil, state: "pending", policyHash: policy.hash)
+        r.attachments = attach
         try r.save()
+        if !files.isEmpty {
+            try FileManager.default.createDirectory(atPath: r.filesDir, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+            for (name, d) in files { try writePrivate(r.filesDir + "/" + name, d, mode: 0o400) }
+        }
         Receipts.append("staged", ["request_id": id, "fp": fp, "tier": tier, "by_uid": uid, "template": template ?? "", "policy_hash": policy.hash])
         if tier == 0 {
             r.state = "auto"; try r.save()
@@ -491,8 +556,10 @@ final class Daemon {
         try require(!policy.paused || r.tier > 0, "kill-switch-paused")
         // Re-verify the staged bytes against the fingerprint before running.
         guard let onDisk = readFile(r.dir + "/script.sh"), String(data: onDisk, encoding: .utf8) == r.script else { throw Refusal(code: "staged-bytes-changed") }
-        let fpBody = try canonical(["host": policy.host, "script": r.script, "args": r.args, "run_as": r.runAs, "timeout_s": r.timeoutS, "template": r.template ?? ""])
+        let fpBody = try StagedRequest.fpBody(host: policy.host, script: r.script, args: r.args, runAs: r.runAs, timeoutS: r.timeoutS,
+                                              template: r.template, attachments: r.attachments)
         try require(sha256Hex(fpBody) == r.fp, "fingerprint-mismatch")
+        if let bad = r.attachmentMismatch() { throw Refusal(code: "attachment-changed:" + bad) }
         r.state = "running"; try r.save()
         Receipts.append("approved", ["request_id": r.id, "fp": r.fp, "tier": r.tier, "by": by])
         let res = execute(r, host: policy.host)
@@ -683,7 +750,7 @@ final class Daemon {
             var cred = xucred(); var clen = socklen_t(MemoryLayout<xucred>.size)
             let uid: Int = getsockopt(c, 0 /* SOL_LOCAL */, 0x001 /* LOCAL_PEERCRED */, &cred, &clen) == 0 ? Int(cred.cr_uid) : -1
             var data = Data(); var buf = [UInt8](repeating: 0, count: 65536)
-            while data.count < 1 << 20 {
+            while data.count < 34 << 20 {
                 let n = read(c, &buf, buf.count)
                 if n <= 0 { break }
                 data.append(contentsOf: buf[0..<n])
@@ -757,6 +824,12 @@ func cli(_ args: [String]) -> Int32 {
             if f == "--template" { req["template"] = rest.isEmpty ? "" : rest.removeFirst() }
             else if f == "--args" { req["args"] = rest; rest = [] }
             else if f == "--timeout" { req["timeout_s"] = Int(rest.isEmpty ? "" : rest.removeFirst()) ?? 600 }
+            else if f == "--attach", !rest.isEmpty {
+                let spec = rest.removeFirst()
+                guard let eq = spec.firstIndex(of: "="), let d = readFile(String(spec[spec.index(after: eq)...])) else { fail("--attach name=path (readable file)") }
+                var a = req["attachments"] as? [String: String] ?? [:]
+                a[String(spec[..<eq])] = d.base64EncodedString(); req["attachments"] = a
+            }
         }
         if req["template"] == nil { req["script"] = String(data: FileHandle.standardInput.readDataToEndOfFile(), encoding: .utf8) ?? "" }
         let r = client(req); printJSON(r); return (r["ok"] as? Bool) == true ? 0 : 1

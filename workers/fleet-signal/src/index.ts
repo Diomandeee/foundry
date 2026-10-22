@@ -53,7 +53,7 @@ export class SignalHubObject extends DurableObject<Env> {
     const url = new URL(req.url);
     const path = url.pathname, pq = url.pathname + url.search;
     const body = req.method === 'GET' ? '' : await req.text();
-    if (body.length > 256 * 1024) return json(413, { error: 'body-too-large' });
+    if (body.length > 2 * 1024 * 1024) return json(413, { error: 'body-too-large' });
     const data = body ? JSON.parse(body) : {};
     try {
       const auth = req.headers.get('authorization') ?? '';
