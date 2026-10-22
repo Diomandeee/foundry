@@ -29,7 +29,7 @@ def registry_bases():
         d = json.load(open(APP_REGISTRY))
     except Exception:
         return []
-    rows = d.get("apps", d) if isinstance(d, dict) else d
+    rows = (d.get("records") or d.get("apps") or []) if isinstance(d, dict) else d
     return sorted({r["foundry_base"] for r in rows if isinstance(r, dict) and r.get("foundry_base")})
 
 
