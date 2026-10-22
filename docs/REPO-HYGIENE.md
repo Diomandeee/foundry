@@ -59,7 +59,7 @@ A current doc whose `describes` paths changed after `verified_commit` is stale (
 | R2 generated/data/log | An untracked output, dataset or log is neither .gitignored nor on the data plane. |
 | R3 secret-risk | An untracked file looks like a secret. Quarantine it; never commit it. |
 | R4 doc-status | A doc under `docs/` or named *PLAN*, *ARCHITECTURE*, *STATUS*, *RUNBOOK*, *CONTRACT* or *PROGRAM* has no status. |
-| R5 doc-describes-changed | A current doc's code changed after its `verified_commit`. |
+| R5 doc-describes-changed | A current doc's code changed after its `verified_commit`, or after the doc's own last commit if that is later. A doc can't name the commit that contains it, so editing it counts as re-verifying. |
 | R6 dangling-refs | A ref points at missing objects and has no ledger entry. |
 
 Modes:
@@ -77,9 +77,10 @@ The first ratchet run on MotionMix flagged exactly the two things a lane added m
 | MotionMix-Ableton | Mac5 | 6 | 0 | 6 | 0 | 13 | 0 |
 | MotionMixApp | Mac1 | 18 | 0 | 0 | 0 | 26 | 0 |
 | AirDeck | Mac1 | 2 | 0 | 0 | 0 | 0 | 0 |
-| Comp-Core p1/body-time | ? | not scanned | | | | | |
+| Comp-Core p1/body-time (sparse worktree) | Mac1 | 0 | 0 | 0 | 0 | 116 | 0 |
+| Comp-Core a1-multicam-extrinsics | Mac1 | 0 | 0 | 0 | 0 | 115 | 0 |
 
-Comp-Core was not scanned. Mac4's `comp-core-p1-build` is an exported tree with no `.git`, and Mac5's Desktop `Comp-Core` is not a git checkout either. The git home of branch p1/body-time still has to be named.
+Comp-Core's working branches live as worktrees of `~/Desktop/Comp-Core` under `~/Developer/.worktrees/Comp-Core/` on Mac1. Mac4's `comp-core-p1-build` is an rsync export with no `.git`. Their only debt is docs without status.
 
 MotionMix's seven R3 items are content-pattern hits in tests and launch scripts. Many are probably test fixtures, but the owner lane decides.
 

@@ -75,7 +75,13 @@ def rules(repo, inv, ledger):
             vc = next((l.split(":", 1)[1].strip() for l in fm.split("\n")[:40] if l.startswith("verified_commit:")), None)
             desc = [d.strip(" []'\"") for d in (st.get("describes") or "").split(",") if d.strip(" []'\"")]
             if vc and desc:
-                ch = subprocess.run(["git", "-C", top, "diff", "--name-only", f"{vc}..HEAD", "--", *desc], capture_output=True)
+                # A doc can't name the commit that contains it, so a commit that edits the doc counts as
+                # re-verifying it: start from the later of verified_commit and the doc's own last commit.
+                base = vc
+                last = subprocess.run(["git", "-C", top, "log", "-1", "--format=%H", "--", p], capture_output=True).stdout.decode().strip()
+                if last and subprocess.run(["git", "-C", top, "merge-base", "--is-ancestor", vc, last], capture_output=True).returncode == 0:
+                    base = last
+                ch = subprocess.run(["git", "-C", top, "diff", "--name-only", f"{base}..HEAD", "--", *desc], capture_output=True)
                 if ch.returncode == 0 and ch.stdout.strip():
                     r5.append(f"{p} (describes changed since {vc[:10]}: {len(ch.stdout.split())} files)")
             elif not desc:
