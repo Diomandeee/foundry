@@ -1,0 +1,73 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "foundry.repo-hygiene.doc-status.v1",
+ "title": "Front matter every tracked plan/architecture doc carries so staleness is detectable",
+ "description": "YAML front matter at the top of the .md file:\n---\nstatus: current\ndescribes: [scripts/motionmix_studio_engine.py, lume-wiring/render/]\nverified_at: 2026-10-21\nverified_commit: 9ce2284\nowner_lane: air-deck-ableton-integration\n---",
+ "type": "object",
+ "required": [
+  "status"
+ ],
+ "properties": {
+  "status": {
+   "enum": [
+    "current",
+    "superseded",
+    "historical",
+    "draft"
+   ]
+  },
+  "superseded_by": {
+   "type": "string",
+   "description": "repo path of the doc that replaces this one; required when status=superseded"
+  },
+  "describes": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "description": "code paths (files or dir prefixes) this doc makes claims about; required when status=current"
+  },
+  "verified_at": {
+   "type": "string",
+   "format": "date"
+  },
+  "verified_commit": {
+   "type": "string",
+   "description": "commit at which the claims were last checked against the code"
+  },
+  "owner_lane": {
+   "type": "string"
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "status": {
+      "const": "superseded"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "superseded_by"
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "status": {
+      "const": "current"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "describes",
+     "verified_commit"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,90 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "foundry.repo-hygiene.ref-ledger.v1",
+ "title": "Dangling refs and lost branches, with recovery status (one ledger per repo, append/update in place)",
+ "type": "object",
+ "required": [
+  "schema",
+  "repo",
+  "entries"
+ ],
+ "properties": {
+  "schema": {
+   "const": "foundry.repo-hygiene.ref-ledger.v1"
+  },
+  "repo": {
+   "type": "string"
+  },
+  "entries": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "ref",
+     "sha",
+     "first_seen",
+     "recovery_status"
+    ],
+    "properties": {
+     "ref": {
+      "type": "string"
+     },
+     "sha": {
+      "type": "string"
+     },
+     "first_seen": {
+      "type": "string",
+      "format": "date-time"
+     },
+     "cause": {
+      "type": "string",
+      "description": "e.g. filter-repo 2026-10-01 + gc"
+     },
+     "recovery_status": {
+      "enum": [
+       "unchecked",
+       "on-remote",
+       "in-archive",
+       "recovered",
+       "superseded",
+       "lost-confirmed"
+      ]
+     },
+     "source": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "where the objects were found: remote ref, gs:// or gdrive: archive path, other clone"
+     },
+     "recovered_as": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "ref/sha after recovery"
+     },
+     "checked_by": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "checked_at": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "format": "date-time"
+     },
+     "note": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    }
+   }
+  }
+ }
+}
