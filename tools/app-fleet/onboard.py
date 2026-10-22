@@ -151,6 +151,21 @@ def seed_one(rec, plan, a):
             "stripped": len(assets), "created": created, "subscribed": sub.stdout.strip()[:120], "namespace": a.namespace}
 
 
+def write_back(registry, rec_id, fields):
+    """Re-read the registry under an exclusive lock and update only this record, so two lanes
+    seeding at once never wipe each other's foundry_base (supervisor's write race, 2026-10-22)."""
+    import fcntl
+    lock = pathlib.Path(str(registry) + ".lock")
+    with open(lock, "w") as lf:
+        fcntl.flock(lf, fcntl.LOCK_EX)
+        reg = json.load(open(registry))
+        for rec in reg["records"]:
+            if rec["id"] == rec_id:
+                rec.update(fields); break
+        tmp = pathlib.Path(str(registry) + ".tmp"); tmp.write_text(json.dumps(reg, indent=1)); tmp.replace(registry)
+        fcntl.flock(lf, fcntl.LOCK_UN)
+
+
 def apply(sel, a):
     reg = json.load(open(a.registry)); by_id = {r["id"]: r for r in reg["records"]}
     rec_dir = pathlib.Path(a.receipts); rec_dir.mkdir(parents=True, exist_ok=True)
@@ -167,12 +182,11 @@ def apply(sel, a):
             print(f"SKIP {r['id']}: {p['files']} files exceeds gate limit"); continue
         try:
             res = seed_one(r, p, a)
-            by_id[r["id"]]["foundry_base"] = res["base"]; by_id[r["id"]]["foundry_seed"] = res
+            write_back(a.registry, r["id"], {"foundry_base": res["base"], "foundry_seed": res})
             log["results"].append({"id": r["id"], **res})
             print(f"SEEDED {r['id']:<30} base={res['base']} files={res['files']} stripped={res['stripped']} seed={res['seed_commit'][:8]}")
         except Exception as e:
             log["results"].append({"id": r["id"], "error": str(e)[:400]}); print(f"ERROR  {r['id']}: {str(e)[:200]}")
-        pathlib.Path(a.registry).write_text(json.dumps(reg, indent=1))
         (rec_dir / f"seed.{ts}.json").write_text(json.dumps(log, indent=1))
     ok = sum(1 for x in log["results"] if "seed_commit" in x)
     print(f"\nseeded {ok}, skipped {sum(1 for x in log['results'] if 'skipped' in x)}, errors {sum(1 for x in log['results'] if 'error' in x)}")
