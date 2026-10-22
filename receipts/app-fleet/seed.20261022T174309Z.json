@@ -1,0 +1,70 @@
+{
+ "approved_by": "Mohamed 2026-10-22: re-sent the three decisions; lane defaults: foundry-staging; batch 2 = hot/warm minus the MotionMix family (supervisor's)",
+ "started": "20261022T174309Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "agent-orchestrator",
+   "skipped": "2731 files > gate limit 2000"
+  },
+  {
+   "id": "aura",
+   "base": "aura",
+   "origin_commit": "218a117afa5a4e4b61d471f964fd7a0cb468e8db",
+   "seed_commit": "3a868fb8a0ed350bc9f7ee4b2b76780e56b534d9",
+   "files": 388,
+   "stripped": 40,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"430821d9856d44ed9de1c4e2e3eb3210\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "bwb",
+   "skipped": "2069 files > gate limit 2000"
+  },
+  {
+   "id": "bwb-site",
+   "base": "bwb-site",
+   "origin_commit": "7a299dca4eaefe6276c7317dd9365258ed7114a6",
+   "seed_commit": "d56578e15338f75ec71a365ca776a47343971326",
+   "files": 77,
+   "stripped": 512,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"91ecc00a3b184cfbab919d24701d7077\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "cadcraft",
+   "base": "cadcraft",
+   "origin_commit": "00c7613f1af3c73f7157fa91d9fe2635c6f23c06",
+   "seed_commit": "d411d420c7f2c42ad933d6f84b7b0ea16f2101cf",
+   "files": 596,
+   "stripped": 23,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"7eda80f6b04c4714ab65e2e42eeb26c9\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "chain_memory",
+   "base": "chain_memory",
+   "origin_commit": "2ff0c3a9f7296bbeb6dd83aec0b010b55b2ca22f",
+   "seed_commit": "ca511e1a92d1ac06e8f05a135fd8a7d2dd45d3ae",
+   "files": 10,
+   "stripped": 3,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"7dcb17923bdd4dc5b71422f7de9ea18f\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "coltivare",
+   "base": "coltivare",
+   "origin_commit": "a134f317c92cac57dafd014ae4ab7bdd7ffe495e",
+   "seed_commit": "e130d70bdfe75f91537949325a4735ae823f7dfa",
+   "files": 255,
+   "stripped": 51,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"632b4cf3e7eb42558e0045479ce945b8\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}
