@@ -21,8 +21,8 @@ with your GitHub clone. You land work by replaying your commits onto the base, n
 | `sharedservices` | main | 4d966fd0 |
 | `airdeck` | existing base (Air Deck gate run, 2026-10-19) | |
 
-Not seeded: `motionmixapp` (2679 text files, over the gate's 2000-file tree limit, review M7). Its changes keep
-the old path until the M7 fix lands.
+`motionmixapp` (2679 text files) was held back by the old 2000-file tree limit. The gate diffs by object id
+since hotfix 2ebf8fa (deployed 2026-10-22 ~18:09Z, version e4d22595), so it can now be seeded.
 
 ## Steps
 
@@ -40,14 +40,18 @@ the old path until the M7 fix lands.
 5. On MERGE, mirror to GitHub by pushing **your original branch** (the commits you replayed), not the gated
    merge commit:
    `git diff <your-branch> foundry/main --stat -- . ':!FOUNDRY-SEED.md' ':!.foundry'` must list only files from
-   `.foundry/assets.json`, then `git push origin <your-branch>`.
+   `.foundry/assets.json` (binaries, oversized files, and symlinks, which seeds since 2026-10-22 record with
+   their target), then `git push origin <your-branch>`. Seeds made before that dropped symlinks without a record,
+   and merges before 2ebf8fa landed new executables as 100644; mode-only and symlink-only differences from
+   those are known defects, not ungated content.
    Push to GitHub only after a MERGE verdict. A GitHub push without a gated MERGE is the ungated path that
    Mohamed retired for this family on 2026-10-22.
 6. Keep the fork's history and delete the fork: step 7 of nko-speech `docs/ONBOARDING.md`.
 
 ## Limits
 
-- 4 MiB per file, 8 MiB of text per merge, 2000 files in the tree (M7).
+- 4 MiB per file, 8 MiB of text and 2000 changed paths per merge. No limit on the tree size (M7 fixed in 2ebf8fa).
+- File modes (100644/100755) land as pushed. Symlinks and submodules in a change are refused.
 - `motionmix` (28 MB text) and `motionmix-ableton` (8.8 MB text) are over 8 MiB in total. The seed bypassed
   the per-merge limit once; ordinary merges are deltas and fit, but a mass rename or reformat will not.
 - Edits outside the task's `allowedRoots` are refused.

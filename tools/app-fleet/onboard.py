@@ -116,6 +116,9 @@ def seed_one(rec, plan, a):
         for f in files:
             full = pathlib.Path(root, f); rel = str(full.relative_to(src))
             if full.is_symlink():
+                # The gate carries text files only; keep the link target on record so the
+                # GitHub mirror check can tell a symlink from an ungated difference.
+                assets.append({"path": rel, "symlink": os.readlink(full)})
                 continue
             data = full.read_bytes()
             is_text = True
@@ -204,7 +207,7 @@ def main():
     ap.add_argument("--approved-by", default=None, help="literal words from Mohamed authorising --apply")
     ap.add_argument("--receipts", default=str(LOCKFIX / "receipts/app-fleet"))
     ap.add_argument("--skip", default="", help="comma list of registry ids to leave to another lane")
-    ap.add_argument("--max-files", type=int, default=2000, help="gate tree limit (review M7); bigger repos are reported, not seeded")
+    ap.add_argument("--max-files", type=int, default=20000, help="tree size the seeder accepts; the gate diffs by object id since 2ebf8fa (M7), so this only bounds the seed itself")
     ap.add_argument("--work", default=str(pathlib.Path(os.environ.get("TMPDIR", "/tmp")) / "app-fleet-seed"))
     ap.add_argument("--only-clean", action="store_true", help="seed only repos with no binaries to strip")
     a = ap.parse_args()
