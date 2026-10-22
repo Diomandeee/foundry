@@ -19,7 +19,11 @@ CPU=${CPU:-4}; MEM_GIB=${MEM_GIB:-4}; TIMEOUT_S=${TIMEOUT_S:-1800}; OUT_DISK_GIB
 # The build account must have a GUI login session (VZ refuses sessionless users);
 # launchctl asuser joins that session, sudo then drops to the account.
 # Fixed, not overridable from the environment (review H7: an env-supplied command would run as root).
-LAUNCH="launchctl asuser 520 sudo -u foundrybuild -g foundrybuild -H"
+# nice -15 (set by root, inherited through asuser/sudo by the driver AND the helper): the helper stops the VM
+# if a permit misses its 1 s budget (fence-timeout). On 2026-10-22 Mac5 was also running Live, echelon-live
+# and the Bolt relay, and the 10-21 runs (quiet Mac) never saw that contention. The safety budget stays 1 s;
+# the heartbeat just gets CPU first.
+LAUNCH="/usr/bin/nice -n -15 launchctl asuser 520 sudo -u foundrybuild -g foundrybuild -H"
 DENSE=/Library/Foundry/VM/images/$IMAGE-dense/boot.raw
 IMG=/Library/Foundry/VM/images/$IMAGE
 RECEIPT=/Library/Foundry/VM/sources/$SRC_NAME.seal.json
