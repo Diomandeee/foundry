@@ -23,6 +23,11 @@ export interface CreateTaskInput {
    * rule 10 a control rather than decoration.
    */
   allowedRoots?: string[];
+  /**
+   * Review H4 (2026-10-22): a task without allowedRoots is refused. A task that really must touch any
+   * path says so explicitly with `unrestricted: true`, and the dispatch records it.
+   */
+  unrestricted?: boolean;
 }
 
 export interface AgentDispatch {
@@ -85,6 +90,14 @@ function validate(input: CreateTaskInput): void {
         throw new Error(`invalid chain name: ${String(c)}`);
       }
     }
+  }
+  if (input.unrestricted !== undefined && typeof input.unrestricted !== "boolean") {
+    throw new Error("invalid unrestricted: need a boolean");
+  }
+  if (input.unrestricted !== true && (!Array.isArray(input.allowedRoots) || input.allowedRoots.length === 0)) {
+    throw new Error(
+      'allowedRoots required: name the paths this task may touch (e.g. ["src/feature"]), or pass "unrestricted": true deliberately',
+    );
   }
   if (input.allowedRoots !== undefined) {
     if (!Array.isArray(input.allowedRoots)) {
