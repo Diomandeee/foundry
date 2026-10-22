@@ -48,9 +48,10 @@ async function setup() {
   const hub = new SignalHub(sqlPort(), () => t, { notifyRequest: async (d, r) => { pushes.push({ d, r }); } });
   const node = await keypair(), phone = await keypair(), other = await keypair();
   hub.enrollNode('mac5-node', 'mac5', node.spki);
-  hub.enrollDevice('iphone', phone.spki, 'Mohamed iPhone', 'apns-token-1', 'sandbox');
+  hub.enrollDevice('iphone', phone.spki, 'Mohamed iPhone', 'apns-token-1', 'sandbox', phone.spki, true);
   const payload = canonical({ v: 1, host: 'mac5', request_id: 'c94065cb9815395f', fp: 'a'.repeat(64), tier: 3, nonce: 'n'.repeat(32),
-    expires_at: t + 1800, staged_at: t, description: 'Mac VM worker request 17', script: 'echo hi', script_sha256: 'b'.repeat(64) });
+    expires_at: t + 1800, staged_at: t, description: 'Mac VM worker request 17', script: 'echo hi', script_sha256: 'b'.repeat(64),
+    approver_key_ids: ['iphone', 'phone2'] });
   return { hub, node, phone, other, payload, pushes, tick: (s: number) => { t += s; }, now: () => t };
 }
 
@@ -130,7 +131,7 @@ describe('fleet-signal hub', () => {
   it('checks decisions against the separate Face ID decision key when enrolled', async () => {
     const s = await setup();
     const auth = await keypair(), face = await keypair();
-    s.hub.enrollDevice('phone2', auth.spki, 'two-key phone', null, null, face.spki);
+    s.hub.enrollDevice('phone2', auth.spki, 'two-key phone', null, null, face.spki, true);
     const np = await s.hub.authenticate(await signed(s.node, 'mac5-node', 'POST', '/v1/requests', '{}', s.now()), 'POST', '/v1/requests', '{}');
     await s.hub.publishRequest(np, s.payload, await s.node.sign(s.payload));
     const r = JSON.parse(s.payload);
@@ -142,6 +143,24 @@ describe('fleet-signal hub', () => {
     const pp = await s.hub.authenticate(await signed(auth, 'phone2', 'POST', '/v1/devices/push', '{}', s.now()), 'POST', '/v1/devices/push', '{}');
     s.hub.setPushToken(pp, 'ab'.repeat(32), 'sandbox');
     expect(() => s.hub.setPushToken(pp, 'not-hex', 'sandbox')).toThrow('invalid-push-token');
+  });
+
+  it('refuses non-biometric devices, unlisted approvers, and squatting', async () => {
+    const s = await setup();
+    const k = await keypair();
+    expect(() => s.hub.enrollDevice('passcode-phone', k.spki, null, null, null, k.spki, false)).toThrow('device-not-biometric');
+    const rogue = await keypair();
+    s.hub.enrollDevice('rogue', rogue.spki, 'not listed', null, null, rogue.spki, true);
+    const np = await s.hub.authenticate(await signed(s.node, 'mac5-node', 'POST', '/v1/requests', '{}', s.now()), 'POST', '/v1/requests', '{}');
+    await s.hub.publishRequest(np, s.payload, await s.node.sign(s.payload));
+    const r = JSON.parse(s.payload);
+    const deny = canonical({ v: 1, host: 'mac5', request_id: r.request_id, fp: r.fp, tier: r.tier, nonce: r.nonce,
+      expires_at: r.expires_at, issued_at: s.now(), decision: 'deny' });
+    const rp = await s.hub.authenticate(await signed(rogue, 'rogue', 'POST', '/v1/decisions', '{}', s.now()), 'POST', '/v1/decisions', '{}');
+    await expect(s.hub.submitDecision(rp, deny, await rogue.sign(deny))).rejects.toThrow('not-an-approver-for-this-request');
+    // the listed phone still sees the request and can decide it
+    const dp = await s.hub.authenticate(await signed(s.phone, 'iphone', 'GET', '/v1/pending', '', s.now()), 'GET', '/v1/pending', '');
+    expect(s.hub.pending(dp)).toHaveLength(1);
   });
 
   it('only devices read the feed; nodes cannot decide', async () => {

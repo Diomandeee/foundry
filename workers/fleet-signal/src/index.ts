@@ -62,7 +62,7 @@ export class SignalHubObject extends DurableObject<Env> {
       if (path.startsWith('/v1/admin/')) {
         if (!isOwner) return json(401, { error: 'owner-only' });
         if (path === '/v1/admin/nodes') this.hub.enrollNode(data.node_id, data.host, data.spki);
-        else if (path === '/v1/admin/devices') this.hub.enrollDevice(data.device_id, data.spki, data.label ?? null, data.apns_token ?? null, data.apns_env ?? null, data.decision_spki ?? null);
+        else if (path === '/v1/admin/devices') this.hub.enrollDevice(data.device_id, data.spki, data.label ?? null, data.apns_token ?? null, data.apns_env ?? null, data.decision_spki ?? null, data.biometric === true);
         else if (path === '/v1/admin/revoke') this.hub.revoke(data.kind, data.id);
         else return json(404, { error: 'not-found' });
         return json(200, { ok: true });

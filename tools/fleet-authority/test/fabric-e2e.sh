@@ -37,15 +37,15 @@ FA=$T/bin/fleet-authority
 NODE=$($FA node-key); [ -n "$NODE" ] || fail "no node key"
 DEVSPKI=$(phone keygen)
 admin nodes "{\"node_id\":\"$H-node\",\"host\":\"$H\",\"spki\":\"$NODE\"}" || fail "enroll node"
-admin devices "{\"device_id\":\"$H-phone\",\"spki\":\"$DEVSPKI\",\"label\":\"e2e\"}" || fail "enroll device"
-$FA keys-add $H-phone "$DEVSPKI" e2e >/dev/null
+admin devices "{\"device_id\":\"$H-phone\",\"spki\":\"$DEVSPKI\",\"decision_spki\":\"$DEVSPKI\",\"biometric\":true,\"label\":\"e2e\"}" || fail "enroll device"
+$FA keys-add $H-phone "$DEVSPKI" e2e --biometric >/dev/null
 $FA relay-config "$R" $H-node >/dev/null
 
 id_of() { python3 -c "import sys,json;print(json.load(sys.stdin)['request_id'])"; }
 A=$(printf 'echo "fabric e2e: café ✓"\t# tab\necho back\\\\slash \x27quote\x27\n' | $FA stage "e2e approve" | id_of)
 # Enrolling another key while A is pending must not kill A (keys.json is outside the policy hash).
 K2=$(node -e "const {webcrypto:c}=require('node:crypto');c.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign']).then(k=>c.subtle.exportKey('spki',k.publicKey)).then(b=>console.log(Buffer.from(b).toString('base64')))")
-$FA keys-add spare "$K2" >/dev/null
+$FA keys-add spare "$K2" --biometric >/dev/null
 D=$(echo 'echo must-not-run' | $FA stage "e2e deny" | id_of)
 sleep 22   # one idle relay tick publishes both
 

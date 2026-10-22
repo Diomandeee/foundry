@@ -33,6 +33,10 @@ export const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS decisions (host TEXT NOT NULL, request_id TEXT NOT NULL, message TEXT NOT NULL,
      signature TEXT NOT NULL, key_id TEXT NOT NULL, decision TEXT NOT NULL, received_at INTEGER NOT NULL,
      seq INTEGER NOT NULL, PRIMARY KEY (host, request_id))`,
+  // v3 (review H5): one decision per (host, request, approver key), so another device cannot squat a request.
+  `CREATE TABLE IF NOT EXISTS decisions2 (host TEXT NOT NULL, request_id TEXT NOT NULL, key_id TEXT NOT NULL, message TEXT NOT NULL,
+     signature TEXT NOT NULL, decision TEXT NOT NULL, received_at INTEGER NOT NULL, seq INTEGER NOT NULL,
+     PRIMARY KEY (host, request_id, key_id))`,
   `CREATE TABLE IF NOT EXISTS receipts (host TEXT NOT NULL, seq INTEGER NOT NULL, hash TEXT NOT NULL,
      prev TEXT NOT NULL, entry TEXT NOT NULL, received_at INTEGER NOT NULL, PRIMARY KEY (host, seq))`,
   `CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, at INTEGER NOT NULL, source TEXT NOT NULL,
@@ -62,6 +66,7 @@ export class SignalHub {
     // (Secure Enclave, Face ID gated) signs approve/deny. Older rows fall back to `spki`.
     const cols = this.all("SELECT name FROM pragma_table_info('devices')").map(r => String(r.name));
     if (!cols.includes('decision_spki')) this.sql.exec('ALTER TABLE devices ADD COLUMN decision_spki TEXT');
+    if (!cols.includes('biometric')) this.sql.exec('ALTER TABLE devices ADD COLUMN biometric INTEGER');
   }
 
   private one(q: string, ...b: unknown[]): Record<string, unknown> | undefined {
@@ -87,10 +92,12 @@ export class SignalHub {
     this.event('owner', 'node.enrolled', { nodeId, host });
   }
   enrollDevice(deviceId: string, spki: string, label: string | null, apnsToken: string | null, apnsEnv: string | null,
-               decisionSpki: string | null = null): void {
+               decisionSpki: string | null = null, biometric = false): void {
     if (!ID.test(deviceId) || !spki) throw new HubError(400, 'invalid-device');
+    // Review C3: an approver must prove a person by biometry; passcode-only devices are refused at the door.
+    if (!decisionSpki || !biometric) throw new HubError(400, 'device-not-biometric');
     if (apnsEnv && !['sandbox', 'production'].includes(apnsEnv)) throw new HubError(400, 'invalid-apns-env');
-    this.sql.exec('INSERT INTO devices (device_id, spki, label, apns_token, apns_env, enrolled_at, decision_spki) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    this.sql.exec('INSERT INTO devices (device_id, spki, label, apns_token, apns_env, enrolled_at, decision_spki, biometric) VALUES (?, ?, ?, ?, ?, ?, ?, 1)',
       deviceId, spki, label, apnsToken, apnsEnv, this.now(), decisionSpki);
     this.event('owner', 'device.enrolled', { deviceId, label });
   }
@@ -160,7 +167,7 @@ export class SignalHub {
     const r = this.one('SELECT payload, signature FROM requests WHERE host = ? AND request_id = ?', host, requestId);
     if (!r) throw new HubError(404, 'no-such-request');
     const node = this.one('SELECT node_id, spki FROM nodes WHERE host = ? AND revoked_at IS NULL', host);
-    const decided = this.one('SELECT decision FROM decisions WHERE host = ? AND request_id = ?', host, requestId);
+    const decided = this.one('SELECT decision FROM decisions2 WHERE host = ? AND request_id = ? AND key_id = ?', host, requestId, p.id);
     return { payload: r.payload, signature: r.signature, node_id: node?.node_id, decision: decided?.decision ?? null };
   }
 
@@ -168,31 +175,35 @@ export class SignalHub {
   pending(p: Principal) {
     if (p.kind !== 'device') throw new HubError(403, 'device-only');
     return this.all(`SELECT r.host, r.request_id, r.tier, r.description, r.expires_at FROM requests r
-      LEFT JOIN decisions d ON d.host = r.host AND d.request_id = r.request_id
+      LEFT JOIN decisions2 d ON d.host = r.host AND d.request_id = r.request_id AND d.key_id = ?
       JOIN nodes n ON n.host = r.host AND n.revoked_at IS NULL
-      WHERE d.request_id IS NULL AND r.expires_at > ? ORDER BY r.received_at DESC LIMIT 50`, this.now());
+      WHERE d.request_id IS NULL AND r.expires_at > ? ORDER BY r.received_at DESC LIMIT 50`, p.id, this.now());
   }
 
   // ── device: submit a signed decision ────────────────────────────────────────
   async submitDecision(p: Principal, message: string, signature: string): Promise<{ seq: number }> {
     if (p.kind !== 'device') throw new HubError(403, 'device-only');
-    const dev = this.one('SELECT spki, decision_spki FROM devices WHERE device_id = ? AND revoked_at IS NULL', p.id);
-    if (!dev || !(await verifyP256(String(dev.decision_spki ?? dev.spki), signature, message))) throw new HubError(400, 'bad-decision-signature');
+    const dev = this.one('SELECT spki, decision_spki, biometric FROM devices WHERE device_id = ? AND revoked_at IS NULL', p.id);
+    if (!dev || !dev.decision_spki || Number(dev.biometric) !== 1) throw new HubError(403, 'device-not-biometric');
+    if (!(await verifyP256(String(dev.decision_spki), signature, message))) throw new HubError(400, 'bad-decision-signature');
     let m: Record<string, unknown>;
     try { m = JSON.parse(message); } catch { throw new HubError(400, 'message-not-json'); }
     if (canonical(m) !== message) throw new HubError(400, 'message-not-canonical');
-    const req = this.one('SELECT fp, tier, nonce, expires_at FROM requests WHERE host = ? AND request_id = ?', m.host, m.request_id);
+    const req = this.one('SELECT fp, tier, nonce, expires_at, payload FROM requests WHERE host = ? AND request_id = ?', m.host, m.request_id);
     if (!req) throw new HubError(404, 'no-such-request');
+    // Review H5: only approver keys the Mac itself listed in its signed request may decide it.
+    const approvers = (JSON.parse(String(req.payload)).approver_key_ids ?? null) as string[] | null;
+    if (!Array.isArray(approvers) || !approvers.includes(p.id)) throw new HubError(403, 'not-an-approver-for-this-request');
     if (m.v !== 1 || m.fp !== req.fp || m.nonce !== req.nonce || m.tier !== Number(req.tier) || m.expires_at !== Number(req.expires_at) ||
         !['approve', 'deny'].includes(String(m.decision)) || !Number.isInteger(m.issued_at))
       throw new HubError(400, 'decision-does-not-match-request');
     if (Math.abs(this.now() - Number(m.issued_at)) > MAX_ISSUED_SKEW_S) throw new HubError(400, 'decision-clock-skew');
     if (Number(req.expires_at) <= this.now()) throw new HubError(410, 'request-expired');
-    if (this.one('SELECT 1 AS x FROM decisions WHERE host = ? AND request_id = ?', m.host, m.request_id))
+    if (this.one('SELECT 1 AS x FROM decisions2 WHERE host = ? AND request_id = ? AND key_id = ?', m.host, m.request_id, p.id))
       throw new HubError(409, 'already-decided');
     const seq = this.next('decision_seq');
-    this.sql.exec(`INSERT INTO decisions (host, request_id, message, signature, key_id, decision, received_at, seq)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, m.host, m.request_id, message, signature, p.id, m.decision, this.now(), seq);
+    this.sql.exec(`INSERT INTO decisions2 (host, request_id, key_id, message, signature, decision, received_at, seq)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, m.host, m.request_id, p.id, message, signature, m.decision, this.now(), seq);
     this.event(p.id, 'decision.' + m.decision, { host: m.host, request_id: m.request_id });
     return { seq };
   }
@@ -208,7 +219,7 @@ export class SignalHub {
   /** Node polls decisions for its own host after a sequence number. */
   decisionsFor(p: Principal, after: number) {
     if (p.kind !== 'node') throw new HubError(403, 'node-only');
-    return this.all(`SELECT request_id, message, signature, key_id, seq FROM decisions
+    return this.all(`SELECT request_id, message, signature, key_id, seq FROM decisions2
       WHERE host = ? AND seq > ? ORDER BY seq LIMIT 20`, p.host, after);
   }
 

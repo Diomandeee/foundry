@@ -33,7 +33,7 @@ import CryptoKit
 import Darwin
 import Foundation
 
-let VERSION = "fleet-authority/1.2.0"
+let VERSION = "fleet-authority/1.3.0"
 let TEST_ROOT: String? = getuid() != 0 ? ProcessInfo.processInfo.environment["FLEET_AUTHORITY_TEST_ROOT"] : nil
 let ROOT = TEST_ROOT ?? "/Library/FleetAuthority"
 let SOCK = TEST_ROOT.map { $0 + "/fleet-authority.sock" } ?? "/var/run/fleet-authority.sock"
@@ -121,6 +121,33 @@ func loadNodeKey(create: Bool) -> P256.Signing.PrivateKey? {
     return k
 }
 
+// MARK: - input hygiene (review M1): what the approver reads must be what runs
+
+/// C0 controls (except newline/tab in scripts), DEL, zero-width and bidi overrides can make the
+/// rendered text differ from the bytes. Refuse them rather than try to escape them.
+func hasDisplayTrick(_ s: String, allowNewlines: Bool) -> Bool {
+    for u in s.unicodeScalars {
+        let v = u.value
+        if v == 0x0A || v == 0x09 { if !allowNewlines { return true }; continue }
+        if v < 0x20 || v == 0x7F { return true }
+        if (0x200B...0x200F).contains(v) || (0x202A...0x202E).contains(v) || (0x2066...0x2069).contains(v) || v == 0xFEFF { return true }
+    }
+    return false
+}
+
+/// Tokens that point at login-user-owned files from a root script (review C2): shown as UNPINNED.
+func unpinnedRefs(_ script: String) -> [String] {
+    var hits: [String] = []
+    for line in script.split(separator: "\n", omittingEmptySubsequences: false) {
+        let l = String(line)
+        if l.trimmingCharacters(in: .whitespaces).hasPrefix("#") { continue }
+        for tok in ["/Users/", "~/", "$HOME", "${HOME}", "/opt/homebrew/", "/usr/local/"] where l.contains(tok) {
+            hits.append(tok); break
+        }
+    }
+    return Array(Set(hits)).sorted()
+}
+
 // MARK: - requests (staged, root-only)
 
 struct StagedRequest {
@@ -169,16 +196,23 @@ struct StagedRequest {
     func signalPayload(host: String) -> [String: Any] {
         ["v": 1, "host": host, "request_id": id, "fp": fp, "nonce": nonce, "tier": tier, "expires_at": Int(expiresAt),
          "staged_at": Int(stagedAt), "description": description, "script": script, "script_sha256": sha256Hex(Data(script.utf8)),
-         "args": args, "template": template ?? "", "run_as": runAs, "timeout_s": timeoutS]
+         "args": args, "template": template ?? "", "run_as": runAs, "timeout_s": timeoutS,
+         "approver_key_ids": ((try? Policy.load())?.enrolledKeys ?? []).filter { $0["biometric"] == "true" }.compactMap { $0["id"] }.sorted(),
+         "unpinned": unpinnedRefs(script)]
     }
     func render(host: String) -> String {
+        let lines = script.split(separator: "\n", omittingEmptySubsequences: false).count
+        let descJSON = (try? String(data: canonical([description]), encoding: .utf8)) ?? "[]"
         var s = "\(host) is waiting for approval\n"
         s += "request \(id)   fingerprint \(fp.prefix(16))   tier \(tier)\n"
         s += "expires \(ISO8601DateFormatter().string(from: Date(timeIntervalSince1970: expiresAt)))   staged by uid \(stagedByUid)\n"
-        s += "agent's description (a hint, not what is approved):\n  \(description)\n"
+        s += "agent's description (a hint, not what is approved): \(descJSON)\n"
         if let t = template { s += "template \(t)  args \(args)\n" }
-        s += "exactly what runs as \(runAs) (timeout \(timeoutS) s):\n----\n\(script)\n----\n"
-        s += "to decide: send approve or deny (within 5 min of this screen, only while it is the one request waiting),\nor approve \(fp.prefix(16)) / deny \(fp.prefix(16))\n"
+        let unpinned = unpinnedRefs(script)
+        if !unpinned.isEmpty { s += "WARNING UNPINNED: this script refers to files outside root control (\(unpinned.joined(separator: " "))). What runs depends on them, not only on the text below.\n" }
+        s += "exactly what runs as \(runAs) (timeout \(timeoutS) s), \(lines) lines, sha256 \(sha256Hex(Data(script.utf8)).prefix(16)):\n"
+        s += "---- begin \(id) ----\n\(script)\n---- end \(id) ----\n"
+        s += "to decide: send approve or deny (within 5 min of this screen, only while it is the one request waiting),\nor approve \(id) / deny \(id)\n"
         return s
     }
 }
@@ -276,7 +310,10 @@ func execute(_ r: StagedRequest, host: String) -> (exit: Int32, out: Data, limit
     posix_spawnattr_setflags(&attr, Int16(POSIX_SPAWN_SETPGROUP))
     posix_spawnattr_setpgroup(&attr, 0)
     let argv = ["/bin/bash", r.dir + "/script.sh"] + r.args
-    let env = ["PATH=/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin", "HOME=/var/root", "LANG=en_US.UTF-8", "FLEET_REQUEST_ID=" + r.id, "FLEET_HOST=" + host]
+    // 1.3 (review H1): no /opt/homebrew/bin. It is owned by the login user, so anything resolved from it ran
+    // as root. Approved scripts call non-system tools by absolute path, and the render flags them.
+    var env = ["PATH=/usr/bin:/bin:/usr/sbin:/sbin", "HOME=/var/root", "LANG=en_US.UTF-8", "FLEET_REQUEST_ID=" + r.id, "FLEET_HOST=" + host]
+    if let t = TEST_ROOT { env.append("FLEET_AUTHORITY_TEST_ROOT=" + t) }  // test mode only (non-root); never set in production
     let cargv = argv.map { strdup($0) } + [nil]
     let cenv = env.map { strdup($0) } + [nil]
     var pid: pid_t = 0
@@ -330,10 +367,18 @@ final class Daemon {
         return policy.defaultTier
     }
 
-    func stage(_ req: [String: Any], uid: Int) throws -> [String: Any] {
+    func stage(_ req: [String: Any], uid: Int, typed: Bool = false) throws -> [String: Any] {
         let policy = try Policy.load()
         let desc = (req["description"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         try require(!desc.isEmpty && desc.count <= 500, "description-required")
+        try require(!hasDisplayTrick(desc, allowNewlines: false), "description-has-control-or-bidi-characters")
+        // H9: a full disk or a flood of stages must not lock the approver out.
+        gc()
+        let live = StagedRequest.all().filter { $0.state == "pending" && $0.expiresAt > now() }
+        try require(live.count < 30, "too-many-pending")
+        try require(live.filter { $0.stagedByUid == uid }.count < 10, "too-many-pending-for-this-user")
+        var fs = statfs()
+        try require(statfs(ROOT, &fs) == 0 && UInt64(fs.f_bavail) * UInt64(fs.f_bsize) >= 1 << 30, "less-than-1-GiB-free")
         let runAs = req["run_as"] as? String ?? "root"
         try require(runAs == "root", "run-as-root-only-in-v1")
         let timeoutS = req["timeout_s"] as? Int ?? 600
@@ -350,6 +395,12 @@ final class Daemon {
         } else {
             script = req["script"] as? String ?? ""
             try require(!script.isEmpty && script.utf8.count <= 65536 && !script.contains("\0"), "script-required")
+            try require(!hasDisplayTrick(script, allowNewlines: true), "script-has-control-or-bidi-characters")
+            if !typed {
+                for t in ["keys-add", "keys-revoke", "keys.json", "fleet_authorized_keys", "policy.json", "approver_uids"] where script.contains(t) {
+                    throw Refusal(code: "protected-change-needs-typed-op:" + t)
+                }
+            }
         }
         let tier = deriveTier(policy: policy, template: template, script: script)
         let id = randomHex(8), nonce = randomHex(16)
@@ -367,6 +418,42 @@ final class Daemon {
         return ["ok": true, "request_id": id, "fp": fp, "tier": tier, "expires_at": Int(r.expiresAt), "nonce": nonce]
     }
 
+    /// Review C4: enrolling an approver is a typed op. The daemon writes the script and the description and
+    /// computes the fingerprint itself, so the approver reads a fingerprint no stager chose.
+    func stageEnroll(_ req: [String: Any], uid: Int) throws -> [String: Any] {
+        guard let id = req["key_id"] as? String, id.range(of: "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", options: .regularExpression) != nil,
+              let spkiB64 = req["p256_spki_b64"] as? String, let spki = Data(base64Encoded: spkiB64),
+              (try? P256.Signing.PublicKey(derRepresentation: spki)) != nil else { throw Refusal(code: "enroll-shape") }
+        let biometric = (req["biometric"] as? Bool) == true
+        try require(biometric, "enroll-refused-key-is-not-biometric")
+        try require(!KeyStore.load().contains { $0["id"] == id }, "key-id-exists")
+        let fpHex = sha256Hex(spki)
+        let pretty = stride(from: 0, to: 32, by: 4).map { i -> String in let a = fpHex.index(fpHex.startIndex, offsetBy: i); return String(fpHex[a..<fpHex.index(a, offsetBy: 4)]) }.joined(separator: " ")
+        let script = "# fleet-authority builtin: enroll approver key (typed op, written by the daemon)\n" +
+            "'\(ROOT)/bin/fleet-authority' keys-add '\(id)' '\(spkiB64)' --biometric\n"
+        let desc = "ENROLL APPROVER \(id) on \(host): P-256 key SHA256 \(pretty) (biometric). Check this fingerprint on the phone before approving."
+        var r = req; r["op"] = "stage"; r["description"] = desc; r["script"] = script; r.removeValue(forKey: "template")
+        return try stage(r, uid: uid, typed: true)
+    }
+
+    /// Remove decided or expired request dirs after 24 h (receipts and outputs stay in log/).
+    func gc() {
+        for r in StagedRequest.all() {
+            let decided = r.state != "pending" && r.state != "running"
+            if (decided || r.expiresAt < now()) && now() - max(r.expiresAt, r.stagedAt) > 86400 {
+                try? FileManager.default.removeItem(atPath: r.dir)
+            }
+        }
+    }
+
+    /// A request left "running" by a crash never got its executed receipt: mark it, never re-run it.
+    func reconcileOrphans() {
+        for var r in StagedRequest.all() where r.state == "running" {
+            r.state = "orphaned"; try? r.save()
+            Receipts.append("orphaned", ["request_id": r.id, "fp": r.fp])
+        }
+    }
+
     func show(_ idOrPrefix: String?, uid: Int) throws -> [String: Any] {
         let pending = StagedRequest.all().filter { $0.state == "pending" && $0.expiresAt > now() }
         guard var r = (idOrPrefix.flatMap { p in pending.first { $0.id == p || $0.fp.hasPrefix(p) } } ?? pending.last) else {
@@ -382,8 +469,11 @@ final class Daemon {
 
     func decide(_ idOrPrefix: String, decision: String, by: String, policy: Policy) throws -> [String: Any] {
         try require(decision == "approve" || decision == "deny", "decision")
-        guard var r = StagedRequest.all().first(where: { ($0.id == idOrPrefix || $0.fp.hasPrefix(idOrPrefix)) && $0.state == "pending" }) else { throw Refusal(code: "no-such-pending-request") }
-        try require(idOrPrefix.count >= 8, "identifier-too-short")
+        // M2: the full 16-hex request id, or at least 16 hex of the fingerprint, and it must match exactly one.
+        try require(idOrPrefix.count >= 16, "identifier-too-short-use-the-full-request-id")
+        let matches = StagedRequest.all().filter { ($0.id == idOrPrefix || $0.fp.hasPrefix(idOrPrefix)) && $0.state == "pending" }
+        try require(matches.count <= 1, "identifier-ambiguous")
+        guard var r = matches.first else { throw Refusal(code: "no-such-pending-request") }
         try require(r.expiresAt > now(), "request-expired")
         try require(r.shownAt != nil, "not-shown-before-decision")
         try require(r.policyHash == policy.hash, "policy-changed-since-staging")
@@ -430,7 +520,7 @@ final class Daemon {
         } else if let m = req["message"] as? [String: Any] {
             msg = m; signed = try canonical(m)
         } else { throw Refusal(code: "signed-shape") }
-        guard let key = policy.enrolledKeys.first(where: { $0["id"] == keyId }), let spki = key["p256_spki_b64"].flatMap({ Data(base64Encoded: $0) }),
+        guard let key = policy.enrolledKeys.first(where: { $0["id"] == keyId && $0["biometric"] == "true" }), let spki = key["p256_spki_b64"].flatMap({ Data(base64Encoded: $0) }),
               let pub = try? P256.Signing.PublicKey(derRepresentation: spki) else { throw Refusal(code: "key-not-enrolled") }
         guard let s = try? P256.Signing.ECDSASignature(derRepresentation: sig), pub.isValidSignature(s, for: signed) else { throw Refusal(code: "bad-signature") }
         try require(msg["v"] as? Int == 1 && msg["host"] as? String == policy.host, "message-host")
@@ -555,6 +645,8 @@ final class Daemon {
                     id = r.id
                 }
                 return try decide(id, decision: op, by: "uid:\(uid)", policy: policy)
+            case "enroll_key":
+                return try stageEnroll(req, uid: uid)
             case "approve_signed":
                 return try approveSigned(req, policy: try Policy.load())
             default: throw Refusal(code: "unknown-op")
@@ -568,7 +660,9 @@ final class Daemon {
     }
 
     func serve() -> Never {
+        signal(SIGPIPE, SIG_IGN)  // H9: a client hanging up mid-reply must not kill the daemon
         Receipts.append("started", ["integrity": integrity.ok, "reason": integrity.reason, "host": host, "node_key": nodeKey != nil])
+        STATE_LOCK.lock(); reconcileOrphans(); gc(); STATE_LOCK.unlock()
         Thread.detachNewThread { [self] in self.relayLoop() }
         unlink(SOCK)
         let fd = socket(AF_UNIX, SOCK_STREAM, 0)
@@ -581,8 +675,11 @@ final class Daemon {
         while true {
             let c = accept(fd, nil, nil)
             if c < 0 { continue }
-            var tv = timeval(tv_sec: 30, tv_usec: 0)
+            var tv = timeval(tv_sec: 10, tv_usec: 0)
             setsockopt(c, SOL_SOCKET, SO_RCVTIMEO, &tv, socklen_t(MemoryLayout<timeval>.size))
+            setsockopt(c, SOL_SOCKET, SO_SNDTIMEO, &tv, socklen_t(MemoryLayout<timeval>.size))
+            var one: Int32 = 1
+            setsockopt(c, SOL_SOCKET, SO_NOSIGPIPE, &one, socklen_t(MemoryLayout<Int32>.size))
             var cred = xucred(); var clen = socklen_t(MemoryLayout<xucred>.size)
             let uid: Int = getsockopt(c, 0 /* SOL_LOCAL */, 0x001 /* LOCAL_PEERCRED */, &cred, &clen) == 0 ? Int(cred.cr_uid) : -1
             var data = Data(); var buf = [UInt8](repeating: 0, count: 65536)
@@ -679,6 +776,11 @@ func cli(_ args: [String]) -> Int32 {
         print(decisionSummary(r, op: cmd, id: id.isEmpty ? "the request you were shown" : id))
         if let tail = r["output_tail"] as? String, !tail.isEmpty { print("---- output (last part) ----\n" + String(tail.suffix(1500))) }
         return (r["ok"] as? Bool) == true ? 0 : 1
+    case "enroll-key":
+        // Typed op (review C4): the daemon writes the script and shows its own SHA256 fingerprint.
+        guard args.count >= 3 else { print("enroll-key <key-id> <p256-spki-base64> --biometric"); return 64 }
+        let r = client(["op": "enroll_key", "key_id": args[1], "p256_spki_b64": args[2], "biometric": args.contains("--biometric")])
+        printJSON(r); return (r["ok"] as? Bool) == true ? 0 : 1
     case "node-key":
         // Public half only; anyone may read it (it is enrolled at the relay and pinned by the phone).
         let r = client(["op": "status"])
@@ -700,7 +802,9 @@ func cli(_ args: [String]) -> Int32 {
             if cmd == "keys-add" {
                 guard args.count >= 3, let spki = Data(base64Encoded: args[2]), (try? P256.Signing.PublicKey(derRepresentation: spki)) != nil else { fail("keys-add <key-id> <p256-spki-base64> [label]") }
                 guard !keys.contains(where: { $0["id"] == args[1] }) else { fail("key id \(args[1]) already exists (revoke it and add a new id)") }
-                keys.append(["id": args[1], "p256_spki_b64": args[2], "label": args.count > 3 ? args[3...].joined(separator: " ") : "",
+                let rest = Array(args.dropFirst(3))
+                keys.append(["id": args[1], "p256_spki_b64": args[2], "label": rest.filter { $0 != "--biometric" }.joined(separator: " "),
+                             "biometric": rest.contains("--biometric") ? "true" : "false",
                              "added_at": nowISO(), "spki_sha256": sha256Hex(spki)])
                 try KeyStore.save(keys)
                 Receipts.append("key-enrolled", ["key_id": args[1], "spki_sha256": sha256Hex(spki), "by_uid": Int(getuid())])
