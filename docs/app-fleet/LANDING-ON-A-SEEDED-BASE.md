@@ -20,9 +20,16 @@ with your GitHub clone. You land work by replaying your commits onto the base, n
 | `lume-motion-state` | main @ d5d4dd5 | 238b6ace |
 | `sharedservices` | main | 4d966fd0 |
 | `airdeck` | existing base (Air Deck gate run, 2026-10-19) | |
+| `motionmixapp` | `trunk/build128-20261021` @ 096805f (pre-direction build-128 line; GitHub main is Aug 14) | 15eafb57 |
+| `comp-core` | local `~/Desktop/Comp-Core` @ 17e34234, **path-scoped** to the echelon-live closure (7 subtrees) | d6579408 |
+| `lume-commerce` | main, **path-scoped** to stage/mac4 + tools/infra/services/scripts/tests/apps/config/packages + root files | 816460df |
 
-`motionmixapp` (2679 text files) was held back by the old 2000-file tree limit. The gate diffs by object id
-since hotfix 2ebf8fa (deployed 2026-10-22 ~18:09Z, version e4d22595), so it can now be seeded.
+Path-scoped bases hold only the listed subtrees (`.foundry/assets.json` `scope`); a task outside them is refused by
+`allowedRoots`. Comp-Core's p1/body-time history holds `.env` files, so it never goes to GitHub; the gate is its path.
+Secrets are withheld at seed time (`withheld` entries in assets.json, path and rule only).
+
+The gate diffs trees by object id since hotfix 2ebf8fa and lands file modes, including mode-only changes, since
+7674e0f (deployed 2026-10-22, version d820edf6).
 
 ## Steps
 
