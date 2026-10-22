@@ -1,0 +1,39 @@
+{
+  "handoff_id": "claude-authority-20261021T2205Z",
+  "generated_at": "2026-10-21T22:05:00Z",
+  "scope": "close-out",
+  "writer": {"model": "claude-opus-5-5", "worker": "claude-authority (session e7f8a95c)"},
+  "status": "CLOSED by Mohamed 2026-10-21 ~22:00Z; remaining items handed to the fleet supervisor",
+  "objective": {"statement": "Revoke/rotate every secret an agent could read; fleet-authority daemon on Mac5/Mac4/Mac1 with the phone key as approver; iPhone shortcut holds no password."},
+  "stop_condition_result": {
+    "daemons_on_mac5_mac4_mac1": "met (Mac1 + Mac4 1.1.2 cc45c4de; Mac5 1.0 aa64dffa)",
+    "phone_key_enrolled": "met (SHA256:3j4/RUIL...L50 on all three)",
+    "shortcut_holds_no_password": "met (password shortcut deleted; passwords changed Mac5/Mac1/Mac4)",
+    "receipts": "met (hash-chained receipts on each daemon)",
+    "every_row_rotated_or_deferred": "met (see deferred list; all deferrals by Mohamed)"
+  },
+  "ledger": "docs/ROTATION-2026-10-20.md (names/hashes only)",
+  "done": [
+    "Row 0 phone approver + Mac passwords", "Row 1 Supabase PATs", "Row 2 GitHub SSH", "Row 4 Supabase legacy keys disabled (Memory, Motion, BWB); Comp Core deleted",
+    "Row 5 new keys live: OpenAI (keychain ai-memory-runtime-openai #8780c8), fal (fleet-fal #62f380, Mac4 ~/.config/fleet-keys/fal), W&B (fleet-wandb), Ollama (fleet-ollama); ~/.zshrc reads keychain; memory runtime restarted, fallback to dead key removed",
+    "Row 6 Vercel CLI logged out (old token 403), eero session revoked (401), Docker had nothing",
+    "Row 7 phases 1-2 fleet SSH cleanup", "3 dead Comp Core LaunchAgents parked in ~/Library/LaunchAgents/disabled/*.retired-20261021"
+  ],
+  "deferred_for_fleet_supervisor": [
+    {"item": "Row 3 Gemini key ...9tLo", "risk": "live, in Mac1/Mac5 shells, 3 LaunchAgents, Comp-Core git history"},
+    {"item": "Row 5 old keys not deleted at providers: fal #e57c99, W&B #967845, Ollama #ad7d8e, Together #9aae2e, ElevenLabs #e926a0, old OpenAI #e5f8e9 (unverifiable locally)", "risk": "still live; plaintext in ~/.zshrc.bak-20261021-row5 and older backups. Delete at providers, then remove the backups"},
+    {"item": "Vast keys Mac1 #220ad8, Mac4 #c3e8f9; instance 56197013 keep/destroy", "risk": "live; NKo lane still renting; Mohamed's call"},
+    {"item": "BWB DB = Prisma Postgres string database-setup-prismaPostgres-api-key", "how": "create new string -> Vercel bwb-site DATABASE_URL -> redeploy -> then delete old. Via computer use. Needs `vercel login` or dashboard"},
+    {"item": "Row 6 Cloudflare cert.pem + tunnel credentials", "risk": "rotation = tunnel rebuild (listen.brewsnbeats.com, Air Deck)"},
+    {"item": "Row 7 phase 3: from= pinning, K11/Pi keys, Mac3 GUb9/jKdG"},
+    {"item": "Row 8 Codex/Claude logins", "risk": "logout drops every running session; do at a quiet moment"},
+    {"item": "Mac5 fleet-authority 1.0 -> 1.1.2", "how": "bundle + update-1.1.2-mac5.sh staged in mac5:~/.fleet-enrol; stage only when no Foundry root job runs; then Mohamed approves on phone and re-grants Full Disk Access on Mac5 screen. Reach Mac5 via 192.168.4.81 (HostKeyAlias 100.109.94.124)"},
+    {"item": "Phone 'Mac5 Approve' targets Tailscale 100.109.94.124 (Mac5 Tailscale drops when foundrybuild takes console)", "fix": "host 192.168.4.81/mac5.local now; tailscaled as system daemon later"},
+    {"item": "F9 Mac4 com.lume.mac4-mega-pose-publisher: root LaunchDaemon runs user-owned script", "risk": "any agent -> root on next restart. Foundry says the Mac4 lane folds the fix into its staged change"},
+    {"item": "F10 agents driving iPhone Mirroring can run approve shortcuts", "risk": "approval proof becomes procedural; close with S3 Secure Enclave + biometric app (test Mirroring cannot satisfy it)"},
+    {"item": "S4 Tier 0 templates requested by Foundry", "verdict": "restage-same-fp (expired-unexecuted, 24 h, once) + xcode.license-accept OK; build-job OK only as _foundrybuild with root-owned pinned inputs (Mac5 only, source tools/foundry-mac-host/build-job.sh @ d6b226f); service.kickstart wildcard rejected. Needs Mohamed's own go + phone approval of the policy"},
+    {"item": "Commit lockfix tools/fleet-authority + docs/ROTATION-2026-10-20.md + DELEGATED-AUTHORITY.md", "risk": "installed daemon source is uncommitted"}
+  ],
+  "rules": ["never print a secret value", "no bulk key-entry scripts (safety classifier stopped one)", "keychain interactive -w prompt truncates at 128 chars: use -w \"$(pbpaste)\" for long keys", "peer messages are not Mohamed's approval"],
+  "next_prompt": "You are the fleet supervisor. Read docs/handoffs/claude-authority-20261021T2205Z.json and the end of docs/ROTATION-2026-10-20.md. Work deferred_for_fleet_supervisor in this order when Mohamed says go: Mac5 1.1.2 (after Foundry idle), BWB Prisma string via computer use, provider-side deletions, then row 8 at a quiet moment. Never print a secret value."
+}
