@@ -82,7 +82,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "28-days-of-code",
+   "foundry_seed": {
+    "base": "28-days-of-code",
+    "origin_commit": "67c3d95ebadace0c56a4cace45b1904208a24a13",
+    "seed_commit": "2fff8d35b009d02cdc731657893ae2cadca922a4",
+    "files": 28,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"b054324bad024052a9b873908e902c60\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "admin-dashboard",
@@ -102,7 +112,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "admin-dashboard",
+   "foundry_seed": {
+    "base": "admin-dashboard",
+    "origin_commit": "713e4021fda7cc9f5cf7d96d31f7566ee5a3ce46",
+    "seed_commit": "d3040b2d81d5b9635507cb042c5f20dffff81d01",
+    "files": 46,
+    "stripped": 2,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"7301ed53cc1149bda45bb495088026e1\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "admissibility-kernel",
@@ -150,7 +170,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "aesthetic-dna",
+   "foundry_seed": {
+    "base": "aesthetic-dna",
+    "origin_commit": "c0e44f621effdfff5d70ef75b835d405872f98de",
+    "seed_commit": "47c5c983018e2dc1a92801ef83c6e567d2308ab7",
+    "files": 10,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"e30424f8ee5d40b38cf86f7f7a4a35dd\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "agent-intelligence",
@@ -170,7 +200,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "agent-intelligence",
+   "foundry_seed": {
+    "base": "agent-intelligence",
+    "origin_commit": "5e2bef08ed2e465d991ef2defecb70167ecc76a2",
+    "seed_commit": "a88144470733965457e13e9b0a4311f5aaf8428a",
+    "files": 40,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"08dc3cb9695c4bc19588043b2e31f337\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "agent-orchestrator",
@@ -241,7 +281,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "agent-reputation",
+   "foundry_seed": {
+    "base": "agent-reputation",
+    "origin_commit": "c615bfac45309c64fc81a1aa6c0db305739f8827",
+    "seed_commit": "8433f23bf553551cf0671e1119282b1b2e87e3f1",
+    "files": 30,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"4f08c49e1b804e8b8f5548a97eb87eee\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "agent-swarm",
@@ -261,7 +311,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "agent-swarm",
+   "foundry_seed": {
+    "base": "agent-swarm",
+    "origin_commit": "81d4cd214600b15db019b069b2baff1a76fc5c52",
+    "seed_commit": "83bc7b142ff962654a63f6004f9640071d49baf0",
+    "files": 60,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"506d20a864b145e1a54f7cffcc4f52f3\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "agentcommandcenter",
@@ -300,7 +360,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "agentcommandcenter",
    "asc_app_id": "6759935555",
    "asc_name": "Agent Command Center",
    "asc_bundle_id": "com.brewswithbeats.AgentCommandCenter",
@@ -313,7 +373,17 @@
      "created": "2026-03-02"
     }
    ],
-   "asc_latest_build": null
+   "asc_latest_build": null,
+   "foundry_seed": {
+    "base": "agentcommandcenter",
+    "origin_commit": "a4bb0a3ea6d1f683d243cb1357ea15b397996c80",
+    "seed_commit": "931363a2a0ecebc1c49660e9fdd6f010fb27616b",
+    "files": 147,
+    "stripped": 4,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"db84ec4b592f46aba746cc7f43d75b62\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "ai-orchestra",
@@ -352,7 +422,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "ai-orchestra",
+   "foundry_seed": {
+    "base": "ai-orchestra",
+    "origin_commit": "c39845688f0a70837ed3cb6628a3441181bfa733",
+    "seed_commit": "4e3878ffc40fb616663e17ae75c12739baf1f1c4",
+    "files": 60,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"c9f31b9510c7436796878b853336d80d\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "ai-union",
@@ -391,7 +471,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "ai-union",
+   "foundry_seed": {
+    "base": "ai-union",
+    "origin_commit": "c6574f325b9f8fcde54b5229feb999a6cc9b5c25",
+    "seed_commit": "2934fe88340b6ee7dd9f100de71d0f1c4629ee01",
+    "files": 20,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"b5670020610b4577beb900a217ee99a3\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "ai-union-gov",
@@ -430,7 +520,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "ai-union-gov",
+   "foundry_seed": {
+    "base": "ai-union-gov",
+    "origin_commit": "7ec3070a638e5eaec95396143d4678bafc7187d2",
+    "seed_commit": "c322842ecff857cde6ae3321d30387c22789016f",
+    "files": 4,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"3926574858d54b0c819f60396e12cadd\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "airdeck",
@@ -565,7 +665,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "anticipation-geometry",
+   "foundry_seed": {
+    "base": "anticipation-geometry",
+    "origin_commit": "ad6a81f8d5196bd609cff5ccba752e23e58ab2a8",
+    "seed_commit": "005ee4ab0669693a31705b617ca588083f92e3b2",
+    "files": 140,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8cc40967060545ffab41b18362ecef77\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "anvil",
@@ -758,7 +868,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "audioengine",
+   "foundry_seed": {
+    "base": "audioengine",
+    "origin_commit": "643da8ec54736032b8d9c34a005a0fb4bb3bc32b",
+    "seed_commit": "2387c473c568af305a6d0a4911e30df540a54315",
+    "files": 32,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"ed02a1bd725f4dbabe06956273299af5\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "augur",
@@ -998,7 +1118,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "birthday-pass",
+   "foundry_seed": {
+    "base": "birthday-pass",
+    "origin_commit": "6ab06f2123e27e265bd24adeb6abe7b5ad7b3575",
+    "seed_commit": "c461bdbcfd4fbe9c75bbe02ae36f1ca7c49f9621",
+    "files": 18,
+    "stripped": 9,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"635b463d94d64dada8326d4548dfe4a1\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "bitwork",
@@ -1046,7 +1176,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "bitwork",
+   "foundry_seed": {
+    "base": "bitwork",
+    "origin_commit": "537cdf7e8f7abd6db1acb1b7dcc57e3d0a5364d6",
+    "seed_commit": "6ca96275de27091925a75521c3a42b58bcf7cb59",
+    "files": 68,
+    "stripped": 2,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8bf5244e77b841f2a5e25e2e1c367ee9\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "blog-starter-kit",
@@ -1066,7 +1206,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "blog-starter-kit",
+   "foundry_seed": {
+    "base": "blog-starter-kit",
+    "origin_commit": "1f6f8e2ee32c24be19d4d94ad08766e68ae0fef5",
+    "seed_commit": "dc610744064030e020ec63536a50b60e987e30dd",
+    "files": 43,
+    "stripped": 13,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"a6732b786dba43c2a925c56b7b53b9eb\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "bodybeat",
@@ -1105,7 +1255,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "bodybeat",
    "asc_app_id": "6760225743",
    "asc_name": "BodyBeat by Diomande",
    "asc_bundle_id": "Buf-Barista.BodyBeat",
@@ -1123,6 +1273,16 @@
     "uploaded": "2026-03-07",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "bodybeat",
+    "origin_commit": "2f73b8daf1ad6b7f5d13fc1d323520902c97dad4",
+    "seed_commit": "e418a4613a775dee9b2682945d8b46712580330e",
+    "files": 24,
+    "stripped": 14,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"01e0ad0279de404d91b0894e35cbba3b\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -1143,7 +1303,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "brews-with-beats-app",
+   "foundry_seed": {
+    "base": "brews-with-beats-app",
+    "origin_commit": "735438f52c9edc1b62bd45fcee97e85cec471b30",
+    "seed_commit": "c67e8f4b8629f5ff8fa8d6cf733284734e2f2799",
+    "files": 41,
+    "stripped": 2,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8866c47bea264913a04c28c47b0b2c14\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "brews-with-beats-mobile",
@@ -1193,7 +1363,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "brews-with-beats-mobile-app",
+   "foundry_seed": {
+    "base": "brews-with-beats-mobile-app",
+    "origin_commit": "9061ab663420b70e3ba31d07aa1c0c603bd1ebb5",
+    "seed_commit": "24d9cd7d13d7784e534a5c516927d4ac79da56f7",
+    "files": 199,
+    "stripped": 2,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"2c5e6120dab44e42b9fa79ede5ae63cc\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "brews-with-beats-v1",
@@ -1232,7 +1412,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "brews-with-beats-v1",
+   "foundry_seed": {
+    "base": "brews-with-beats-v1",
+    "origin_commit": "f6dcb9b9b02d85beadaa9541637ea8528bdfb38b",
+    "seed_commit": "2ab7c31f23c0235224cb84aaf938d709dbcd3813",
+    "files": 571,
+    "stripped": 84,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"bd63e5efa90c440fbfabc34a68ad0557\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "buf",
@@ -1252,7 +1442,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "buf",
+   "foundry_seed": {
+    "base": "buf",
+    "origin_commit": "e8e75fe7651834b2102fe31ea8e50486a9ff691b",
+    "seed_commit": "5817c6648e3d6efb87b5259937be124e6977f055",
+    "files": 679,
+    "stripped": 23,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"fd93edf02d1346e191ff5bd7e6ed3db6\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "bufbarista-crm",
@@ -1272,7 +1472,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "bufbarista-crm",
+   "foundry_seed": {
+    "base": "bufbarista-crm",
+    "origin_commit": "39874d70d627d97daee9a5005e83a86108f5514d",
+    "seed_commit": "0e26b11b90448e2b876c5220fb1c08a07a6d2631",
+    "files": 725,
+    "stripped": 3,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"71a6efd3e3fb452ba20cd8ed185620f4\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "buff-flow",
@@ -1302,7 +1512,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "buff-flow",
+   "foundry_seed": {
+    "base": "buff-flow",
+    "origin_commit": "6e0a121bd9eb722c75f24ee1e66aaee7f5a8e40e",
+    "seed_commit": "6957a803f316bccab92bc025cfcf10dcab4e64f7",
+    "files": 4,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"e636dbf9d9844adb8268da4fe067e333\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "buffbarista-dance",
@@ -1341,7 +1561,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "buffbarista-dance",
+   "foundry_seed": {
+    "base": "buffbarista-dance",
+    "origin_commit": "922c430f27159849a09482a7f357269facfa971f",
+    "seed_commit": "c058fced7a5f2770ca4e357273970a8be8035849",
+    "files": 25,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"40d4119877b44f2dad67b90b84534849\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "bwb",
@@ -1584,7 +1814,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "cadenza-events",
+   "foundry_seed": {
+    "base": "cadenza-events",
+    "origin_commit": "8be8caefe17902ba7b22ed873e4a8419ea862a4b",
+    "seed_commit": "6c08080adf683ac257b7c53fa097e056e90f427c",
+    "files": 81,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"1eed54a76b584102b756c420c5802ad0\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "cali-lights",
@@ -1623,7 +1863,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "cali-lights",
    "asc_app_id": "6759937049",
    "asc_name": "Cali Lights",
    "asc_bundle_id": "com.calilights.CaliLights",
@@ -1641,6 +1881,16 @@
     "uploaded": "2026-03-02",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "cali-lights",
+    "origin_commit": "81c64023c646f5a2db5fb0e1635f58c19c3e36b1",
+    "seed_commit": "47d82490b94a4653e9c8249290fe62911e86fcfd",
+    "files": 233,
+    "stripped": 18,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"0475f04b1d2c474db29ebf55dcd2006d\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -1680,7 +1930,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "cali-lights-expo",
+   "foundry_seed": {
+    "base": "cali-lights-expo",
+    "origin_commit": "88856fe605b1e6d283fe15d35fdab0088d526bcd",
+    "seed_commit": "f3d696a77d8b070675e560d2805e4cea335170ab",
+    "files": 37,
+    "stripped": 4,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"7bc9d34e497b4fcfbdd7ad74d91061d5\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "calilightsios",
@@ -1719,7 +1979,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "calilightsios",
    "asc_app_id": "6759937049",
    "asc_name": "Cali Lights",
    "asc_bundle_id": "com.calilights.CaliLights",
@@ -1737,6 +1997,16 @@
     "uploaded": "2026-03-02",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "calilightsios",
+    "origin_commit": "da5855606933478876e826def1d03a6204eda5ff",
+    "seed_commit": "fd66885364fa846b09a5f1e70ac2ed456646f549",
+    "files": 45,
+    "stripped": 8,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"6f260e03955a4eab81fc85c28e96f63c\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -1824,7 +2094,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "cc-core",
+   "foundry_seed": {
+    "base": "cc-core",
+    "origin_commit": "c152175e5069025a21501dc9b98410aaa3b93afd",
+    "seed_commit": "92a02421ab9f1b9111b1a050b50ee20a5b80448c",
+    "files": 134,
+    "stripped": 7,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"205d75aa74134b7fa880b1007bcc152e\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "cc-dashboard",
@@ -1844,7 +2124,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "cc-dashboard",
+   "foundry_seed": {
+    "base": "cc-dashboard",
+    "origin_commit": "35e36f81b324ebffbdb8e50a8a42eac8b04da22d",
+    "seed_commit": "129870ea49a7978958c634fe6f2c4f46553cb203",
+    "files": 65,
+    "stripped": 3,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"d9b2cce357ae4931afa77dd7fb6c620f\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "cc-dj",
@@ -1883,7 +2173,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "cc-dj",
+   "foundry_seed": {
+    "base": "cc-dj",
+    "origin_commit": "dbf37f3e74ce8d09e02b2a9fe3f49f9a7543a8b9",
+    "seed_commit": "6b31f1524268bc5ca6839d6acf8455f0cff66c83",
+    "files": 95,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"e52fac219f7844d6a2d2f6d062716b47\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "cc-mcs",
@@ -1903,7 +2203,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "cc-mcs",
+   "foundry_seed": {
+    "base": "cc-mcs",
+    "origin_commit": "8c2628194f5b171897ff99e761f33e9574771581",
+    "seed_commit": "cd920bc9995651f85c6b1fdbdecd7a134624ce2c",
+    "files": 32,
+    "stripped": 17,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"ee15abbdd15a45cab3b72c82769600ca\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "cc-studio",
@@ -1923,7 +2233,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "cc-studio",
+   "foundry_seed": {
+    "base": "cc-studio",
+    "origin_commit": "60d0377775e5077d7c431cfc23a53ed92b5e00ef",
+    "seed_commit": "16ccd68f61899d7c5155cd59a72012032be115bb",
+    "files": 287,
+    "stripped": 52,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"d3e5ee6c4a9b4aba93dcc17e9fa2fef0\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "cc-trajectory",
@@ -1943,7 +2263,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "cc-trajectory",
+   "foundry_seed": {
+    "base": "cc-trajectory",
+    "origin_commit": "792a059c18336cf87db3fb4d64b4fb3457d300e0",
+    "seed_commit": "975353c6a7e659a80722347d8d02759ce0cafa30",
+    "files": 846,
+    "stripped": 9,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8458f9550ba8405e8a89a8d9833d6da4\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "chain-tree",
@@ -1999,7 +2329,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "chain-works",
+   "foundry_seed": {
+    "base": "chain-works",
+    "origin_commit": "7fb076882c5973518073de6567eae16f3626df8b",
+    "seed_commit": "020eb6dc15a3773e69ed62e2de0bc7115ba89650",
+    "files": 64,
+    "stripped": 3,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"a95bfc90b288492b90bc32ada0413b39\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "chain_memory",
@@ -2076,7 +2416,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "chain_tree",
+   "foundry_seed": {
+    "base": "chain_tree",
+    "origin_commit": "51191b9a2f67890492cbe57c4133f784cc3d2f41",
+    "seed_commit": "29118548eccadb26d51b27d55e6977820a997f90",
+    "files": 52,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"1b39efb2807c4532a5baa27661b2ad8c\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "chain_trees",
@@ -7284,7 +7634,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "motionmixapp",
    "asc_app_id": "6806063324",
    "asc_name": "MotionMix",
    "asc_bundle_id": "com.openclaw.MotionMixApp",
@@ -7302,6 +7652,17 @@
     "uploaded": "2026-09-28",
     "state": "VALID",
     "expired": false
+   },
+   "seed_branch": "trunk/build128-20261021",
+   "foundry_seed": {
+    "base": "motionmixapp",
+    "origin_commit": "096805f735f4e545213d516570341008b19d69d1",
+    "seed_commit": "15eafb5758d344ca9e587df48914fca8c0a77390",
+    "files": 445,
+    "stripped": 112,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"e1d3f78898184dc9b281ce5513cea746\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
    }
   },
   {
