@@ -1638,7 +1638,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "bwb",
    "asc_app_id": "6758999958",
    "asc_name": "Brews With Beats",
    "asc_bundle_id": "com.brewswithbeats.BWB-Customer",
@@ -1656,6 +1656,16 @@
     "uploaded": "2026-02-15",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "bwb",
+    "origin_commit": "7fa4ffba04d1bd162c53ed87e56c0fa5bbaaee80",
+    "seed_commit": "6ca1203b8cb19ae2b1d534e4aeaf2b10b5a394f9",
+    "files": 2021,
+    "stripped": 50,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"3f7f4d34326f4fd29ed8bd9072c222de\",\"created_at\":\"2026-10-22T19:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -5949,7 +5959,8 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": null,
+   "seed_hold": "git checkout fails on a clean clone (likely a filename macOS rejects); seed from a tarball or fix the repo"
   },
   {
    "id": "ideagarden",
@@ -7548,7 +7559,8 @@
     "uploaded": "2026-03-27",
     "state": "VALID",
     "expired": true
-   }
+   },
+   "seed_hold": "needs seed_paths scope: 508 MB text exceeds the gate memfs guide (~40 MB); owner lane names the live subtrees"
   },
   {
    "id": "meshd",
@@ -13565,7 +13577,8 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": null,
+   "seed_hold": "needs seed_paths scope: 83 MB text exceeds the gate memfs guide (~40 MB); owner lane names the live subtrees"
   },
   {
    "id": "uncertainty-embracer",

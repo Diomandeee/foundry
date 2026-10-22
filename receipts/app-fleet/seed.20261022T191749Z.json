@@ -1,0 +1,18 @@
+{
+ "approved_by": "Mohamed 2026-10-22 lane defaults; bwb orphan from the killed batch 4 (created 19:16:08Z, no write-back) deleted and reseeded",
+ "started": "20261022T191749Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "bwb",
+   "base": "bwb",
+   "origin_commit": "7fa4ffba04d1bd162c53ed87e56c0fa5bbaaee80",
+   "seed_commit": "6ca1203b8cb19ae2b1d534e4aeaf2b10b5a394f9",
+   "files": 2021,
+   "stripped": 50,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"3f7f4d34326f4fd29ed8bd9072c222de\",\"created_at\":\"2026-10-22T19:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}
