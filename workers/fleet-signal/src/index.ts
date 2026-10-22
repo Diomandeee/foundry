@@ -12,6 +12,7 @@
 //  POST /v1/admin/devices    {device_id, spki, decision_spki?, label?, apns_token?, apns_env?}  owner
 //  POST /v1/devices/push     {token, env}                              device
 //  POST /v1/admin/revoke     {kind: node|device, id}                   owner
+//  GET  /v1/admin/receipts?host=H&limit=N                              owner
 //  POST /v1/events           {kind, body}                              owner or node
 //  POST /v1/requests         {payload, signature}                      node
 //  GET  /v1/requests/:host/:id                                         device
@@ -61,6 +62,8 @@ export class SignalHubObject extends DurableObject<Env> {
         (await sha256Hex(auth.slice(7))) === this.env.FLEET_SIGNAL_OWNER_SHA256;
       if (path.startsWith('/v1/admin/')) {
         if (!isOwner) return json(401, { error: 'owner-only' });
+        if (req.method === 'GET' && path === '/v1/admin/receipts')
+          return json(200, { receipts: this.hub.receiptsFor(url.searchParams.get('host') ?? '', Number(url.searchParams.get('limit') ?? 50)) });
         if (path === '/v1/admin/nodes') this.hub.enrollNode(data.node_id, data.host, data.spki);
         else if (path === '/v1/admin/devices') this.hub.enrollDevice(data.device_id, data.spki, data.label ?? null, data.apns_token ?? null, data.apns_env ?? null, data.decision_spki ?? null, data.biometric === true);
         else if (path === '/v1/admin/revoke') this.hub.revoke(data.kind, data.id);

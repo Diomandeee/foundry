@@ -240,6 +240,13 @@ export class SignalHub {
     return { stored, head: last ?? null };
   }
 
+  /** Owner (operator) view of a host's mirrored receipt chain, newest first. */
+  receiptsFor(host: string, limit = 50) {
+    if (!ID.test(host)) throw new HubError(400, 'invalid-host');
+    return this.all('SELECT seq, hash, entry FROM receipts WHERE host = ? ORDER BY seq DESC LIMIT ?', host, Math.min(Math.max(limit, 1), 500))
+      .map(r => ({ seq: r.seq, hash: r.hash, entry: JSON.parse(String(r.entry)) }));
+  }
+
   // ── feed (lane cards, events) ───────────────────────────────────────────────
   postEvent(source: string, kind: string, body: unknown): void {
     if (!/^[a-z][a-z0-9._-]{0,63}$/.test(kind)) throw new HubError(400, 'invalid-kind');
