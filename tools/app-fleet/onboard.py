@@ -141,8 +141,9 @@ def seed_one(rec, plan, a):
     n_files = int(sh(["git", "ls-files"], cwd=snap).stdout.count("\n"))
     cr = sh(["npx", "wrangler", "artifacts", "repos", "create", base, "--namespace", a.namespace], cwd=SOURCE, check=False)
     created = cr.returncode == 0
-    if not created and "already" not in (cr.stdout + cr.stderr).lower() and "exist" not in (cr.stdout + cr.stderr).lower():
-        raise RuntimeError(f"repos create {base}: {(cr.stderr or cr.stdout).strip()[:200]}")
+    if not created:
+        # Never push a seed onto a base someone else created: that would be a second ungated commit.
+        raise RuntimeError(f"repos create {base} refused (exists or error), not seeding: {(cr.stderr or cr.stdout).strip()[:160]}")
     sh([str(FOUNDRY_BIN / "foundry-push"), base, "main:main"], cwd=snap, env={**env, "FOUNDRY_SEED": base})
     sub = sh(["bash", "tools/subscribe-repo.sh", "staging", base], cwd=LOCKFIX, check=False)
     shutil.rmtree(src, ignore_errors=True)
