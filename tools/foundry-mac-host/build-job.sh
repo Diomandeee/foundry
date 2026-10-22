@@ -18,7 +18,8 @@ set -euo pipefail
 CPU=${CPU:-4}; MEM_GIB=${MEM_GIB:-4}; TIMEOUT_S=${TIMEOUT_S:-1800}; OUT_DISK_GIB=${OUT_DISK_GIB:-4}; MAX_OUT_BYTES=${MAX_OUT_BYTES:-2147483648}
 # The build account must have a GUI login session (VZ refuses sessionless users);
 # launchctl asuser joins that session, sudo then drops to the account.
-LAUNCH=${LAUNCH:-launchctl asuser 520 sudo -u foundrybuild -g foundrybuild -H}
+# Fixed, not overridable from the environment (review H7: an env-supplied command would run as root).
+LAUNCH="launchctl asuser 520 sudo -u foundrybuild -g foundrybuild -H"
 DENSE=/Library/Foundry/VM/images/$IMAGE-dense/boot.raw
 IMG=/Library/Foundry/VM/images/$IMAGE
 RECEIPT=/Library/Foundry/VM/sources/$SRC_NAME.seal.json
@@ -42,7 +43,25 @@ try: m["main"]()
 except BaseException: traceback.print_exc(); sys.exit(1)' "$IO" "$1"; }
 trap 'echo "!! FAILED line $LINENO: $BASH_COMMAND"' ERR
 [[ $EUID -eq 0 ]] || { echo "run as root" >&2; exit 1; }
-[[ $ATT =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$ ]] || { echo "bad attempt id" >&2; exit 1; }
+# Review H7 (2026-10-22): every input is validated before any path or arithmetic uses it, so this script is
+# safe to run from a template whose arguments an agent chooses.
+bad() { echo "REFUSED: invalid $1" >&2; exit 2; }
+NAME_RE='^[a-z0-9][a-z0-9._-]{0,63}$'; ID_RE='^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$'; SHA_RE='^[0-9a-f]{64}$'
+REL_RE='^[A-Za-z0-9_@+][A-Za-z0-9 ._@+/-]{0,255}$'
+[[ $ATT =~ $ID_RE ]] || bad ATT
+[[ $JOB_ID =~ $ID_RE ]] || bad JOB_ID
+for v in IMAGE SRC_NAME; do [[ ${!v} =~ $NAME_RE && ${!v} != *..* ]] || bad $v; done
+for v in BOOT_SHA CAP_SHA RUNNER_SHA; do [[ ${!v} =~ $SHA_RE ]] || bad $v; done
+for v in PROJECT OUTPUT_PATH; do
+  [[ ${!v} =~ $REL_RE && ${!v} != /* && "/${!v}/" != */../* && "/${!v}/" != */./* ]] || bad $v
+done
+SCHEME_RE='^[A-Za-z0-9][A-Za-z0-9 ._+-]{0,127}$'
+[[ $SCHEME =~ $SCHEME_RE ]] || bad SCHEME
+[[ $CONFIGURATION == Debug || $CONFIGURATION == Release ]] || bad CONFIGURATION
+num() { [[ ${!1} =~ ^[0-9]{1,12}$ ]] && (( 10#${!1} >= $2 && 10#${!1} <= $3 )) || bad "$1 (want $2..$3)"; }
+num CPU 1 8; num MEM_GIB 2 16; num TIMEOUT_S 60 7200; num OUT_DISK_GIB 1 64; num MAX_OUT_BYTES 1 17179869184
+CPU=$((10#$CPU)); MEM_GIB=$((10#$MEM_GIB)); TIMEOUT_S=$((10#$TIMEOUT_S)); OUT_DISK_GIB=$((10#$OUT_DISK_GIB)); MAX_OUT_BYTES=$((10#$MAX_OUT_BYTES))
+# end of input validation
 [[ ! -e $BASE ]] || { echo "$BASE already exists; refusing to reuse an attempt" >&2; exit 1; }
 [[ -f $DENSE && -f $RECEIPT && -x $HELPER && -x $GUARD && -f $IO ]] || { echo "missing dense master, helper, guard or io tool" >&2; exit 1; }
 [[ $(id -u foundrybuild) == "$UID_B" ]] || { echo "build account missing" >&2; exit 1; }
@@ -57,7 +76,7 @@ chown $UID_B:$UID_B "$BASE/auxiliary.bin"; chmod 0600 "$BASE/auxiliary.bin"
 for f in hardware-model.bin machine-identifier.bin; do
   cp "$IMG/$f" "$BASE/$f"; chown root:wheel "$BASE/$f"; chmod 0444 "$BASE/$f"
 done
-mkfile ${OUT_DISK_GIB}g "$BASE/outputs.raw"
+mkfile "${OUT_DISK_GIB}g" "$BASE/outputs.raw"
 dev=$(hdiutil attach -nomount -imagekey diskimage-class=CRawDiskImage "$BASE/outputs.raw" | awk 'NR==1{print $1}')
 [[ $dev == /dev/disk* ]] || { echo "could not attach outputs.raw" >&2; exit 1; }
 diskutil partitionDisk "$dev" GPT APFS FoundryOutputs 100% >/dev/null
@@ -204,9 +223,11 @@ echo "--- result.json"; cat "$T/result.json" 2>/dev/null || cat "$T/failure.json
 echo; echo "--- build.log tail"; tail -15 "$T/build.log" 2>/dev/null || true
 log "5. deliver verified outputs for Mac1"
 OUTD=/Volumes/FoundryBuild/staging/results/$ATT
-/usr/bin/python3 -I - "$T" "$OUTD" <<'PY' || echo "!! delivery failed"
-import hashlib, json, os, shutil, sys
-tree, outd = sys.argv[1:3]
+EVIDENCE=intake; [[ ${M:-} && $T == "$M" ]] && EVIDENCE=diagnostic
+/usr/bin/python3 -I - "$T" "$OUTD" "$BASE" "$EVIDENCE" <<'PY' || echo "!! delivery failed"
+import hashlib, json, os, shutil, sys, time
+tree, outd, base, evidence = sys.argv[1:5]
+rec = []
 r = json.load(open(os.path.join(tree, 'result.json')))
 if r.get('exitCode') != 0 or r.get('limited'):
     print('build did not succeed; nothing delivered'); sys.exit(0)
@@ -220,7 +241,19 @@ for o in r['outputs']:
         for b in iter(lambda: f.read(8 << 20), b''): h.update(b); g.write(b)
     assert h.hexdigest() == o['sha256'] and os.path.getsize(dst) == o['sizeBytes'], o['path']
     os.chmod(dst, 0o755 if o['mode'] == 0o755 else 0o644)
+    rec.append({'path': o['path'], 'sha256': h.hexdigest(), 'bytes': os.path.getsize(dst), 'mode': o['mode']})
 shutil.copyfile(os.path.join(tree, 'result.json'), os.path.join(outd, 'result.json'))
+# Review H8: the delivered tree (and its result.json) end up owned by the login user, so they cannot vouch for
+# themselves. This receipt is computed by root from the root-mounted intake tree, lives in the root-owned
+# attempt dir, and is what Mac1 must verify the delivered files against.
+with open(os.path.join(tree, 'result.json'), 'rb') as f: rsha = hashlib.sha256(f.read()).hexdigest()
+receipt = {'version': 1, 'kind': 'delivered-outputs', 'attempt': os.path.basename(base), 'evidence': evidence,
+           'resultJsonSha256': rsha, 'outputs': sorted(rec, key=lambda e: e['path']),
+           'deliveredTo': outd, 'at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}
+rp = os.path.join(base, 'receipts', 'outputs.json')
+with open(rp + '.tmp', 'x') as f: json.dump(receipt, f, sort_keys=True, separators=(',', ':'))
+os.chown(rp + '.tmp', 0, 0); os.chmod(rp + '.tmp', 0o444); os.rename(rp + '.tmp', rp)
+print('root receipt', rp, hashlib.sha256(open(rp, 'rb').read()).hexdigest())
 for root, dirs, names in os.walk(outd):
     for n in dirs + names: os.chown(os.path.join(root, n), 501, 20)
 os.chown(outd, 501, 20)
