@@ -75,6 +75,17 @@ export default {
 
     // --- authenticated operations -------------------------------------------
     const body = await req.text();
+    // Security review 2026-10-22 C1 (TEMPORARY kill switch): actor recovery binds a caller's self-made device
+    // key to an account by display name, so anyone on the internet could become an existing actor. Recovery
+    // stays off until it requires an operator-issued single-use secret or a signature from an already-bound
+    // device. Remove this block only together with that fix. Re-enable for a test: RECOVERY_ENABLED="1".
+    if ((env as any).RECOVERY_ENABLED !== "1") {
+      let op = "";
+      try { op = JSON.parse(body)?.operation ?? ""; } catch { /* the router reports bad JSON */ }
+      if (op === "begin_actor_recovery" || op === "complete_actor_recovery") {
+        return Response.json({ ok: false, failure: { code: "recovery_disabled", message: "Actor recovery is disabled pending a security fix." } }, { status: 403 });
+      }
+    }
     const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? null;
     const ctx = await ctxFor(env, db);
     const out = await handleRequest(body, bearer, { ...ctx, waitUntil: (p) => exeCtx.waitUntil(p) });
