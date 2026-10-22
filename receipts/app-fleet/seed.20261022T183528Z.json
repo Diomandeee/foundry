@@ -1,0 +1,18 @@
+{
+ "approved_by": "all NEW code in the MotionMix family must go through Foundry, cloud first, the way it's meant to work, starting before he flies tomorrow (Mohamed direct, relayed by mohameddiomande-f7 2026-10-22T14:33Z); lume-commerce stage scope, F9 lands via gate",
+ "started": "20261022T183528Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "lume-commerce",
+   "base": "lume-commerce",
+   "origin_commit": "b3afe44c3146cc3107f6b2fccc6cdeaedd055e48",
+   "seed_commit": "816460df4001ce8080306fd6c1f35d54e3ec9e16",
+   "files": 470,
+   "stripped": 4,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"cc1428ea9cf340de994d0e9644bbc1a0\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

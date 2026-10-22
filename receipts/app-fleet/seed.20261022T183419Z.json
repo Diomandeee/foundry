@@ -13,6 +13,105 @@
    "created": true,
    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
    "namespace": "foundry-staging"
+  },
+  {
+   "id": "birthday-pass",
+   "base": "birthday-pass",
+   "origin_commit": "6ab06f2123e27e265bd24adeb6abe7b5ad7b3575",
+   "seed_commit": "446325657ff720e91604db669b5d64b8fac22d91",
+   "files": 17,
+   "stripped": 10,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "bitwork",
+   "base": "bitwork",
+   "origin_commit": "537cdf7e8f7abd6db1acb1b7dcc57e3d0a5364d6",
+   "seed_commit": "02969d48badb6347915462c3e68a92e48a96043c",
+   "files": 67,
+   "stripped": 3,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "brews-with-beats-app",
+   "base": "brews-with-beats-app",
+   "origin_commit": "735438f52c9edc1b62bd45fcee97e85cec471b30",
+   "seed_commit": "d1adeacaa2f967c44fc995a0f182dd13362823bd",
+   "files": 40,
+   "stripped": 3,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "brews-with-beats-mobile-app",
+   "base": "brews-with-beats-mobile-app",
+   "origin_commit": "9061ab663420b70e3ba31d07aa1c0c603bd1ebb5",
+   "seed_commit": "6e0e2477337619b98f83ef9ad3204f38c860527a",
+   "files": 198,
+   "stripped": 3,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "brews-with-beats-v1",
+   "base": "brews-with-beats-v1",
+   "origin_commit": "f6dcb9b9b02d85beadaa9541637ea8528bdfb38b",
+   "seed_commit": "ff3462b2eaef96f904c1e2adb13551fa9e4e48af",
+   "files": 568,
+   "stripped": 87,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "bufbarista-crm",
+   "base": "bufbarista-crm",
+   "origin_commit": "39874d70d627d97daee9a5005e83a86108f5514d",
+   "seed_commit": "33b8ab2669559c8206b5ef68768b3c29c51370ee",
+   "files": 724,
+   "stripped": 4,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "cali-lights-expo",
+   "base": "cali-lights-expo",
+   "origin_commit": "88856fe605b1e6d283fe15d35fdab0088d526bcd",
+   "seed_commit": "d0197d23e88015e54d25f97091cad354ba1a11e7",
+   "files": 36,
+   "stripped": 5,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "cc-trajectory",
+   "base": "cc-trajectory",
+   "origin_commit": "792a059c18336cf87db3fb4d64b4fb3457d300e0",
+   "seed_commit": "effae974f7de3375d68c8d5174ec02bee055e090",
+   "files": 844,
+   "stripped": 11,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "compass",
+   "base": "compass",
+   "origin_commit": "85e098755e04e8fcda0622ef57b06b54a79c3457",
+   "seed_commit": "b2dc546aaecded4a1b5fa383ebf78fa7218eddcc",
+   "files": 106,
+   "stripped": 1,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
   }
  ]
 }

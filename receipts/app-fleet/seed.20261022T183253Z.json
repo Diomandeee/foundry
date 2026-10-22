@@ -70,6 +70,116 @@
    "created": true,
    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"f3a946f204b845d3a40661774503714e\",\"created_at\":\"2026-10-22T18:",
    "namespace": "foundry-staging"
+  },
+  {
+   "id": "lobe-chat",
+   "base": "lobe-chat",
+   "origin_commit": "05e6ecd80572a5275dddfb2c885c2bbde3ca409c",
+   "seed_commit": "6d264759b33f91f460e1f8b794f6b8c5000c6a27",
+   "files": 745,
+   "stripped": 20,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"d37fc437fdf44cc9a241b5a6f5bb5485\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "location-intelligence",
+   "base": "location-intelligence",
+   "origin_commit": "87a01214db56318885ade602889dbede7becb4b5",
+   "seed_commit": "96616e0132b561f0038a7ab178ee6027cae683c8",
+   "files": 12,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"72fb0de364bf4522bf68af1d888c47cd\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "mac4-adobe-setup",
+   "base": "mac4-adobe-setup",
+   "origin_commit": "43b4931c6193b90e685cf629828275a35c1685ed",
+   "seed_commit": "1242c176440f66a642bb0d6a9ee22894f4ff71f0",
+   "files": 7,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"27b0f0d0f2a748fc9e9d3d45d01ed983\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "market",
+   "base": "market",
+   "origin_commit": "e2edc94b536934da8a6ef36e5b0c047e33bcfc4f",
+   "seed_commit": "5f1d1d2d1ea7445d926466fdaedbec691105a54a",
+   "files": 667,
+   "stripped": 7,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"62de8cdf92b9406dace288f3444f47b8\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "mediapipecreative",
+   "base": "mediapipecreative",
+   "origin_commit": "3c150edf9d77b1580959dd69642c3bc01567d250",
+   "seed_commit": "8a6c3024371ad63b6cd008f3bd1da31310bfc741",
+   "files": 44,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"6f926a0387c04c11aec49507bd5102c5\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "memory-defrag",
+   "base": "memory-defrag",
+   "origin_commit": "b6d00cc0f60e4f6d231d82b104613848bdd94906",
+   "seed_commit": "478a1f40bc81dd1e7387d7ffc3c886ddf132f692",
+   "files": 4,
+   "stripped": 1,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"1b8743b8c16d4dec82f5733742888dd7\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "meshd",
+   "base": "meshd",
+   "origin_commit": "bfec18974232283df501606f4111513454fdbb60",
+   "seed_commit": "7a6b71cb9204c02dcd6c83357f68d3183e3dbc43",
+   "files": 13,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"f283ab313f8c487c8a214c9f2ebec8cd\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "mfc",
+   "base": "mfc",
+   "origin_commit": "b354f6a6f419f30eda417df7db063435f8422eb4",
+   "seed_commit": "b3df420b3461c0e0f323639aaa2d8ffff079d07e",
+   "files": 206,
+   "stripped": 19,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"84e3c9513894447b96f7233fb8217de0\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "mfp-storefront",
+   "base": "mfp-storefront",
+   "origin_commit": "4c08cbb762201b691fc7a34396170d40ddd6cf14",
+   "seed_commit": "8b32d58d21ace63523a3a73a2c3dd6ea4476f349",
+   "files": 45,
+   "stripped": 100,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"3fb5e7094ab24135ac0670890358955c\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "migration-architect",
+   "base": "migration-architect",
+   "origin_commit": "50921ad0527a6e515a9de08ee05631ab9c36afa4",
+   "seed_commit": "7ac24cb989e7e5a4119b3e98ce11726f8865c271",
+   "files": 73,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8ef1b87e03b247359753956a206e42b3\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
   }
  ]
 }

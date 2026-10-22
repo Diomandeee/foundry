@@ -1119,8 +1119,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "birthday-pass",
+   "foundry_seed": {
+    "base": "birthday-pass",
+    "origin_commit": "6ab06f2123e27e265bd24adeb6abe7b5ad7b3575",
+    "seed_commit": "446325657ff720e91604db669b5d64b8fac22d91",
+    "files": 17,
+    "stripped": 10,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -1169,8 +1178,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "bitwork",
+   "foundry_seed": {
+    "base": "bitwork",
+    "origin_commit": "537cdf7e8f7abd6db1acb1b7dcc57e3d0a5364d6",
+    "seed_commit": "02969d48badb6347915462c3e68a92e48a96043c",
+    "files": 67,
+    "stripped": 3,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -1288,8 +1306,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "brews-with-beats-app",
+   "foundry_seed": {
+    "base": "brews-with-beats-app",
+    "origin_commit": "735438f52c9edc1b62bd45fcee97e85cec471b30",
+    "seed_commit": "d1adeacaa2f967c44fc995a0f182dd13362823bd",
+    "files": 40,
+    "stripped": 3,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -1340,8 +1367,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "brews-with-beats-mobile-app",
+   "foundry_seed": {
+    "base": "brews-with-beats-mobile-app",
+    "origin_commit": "9061ab663420b70e3ba31d07aa1c0c603bd1ebb5",
+    "seed_commit": "6e0e2477337619b98f83ef9ad3204f38c860527a",
+    "files": 198,
+    "stripped": 3,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -1381,8 +1417,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "brews-with-beats-v1",
+   "foundry_seed": {
+    "base": "brews-with-beats-v1",
+    "origin_commit": "f6dcb9b9b02d85beadaa9541637ea8528bdfb38b",
+    "seed_commit": "ff3462b2eaef96f904c1e2adb13551fa9e4e48af",
+    "files": 568,
+    "stripped": 87,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -1433,8 +1478,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "bufbarista-crm",
+   "foundry_seed": {
+    "base": "bufbarista-crm",
+    "origin_commit": "39874d70d627d97daee9a5005e83a86108f5514d",
+    "seed_commit": "33b8ab2669559c8206b5ef68768b3c29c51370ee",
+    "files": 724,
+    "stripped": 4,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -1883,8 +1937,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "cali-lights-expo",
+   "foundry_seed": {
+    "base": "cali-lights-expo",
+    "origin_commit": "88856fe605b1e6d283fe15d35fdab0088d526bcd",
+    "seed_commit": "d0197d23e88015e54d25f97091cad354ba1a11e7",
+    "files": 36,
+    "stripped": 5,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -2208,8 +2271,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "cc-trajectory",
+   "foundry_seed": {
+    "base": "cc-trajectory",
+    "origin_commit": "792a059c18336cf87db3fb4d64b4fb3457d300e0",
+    "seed_commit": "effae974f7de3375d68c8d5174ec02bee055e090",
+    "files": 844,
+    "stripped": 11,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -3006,8 +3078,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
-   "foundry_seed": null,
+   "foundry_base": "compass",
+   "foundry_seed": {
+    "base": "compass",
+    "origin_commit": "85e098755e04e8fcda0622ef57b06b54a79c3457",
+    "seed_commit": "b2dc546aaecded4a1b5fa383ebf78fa7218eddcc",
+    "files": 106,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
    "purged": "secrets in seed, 2026-10-22"
   },
   {
@@ -6828,7 +6909,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "lobe-chat",
+   "foundry_seed": {
+    "base": "lobe-chat",
+    "origin_commit": "05e6ecd80572a5275dddfb2c885c2bbde3ca409c",
+    "seed_commit": "6d264759b33f91f460e1f8b794f6b8c5000c6a27",
+    "files": 745,
+    "stripped": 20,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"d37fc437fdf44cc9a241b5a6f5bb5485\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "location-intelligence",
@@ -6867,7 +6958,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "location-intelligence",
+   "foundry_seed": {
+    "base": "location-intelligence",
+    "origin_commit": "87a01214db56318885ade602889dbede7becb4b5",
+    "seed_commit": "96616e0132b561f0038a7ab178ee6027cae683c8",
+    "files": 12,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"72fb0de364bf4522bf68af1d888c47cd\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "loom",
@@ -6964,7 +7065,41 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "lume-commerce",
+   "seed_paths": [
+    "stage/mac4",
+    "tools",
+    "infra",
+    "services",
+    "scripts",
+    "tests",
+    "apps",
+    "config",
+    "packages",
+    ".github",
+    ".githooks",
+    ".WAVE8_NOT_PUSHED",
+    ".gitignore",
+    "CODEX-DUNCAN-HANDOFF.md",
+    "CODEX-RESTRUCTURE-PROMPT.md",
+    "CODE_REVIEW.md",
+    "Cargo.lock",
+    "Cargo.toml",
+    "K11-CLAUDE.md",
+    "README.md",
+    "SESSION_STATE.md",
+    "pyproject.toml"
+   ],
+   "foundry_seed": {
+    "base": "lume-commerce",
+    "origin_commit": "b3afe44c3146cc3107f6b2fccc6cdeaedd055e48",
+    "seed_commit": "816460df4001ce8080306fd6c1f35d54e3ec9e16",
+    "files": 470,
+    "stripped": 4,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"cc1428ea9cf340de994d0e9644bbc1a0\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "lume-motion-state",
@@ -7043,7 +7178,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "mac4-adobe-setup",
+   "foundry_seed": {
+    "base": "mac4-adobe-setup",
+    "origin_commit": "43b4931c6193b90e685cf629828275a35c1685ed",
+    "seed_commit": "1242c176440f66a642bb0d6a9ee22894f4ff71f0",
+    "files": 7,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"27b0f0d0f2a748fc9e9d3d45d01ed983\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "market",
@@ -7071,7 +7216,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "market",
+   "foundry_seed": {
+    "base": "market",
+    "origin_commit": "e2edc94b536934da8a6ef36e5b0c047e33bcfc4f",
+    "seed_commit": "5f1d1d2d1ea7445d926466fdaedbec691105a54a",
+    "files": 667,
+    "stripped": 7,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"62de8cdf92b9406dace288f3444f47b8\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "meaning-full-power",
@@ -7176,7 +7331,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "mediapipecreative",
+   "foundry_seed": {
+    "base": "mediapipecreative",
+    "origin_commit": "3c150edf9d77b1580959dd69642c3bc01567d250",
+    "seed_commit": "8a6c3024371ad63b6cd008f3bd1da31310bfc741",
+    "files": 44,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"6f926a0387c04c11aec49507bd5102c5\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "memory-defrag",
@@ -7196,7 +7361,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "memory-defrag",
+   "foundry_seed": {
+    "base": "memory-defrag",
+    "origin_commit": "b6d00cc0f60e4f6d231d82b104613848bdd94906",
+    "seed_commit": "478a1f40bc81dd1e7387d7ffc3c886ddf132f692",
+    "files": 4,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"1b8743b8c16d4dec82f5733742888dd7\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "meridian",
@@ -7342,7 +7517,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "meshd",
+   "foundry_seed": {
+    "base": "meshd",
+    "origin_commit": "bfec18974232283df501606f4111513454fdbb60",
+    "seed_commit": "7a6b71cb9204c02dcd6c83357f68d3183e3dbc43",
+    "files": 13,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"f283ab313f8c487c8a214c9f2ebec8cd\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "mfc",
@@ -7362,7 +7547,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "mfc",
+   "foundry_seed": {
+    "base": "mfc",
+    "origin_commit": "b354f6a6f419f30eda417df7db063435f8422eb4",
+    "seed_commit": "b3df420b3461c0e0f323639aaa2d8ffff079d07e",
+    "files": 206,
+    "stripped": 19,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"84e3c9513894447b96f7233fb8217de0\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "mfp",
@@ -7412,7 +7607,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "mfp-storefront",
+   "foundry_seed": {
+    "base": "mfp-storefront",
+    "origin_commit": "4c08cbb762201b691fc7a34396170d40ddd6cf14",
+    "seed_commit": "8b32d58d21ace63523a3a73a2c3dd6ea4476f349",
+    "files": 45,
+    "stripped": 100,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"3fb5e7094ab24135ac0670890358955c\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "migration-architect",
@@ -7451,7 +7656,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "migration-architect",
+   "foundry_seed": {
+    "base": "migration-architect",
+    "origin_commit": "50921ad0527a6e515a9de08ee05631ab9c36afa4",
+    "seed_commit": "7ac24cb989e7e5a4119b3e98ce11726f8865c271",
+    "files": 73,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8ef1b87e03b247359753956a206e42b3\",\"created_at\":\"2026-10-22T18:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "milebrew-celebrate-ai",
