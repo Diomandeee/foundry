@@ -12,11 +12,12 @@ DEST=${2:-$HOME/FoundryResults/$ATT}
 SSH=(ssh -o ConnectTimeout=10 -o HostKeyAlias=mac5 -i "$HOME/.ssh/id_mac5_auto" mohameddiomande@mac5.local)
 R=/Library/Foundry/VM/attempts/$ATT/receipts/outputs.json
 # The receipt and every directory above it must be root-owned and not writable by anyone else.
-"${SSH[@]}" "for p in /Library/Foundry/VM /Library/Foundry/VM/attempts /Library/Foundry/VM/attempts/$ATT /Library/Foundry/VM/attempts/$ATT/receipts $R; do
-  s=\$(stat -f '%u %Lp' \"\$p\") || exit 3; set -- \$s
-  [ \"\$1\" = 0 ] || { echo \"not root-owned: \$p\" >&2; exit 3; }
-  case \$2 in *[2367]?|*?[2367]) echo \"group/other-writable: \$p\" >&2; exit 3;; esac
-done" || { echo "REFUSED: root receipt missing or not root-controlled" >&2; exit 1; }
+# Run under /bin/sh explicitly: Mac5's login shell is zsh, which does not word-split "set -- $s" (bug found 2026-10-22).
+"${SSH[@]}" "/bin/sh -c 'for p in /Library/Foundry/VM /Library/Foundry/VM/attempts /Library/Foundry/VM/attempts/$ATT /Library/Foundry/VM/attempts/$ATT/receipts $R; do
+  u=\$(stat -f %u \"\$p\") || exit 3; m=\$(stat -f %Lp \"\$p\")
+  [ \"\$u\" = 0 ] || { echo \"not root-owned: \$p\" >&2; exit 3; }
+  case \$m in *[2367]?|*?[2367]) echo \"group/other-writable: \$p\" >&2; exit 3;; esac
+done'" || { echo "REFUSED: root receipt missing or not root-controlled" >&2; exit 1; }
 mkdir -p "$DEST"
 "${SSH[@]}" "cat $R" > "$DEST/outputs.root-receipt.json"
 rsync -a -e "ssh -o HostKeyAlias=mac5 -i $HOME/.ssh/id_mac5_auto" "mohameddiomande@mac5.local:/Volumes/FoundryBuild/staging/results/$ATT/files/" "$DEST/files/"
