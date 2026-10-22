@@ -1,0 +1,57 @@
+[
+ {
+  "id": "motionmix",
+  "base": "motionmix",
+  "task": "seedfix-symlinks-motionmix",
+  "added": [
+   "audio/beats/01-tae-bo-fit-sculpt_seg01.wav",
+   "audio/beats/02-billy-blanks-bootcamp_seg01.wav",
+   "audio/beats/03-billy-blanks-cardio-boot-camp_seg01.wav",
+   "audio/beats/04-boot-camp-elite-mission-2_seg01.wav",
+   "audio/beats/05-rock-solid-abs_seg01.wav",
+   "audio/beats/06-ultimate-tae-bo-anniversary_seg01.wav",
+   "beats"
+  ],
+  "decision": {
+   "id": 64,
+   "verdict": "merge",
+   "reason": null,
+   "merged_sha": "0dd4ec8d533621299b5c8db3114a8c7387fa16c6"
+  },
+  "fork_deleted": true
+ },
+ {
+  "id": "motionmix-ableton",
+  "base": "motionmix-ableton",
+  "task": "seedfix-symlinks-motionmix-ableton",
+  "added": [
+   "links/canonical-set.als",
+   "links/current-project",
+   "links/echelon-controls.mid",
+   "links/isolated-proof-set.als",
+   "links/proof-adapter.amxd"
+  ],
+  "decision": {
+   "id": 66,
+   "verdict": "merge",
+   "reason": null,
+   "merged_sha": "3e9dad04ae27d40be0c8e2bfc8c2ee81cf1d16f9"
+  },
+  "fork_deleted": true
+ },
+ {
+  "id": "sharedservices",
+  "base": "sharedservices",
+  "task": "seedfix-symlinks-sharedservices",
+  "added": [
+   "SharedServices"
+  ],
+  "decision": {
+   "id": 68,
+   "verdict": "merge",
+   "reason": null,
+   "merged_sha": "547d73a666c1f66643d6e1c38766af800aee8436"
+  },
+  "fork_deleted": true
+ }
+]
