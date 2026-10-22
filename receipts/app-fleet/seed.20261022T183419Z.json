@@ -112,6 +112,83 @@
    "created": true,
    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
    "namespace": "foundry-staging"
+  },
+  {
+   "id": "dlm",
+   "base": "dlm",
+   "origin_commit": "9865309124df98cefa71b6e7b4eb72c323c59a46",
+   "seed_commit": "cf13979248c876bf082dc5b68f9ac69f48f68477",
+   "files": 230,
+   "stripped": 1,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "jeli-nko",
+   "base": "jeli-nko",
+   "origin_commit": "53598f3405185b41714508013641b90a172d423a",
+   "seed_commit": "7b8afdc76fdc61722830051efb30e534684ab471",
+   "files": 191,
+   "stripped": 73,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "learnnko",
+   "base": "learnnko",
+   "origin_commit": "229616b52e276980da8a07eb90ac0ed787b4d3a5",
+   "seed_commit": "476dcc126a02465cad21a8d0196fce4167c6a9b5",
+   "files": 563,
+   "stripped": 4,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "meaning-full-power",
+   "base": "meaning-full-power",
+   "origin_commit": "948480fb8005e245cd1cc25f737251e924a3677f",
+   "seed_commit": "3bd6090dd9580b2c00825a264581fffea9d0cfe5",
+   "files": 729,
+   "stripped": 804,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "milkmendelivery",
+   "base": "milkmendelivery",
+   "origin_commit": "3cec4fb3f47a96c3f7439324dd5fc2599ce1f933",
+   "seed_commit": "9e20bd3863c2ad2547dc214f7bbbe29aec1aef7c",
+   "files": 1015,
+   "stripped": 174,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "nko",
+   "base": "nko",
+   "origin_commit": "089d661747ded23f9594cc722ed8eaa3bea7224e",
+   "seed_commit": "4c9e951ef93ad3ffc24d575733f781b27bf7a7af",
+   "files": 170,
+   "stripped": 2,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "serenity-soother",
+   "base": "serenity-soother",
+   "origin_commit": "1fdc035c3f815e97063d1f1f1b013a2d3857ac7c",
+   "seed_commit": "977313269492cf717e89b6928aa9778cb8d14a54",
+   "files": 199,
+   "stripped": 106,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
   }
  ]
 }
