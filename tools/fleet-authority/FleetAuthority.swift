@@ -33,7 +33,7 @@ import CryptoKit
 import Darwin
 import Foundation
 
-let VERSION = "fleet-authority/1.4.0"
+let VERSION = "fleet-authority/1.4.1"
 let TEST_ROOT: String? = getuid() != 0 ? ProcessInfo.processInfo.environment["FLEET_AUTHORITY_TEST_ROOT"] : nil
 let ROOT = TEST_ROOT ?? "/Library/FleetAuthority"
 let SOCK = TEST_ROOT.map { $0 + "/fleet-authority.sock" } ?? "/var/run/fleet-authority.sock"
