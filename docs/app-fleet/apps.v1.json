@@ -459,7 +459,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "airdeck"
   },
   {
    "id": "ambientlisten",
@@ -2491,7 +2491,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "commandhub",
    "asc_app_id": "6759936357",
    "asc_name": "Command Hub",
    "asc_bundle_id": "com.openclaw.hub",
@@ -2509,6 +2509,16 @@
     "uploaded": "2026-03-10",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "commandhub",
+    "origin_commit": "b6aa69f59b2c70d58d051f198cc298ae91f5eec3",
+    "seed_commit": "58bc40c21eeef83a79989c8e98c6ed8c485978c7",
+    "files": 144,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"b4158a57525642b88b7e5f92343bf5cc\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -2927,7 +2937,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "creativedirector",
    "asc_app_id": "6759379296",
    "asc_name": "Creative Director",
    "asc_bundle_id": "com.mohameddiomande.CreativeDirector",
@@ -2945,6 +2955,16 @@
     "uploaded": "2026-03-14",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "creativedirector",
+    "origin_commit": "290104fa05092c875c95b7e40eed1c0785a35a25",
+    "seed_commit": "95fa0f16d65eed083571033d22f6f6b7e5798dbe",
+    "files": 236,
+    "stripped": 99,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"55ebe6e1ddc34448887a2a8c01ff41f6\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -3171,7 +3191,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "designcraft",
+   "foundry_seed": {
+    "base": "designcraft",
+    "origin_commit": "d020b4e85d89ddf120933107a24b23b33036c8a0",
+    "seed_commit": "19612ef1b4b93a469f1c093643fc5a5b8b979671",
+    "files": 387,
+    "stripped": 44,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"6909f0e713f54d39938a31d5f0db22ed\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "dictum",
@@ -3706,7 +3736,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "effectcraft",
+   "foundry_seed": {
+    "base": "effectcraft",
+    "origin_commit": "e2f314f7534682f776de22874664befa99a4e6d6",
+    "seed_commit": "dddb8ec3c6bb16d6c6af6054923513d20765f527",
+    "files": 1034,
+    "stripped": 32,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"bdf5bfef67c042d9a0e48386668b8a8c\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "ember",
@@ -4114,7 +4154,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "fabric",
+   "foundry_seed": {
+    "base": "fabric",
+    "origin_commit": "0dff9f04d835d4226b69d9ea1ff8f25af2e8fc88",
+    "seed_commit": "333f8ce3c353a7f6ec187f058a9d4f9fd98769b0",
+    "files": 20,
+    "stripped": 3,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"ad7334d09ac7420e8e582bbe8dcf9eec\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "failure-museum",
@@ -4212,7 +4262,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "filmcraft",
+   "foundry_seed": {
+    "base": "filmcraft",
+    "origin_commit": "0879bd7a7e899a2aae4c093915f72f95ff654abc",
+    "seed_commit": "9462957c888e806628315e15fb5fc545bdd95b1c",
+    "files": 1268,
+    "stripped": 76,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"a603a53159b54fd2a8aef3cf53171d90\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "firstdate",
@@ -4358,7 +4418,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "fleet-dispatch",
+   "foundry_seed": {
+    "base": "fleet-dispatch",
+    "origin_commit": "9137f9919b41a52a7d8a740bdfd4581c725b9d6e",
+    "seed_commit": "21deb9ebee23bcbfe7052080aa030d19a68f40c1",
+    "files": 12,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"02b1fbe2f31f4feda1e8a96f06fdd10f\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "fleetcommand",
@@ -5188,7 +5258,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "jeli-nko",
+   "foundry_seed": {
+    "base": "jeli-nko",
+    "origin_commit": "53598f3405185b41714508013641b90a172d423a",
+    "seed_commit": "147b212023506a73129422c281214cd03aa60312",
+    "files": 192,
+    "stripped": 72,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"9b4b38282e7a4a5187f580d4bcedb508\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "karl",
@@ -5459,7 +5539,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "koji-crm",
+   "foundry_seed": {
+    "base": "koji-crm",
+    "origin_commit": "e9efbc382192fe2205cb0452763e0b8e297fa0b5",
+    "seed_commit": "e5646b68a130ed5ec91607e881d8ebe0e3b4f7f8",
+    "files": 12,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"46676655742e4d5b9682cad3b3dc24e2\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "learnnko",
@@ -5490,7 +5580,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "learnnko",
+   "foundry_seed": {
+    "base": "learnnko",
+    "origin_commit": "229616b52e276980da8a07eb90ac0ed787b4d3a5",
+    "seed_commit": "2b98573ed8859633e637646bc1295f8771307516",
+    "files": 564,
+    "stripped": 3,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"63c2bfe42adb45358d9105c6999ff0b2\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "ledger",
@@ -5644,7 +5744,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "lightcraft",
+   "foundry_seed": {
+    "base": "lightcraft",
+    "origin_commit": "701f78ea2e586d4748705f10fdf5c4181dc1fd49",
+    "seed_commit": "33349dc2f12c7d5264efe0873ded25aa20690974",
+    "files": 766,
+    "stripped": 35,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"bb6dbf6dcee647059093b70a41ec1701\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "linguistic-dna",
@@ -5996,7 +6106,18 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "lume-motion-state",
+   "foundry_seed": {
+    "id": "lume-motion-state",
+    "base": "lume-motion-state",
+    "origin_commit": "d5d4dd5bdfbd414e4d719c4612d17eceaca1fb51",
+    "seed_commit": "238b6acef9b7773d3104f5a3b13d5555123dae93",
+    "files": 78,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"ab6ee8bbebe54029a97ce6d7f810ed03\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "mac4-adobe-setup",
@@ -6118,7 +6239,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "meaning-full-power",
    "asc_app_id": "6758981968",
    "asc_name": "Meaning Full Power",
    "asc_bundle_id": "com.mohameddiomande.meaningfullpower",
@@ -6136,6 +6257,16 @@
     "uploaded": "2026-02-24",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "meaning-full-power",
+    "origin_commit": "948480fb8005e245cd1cc25f737251e924a3677f",
+    "seed_commit": "648c6aff9e548e9b363e52e64f5ecf13959d1e31",
+    "files": 730,
+    "stripped": 803,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"2360c52805d84c8e88dd1be5e22d6518\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -6381,7 +6512,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "mfp",
+   "foundry_seed": {
+    "base": "mfp",
+    "origin_commit": "e230de4f34011a1b98d54603b0db782759389186",
+    "seed_commit": "388fa6a4dfc052f91afdccd0cfbe6250808cfe82",
+    "files": 206,
+    "stripped": 19,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"7519ce9564814a28b5bbdd26abb740e7\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "mfp-storefront",
@@ -6613,7 +6754,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "milkmendelivery",
+   "foundry_seed": {
+    "base": "milkmendelivery",
+    "origin_commit": "3cec4fb3f47a96c3f7439324dd5fc2599ce1f933",
+    "seed_commit": "7741661570823da8ffcd2f6ed5fc85a4be39ddac",
+    "files": 1019,
+    "stripped": 170,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"ee2804588ebd40f195fc90ca1c6343a7\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "minimax-fleet",
@@ -6682,7 +6833,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "mm-grade-match",
+   "foundry_seed": {
+    "base": "mm-grade-match",
+    "origin_commit": "c007cb7f4a7ecf9c19fb6bd3a5b5f3455adf61b2",
+    "seed_commit": "306857d77d48409712f998bea4b643b0129bf3fb",
+    "files": 685,
+    "stripped": 392,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"5649bb3871834b8fa32e4cbff78f5f7c\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "mm-photo-match",
@@ -6722,7 +6883,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "mm-photo-match",
+   "foundry_seed": {
+    "base": "mm-photo-match",
+    "origin_commit": "f55cc94d1322fb1c546da2d9a3db474aa00cdf5b",
+    "seed_commit": "c4021316985d672edaded26f471369f73c56b6f0",
+    "files": 7,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"c4d68b55349744a597520896a14540e4\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "mocopiintegration",
@@ -6985,7 +7156,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "motionmix",
    "asc_app_id": "6806063324",
    "asc_name": "MotionMix",
    "asc_bundle_id": "com.openclaw.MotionMixApp",
@@ -7003,7 +7174,19 @@
     "uploaded": "2026-09-28",
     "state": "VALID",
     "expired": false
-   }
+   },
+   "foundry_seed": {
+    "id": "motionmix",
+    "base": "motionmix",
+    "origin_commit": "a6d7fd8372a7e8ca13674dc2a0446430ee932ec6",
+    "seed_commit": "5dd7d7e871651e730aade524bd58c9d1b27868c2",
+    "files": 868,
+    "stripped": 5,
+    "created": true,
+    "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+    "namespace": "foundry-staging"
+   },
+   "seed_branch": "panel/lan-mirror-and-subset-recording"
   },
   {
    "id": "motionmix-ableton",
@@ -7042,7 +7225,18 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "motionmix-ableton",
+   "foundry_seed": {
+    "id": "motionmix-ableton",
+    "base": "motionmix-ableton",
+    "origin_commit": "95c824319b32d0badaf01159b2b1bd7e29be5477",
+    "seed_commit": "b4ea961463bbf8544e53863ba46b6577ce1a52db",
+    "files": 557,
+    "stripped": 57,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"e05338ab60764f2e977e64904c453149\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "motionmixapp",
@@ -7348,7 +7542,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "nko",
    "asc_app_id": "6759935350",
    "asc_name": "NKo Bridge",
    "asc_bundle_id": "com.openclaw.nko-bridge",
@@ -7366,6 +7560,16 @@
     "uploaded": "2026-03-02",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "nko",
+    "origin_commit": "089d661747ded23f9594cc722ed8eaa3bea7224e",
+    "seed_commit": "12d37b66d19746ac6d14644b8f296b03503c6db5",
+    "files": 171,
+    "stripped": 1,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"0b16b13060ad4f8ea0013cf87d129eb7\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -7422,7 +7626,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "nko-brain-scanner",
+   "foundry_seed": {
+    "base": "nko-brain-scanner",
+    "origin_commit": "dba81ecf715f428b30bdf13cc1996d271f19105a",
+    "seed_commit": "267b30fb5d1c380f1416e9069325efe11eb3dd3c",
+    "files": 617,
+    "stripped": 34,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"311062627a7d4ebfb2f63dc57ba339a0\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "nko-code-comments",
@@ -7481,7 +7695,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "nko-keyboard-ai",
+   "foundry_seed": {
+    "base": "nko-keyboard-ai",
+    "origin_commit": "78a0ed8c90073c0cc41ba588707e64d31634c8c8",
+    "seed_commit": "e04a1b471810ad46a1087c8bf02797cbd25bc053",
+    "files": 58,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8ae1d680b9c243c2982461a644818a6e\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "nko-speech",
@@ -7882,7 +8106,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "photocraft",
+   "foundry_seed": {
+    "base": "photocraft",
+    "origin_commit": "2db6b7d8f9ddb5be8d29f61b918133b22e41c5bc",
+    "seed_commit": "040b7e2a18b3fcce52be5f564b8ca77aaf8221b3",
+    "files": 1625,
+    "stripped": 35,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"186bb792b484447eb8e70e7e437ea766\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "pith",
@@ -9045,7 +9279,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "securiclaw",
+   "foundry_seed": {
+    "base": "securiclaw",
+    "origin_commit": "f95978fcbc1c659feb4c26249dff63c4fa6fd5be",
+    "seed_commit": "31cb689f303fb399b6046eeb3e2c7f16fd462539",
+    "files": 56,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"2889208e981948f0a821b9dc49145905\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "securiclaw-claude",
@@ -9084,7 +9328,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "securiclaw-claude",
+   "foundry_seed": {
+    "base": "securiclaw-claude",
+    "origin_commit": "89c34c2af4e058e66a41dd93e88fdb6aec281f3f",
+    "seed_commit": "4eee5d01a9903cb4165af6df7cfab9681f7057da",
+    "files": 287,
+    "stripped": 424,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"206071bb254848a48e20e4d085e2eb46\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "securiclaw-codex",
@@ -9123,7 +9377,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "securiclaw-codex",
+   "foundry_seed": {
+    "base": "securiclaw-codex",
+    "origin_commit": "afb423af4d00e27de3b4e16b2e5f62cb05b9537d",
+    "seed_commit": "ecf60b007cb5f7741b00029825eec3cfee760da5",
+    "files": 182,
+    "stripped": 219,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8be93bd5d5d84782a4591b68bd58458a\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "self-healing-code",
@@ -9246,7 +9510,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "serenity-soother",
    "asc_app_id": "6758968124",
    "asc_name": "Serenity Soother",
    "asc_bundle_id": "Buf-Barista.SerenitySoother",
@@ -9264,6 +9528,16 @@
     "uploaded": "2026-03-15",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "serenity-soother",
+    "origin_commit": "1fdc035c3f815e97063d1f1f1b013a2d3857ac7c",
+    "seed_commit": "452123a920b4b4130895582724e47992a63d30a1",
+    "files": 200,
+    "stripped": 104,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"40047e0646dd446f84fce96fe8675346\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -9507,7 +9781,18 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "sharedservices",
+   "foundry_seed": {
+    "id": "sharedservices",
+    "base": "sharedservices",
+    "origin_commit": "4fea04becdc8a9024f3f446395c4b7e7c17377d4",
+    "seed_commit": "4d966fd0a472b1f866cd55b2985739df348276d7",
+    "files": 16,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"4477208928bc41c888d974c8a1dddcdd\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "sigil-composer",
@@ -9846,7 +10131,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "speakflow",
    "asc_app_id": "6759364302",
    "asc_name": "SpeakFlow - Voice to Text",
    "asc_bundle_id": "com.speakflow.mobile",
@@ -9864,6 +10149,16 @@
     "uploaded": "2026-02-24",
     "state": "VALID",
     "expired": true
+   },
+   "foundry_seed": {
+    "base": "speakflow",
+    "origin_commit": "0ffa44d276bec44bdae3018b3b53382e4934a87d",
+    "seed_commit": "0f27cee053591cd570b1f325fb9eb8147b42323e",
+    "files": 77,
+    "stripped": 9,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"a25f69ce62c647b9bf1fbd9c6363aadf\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -9963,7 +10258,7 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "spore",
    "asc_app_id": "6758998449",
    "asc_name": "Spore - Grow Your Ideas",
    "asc_bundle_id": "com.diomande.spore",
@@ -9981,6 +10276,16 @@
     "uploaded": "2026-09-22",
     "state": "VALID",
     "expired": false
+   },
+   "foundry_seed": {
+    "base": "spore",
+    "origin_commit": "ebccf348caf9a2e2102f9f694f6a2fe19c459623",
+    "seed_commit": "201e6bb9fa1e3e97d204e502bbe0193b53e03053",
+    "files": 227,
+    "stripped": 143,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"16953c9cf339452ca8f53321fb688b63\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
    }
   },
   {
@@ -11428,7 +11733,17 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "vectorcraft",
+   "foundry_seed": {
+    "base": "vectorcraft",
+    "origin_commit": "04bc43c802170b446efb5451734651d820b56dcf",
+    "seed_commit": "f7cb7b375d2079ad899f5b46e3b6ad09289f38d6",
+    "files": 1552,
+    "stripped": 40,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"f1a2458a3a074b82b9e1c10472d90a39\",\"created_at\":\"2026-10-22T17:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "vesper",
