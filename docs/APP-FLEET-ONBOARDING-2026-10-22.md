@@ -139,10 +139,13 @@ Open from the review and the rotation, in the order they should close:
 
 **Mohamed's batch (console or spend, needs him present):** Supabase account for `wovknbcvxjvayfdflxkn` (disable legacy JWT keys), Gemini key delete at AI Studio, Google key `#8e4ac6` delete at Cloud console, the row 5 provider deletions, Vast key + instance 56197013, BWB Prisma string, `vercel login`, Hugging Face re-login (unblocks deleting the 48 GB of HF caches on Mac4/Mac5), the Mac5 reboot test (SonoBus reconnect), and the data-dir deletions listed in `docs/STORAGE-2026-10-22.md` (now reproducible from GCS: Mac4 30 GB, Mac5 33 GB, HD2 69 GB when its job verifies).
 
-## 6. What happens next, in order
+## 6. State at 2026-10-22 22:50Z and what happens next
 
-1. Mac1 and Mac5 full disk numbers land in §4 (running now).
-2. A1 registry built from the four sources, with tiers, committed to lockfix as `docs/app-fleet/apps.v1.json` for review before it moves into the `foundry` base.
-3. A2 `onboard.py` dry run over the registry: prints create/push/subscribe plan and binary offenders per repo.
-4. B: `fleet/storage.v1.json` from the du runs, with fate per folder, and the first deletion list for Mohamed's veto.
-5. Mohamed decides: namespace (A5), seed-all-50 or hot-only (A3), first deletion batch (B).
+Done: registry (290 records with a Foundry base), every seedable repo seeded into `foundry-staging` on the secret-withholding seeder and scanned clean, OpenClaw removed where Apple and GitHub allow, caches cleared on all three Macs, 78 GB of cleared data verified in the cold bucket (MotionMixLanding 54 GB still uploading), ledgers and receipts committed on fix/lockfile-sync-20261020.
+
+Next, in order:
+1. Mohamed's batch (§5): the live service_role key for `wovknbcvxjvayfdflxkn`, Gemini and Google key deletes, the exo AWS key id, provider leftovers, Hugging Face re-login, then the data-dir deletions in `docs/STORAGE-2026-10-22.md` (Mac4 30 GB, Mac5 33 GB, HD2 69 GB once verified).
+2. Owner lanes name live subtrees for uctm-harness and meshcontrol (`seed_paths`); HyEvo seeded from a tarball.
+3. The registry moves from lockfix docs into the `foundry` base through the gate, and `fleet_apps` lands in Supabase Memory as an index.
+4. Per-repo gate tasks: the `DiomandeKit` package rename across the 49 Bloom apps, then real work.
+5. Next storage batches: Mac1 Library/Application Support 31 GB and `.local`/`.claude`/`.lume` state, Mac4 `uctm-fork-target-internal` and Downloads, Mac5 Downloads and Pictures, each with an owner check like f7's.
