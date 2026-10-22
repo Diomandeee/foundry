@@ -1,0 +1,42 @@
+{
+ "id": "milkmen-expo-build",
+ "title": "milkmen-expo-build",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/milkmen-expo-build",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 107,
+ "text_bytes": 1297218,
+ "offenders": [
+  {
+   "path": "assets/adaptive-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/favicon.png",
+   "bytes": 1466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/icon.png",
+   "bytes": 22380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/splash-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "milkmen-expo-build",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create milkmen-expo-build --namespace foundry-staging",
+  "FOUNDRY_SEED=milkmen-expo-build /Users/mohameddiomande/.config/foundry/bin/foundry-push milkmen-expo-build main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging milkmen-expo-build",
+  "registry: foundry_base=milkmen-expo-build; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/milkmen-expo-build/",
+ "first_merge_fits_gate": true
+}

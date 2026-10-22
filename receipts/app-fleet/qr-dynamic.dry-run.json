@@ -1,0 +1,42 @@
+{
+ "id": "qr-dynamic",
+ "title": "qr-dynamic",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/qr-dynamic",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 192,
+ "text_bytes": 1321998,
+ "offenders": [
+  {
+   "path": "public/$brewswithbeats copy.png",
+   "bytes": 10768,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/$brewswithbeats.png",
+   "bytes": 10768,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/app/fonts/GeistMonoVF.woff",
+   "bytes": 67864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/app/fonts/GeistVF.woff",
+   "bytes": 66268,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "qr-dynamic",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create qr-dynamic --namespace foundry-staging",
+  "FOUNDRY_SEED=qr-dynamic /Users/mohameddiomande/.config/foundry/bin/foundry-push qr-dynamic main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging qr-dynamic",
+  "registry: foundry_base=qr-dynamic; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/qr-dynamic/",
+ "first_merge_fits_gate": true
+}

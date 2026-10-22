@@ -1,0 +1,97 @@
+{
+ "id": "cc-mcs",
+ "title": "cc-mcs",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/cc-mcs",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 47,
+ "text_bytes": 469483,
+ "offenders": [
+  {
+   "path": "src-tauri/icons/128x128.png",
+   "bytes": 11059,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/128x128@2x.png",
+   "bytes": 23137,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/32x32.png",
+   "bytes": 2225,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square107x107Logo.png",
+   "bytes": 9202,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square142x142Logo.png",
+   "bytes": 12530,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square150x150Logo.png",
+   "bytes": 13032,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square284x284Logo.png",
+   "bytes": 25943,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square30x30Logo.png",
+   "bytes": 2078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square310x310Logo.png",
+   "bytes": 28507,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square44x44Logo.png",
+   "bytes": 3419,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square71x71Logo.png",
+   "bytes": 6027,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square89x89Logo.png",
+   "bytes": 7551,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/StoreLogo.png",
+   "bytes": 3971,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/icon.icns",
+   "bytes": 277003,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/icon.png",
+   "bytes": 49979,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "cc-mcs",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cc-mcs --namespace foundry-staging",
+  "FOUNDRY_SEED=cc-mcs /Users/mohameddiomande/.config/foundry/bin/foundry-push cc-mcs main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cc-mcs",
+  "registry: foundry_base=cc-mcs; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cc-mcs/",
+ "first_merge_fits_gate": true
+}

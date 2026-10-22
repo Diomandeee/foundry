@@ -1,0 +1,21 @@
+{
+ "id": "trajectory-memory-ledger",
+ "title": "trajectory-memory-ledger",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/trajectory-memory-ledger",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 398,
+ "text_bytes": 4459980,
+ "offenders": [],
+ "base": "trajectory-memory-ledger",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create trajectory-memory-ledger --namespace foundry-staging",
+  "FOUNDRY_SEED=trajectory-memory-ledger /Users/mohameddiomande/.config/foundry/bin/foundry-push trajectory-memory-ledger main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging trajectory-memory-ledger",
+  "registry: foundry_base=trajectory-memory-ledger; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

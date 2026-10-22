@@ -1,0 +1,21 @@
+{
+ "id": "clarity-agent-protocol",
+ "title": "clarity-agent-protocol",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/clarity-agent-protocol",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 18,
+ "text_bytes": 110474,
+ "offenders": [],
+ "base": "clarity-agent-protocol",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create clarity-agent-protocol --namespace foundry-staging",
+  "FOUNDRY_SEED=clarity-agent-protocol /Users/mohameddiomande/.config/foundry/bin/foundry-push clarity-agent-protocol main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging clarity-agent-protocol",
+  "registry: foundry_base=clarity-agent-protocol; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,2483 @@
+{
+ "format": "foundry.asc-apps.v1",
+ "pulled_at": "2026-10-22T16:09:25+00:00",
+ "key_id": "26YT8HF7KR",
+ "count": 80,
+ "apps": [
+  {
+   "asc_app_id": "6760225743",
+   "name": "BodyBeat by Diomande",
+   "bundle_id": "Buf-Barista.BodyBeat",
+   "sku": "bodybeat-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-07"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-07",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "8e5bcaf7-f468-46ad-9198-26f89e905208",
+     "id": "ddc060e4-b167-4e09-86f4-ebb7e7533941",
+     "loc": "en-US",
+     "name": "BodyBeat by Diomande",
+     "subtitle": "Your Body Is the Instrument"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759936357",
+   "name": "Command Hub",
+   "bundle_id": "com.openclaw.hub",
+   "sku": "openclaw-hub-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "3",
+    "uploaded": "2026-03-10",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "8daff153-8c25-441c-a28e-592c1223ca68",
+     "id": "1005ef39-6bd3-42c2-b94b-7d6a5d922c6f",
+     "loc": "en-US",
+     "name": "Command Hub",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760883668",
+   "name": "NKoScribe",
+   "bundle_id": "com.openclaw.nkoscribe",
+   "sku": "nkoscribe001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-19"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-20",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "98f94120-bbc2-4d37-9b1d-16e6bf3dd7aa",
+     "id": "fb1a5c61-a0f4-4d05-9d43-499dc77a1ed1",
+     "loc": "en-US",
+     "name": "NKoScribe",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093966",
+   "name": "Arbor by Diomande",
+   "bundle_id": "com.openclaw.arbor",
+   "sku": "arbor-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "b6ab1b50-906b-4a28-b9c9-dc2290ad6337",
+     "id": "c64bdfa9-8dd7-4e0e-af7a-692eb634eb91",
+     "loc": "en-US",
+     "name": "Arbor by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761094026",
+   "name": "Beacon by Diomande",
+   "bundle_id": "com.openclaw.beaconapp",
+   "sku": "beacon-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "5a3dd0bf-4535-4622-9055-41587f3ca4a4",
+     "id": "4dd5cc8d-e4ab-454d-8989-08fd75afe466",
+     "loc": "en-US",
+     "name": "Beacon by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093799",
+   "name": "Cipher by Diomande",
+   "bundle_id": "com.openclaw.cipher",
+   "sku": "cipher-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "c2aacd2d-c73f-4687-a95e-096abef7b2ee",
+     "id": "3b7b0731-21b6-401c-9c2f-dfcf18c9080d",
+     "loc": "en-US",
+     "name": "Cipher by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093969",
+   "name": "Flux by Diomande",
+   "bundle_id": "com.openclaw.flux",
+   "sku": "flux-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "d914196a-9430-4919-b639-3ba6810c00b8",
+     "id": "af4a7862-679a-485f-b928-374644e02666",
+     "loc": "en-US",
+     "name": "Flux by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093937",
+   "name": "Helix by Diomande",
+   "bundle_id": "com.openclaw.helix",
+   "sku": "helix-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "2a499980-b6df-4f9a-8dbe-f832c160eea5",
+     "id": "d3853db2-c699-4e09-a1ff-b9e928ff90c9",
+     "loc": "en-US",
+     "name": "Helix by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761094018",
+   "name": "Nimbus by Diomande",
+   "bundle_id": "com.openclaw.nimbus",
+   "sku": "nimbus-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "54b68622-5cfe-465a-aab0-e1d43807b325",
+     "id": "7d3d2ff2-19b2-4580-855e-d688d7ceac9a",
+     "loc": "en-US",
+     "name": "Nimbus by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761094020",
+   "name": "Prism by Diomande",
+   "bundle_id": "com.openclaw.prism",
+   "sku": "prism-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "4134b355-92ce-4374-a9f7-fed33d63bc9d",
+     "id": "0b22dbf6-5715-44b9-b845-8c43d624b93d",
+     "loc": "en-US",
+     "name": "Prism by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093803",
+   "name": "Quill by Diomande",
+   "bundle_id": "com.openclaw.quill",
+   "sku": "quill-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "3ee18afe-5f15-4d06-b247-3764d821d681",
+     "id": "95673f14-a887-4074-803c-fcb5b3b90de1",
+     "loc": "en-US",
+     "name": "Quill by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093806",
+   "name": "Rune by Diomande",
+   "bundle_id": "com.openclaw.rune",
+   "sku": "rune-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "462b9af1-6abf-4465-a136-9c2ef27e2dfb",
+     "id": "c7904514-3120-46f3-a4e7-5151605e8ce7",
+     "loc": "en-US",
+     "name": "Rune by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093971",
+   "name": "Torrent by Diomande",
+   "bundle_id": "com.openclaw.torrent",
+   "sku": "torrent-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "caadf7c6-9248-435d-9e64-eb68956fbed5",
+     "id": "2ca55b2f-3cae-475a-a777-8f9a9eda70c9",
+     "loc": "en-US",
+     "name": "Torrent by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093850",
+   "name": "Wren by Diomande",
+   "bundle_id": "com.openclaw.wren",
+   "sku": "wren-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "8098ec17-e2c2-4b69-9b2e-4514e4533295",
+     "id": "86924132-d0ab-43c1-a71f-35fb58fd0373",
+     "loc": "en-US",
+     "name": "Wren by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761093535",
+   "name": "Anvil by Diomande",
+   "bundle_id": "com.openclaw.anvil",
+   "sku": "anvil-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "b2fb9a97-bf01-40e9-a2b6-b44d8a759f9b",
+     "id": "0e0c6f5a-f1a6-4f26-b3ac-0568e7dcffd2",
+     "loc": "en-US",
+     "name": "Anvil by Diomande",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760948577",
+   "name": "Coltivare",
+   "bundle_id": "com.diomande.coltivare",
+   "sku": "coltivare-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-21"
+    }
+   ],
+   "latest_build": {
+    "build": "28",
+    "uploaded": "2026-10-09",
+    "state": "VALID",
+    "expired": false
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "313e0163-f504-44c9-9c7b-e73f1ca598d7",
+     "id": "43e530b8-e698-4ff7-af84-947c2691f003",
+     "loc": "en-US",
+     "name": "Coltivare",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6806063324",
+   "name": "MotionMix",
+   "bundle_id": "com.openclaw.MotionMixApp",
+   "sku": "MOTIONMIX001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-08-27"
+    }
+   ],
+   "latest_build": {
+    "build": "90",
+    "uploaded": "2026-09-28",
+    "state": "VALID",
+    "expired": false
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "9d4a09ec-0f0c-4508-bca4-6d4b32eaf3b9",
+     "id": "99028e83-d5fb-40d6-ac28-f018a3ce3db4",
+     "loc": "en-US",
+     "name": "MotionMix",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6758998449",
+   "name": "Spore - Grow Your Ideas",
+   "bundle_id": "com.diomande.spore",
+   "sku": "spore-ios-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.3.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-02-10"
+    }
+   ],
+   "latest_build": {
+    "build": "30",
+    "uploaded": "2026-09-22",
+    "state": "VALID",
+    "expired": false
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "c288fc7b-109c-4014-8b2f-10ded830c779",
+     "id": "79ea50ab-866c-4389-9d75-b1949c100003",
+     "loc": "en-US",
+     "name": "Spore - Grow Your Ideas",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6813171757",
+   "name": "Milkman Outreach",
+   "bundle_id": "com.koatji.milkman.outreach",
+   "sku": "MILKMANOUTREACH2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-09-17"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-09-17",
+    "state": "VALID",
+    "expired": false
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "afcf2af7-84d9-4688-9fd9-c3fdee48206e",
+     "id": "0f20726c-5459-4100-a3d0-6560c33046ca",
+     "loc": "en-US",
+     "name": "Milkman Outreach",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6811673658",
+   "name": "Milkman Field",
+   "bundle_id": "com.koatji.milkman.field",
+   "sku": "MILKMANFIELD2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-09-13"
+    }
+   ],
+   "latest_build": {
+    "build": "19",
+    "uploaded": "2026-09-15",
+    "state": "VALID",
+    "expired": false
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "3c959a67-b3ef-4d77-8c34-84d7f67f67de",
+     "id": "2e0989b5-d1ab-475d-bf77-e38f148613be",
+     "loc": "en-US",
+     "name": "Milkman Field",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6758968383",
+   "name": "Milk Men",
+   "bundle_id": "Buf-Barista-Milk-Men",
+   "sku": "milkMen1",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-09"
+    }
+   ],
+   "latest_build": {
+    "build": "186",
+    "uploaded": "2026-08-30",
+    "state": "VALID",
+    "expired": false
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "b3cd4edd-89a6-400b-91ba-5c8771b6645c",
+     "id": "91c7f9de-2cab-49e1-9f02-d350d8e15c50",
+     "loc": "en-US",
+     "name": "Milk Men",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6786906791",
+   "name": "The Floor Report",
+   "bundle_id": "com.mohameddiomande.TheFloorReport",
+   "sku": "the-floor-report-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-07-02"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-07-02",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "7d8f8ada-32f8-4974-8027-7a5a2b410f72",
+     "id": "dc5ecbd6-1038-4ba7-a26a-f818365c69a1",
+     "loc": "en-US",
+     "name": "The Floor Report",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6787263124",
+   "name": "LineSkip City",
+   "bundle_id": "com.mohameddiomande.LineSkipCity",
+   "sku": "line-skip-city-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-07-03"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-07-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "d789334d-b59b-4fbf-bc52-919842528adf",
+     "id": "3debc938-2c20-4f24-a49d-58c9058678dc",
+     "loc": "en-US",
+     "name": "LineSkip City",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6787263165",
+   "name": "CinemaWalk",
+   "bundle_id": "com.mohameddiomande.CinemaWalk",
+   "sku": "cinema-walk-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-07-03"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-07-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "f335db77-347d-4fbc-a912-95af9a444540",
+     "id": "27b24270-634f-4225-b2e8-e5f07e35a96c",
+     "loc": "en-US",
+     "name": "CinemaWalk",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6787263383",
+   "name": "ParkSight City",
+   "bundle_id": "com.mohameddiomande.ParkSightCity",
+   "sku": "park-sight-city-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-07-03"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-07-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "9c5a5b84-7ad0-4bcc-9cf4-afeedd43e28c",
+     "id": "63378458-32c2-476c-9b31-ef841accc231",
+     "loc": "en-US",
+     "name": "ParkSight City",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6758968124",
+   "name": "Serenity Soother",
+   "bundle_id": "Buf-Barista.SerenitySoother",
+   "sku": "serenitySoother1",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-09"
+    }
+   ],
+   "latest_build": {
+    "build": "7",
+    "uploaded": "2026-03-15",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "2d84fe34-35d2-420f-9a9b-b6cdeed10602",
+     "id": "12e22988-cd4e-4121-b117-141be8df6d2e",
+     "loc": "en-US",
+     "name": "Serenity Soother",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6758976718",
+   "name": "Eternal Serenity",
+   "bundle_id": "com.bufbarista.eternal-serenity",
+   "sku": "eternal-serenity-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-09"
+    }
+   ],
+   "latest_build": {
+    "build": "4",
+    "uploaded": "2026-03-01",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "b8c32a6d-fa62-437f-b64a-6db3e448faa6",
+     "id": "57a675b7-5ae4-43be-9d74-9bf159ac711b",
+     "loc": "en-US",
+     "name": "Eternal Serenity",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6758981968",
+   "name": "Meaning Full Power",
+   "bundle_id": "com.mohameddiomande.meaningfullpower",
+   "sku": "meaningfullpower",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-09"
+    }
+   ],
+   "latest_build": {
+    "build": "4",
+    "uploaded": "2026-02-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "9c0e5240-4704-4c5c-95bc-91cd4d269787",
+     "id": "c66852ef-c35e-4a71-b8d6-f3b3238f8b8d",
+     "loc": "en-US",
+     "name": "Meaning Full Power",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6758999958",
+   "name": "Brews With Beats",
+   "bundle_id": "com.brewswithbeats.BWB-Customer",
+   "sku": "BWB-Customer",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-10"
+    }
+   ],
+   "latest_build": {
+    "build": "3",
+    "uploaded": "2026-02-15",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "07f886a4-7fb1-4dfe-a256-3e7006962234",
+     "id": "7557088a-d083-4ec3-8c48-ba5b335b0198",
+     "loc": "en-US",
+     "name": "Brews With Beats",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759002217",
+   "name": "BWB POS",
+   "bundle_id": "com.brewswithbeats.BWB-POS",
+   "sku": "BWB-POS-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-10"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-02-15",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "2026ddcb-4636-4efc-b3ca-ebe4504df161",
+     "id": "07afd059-8b50-4c35-846c-f84252ac54a9",
+     "loc": "en-US",
+     "name": "BWB POS",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759003611",
+   "name": "BWB Kiosk",
+   "bundle_id": "com.brewswithbeats.BWB-Kiosk",
+   "sku": "BWB-KIOSK-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-10"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-02-15",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "c1338f69-1aee-420e-8b02-b53747ffe4c0",
+     "id": "df6aa054-bbc7-4f14-856c-7c62c1adac01",
+     "loc": "en-US",
+     "name": "BWB Kiosk",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759073411",
+   "name": "Life OS - AI Dashboard",
+   "bundle_id": "com.bufbarista.lifeos",
+   "sku": "lifeos",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-11"
+    }
+   ],
+   "latest_build": {
+    "build": "202602181215",
+    "uploaded": "2026-03-01",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "1e052351-0001-482a-85b7-fb7ce2821d36",
+     "id": "84ad6a3f-47bd-47da-af52-b1d395a35855",
+     "loc": "en-US",
+     "name": "Life OS - AI Dashboard",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759205765",
+   "name": "VisionClaw AI",
+   "bundle_id": "com.brewswithbeats.VisionClaw",
+   "sku": "visionclaw-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-14"
+    }
+   ],
+   "latest_build": {
+    "build": "202602190117",
+    "uploaded": "2026-02-18",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "b7215e34-94a0-4d78-bda4-a1b3027a70be",
+     "id": "2520e34e-5ba7-463b-bc36-b76248b130df",
+     "loc": "en-US",
+     "name": "VisionClaw AI",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759364302",
+   "name": "SpeakFlow - Voice to Text",
+   "bundle_id": "com.speakflow.mobile",
+   "sku": "speakflow-mobile-1",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-18"
+    }
+   ],
+   "latest_build": {
+    "build": "11",
+    "uploaded": "2026-02-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "0c41aa66-c619-423a-8faa-79130ae4ab92",
+     "id": "7f2ccf73-27b7-47c1-a1b6-665453bf1059",
+     "loc": "en-US",
+     "name": "SpeakFlow - Voice to Text",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759364987",
+   "name": "Aura - AI Agent Hub",
+   "bundle_id": "com.openclaw.aura",
+   "sku": "aura-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-18"
+    }
+   ],
+   "latest_build": {
+    "build": "202603071859",
+    "uploaded": "2026-03-07",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "53ca266a-510b-443b-a85e-e83bcc80d94b",
+     "id": "22a52534-7364-4385-bab8-fef07ed88bd7",
+     "loc": "en-US",
+     "name": "Aura - AI Agent Hub",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759379296",
+   "name": "Creative Director",
+   "bundle_id": "com.mohameddiomande.CreativeDirector",
+   "sku": "creative-director-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-19"
+    }
+   ],
+   "latest_build": {
+    "build": "15",
+    "uploaded": "2026-03-14",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "9b13af93-d21b-4dde-b334-6230ff2272d9",
+     "id": "f8a0d691-2099-461c-8d8c-756753b71cc4",
+     "loc": "en-US",
+     "name": "Creative Director",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759892673",
+   "name": "FirstDate - Miami Dating",
+   "bundle_id": "com.mohameddiomande.FirstDate",
+   "sku": "firstdate-ios-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-01"
+    }
+   ],
+   "latest_build": {
+    "build": "9",
+    "uploaded": "2026-03-21",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "e84e4387-dd61-4847-94c5-d88f9df82069",
+     "id": "04bfd3c6-0ba2-4012-89fa-181e32d455f2",
+     "loc": "en-US",
+     "name": "FirstDate - Miami Dating",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759935350",
+   "name": "NKo Bridge",
+   "bundle_id": "com.openclaw.nko-bridge",
+   "sku": "nko-bridge-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-02",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "fff2cbc2-d4da-484e-8354-81873c6be481",
+     "id": "368b5a11-4aba-4ed8-9746-d8cda78cb864",
+     "loc": "en-US",
+     "name": "NKo Bridge",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759935555",
+   "name": "Agent Command Center",
+   "bundle_id": "com.brewswithbeats.AgentCommandCenter",
+   "sku": "acc-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": null,
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "102a376c-76cd-47b8-b72f-63a0fff0f6ca",
+     "id": "4b9f86de-72ac-4aa5-8a63-7f561c9ddac7",
+     "loc": "en-US",
+     "name": "Agent Command Center",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759937049",
+   "name": "Cali Lights",
+   "bundle_id": "com.calilights.CaliLights",
+   "sku": "calilights-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-02",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "60b9b797-9186-49ab-bfa0-aeb402462a98",
+     "id": "a0bbe7ac-eb2a-4c16-8513-9b3da0393871",
+     "loc": "en-US",
+     "name": "Cali Lights",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759943848",
+   "name": "Dream Maker Studio",
+   "bundle_id": "com.openclaw.dreamstudio",
+   "sku": "com.openclaw.dreamstudio",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "3",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "bab6a658-5dea-47a5-8627-1726c7c3a237",
+     "id": "80e222a7-347c-411b-a213-a89fcd543dd0",
+     "loc": "en-US",
+     "name": "Dream Maker Studio",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945100",
+   "name": "Voice Agent Studio",
+   "bundle_id": "com.openclaw.voiceagent",
+   "sku": "com.openclaw.voiceagent",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "3",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "fef031c1-b325-49ad-aaa5-ff059a0ea918",
+     "id": "6ea86e05-0a5d-42a3-99a9-57eb5356b96e",
+     "loc": "en-US",
+     "name": "Voice Agent Studio",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945273",
+   "name": "Research Browser",
+   "bundle_id": "com.openclaw.researchbrowser",
+   "sku": "com.openclaw.researchbrowser",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "e97e8f44-e280-43fa-a068-ddcb9eb8f8ea",
+     "id": "5c7cb095-e9cf-4250-9f64-6085999fe91d",
+     "loc": "en-US",
+     "name": "Research Browser",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945308",
+   "name": "Trajectory Search",
+   "bundle_id": "com.openclaw.trajectorysearch",
+   "sku": "com.openclaw.trajectorysearch",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "60f49383-0d9e-49d1-8058-4d530f4ee37a",
+     "id": "59b8fa11-548a-42d7-be1a-6808bd11ab93",
+     "loc": "en-US",
+     "name": "Trajectory Search",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945346",
+   "name": "Kinetic Theater",
+   "bundle_id": "com.openclaw.kinetictheater",
+   "sku": "com.openclaw.kinetictheater",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "a983ea19-c730-49f0-a935-a343ec2241d6",
+     "id": "3a17a098-fa7b-4d4a-ac58-c61735f2a625",
+     "loc": "en-US",
+     "name": "Kinetic Theater",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945367",
+   "name": "Pane Viz",
+   "bundle_id": "com.openclaw.paneviz",
+   "sku": "com.openclaw.paneviz",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "bad7d837-ed34-4df7-945d-b15ad41ccc91",
+     "id": "8308444a-9d6b-432a-b0a6-aff9406d3c3c",
+     "loc": "en-US",
+     "name": "Pane Viz",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945442",
+   "name": "Prompt Explorer",
+   "bundle_id": "com.openclaw.promptexplorer",
+   "sku": "com.openclaw.promptexplorer",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "d0a8e9e4-d6b6-4829-b720-77052353b57c",
+     "id": "39b734ae-3672-4c5c-a794-2c53e409d68f",
+     "loc": "en-US",
+     "name": "Prompt Explorer",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945455",
+   "name": "DreamScape Studio",
+   "bundle_id": "com.openclaw.dreamscape",
+   "sku": "com.openclaw.dreamscape",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "3",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "11eb550d-8bcc-4d93-8bab-6d1e269765e9",
+     "id": "c06a0104-ef28-4da8-92e2-bf1122a8ca78",
+     "loc": "en-US",
+     "name": "DreamScape Studio",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945478",
+   "name": "Idea Garden",
+   "bundle_id": "com.openclaw.ideagarden",
+   "sku": "com.openclaw.ideagarden",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "3",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "2aa4b860-c45e-4de2-9f02-a97abf82722f",
+     "id": "e7f4b516-c109-4bae-916c-a8e0e23d4644",
+     "loc": "en-US",
+     "name": "Idea Garden",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945499",
+   "name": "Print Worlds",
+   "bundle_id": "com.openclaw.printworlds",
+   "sku": "com.openclaw.printworlds",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "7f248ecb-cacb-4fa7-8c85-b3ea8faa7254",
+     "id": "423bbdc5-59db-41ca-9412-bdff80156512",
+     "loc": "en-US",
+     "name": "Print Worlds",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945503",
+   "name": "Feed Deck Reader",
+   "bundle_id": "com.openclaw.feeddeck",
+   "sku": "com.openclaw.feeddeck",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "f2173e7e-d00b-4a6c-9f26-6177157bdd98",
+     "id": "e755d129-b4b6-4e50-9a5a-ae9b59964108",
+     "loc": "en-US",
+     "name": "Feed Deck Reader",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945523",
+   "name": "TelePrompter HD",
+   "bundle_id": "com.openclaw.teleprompterpro",
+   "sku": "com.openclaw.teleprompterpro",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "91729239-ec34-4d95-8bce-9b1893f3553f",
+     "id": "6942864a-ecc0-4f43-a571-2f7e68bc6a6b",
+     "loc": "en-US",
+     "name": "TelePrompter HD",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945542",
+   "name": "Card Forge Battle",
+   "bundle_id": "com.openclaw.cardforge",
+   "sku": "com.openclaw.cardforge",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "4",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "9d32568d-935f-4704-a4a6-ca1b262ba930",
+     "id": "0afab473-f5ec-4a63-9c58-e00dbb57bb0a",
+     "loc": "en-US",
+     "name": "Card Forge Battle",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945546",
+   "name": "Vision Mesh",
+   "bundle_id": "com.openclaw.visionmesh",
+   "sku": "com.openclaw.visionmesh",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "3",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "1de66f31-6a41-4a14-a486-af5553764cc8",
+     "id": "f140868c-356a-4075-b7c9-5f9e3a366671",
+     "loc": "en-US",
+     "name": "Vision Mesh",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945563",
+   "name": "Ambient Listen",
+   "bundle_id": "com.openclaw.ambientlisten",
+   "sku": "com.openclaw.ambientlisten",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "6cd5d03f-f155-46b3-a6bc-5843ea5fe220",
+     "id": "178f7132-824e-423a-9abf-6b2ed97fd84f",
+     "loc": "en-US",
+     "name": "Ambient Listen",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945569",
+   "name": "Route Forge",
+   "bundle_id": "com.openclaw.routeforge",
+   "sku": "com.openclaw.routeforge",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "DEVELOPER_REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "c144033d-acc8-4893-82b2-d4b2e87045be",
+     "id": "c7c1c8c5-4f18-4c33-8756-92fe42f7a106",
+     "loc": "en-US",
+     "name": "Route Forge",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759945616",
+   "name": "Fleet Command HQ",
+   "bundle_id": "com.openclaw.fleetcommand",
+   "sku": "com.openclaw.fleetcommand",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-02"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-03",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "b525fefa-8a70-41f5-9cdc-1b66be7c6ec1",
+     "id": "908e639d-42db-4996-b41b-61729e73b1e7",
+     "loc": "en-US",
+     "name": "Fleet Command HQ",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6759975745",
+   "name": "PaneView",
+   "bundle_id": "com.openclaw.paneview",
+   "sku": "paneview-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-03"
+    }
+   ],
+   "latest_build": {
+    "build": "8",
+    "uploaded": "2026-03-06",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "9a3c5be6-39d3-4d4d-a4f1-dbae30920a7b",
+     "id": "65962247-d157-41fa-ac39-d640477d3660",
+     "loc": "en-US",
+     "name": "PaneView",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760042699",
+   "name": "Loom Weave",
+   "bundle_id": "com.openclaw.loom",
+   "sku": "com.openclaw.loom",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "bac8f083-5096-41e9-b945-61e1e573b862",
+     "id": "cc3ff78b-f2ea-49c2-9f95-2c70b75b771d",
+     "loc": "en-US",
+     "name": "Loom Weave",
+     "subtitle": "Weave Your Ideas"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760042716",
+   "name": "Timbre Voice",
+   "bundle_id": "com.openclaw.timbre",
+   "sku": "com.openclaw.timbre",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "9b5466a9-8bfa-4013-841b-16d0845a3b57",
+     "id": "7fb02f49-3a2a-4df0-90a7-2f2c4ba3c1c0",
+     "loc": "en-US",
+     "name": "Timbre Voice",
+     "subtitle": "Voice Clone Sandbox"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760043212",
+   "name": "Pith Core",
+   "bundle_id": "com.openclaw.pith",
+   "sku": "com.openclaw.pith",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "11",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "eac6e0f3-6e03-4ef7-9d29-6bd30e6ed28a",
+     "id": "b2d30cb8-c219-4f4a-aed4-0c227a7ce339",
+     "loc": "en-US",
+     "name": "Pith Core",
+     "subtitle": "Get to the Core"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760043447",
+   "name": "Vesper Ritual",
+   "bundle_id": "com.openclaw.vesper",
+   "sku": "com.openclaw.vesper",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "9b30dfec-98f2-45dd-ad05-1d4f2622cfda",
+     "id": "cd414d74-543d-44b7-8213-996fc765fb40",
+     "loc": "en-US",
+     "name": "Vesper Ritual",
+     "subtitle": "Evening Ritual"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760043738",
+   "name": "Glyph Writer",
+   "bundle_id": "com.openclaw.glyph",
+   "sku": "com.openclaw.glyph",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "412d4a54-6053-422d-afee-b2202365053c",
+     "id": "139e7bac-e7c9-4ac8-a9d9-8d8d86055344",
+     "loc": "en-US",
+     "name": "Glyph Writer",
+     "subtitle": "Learn Symbolic Writing"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760043746",
+   "name": "Drift Unwind",
+   "bundle_id": "com.openclaw.driftapp",
+   "sku": "com.openclaw.driftapp",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "13ccf1c6-9700-43c0-b941-4c3bd9c3bd95",
+     "id": "daf3848d-2507-4c2e-aafd-085b62866f10",
+     "loc": "en-US",
+     "name": "Drift Unwind",
+     "subtitle": "Slow Body Unwind"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760044224",
+   "name": "Ember Warmth",
+   "bundle_id": "com.openclaw.ember",
+   "sku": "com.openclaw.ember",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "657d3066-3b4c-4d1a-a278-971f0fc20f9c",
+     "id": "69fd0e54-9323-4276-baf5-ec01ae623432",
+     "loc": "en-US",
+     "name": "Ember Warmth",
+     "subtitle": "Warmth Within"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760044517",
+   "name": "Cadence Rhythm",
+   "bundle_id": "com.openclaw.cadence",
+   "sku": "com.openclaw.cadence",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "d4220309-dd9a-4615-8f82-8f52a9bc0fff",
+     "id": "08677c9c-512b-4f41-899f-ee204a1e68c6",
+     "loc": "en-US",
+     "name": "Cadence Rhythm",
+     "subtitle": "Movement Micro-Doses"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760044606",
+   "name": "Ledger Craft",
+   "bundle_id": "com.openclaw.ledger",
+   "sku": "com.openclaw.ledger",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-04",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "3468b0d7-d5be-4ac0-bf9a-e01b77bbbcee",
+     "id": "81bfc617-35d5-4cc1-b20d-daf0dad67d9c",
+     "loc": "en-US",
+     "name": "Ledger Craft",
+     "subtitle": "Builder's Journal"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760044628",
+   "name": "Steep Timer",
+   "bundle_id": "com.openclaw.steep",
+   "sku": "com.openclaw.steep",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-04",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "e072be31-f08d-44bd-a5f8-3b8659858b19",
+     "id": "d464849f-ee05-4e46-aa49-97432d65e04e",
+     "loc": "en-US",
+     "name": "Steep Timer",
+     "subtitle": "Coffee Ritual Timer"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760044651",
+   "name": "Dictum Type",
+   "bundle_id": "com.openclaw.dictum",
+   "sku": "com.openclaw.dictum",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-04",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "45c2bb6a-0b72-47c8-aecb-422a11b336bb",
+     "id": "f0ba6226-fc00-4e62-a483-6b2a4fa4055b",
+     "loc": "en-US",
+     "name": "Dictum Type",
+     "subtitle": "Voice Typography"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760044673",
+   "name": "Vigil Watch",
+   "bundle_id": "com.openclaw.vigil",
+   "sku": "com.openclaw.vigil",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "4e3f7108-52a8-4aad-bb9a-e4df0cabca1b",
+     "id": "36ba3ee6-fbe1-48b3-84ab-01f9ccc7abca",
+     "loc": "en-US",
+     "name": "Vigil Watch",
+     "subtitle": "Builder's Watch"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760044686",
+   "name": "Thrum Beat",
+   "bundle_id": "com.openclaw.thrum",
+   "sku": "com.openclaw.thrum",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "8fc21e72-db3c-418f-ac4f-5127edc83dfb",
+     "id": "d191b1bb-db39-4b39-9412-b28a7f01354b",
+     "loc": "en-US",
+     "name": "Thrum Beat",
+     "subtitle": "Feel the Vibration"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760044701",
+   "name": "Envoy Connect",
+   "bundle_id": "com.openclaw.envoy",
+   "sku": "com.openclaw.envoy",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-04",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "c2bbfcce-3b61-4509-803d-4def5aecee6a",
+     "id": "c8d4e1b7-68aa-49d0-86f1-9efcc6692635",
+     "loc": "en-US",
+     "name": "Envoy Connect",
+     "subtitle": "Your Digital Delegate"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760045019",
+   "name": "Transpose Keys",
+   "bundle_id": "com.openclaw.transpose",
+   "sku": "com.openclaw.transpose",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-04",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "427873a3-c263-4e71-bf57-de2c9e785371",
+     "id": "5c057c4a-810a-4598-8aee-c814896fdaac",
+     "loc": "en-US",
+     "name": "Transpose Keys",
+     "subtitle": "Musical Key Shifter"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760045026",
+   "name": "Folio Pages",
+   "bundle_id": "com.openclaw.folio",
+   "sku": "com.openclaw.folio",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "10",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "ff3d6d8f-fd8c-403d-9990-b1e2e5a26839",
+     "id": "8b8f78d7-b767-4579-8998-e49c047b7ee6",
+     "loc": "en-US",
+     "name": "Folio Pages",
+     "subtitle": "Wisdom Collection"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760045236",
+   "name": "Sway Breathe",
+   "bundle_id": "com.openclaw.sway",
+   "sku": "com.openclaw.sway",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-04",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "6079c404-3628-4dea-bc2a-80e665d8beed",
+     "id": "993d41a3-ca97-4786-a5e9-79310dccb404",
+     "loc": "en-US",
+     "name": "Sway Breathe",
+     "subtitle": "Breathwork + Posture"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760045256",
+   "name": "Augur Oracle",
+   "bundle_id": "com.openclaw.augur",
+   "sku": "com.openclaw.augur",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "REJECTED",
+     "platform": "IOS",
+     "created": "2026-03-04"
+    }
+   ],
+   "latest_build": {
+    "build": "11",
+    "uploaded": "2026-03-25",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "35da7e9d-bbdb-44c5-a2ae-bae015a2f974",
+     "id": "d0582937-ace4-4842-9930-1b90b8702e39",
+     "loc": "en-US",
+     "name": "Augur Oracle",
+     "subtitle": "Daily Oracle"
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6760765150",
+   "name": "Koatji Field",
+   "bundle_id": "com.koatji.field",
+   "sku": "koatji-field-001",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-18"
+    }
+   ],
+   "latest_build": {
+    "build": "2",
+    "uploaded": "2026-03-18",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "269dab7f-537e-4b71-897c-1912c4bd2894",
+     "id": "17a7bc3f-1841-4352-bbe7-912bff384cb8",
+     "loc": "en-US",
+     "name": "Koatji Field",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761024589",
+   "name": "MeshControl",
+   "bundle_id": "com.diomande.meshcontrol",
+   "sku": "meshcontrol-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-23"
+    }
+   ],
+   "latest_build": {
+    "build": "11",
+    "uploaded": "2026-03-27",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "b4e254cc-f65a-42c8-a4c7-05e30c4cd9cb",
+     "id": "a5f516f8-aa57-4f37-827b-3e30129844dc",
+     "loc": "en-US",
+     "name": "MeshControl",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761083703",
+   "name": "Creator Shield",
+   "bundle_id": "com.diomande.creatorshield",
+   "sku": "creatorshield-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "e7f1fac2-aa9f-4da4-83b0-56f289491572",
+     "id": "2a8637bc-f013-4e41-8d58-8383bf8eb14a",
+     "loc": "en-US",
+     "name": "Creator Shield",
+     "subtitle": null
+    }
+   ]
+  },
+  {
+   "asc_app_id": "6761083678",
+   "name": "Stack \u2014 Biohacker Protocol",
+   "bundle_id": "com.openclaw.stack",
+   "sku": "stack-biohacker-2026",
+   "locale": "en-US",
+   "store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-03-24"
+    }
+   ],
+   "latest_build": {
+    "build": "1",
+    "uploaded": "2026-03-24",
+    "state": "VALID",
+    "expired": true
+   },
+   "live": false,
+   "localizations": [
+    {
+     "appInfo": "09959a4f-a3f9-4cef-b8dc-8d8bd6d9b833",
+     "id": "a97d65d7-6599-4728-86c3-93f7834af596",
+     "loc": "en-US",
+     "name": "Stack \u2014 Biohacker Protocol",
+     "subtitle": null
+    }
+   ]
+  }
+ ]
+}

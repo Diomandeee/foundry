@@ -1,0 +1,27 @@
+{
+ "id": "visionmesh",
+ "title": "VisionMesh",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/VisionMesh",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 38,
+ "text_bytes": 136868,
+ "offenders": [
+  {
+   "path": "VisionMesh/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 1141531,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "visionmesh",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create visionmesh --namespace foundry-staging",
+  "FOUNDRY_SEED=visionmesh /Users/mohameddiomande/.config/foundry/bin/foundry-push visionmesh main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging visionmesh",
+  "registry: foundry_base=visionmesh; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/visionmesh/",
+ "first_merge_fits_gate": true
+}

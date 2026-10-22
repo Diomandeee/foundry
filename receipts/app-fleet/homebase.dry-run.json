@@ -1,0 +1,1627 @@
+{
+ "id": "homebase",
+ "title": "homebase",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/homebase",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 19436,
+ "text_bytes": 1621431087,
+ "offenders": [
+  {
+   "path": ".discrawl/discrawl.db-wal",
+   "bytes": 4214792,
+   "why": "over-4MiB"
+  },
+  {
+   "path": ".nats/jetstream/jetstream/$G/streams/COMMANDS/msgs/index.db",
+   "bytes": 34,
+   "why": "binary-ext"
+  },
+  {
+   "path": ".nats/jetstream/jetstream/$G/streams/CORTEX/msgs/index.db",
+   "bytes": 34,
+   "why": "binary-ext"
+  },
+  {
+   "path": ".nats/jetstream/jetstream/$G/streams/MESH_EVENTS/msgs/index.db",
+   "bytes": 866,
+   "why": "binary-ext"
+  },
+  {
+   "path": ".nats/jetstream/jetstream/$G/streams/POLICY/msgs/index.db",
+   "bytes": 85,
+   "why": "binary-ext"
+  },
+  {
+   "path": ".speakd/history.db",
+   "bytes": 135168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/Buf Barista.ai",
+   "bytes": 1717412,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/FirstDate-Membership-Club.mp3",
+   "bytes": 10385324,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/FirstDate-Omega-Session-Report.aiff",
+   "bytes": 22208498,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/HyEvo_MeshControl_Explainer.mp3",
+   "bytes": 6502560,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/Frameworks/INSCameraServiceSDK.xcframework/ios-arm64-simulator/INSCameraServiceSDK.framework/INSCameraServiceSDK",
+   "bytes": 6514656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/MotionMixApp/Frameworks/INSCameraServiceSDK.xcframework/ios-arm64/INSCameraServiceSDK.framework/INSCameraServiceSDK",
+   "bytes": 7878608,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/MotionMixApp/Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64-simulator/INSCameraServiceSDK.framework/INSCameraServiceSDK",
+   "bytes": 4220416,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/MotionMixApp/Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64_arm64_32_armv7k/INSCameraServiceSDK.framework/INSCameraServiceSDK",
+   "bytes": 12157976,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/MotionMixApp/Frameworks/INSCoreMedia.xcframework/watchos-arm64_arm64_32_armv7k/INSCoreMedia.framework/INSCoreMedia",
+   "bytes": 18937136,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/MotionMixApp/Frameworks/INSCoreMedia.xcframework/watchos-arm64_x86_64-simulator/INSCoreMedia.framework/INSCoreMedia",
+   "bytes": 14578144,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/MotionMixApp/Frameworks/libechelon_ios.a",
+   "bytes": 18037952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/boom_1.wav",
+   "bytes": 70638,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/chest_flex_reference.wav",
+   "bytes": 825546,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/chest_hit.wav",
+   "bytes": 88278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_00_intro.wav",
+   "bytes": 1710454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_01_instagram.wav",
+   "bytes": 529278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_02_scrolling.wav",
+   "bytes": 541980,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_03_ck_shots.wav",
+   "bytes": 749426,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_04_times_square.wav",
+   "bytes": 552564,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_05_portrait.wav",
+   "bytes": 597016,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_06_mountain.wav",
+   "bytes": 463658,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_07_app_demo.wav",
+   "bytes": 965340,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_08_pipeline.wav",
+   "bytes": 791762,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_09_inbox.wav",
+   "bytes": 1045778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_10_ledger.wav",
+   "bytes": 986508,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_11_landing.wav",
+   "bytes": 806580,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/fd_12_outro.wav",
+   "bytes": 1151618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/hit_1.wav",
+   "bytes": 13308,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/snap_1.wav",
+   "bytes": 8898,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/vocal_clap.wav",
+   "bytes": 13308,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/vocal_hat.wav",
+   "bytes": 8898,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/vocal_kick.wav",
+   "bytes": 66228,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/vocal_stab.wav",
+   "bytes": 70638,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/voice_geometry_30s.wav",
+   "bytes": 2646078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/voice_nko_30s.wav",
+   "bytes": 2646078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/MotionMixApp/MotionMixApp/Audio/VocalSFX/voice_omega_30s.wav",
+   "bytes": 2646078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/NKo-Compute-Network-Whitepaper.mp3",
+   "bytes": 22300844,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/NKoScribe/NKoScribe/Fonts/NotoSansNKo-Regular.ttf",
+   "bytes": 24608,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/Spore/Spore/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 910960,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/Spore/Spore/Fonts/Quicksand-Bold.ttf",
+   "bytes": 108752,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/Spore/Spore/Fonts/Quicksand-Light.ttf",
+   "bytes": 110500,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/Spore/Spore/Fonts/Quicksand-Medium.ttf",
+   "bytes": 109880,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/Spore/Spore/Fonts/Quicksand-Regular.ttf",
+   "bytes": 110268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/anticipation-geometry-theorems.mp3",
+   "bytes": 5921804,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libasync_trait-e3fa7891f8ee9ae8.dylib",
+   "bytes": 3376072,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libaxum-60b01094516b1985.rlib",
+   "bytes": 9942424,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libaxum-60b01094516b1985.rmeta",
+   "bytes": 5867859,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libchrono-784c8bb3fb32871f.rlib",
+   "bytes": 4846656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libdisplaydoc-08c1703951360da9.dylib",
+   "bytes": 2894376,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libfutures_util-fc08a3b6378d5772.rlib",
+   "bytes": 5430920,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libfutures_util-fc08a3b6378d5772.rmeta",
+   "bytes": 5017266,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libh2-7cf98d2870013f3b.rlib",
+   "bytes": 9552704,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libh2-7cf98d2870013f3b.rmeta",
+   "bytes": 4354582,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libhyper-27bd831db0c00f4c.rlib",
+   "bytes": 4993232,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libhyper_util-a6a7953ae242fc80.rlib",
+   "bytes": 4973640,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libicu_properties-41aad9f3e5df4425.rlib",
+   "bytes": 4435152,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libiri_string-89f0ea2eb3e24618.rlib",
+   "bytes": 4765464,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libregex_automata-6cc19da8818ec576.rlib",
+   "bytes": 11912880,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libregex_syntax-2f0de72b8ac36133.rlib",
+   "bytes": 6894496,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libreqwest-4f1fad437860e08e.rlib",
+   "bytes": 18339000,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/librustversion-064bf7827f8c4a8d.dylib",
+   "bytes": 719656,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libsecurity_framework-3b245d141ae58547.rlib",
+   "bytes": 5732936,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libserde_core-8b7282d95af30617.rlib",
+   "bytes": 4995544,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libserde_core-8b7282d95af30617.rmeta",
+   "bytes": 4739322,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libserde_derive-a58928edf83cf5b4.dylib",
+   "bytes": 4130952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libsyn-4881abf54188863a.rlib",
+   "bytes": 9942264,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libsyn-4881abf54188863a.rmeta",
+   "bytes": 4942444,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libthiserror_impl-a96fb68cbd3da417.dylib",
+   "bytes": 3241208,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libtokio-234f3e18f7ed3337.rlib",
+   "bytes": 23190288,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libtokio-234f3e18f7ed3337.rmeta",
+   "bytes": 8534365,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libtokio_macros-797319545c2e5d0b.dylib",
+   "bytes": 2910184,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libtoml_edit-495c3be3c8e51081.rlib",
+   "bytes": 14841200,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libtracing_attributes-adddac2b10498e1e.dylib",
+   "bytes": 3596240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libtracing_subscriber-62bf6166a030c2bc.rlib",
+   "bytes": 8366656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libyoke_derive-562bd8a3be6e64a2.dylib",
+   "bytes": 3467240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libzerocopy-8acb72a3605a4bf8.rlib",
+   "bytes": 15213264,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libzerocopy-8acb72a3605a4bf8.rmeta",
+   "bytes": 14797397,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libzerofrom_derive-ea72112116e27bfb.dylib",
+   "bytes": 3761368,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/debug/deps/libzerovec_derive-6fd3ac718a193b10.dylib",
+   "bytes": 3206968,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libasync_trait-2262700741245ffb.dylib",
+   "bytes": 2114144,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libaxum-38d54139a22c7858.rlib",
+   "bytes": 6511192,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libaxum-38d54139a22c7858.rmeta",
+   "bytes": 5662750,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libdisplaydoc-39ca3c52bad87800.dylib",
+   "bytes": 1863968,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libfutures_util-01e6d27b98c97dda.rlib",
+   "bytes": 5180408,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libfutures_util-01e6d27b98c97dda.rmeta",
+   "bytes": 5120207,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libh2-94915b333bc802c4.rlib",
+   "bytes": 5969160,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libh2-94915b333bc802c4.rmeta",
+   "bytes": 4411577,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libregex_automata-158877d6daede8c6.rlib",
+   "bytes": 4575384,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libreqwest-ec63079ea1c3b13b.rlib",
+   "bytes": 4421200,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/librustversion-dfd64d9d93b43084.dylib",
+   "bytes": 501840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libserde_core-7ec237b9a1b567f4.rlib",
+   "bytes": 5160000,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libserde_core-7ec237b9a1b567f4.rmeta",
+   "bytes": 5057854,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libserde_derive-a1ae92f38424599a.dylib",
+   "bytes": 2742784,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libsyn-c3107445df53af63.rlib",
+   "bytes": 9746720,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libsyn-c3107445df53af63.rmeta",
+   "bytes": 4867133,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libthiserror_impl-e01f34ef5b640f66.dylib",
+   "bytes": 2096320,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libtokio-c640c23982212801.rlib",
+   "bytes": 11088888,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libtokio-c640c23982212801.rmeta",
+   "bytes": 8596692,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libtokio_macros-183a3c751ae4035b.dylib",
+   "bytes": 1896944,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libtracing_attributes-a8047b923cc25d49.dylib",
+   "bytes": 2279632,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libyoke_derive-a977d6589e11800d.dylib",
+   "bytes": 2229504,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libzerocopy-ebf652e080533456.rlib",
+   "bytes": 15165200,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libzerocopy-ebf652e080533456.rmeta",
+   "bytes": 15158315,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libzerofrom_derive-4ee696e428641211.dylib",
+   "bytes": 2428720,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/capture-server-rs/target/release/deps/libzerovec_derive-099130e2f041be93.dylib",
+   "bytes": 2113616,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DR7YNKxkY72_frame1.jpg",
+   "bytes": 62595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DR7YNKxkY72_frame2.jpg",
+   "bytes": 69440,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DR7YNKxkY72_frame3.jpg",
+   "bytes": 82255,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DR7YNKxkY72_frame4.jpg",
+   "bytes": 96673,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DRKowK0kRPS_frame1.jpg",
+   "bytes": 147392,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DRKowK0kRPS_frame2.jpg",
+   "bytes": 156103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DRKowK0kRPS_frame3.jpg",
+   "bytes": 132221,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DRKowK0kRPS_frame4.jpg",
+   "bytes": 139252,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DRTQXA9EQII_frame1.jpg",
+   "bytes": 129990,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DRTQXA9EQII_frame2.jpg",
+   "bytes": 144650,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DRTQXA9EQII_frame3.jpg",
+   "bytes": 124528,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DRTQXA9EQII_frame4.jpg",
+   "bytes": 115197,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DSPoVJbEl85_frame1.jpg",
+   "bytes": 111733,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DSPoVJbEl85_frame2.jpg",
+   "bytes": 111267,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DSPoVJbEl85_frame3.jpg",
+   "bytes": 112332,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DSPoVJbEl85_frame4.jpg",
+   "bytes": 110706,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DSs_eXTDLyj_frame1.jpg",
+   "bytes": 140189,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DSs_eXTDLyj_frame2.jpg",
+   "bytes": 113673,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DSs_eXTDLyj_frame3.jpg",
+   "bytes": 111832,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DSs_eXTDLyj_frame4.jpg",
+   "bytes": 142857,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DUeoKnajpko_frame1.jpg",
+   "bytes": 125566,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DUeoKnajpko_frame2.jpg",
+   "bytes": 69687,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DUeoKnajpko_frame3.jpg",
+   "bytes": 89036,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DUeoKnajpko_frame4.jpg",
+   "bytes": 79927,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DVX6NJEDis1_frame1.jpg",
+   "bytes": 62465,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DVX6NJEDis1_frame2.jpg",
+   "bytes": 59448,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DVX6NJEDis1_frame3.jpg",
+   "bytes": 56186,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DVX6NJEDis1_frame4.jpg",
+   "bytes": 59442,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DV_pZScAryY_frame1.jpg",
+   "bytes": 83819,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DV_pZScAryY_frame2.jpg",
+   "bytes": 91689,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DV_pZScAryY_frame3.jpg",
+   "bytes": 89956,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DV_pZScAryY_frame4.jpg",
+   "bytes": 163103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DWFg1xACVR__frame1.jpg",
+   "bytes": 121584,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DWFg1xACVR__frame2.jpg",
+   "bytes": 119771,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DWFg1xACVR__frame3.jpg",
+   "bytes": 122294,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/comp-core-revival-frames/DWFg1xACVR__frame4.jpg",
+   "bytes": 123519,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libasync_trait-e3fa7891f8ee9ae8.dylib",
+   "bytes": 3376072,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libaxum-d4bffa1ada1a8210.rmeta",
+   "bytes": 5068942,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libaxum-e9ccf7f9910a8fcb.rlib",
+   "bytes": 8589280,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libaxum-e9ccf7f9910a8fcb.rmeta",
+   "bytes": 5656556,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libchrono-784c8bb3fb32871f.rlib",
+   "bytes": 4846656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libdisplaydoc-08c1703951360da9.dylib",
+   "bytes": 2894376,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libh2-7cf98d2870013f3b.rlib",
+   "bytes": 9552704,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libh2-7cf98d2870013f3b.rmeta",
+   "bytes": 4354582,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libhyper-27bd831db0c00f4c.rlib",
+   "bytes": 4993232,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libhyper_util-8bab64bfab2c1058.rlib",
+   "bytes": 4855664,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libicu_properties-41aad9f3e5df4425.rlib",
+   "bytes": 4435152,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libiri_string-89f0ea2eb3e24618.rlib",
+   "bytes": 4765464,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libregex_automata-6cc19da8818ec576.rlib",
+   "bytes": 11912880,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libregex_syntax-2f0de72b8ac36133.rlib",
+   "bytes": 6894496,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libreqwest-de5ac9b6ee1143f4.rlib",
+   "bytes": 18379704,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/librustversion-064bf7827f8c4a8d.dylib",
+   "bytes": 719656,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libsecurity_framework-3b245d141ae58547.rlib",
+   "bytes": 5732936,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libserde_core-8b7282d95af30617.rlib",
+   "bytes": 4995544,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libserde_core-8b7282d95af30617.rmeta",
+   "bytes": 4739323,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libserde_derive-a58928edf83cf5b4.dylib",
+   "bytes": 4130952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libsyn-4881abf54188863a.rlib",
+   "bytes": 9942264,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libsyn-4881abf54188863a.rmeta",
+   "bytes": 4942444,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libtokio-234f3e18f7ed3337.rlib",
+   "bytes": 23190288,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libtokio-234f3e18f7ed3337.rmeta",
+   "bytes": 8534365,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libtokio-d5c2acbf2b647b88.rmeta",
+   "bytes": 7260042,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libtokio_macros-797319545c2e5d0b.dylib",
+   "bytes": 2910184,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libtoml_edit-495c3be3c8e51081.rlib",
+   "bytes": 14841200,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libtracing_attributes-adddac2b10498e1e.dylib",
+   "bytes": 3596240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libtracing_subscriber-62bf6166a030c2bc.rlib",
+   "bytes": 8366656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libyoke_derive-562bd8a3be6e64a2.dylib",
+   "bytes": 3467240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libzerocopy-8acb72a3605a4bf8.rlib",
+   "bytes": 15213264,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libzerocopy-8acb72a3605a4bf8.rmeta",
+   "bytes": 14797397,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libzerocopy-b03ab30d6c8de0a5.rmeta",
+   "bytes": 13363402,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libzerofrom_derive-ea72112116e27bfb.dylib",
+   "bytes": 3761368,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/debug/deps/libzerovec_derive-6fd3ac718a193b10.dylib",
+   "bytes": 3206968,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/ewd-6678c1ec39faa6c9",
+   "bytes": 6455328,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libasync_trait-babf9f5a7d52a2ce.dylib",
+   "bytes": 3174304,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libaxum-e1b3601aae87cd54.rlib",
+   "bytes": 6038368,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libaxum-e1b3601aae87cd54.rmeta",
+   "bytes": 5680112,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libdisplaydoc-541c936d20f93dad.dylib",
+   "bytes": 2725728,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libh2-c0344e73c5538ff1.rlib",
+   "bytes": 6150224,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libh2-c0344e73c5538ff1.rmeta",
+   "bytes": 5063876,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libiri_string-e1e83396b7090ea7.rlib",
+   "bytes": 4696104,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libiri_string-e1e83396b7090ea7.rmeta",
+   "bytes": 4555118,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/librustversion-8d5f7e75ceb2525e.dylib",
+   "bytes": 656912,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libserde_core-114a5a59e262364b.rlib",
+   "bytes": 5331960,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libserde_core-114a5a59e262364b.rmeta",
+   "bytes": 5267878,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libserde_derive-5cf81b3830c55274.dylib",
+   "bytes": 3947680,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libsyn-7b3e1006a54f97fc.rlib",
+   "bytes": 9747792,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libsyn-7b3e1006a54f97fc.rmeta",
+   "bytes": 4867133,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libtokio-6f23363f7cc2afba.rlib",
+   "bytes": 10661808,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libtokio-6f23363f7cc2afba.rmeta",
+   "bytes": 9175769,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libtokio_macros-45c97b85eaf05063.dylib",
+   "bytes": 2757008,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libtracing_attributes-12cca0e5c43cb062.dylib",
+   "bytes": 3407488,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libyoke_derive-f7bc19d1c2a556e7.dylib",
+   "bytes": 3243248,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libzerocopy-def4242ca348ce8d.rlib",
+   "bytes": 15911568,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libzerocopy-def4242ca348ce8d.rmeta",
+   "bytes": 15910611,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libzerofrom_derive-da3806cb5b4b47ac.dylib",
+   "bytes": 3517136,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/deps/libzerovec_derive-4e9278ec47e01e1f.dylib",
+   "bytes": 3052480,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/evolution-world-rs/target/release/ewd",
+   "bytes": 6455328,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/factory/reward-engine-rs/build-a-rust/target/debug/deps/libclap_builder-30c6d89e9fed9753.rlib",
+   "bytes": 13506264,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/factory/reward-engine-rs/build-a-rust/target/debug/deps/libclap_derive-305a717accbbb7a7.dylib",
+   "bytes": 3470856,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/factory/reward-engine-rs/build-a-rust/target/debug/deps/libserde_core-26d0b4e83157361a.rlib",
+   "bytes": 4995312,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/factory/reward-engine-rs/build-a-rust/target/debug/deps/libserde_core-26d0b4e83157361a.rmeta",
+   "bytes": 4739096,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/factory/reward-engine-rs/build-a-rust/target/debug/deps/libserde_derive-bee9821fb82a6746.dylib",
+   "bytes": 4130872,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/factory/reward-engine-rs/build-a-rust/target/debug/deps/libsyn-3f682b28b0c88e8d.rlib",
+   "bytes": 6881984,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/00_intro.mp3",
+   "bytes": 387840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/01_instagram.mp3",
+   "bytes": 120000,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/02_scrolling.mp3",
+   "bytes": 122880,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/03_ck_shots.mp3",
+   "bytes": 169920,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/04_times_square.mp3",
+   "bytes": 125280,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/05_portrait.mp3",
+   "bytes": 135360,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/06_mountain.mp3",
+   "bytes": 105120,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/07_app_demo.mp3",
+   "bytes": 218880,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/08_pipeline.mp3",
+   "bytes": 179520,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/09_inbox.mp3",
+   "bytes": 237120,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/10_ledger.mp3",
+   "bytes": 223680,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/11_landing.mp3",
+   "bytes": 182880,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/12_outro.mp3",
+   "bytes": 261120,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/firstdate-demo-audio/fairy-tale-defense.mp3",
+   "bytes": 2853120,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/mesh-recordings/2026-03-14_130320_showreel_fast.mov",
+   "bytes": 948527,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/mesh-recordings/2026-03-14_130320_showreel_fast_4x.mp4",
+   "bytes": 236093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libasync_trait-2262700741245ffb.dylib",
+   "bytes": 2114144,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libaxum-2cffea55a8e810e5.rlib",
+   "bytes": 6041776,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libaxum-2cffea55a8e810e5.rmeta",
+   "bytes": 5451561,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libaxum-cd7aed1cd1888ed0.rlib",
+   "bytes": 6041896,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libaxum-cd7aed1cd1888ed0.rmeta",
+   "bytes": 5451684,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libaxum-ffd0ef5f4899ba42.rlib",
+   "bytes": 6046160,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libaxum-ffd0ef5f4899ba42.rmeta",
+   "bytes": 5451062,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libdisplaydoc-39ca3c52bad87800.dylib",
+   "bytes": 1863968,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libfutures_macro-3523beab72295735.dylib",
+   "bytes": 1681008,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libfutures_util-06465007883cb141.rlib",
+   "bytes": 6080824,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libfutures_util-06465007883cb141.rmeta",
+   "bytes": 5988864,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libfutures_util-549ab7e1846fdb62.rlib",
+   "bytes": 6080824,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libfutures_util-549ab7e1846fdb62.rmeta",
+   "bytes": 5988864,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libh2-94915b333bc802c4.rlib",
+   "bytes": 5969160,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libh2-94915b333bc802c4.rmeta",
+   "bytes": 4411577,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libregex_automata-158877d6daede8c6.rlib",
+   "bytes": 4575384,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libreqwest-698968b9c234576a.rlib",
+   "bytes": 4425968,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libreqwest-8f4eee23921032b9.rlib",
+   "bytes": 4423512,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/librustls-6716c54abac83a0a.rlib",
+   "bytes": 7747616,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/librustversion-dfd64d9d93b43084.dylib",
+   "bytes": 501840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libserde_core-7ec237b9a1b567f4.rlib",
+   "bytes": 5160000,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libserde_core-7ec237b9a1b567f4.rmeta",
+   "bytes": 5057850,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libserde_derive-a1ae92f38424599a.dylib",
+   "bytes": 2742784,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libsyn-c3107445df53af63.rlib",
+   "bytes": 9746720,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libsyn-c3107445df53af63.rmeta",
+   "bytes": 4867133,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libtokio-c640c23982212801.rlib",
+   "bytes": 11088888,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libtokio-c640c23982212801.rmeta",
+   "bytes": 8596692,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libtokio_macros-183a3c751ae4035b.dylib",
+   "bytes": 1896944,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libtracing_attributes-a8047b923cc25d49.dylib",
+   "bytes": 2279632,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libyoke_derive-a977d6589e11800d.dylib",
+   "bytes": 2229504,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libzerofrom_derive-4ee696e428641211.dylib",
+   "bytes": 2428720,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/orchestratord/target/release/deps/libzerovec_derive-099130e2f041be93.dylib",
+   "bytes": 2113616,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/reel_A_30s_highlight.mp4",
+   "bytes": 19398704,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/session-summary-2026-03-28.mp3",
+   "bytes": 12525644,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/dispersion.wav",
+   "bytes": 264644,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/dwell.wav",
+   "bytes": 352844,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/echo.wav",
+   "bytes": 352844,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/novelty.wav",
+   "bytes": 176444,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/oscillation.wav",
+   "bytes": 176444,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/place_shift.wav",
+   "bytes": 229364,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/recovery.wav",
+   "bytes": 317564,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/return.wav",
+   "bytes": 211724,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/stabilization.wav",
+   "bytes": 264644,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/sound-sigils/audio/transition.wav",
+   "bytes": 141164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libasync_trait-e3fa7891f8ee9ae8.dylib",
+   "bytes": 3376072,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libaxum-92b625f4798f6834.rmeta",
+   "bytes": 5067896,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libdisplaydoc-08c1703951360da9.dylib",
+   "bytes": 2894376,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/librustversion-064bf7827f8c4a8d.dylib",
+   "bytes": 719656,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libserde_derive-a58928edf83cf5b4.dylib",
+   "bytes": 4130952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libsyn-4881abf54188863a.rlib",
+   "bytes": 9942264,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libsyn-4881abf54188863a.rmeta",
+   "bytes": 4942444,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libtokio-77bdfc830beff7e6.rmeta",
+   "bytes": 7260043,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libtokio_macros-797319545c2e5d0b.dylib",
+   "bytes": 2910184,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libyoke_derive-562bd8a3be6e64a2.dylib",
+   "bytes": 3467240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libzerofrom_derive-ea72112116e27bfb.dylib",
+   "bytes": 3761368,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/debug/deps/libzerovec_derive-6fd3ac718a193b10.dylib",
+   "bytes": 3206968,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libasync_trait-babf9f5a7d52a2ce.dylib",
+   "bytes": 3174304,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libaxum-1ecd69f2d08c630e.rlib",
+   "bytes": 6036944,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libaxum-1ecd69f2d08c630e.rmeta",
+   "bytes": 5678694,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libdisplaydoc-541c936d20f93dad.dylib",
+   "bytes": 2725728,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libh2-cdd6502c41bc9b1f.rlib",
+   "bytes": 5980296,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libh2-cdd6502c41bc9b1f.rmeta",
+   "bytes": 4882353,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libhyper-39406457ed1eb4bb.rlib",
+   "bytes": 5049392,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libhyper-39406457ed1eb4bb.rmeta",
+   "bytes": 4227562,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/librustversion-8d5f7e75ceb2525e.dylib",
+   "bytes": 656912,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libserde_core-114a5a59e262364b.rlib",
+   "bytes": 5331952,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libserde_core-114a5a59e262364b.rmeta",
+   "bytes": 5267872,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libserde_derive-5cf81b3830c55274.dylib",
+   "bytes": 3947680,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libsyn-7b3e1006a54f97fc.rlib",
+   "bytes": 9747792,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libsyn-7b3e1006a54f97fc.rmeta",
+   "bytes": 4867133,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libtokio-19de8bbb46c2f49e.rlib",
+   "bytes": 10663160,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libtokio-19de8bbb46c2f49e.rmeta",
+   "bytes": 9175772,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libtokio_macros-45c97b85eaf05063.dylib",
+   "bytes": 2757008,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libyoke_derive-f7bc19d1c2a556e7.dylib",
+   "bytes": 3243248,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libzerofrom_derive-da3806cb5b4b47ac.dylib",
+   "bytes": 3517136,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/libzerovec_derive-4e9278ec47e01e1f.dylib",
+   "bytes": 3052480,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/deps/voice_intent-4d3d3673e3579435",
+   "bytes": 4695120,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Desktop/voice-intent/target/release/voice-intent",
+   "bytes": 4695120,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "expo-workspace/nko-sigils/assets/adaptive-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "expo-workspace/nko-sigils/assets/favicon.png",
+   "bytes": 1466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "expo-workspace/nko-sigils/assets/icon.png",
+   "bytes": 22380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "expo-workspace/nko-sigils/assets/splash-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "flows/feed-hub/.vault_sync_state.db",
+   "bytes": 28672,
+   "why": "binary-ext"
+  },
+  {
+   "path": "memory/experiments/model-swap/results.db",
+   "bytes": 57344,
+   "why": "binary-ext"
+  },
+  {
+   "path": "projects/account-pool/logs/daemon.err",
+   "bytes": 4492636,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "projects/karl/data/merged/train_sft_final.jsonl",
+   "bytes": 9516679,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "projects/karl/data/merged/train_sft_ready.jsonl",
+   "bytes": 7625479,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "projects/karl/data/worms_output/batch/evolution_batch_prioritized.jsonl",
+   "bytes": 8233566,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "projects/karl/data/worms_output/batch/evolution_batch_requests.jsonl",
+   "bytes": 8026350,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "projects/karl/data/worms_output/batch/evolution_batch_uniform.jsonl",
+   "bytes": 8229988,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "projects/karl/inscription-v2-train/train.jsonl",
+   "bytes": 4336443,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "projects/task-pulse/tasks.db",
+   "bytes": 20480,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "homebase",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create homebase --namespace foundry-staging",
+  "FOUNDRY_SEED=homebase /Users/mohameddiomande/.config/foundry/bin/foundry-push homebase main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging homebase",
+  "registry: foundry_base=homebase; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/homebase/",
+ "first_merge_fits_gate": false
+}

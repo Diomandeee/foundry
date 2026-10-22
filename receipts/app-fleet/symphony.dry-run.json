@@ -1,0 +1,21 @@
+{
+ "id": "symphony",
+ "title": "symphony",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/symphony",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 29,
+ "text_bytes": 210229,
+ "offenders": [],
+ "base": "symphony",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create symphony --namespace foundry-staging",
+  "FOUNDRY_SEED=symphony /Users/mohameddiomande/.config/foundry/bin/foundry-push symphony main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging symphony",
+  "registry: foundry_base=symphony; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

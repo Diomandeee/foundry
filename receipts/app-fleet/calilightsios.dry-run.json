@@ -1,0 +1,47 @@
+{
+ "id": "calilightsios",
+ "title": "CaliLightsIOS",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/CaliLightsIOS",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 51,
+ "text_bytes": 1353550,
+ "offenders": [
+  {
+   "path": "CaliLights/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 938934,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CaliLights.xcarchive/Products/Applications/CaliLights.app/AppIcon60x60@2x.png",
+   "bytes": 10926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CaliLights.xcarchive/Products/Applications/CaliLights.app/AppIcon76x76@2x~ipad.png",
+   "bytes": 14532,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CaliLights.xcarchive/Products/Applications/CaliLights.app/Assets.car",
+   "bytes": 94712,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CaliLights.xcarchive/dSYMs/CaliLights.app.dSYM/Contents/Resources/DWARF/CaliLights",
+   "bytes": 6263888,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "calilightsios",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create calilightsios --namespace foundry-staging",
+  "FOUNDRY_SEED=calilightsios /Users/mohameddiomande/.config/foundry/bin/foundry-push calilightsios main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging calilightsios",
+  "registry: foundry_base=calilightsios; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/calilightsios/",
+ "first_merge_fits_gate": true
+}

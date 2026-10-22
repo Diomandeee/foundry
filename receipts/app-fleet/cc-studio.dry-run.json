@@ -1,0 +1,82 @@
+{
+ "id": "cc-studio",
+ "title": "cc-studio",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/cc-studio",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 409,
+ "text_bytes": 47390374,
+ "offenders": [
+  {
+   "path": "cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_diag.png",
+   "bytes": 94616,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_none.png",
+   "bytes": 108800,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_psd.png",
+   "bytes": 71992,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_gaussian_diag.png",
+   "bytes": 111213,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_gaussian_psd.png",
+   "bytes": 130145,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cc-core/Hypothesis/test_07_timescale_separation/plots/timescale_separation.png",
+   "bytes": 133267,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cc-core/checkpoints/dataset_stats.npz",
+   "bytes": 2018,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cc-core/device_coherence_demo.png",
+   "bytes": 295330,
+   "why": "binary-ext"
+  },
+  {
+   "path": "data/processed/dell_training/442_W_13th_St-2025-11-02_04-37-38_frames.parquet",
+   "bytes": 9090636,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "data/processed/dell_training/92-77_Queens_Blvd-2025-11-02_20-11-33_frames.parquet",
+   "bytes": 13194748,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "data/processed/dell_training/Left-2025-11-02_02-10-10-7ab80f052a2d400c811d911f72bd1ff4_frames.parquet",
+   "bytes": 14087472,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "data/processed/dell_training/Right-2025-11-02_02-10-10-0938198cbf5642e090569c5071f0b49c_frames.parquet",
+   "bytes": 13577829,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "cc-studio",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cc-studio --namespace foundry-staging",
+  "FOUNDRY_SEED=cc-studio /Users/mohameddiomande/.config/foundry/bin/foundry-push cc-studio main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cc-studio",
+  "registry: foundry_base=cc-studio; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cc-studio/",
+ "first_merge_fits_gate": false
+}

@@ -1,0 +1,21 @@
+{
+ "id": "living-docs",
+ "title": "living-docs",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/living-docs",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 55,
+ "text_bytes": 1075389,
+ "offenders": [],
+ "base": "living-docs",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create living-docs --namespace foundry-staging",
+  "FOUNDRY_SEED=living-docs /Users/mohameddiomande/.config/foundry/bin/foundry-push living-docs main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging living-docs",
+  "registry: foundry_base=living-docs; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

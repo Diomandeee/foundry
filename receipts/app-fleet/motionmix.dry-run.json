@@ -1,0 +1,21 @@
+{
+ "id": "motionmix",
+ "title": "MotionMix",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/MotionMix",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 42,
+ "text_bytes": 1315901,
+ "offenders": [],
+ "base": "motionmix",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create motionmix --namespace foundry-staging",
+  "FOUNDRY_SEED=motionmix /Users/mohameddiomande/.config/foundry/bin/foundry-push motionmix main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging motionmix",
+  "registry: foundry_base=motionmix; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

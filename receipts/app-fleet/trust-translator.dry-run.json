@@ -1,0 +1,21 @@
+{
+ "id": "trust-translator",
+ "title": "trust-translator",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/trust-translator",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 34,
+ "text_bytes": 877968,
+ "offenders": [],
+ "base": "trust-translator",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create trust-translator --namespace foundry-staging",
+  "FOUNDRY_SEED=trust-translator /Users/mohameddiomande/.config/foundry/bin/foundry-push trust-translator main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging trust-translator",
+  "registry: foundry_base=trust-translator; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

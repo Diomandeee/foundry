@@ -1,0 +1,42 @@
+{
+ "id": "motion",
+ "title": "Motion",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Motion",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 46,
+ "text_bytes": 399408,
+ "offenders": [
+  {
+   "path": "dev.db",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "exported_data/processed_sensor_data.csv",
+   "bytes": 16478278,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "exported_data/sensor_readings.csv",
+   "bytes": 42647125,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "prisma/dev.db",
+   "bytes": 80203776,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "motion",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create motion --namespace foundry-staging",
+  "FOUNDRY_SEED=motion /Users/mohameddiomande/.config/foundry/bin/foundry-push motion main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging motion",
+  "registry: foundry_base=motion; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/motion/",
+ "first_merge_fits_gate": true
+}

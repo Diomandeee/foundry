@@ -1,0 +1,21 @@
+{
+ "id": "lume-motion-state",
+ "title": "lume-motion-state",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/lume-motion-state",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 76,
+ "text_bytes": 1501656,
+ "offenders": [],
+ "base": "lume-motion-state",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create lume-motion-state --namespace foundry-staging",
+  "FOUNDRY_SEED=lume-motion-state /Users/mohameddiomande/.config/foundry/bin/foundry-push lume-motion-state main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging lume-motion-state",
+  "registry: foundry_base=lume-motion-state; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,27 @@
+{
+ "id": "vesper",
+ "title": "Vesper",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Vesper",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 36,
+ "text_bytes": 196787,
+ "offenders": [
+  {
+   "path": "Vesper/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 819403,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "vesper",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create vesper --namespace foundry-staging",
+  "FOUNDRY_SEED=vesper /Users/mohameddiomande/.config/foundry/bin/foundry-push vesper main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging vesper",
+  "registry: foundry_base=vesper; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/vesper/",
+ "first_merge_fits_gate": true
+}

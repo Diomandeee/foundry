@@ -1,0 +1,21 @@
+{
+ "id": "movecanvas",
+ "title": "MoveCanvas",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/MoveCanvas",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 8,
+ "text_bytes": 52161,
+ "offenders": [],
+ "base": "movecanvas",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create movecanvas --namespace foundry-staging",
+  "FOUNDRY_SEED=movecanvas /Users/mohameddiomande/.config/foundry/bin/foundry-push movecanvas main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging movecanvas",
+  "registry: foundry_base=movecanvas; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

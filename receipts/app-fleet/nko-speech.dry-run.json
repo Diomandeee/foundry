@@ -1,0 +1,21 @@
+{
+ "id": "nko-speech",
+ "title": "nko-speech",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/nko-speech",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 10,
+ "text_bytes": 37435,
+ "offenders": [],
+ "base": "nko-speech",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create nko-speech --namespace foundry-staging",
+  "FOUNDRY_SEED=nko-speech /Users/mohameddiomande/.config/foundry/bin/foundry-push nko-speech main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging nko-speech",
+  "registry: foundry_base=nko-speech; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

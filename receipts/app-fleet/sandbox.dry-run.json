@@ -1,0 +1,137 @@
+{
+ "id": "sandbox",
+ "title": "sandbox",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/sandbox",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1584,
+ "text_bytes": 19055041,
+ "offenders": [
+  {
+   "path": "28-days-of-code/apps/nko-keyboard/screenshot.jpg",
+   "bytes": 92575,
+   "why": "binary-ext"
+  },
+  {
+   "path": "portfolio-preview/assets/adaptive-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "portfolio-preview/assets/favicon.png",
+   "bytes": 1466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "portfolio-preview/assets/icon.png",
+   "bytes": 22380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "portfolio-preview/assets/splash-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/dispersion.wav",
+   "bytes": 264644,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/dwell.wav",
+   "bytes": 352844,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/echo.wav",
+   "bytes": 352844,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/novelty.wav",
+   "bytes": 176444,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/oscillation.wav",
+   "bytes": 176444,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/place_shift.wav",
+   "bytes": 229364,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/recovery.wav",
+   "bytes": 317564,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/return.wav",
+   "bytes": 211724,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/stabilization.wav",
+   "bytes": 264644,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sound-sigils/audio/transition.wav",
+   "bytes": 141164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spine/BWB/deck/BWB Business Presentation V3 - 4-Wall System.pdf",
+   "bytes": 2474791,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spine/BWB/deck/BWB Franchise Model.pdf",
+   "bytes": 2589599,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spine/Buf Barista/cha/Caramel Crunch Crunch.png",
+   "bytes": 1054890,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spine/Buf Barista/cha/Hazelnut Hustle Haze.png",
+   "bytes": 763219,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spine/Buf Barista/cha/Pecan Power Pie.png",
+   "bytes": 1037088,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spine/Buf Barista/cha/Pecan Power Pie_1.png",
+   "bytes": 840320,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spine/Buf Barista/cha/Pumpkin Spice Pump-Up.png",
+   "bytes": 762527,
+   "why": "binary-ext"
+  },
+  {
+   "path": "thought-mesh/thought_mesh_demo.wav",
+   "bytes": 2212080,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "sandbox",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create sandbox --namespace foundry-staging",
+  "FOUNDRY_SEED=sandbox /Users/mohameddiomande/.config/foundry/bin/foundry-push sandbox main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging sandbox",
+  "registry: foundry_base=sandbox; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/sandbox/",
+ "first_merge_fits_gate": false
+}

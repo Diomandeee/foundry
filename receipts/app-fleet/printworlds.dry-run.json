@@ -1,0 +1,27 @@
+{
+ "id": "printworlds",
+ "title": "PrintWorlds",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/PrintWorlds",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 30,
+ "text_bytes": 122042,
+ "offenders": [
+  {
+   "path": "PrintWorlds/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 747718,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "printworlds",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create printworlds --namespace foundry-staging",
+  "FOUNDRY_SEED=printworlds /Users/mohameddiomande/.config/foundry/bin/foundry-push printworlds main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging printworlds",
+  "registry: foundry_base=printworlds; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/printworlds/",
+ "first_merge_fits_gate": true
+}

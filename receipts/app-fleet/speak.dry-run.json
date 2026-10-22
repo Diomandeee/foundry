@@ -1,0 +1,21 @@
+{
+ "id": "speak",
+ "title": "Speak",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Speak",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 151,
+ "text_bytes": 1231529,
+ "offenders": [],
+ "base": "speak",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create speak --namespace foundry-staging",
+  "FOUNDRY_SEED=speak /Users/mohameddiomande/.config/foundry/bin/foundry-push speak main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging speak",
+  "registry: foundry_base=speak; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

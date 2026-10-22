@@ -1,0 +1,21 @@
+{
+ "id": "unified-memory",
+ "title": "unified-memory",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/unified-memory",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 14,
+ "text_bytes": 97249,
+ "offenders": [],
+ "base": "unified-memory",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create unified-memory --namespace foundry-staging",
+  "FOUNDRY_SEED=unified-memory /Users/mohameddiomande/.config/foundry/bin/foundry-push unified-memory main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging unified-memory",
+  "registry: foundry_base=unified-memory; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

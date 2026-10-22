@@ -1,0 +1,21 @@
+{
+ "id": "nko-keyboard-ai",
+ "title": "nko-keyboard-ai",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/nko-keyboard-ai",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 56,
+ "text_bytes": 1385764,
+ "offenders": [],
+ "base": "nko-keyboard-ai",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create nko-keyboard-ai --namespace foundry-staging",
+  "FOUNDRY_SEED=nko-keyboard-ai /Users/mohameddiomande/.config/foundry/bin/foundry-push nko-keyboard-ai main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging nko-keyboard-ai",
+  "registry: foundry_base=nko-keyboard-ai; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

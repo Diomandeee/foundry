@@ -1,0 +1,21 @@
+{
+ "id": "watch-whisper",
+ "title": "watch-whisper",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/watch-whisper",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 25,
+ "text_bytes": 681225,
+ "offenders": [],
+ "base": "watch-whisper",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create watch-whisper --namespace foundry-staging",
+  "FOUNDRY_SEED=watch-whisper /Users/mohameddiomande/.config/foundry/bin/foundry-push watch-whisper main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging watch-whisper",
+  "registry: foundry_base=watch-whisper; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

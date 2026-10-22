@@ -1,0 +1,57 @@
+{
+ "id": "spine",
+ "title": "spine",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/spine",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 343,
+ "text_bytes": 2668739,
+ "offenders": [
+  {
+   "path": "BWB/deck/BWB Business Presentation V3 - 4-Wall System.pdf",
+   "bytes": 2474791,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB/deck/BWB Franchise Model.pdf",
+   "bytes": 2589599,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Buf Barista/cha/Caramel Crunch Crunch.png",
+   "bytes": 1054890,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Buf Barista/cha/Hazelnut Hustle Haze.png",
+   "bytes": 763219,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Buf Barista/cha/Pecan Power Pie.png",
+   "bytes": 1037088,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Buf Barista/cha/Pecan Power Pie_1.png",
+   "bytes": 840320,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Buf Barista/cha/Pumpkin Spice Pump-Up.png",
+   "bytes": 762527,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "spine",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create spine --namespace foundry-staging",
+  "FOUNDRY_SEED=spine /Users/mohameddiomande/.config/foundry/bin/foundry-push spine main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging spine",
+  "registry: foundry_base=spine; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/spine/",
+ "first_merge_fits_gate": true
+}

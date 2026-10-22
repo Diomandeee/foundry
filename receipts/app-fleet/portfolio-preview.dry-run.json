@@ -1,0 +1,42 @@
+{
+ "id": "portfolio-preview",
+ "title": "portfolio-preview",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/portfolio-preview",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 12,
+ "text_bytes": 368490,
+ "offenders": [
+  {
+   "path": "assets/adaptive-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/favicon.png",
+   "bytes": 1466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/icon.png",
+   "bytes": 22380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/splash-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "portfolio-preview",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create portfolio-preview --namespace foundry-staging",
+  "FOUNDRY_SEED=portfolio-preview /Users/mohameddiomande/.config/foundry/bin/foundry-push portfolio-preview main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging portfolio-preview",
+  "registry: foundry_base=portfolio-preview; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/portfolio-preview/",
+ "first_merge_fits_gate": true
+}

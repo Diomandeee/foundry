@@ -1,0 +1,27 @@
+{
+ "id": "rune",
+ "title": "Rune",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Rune",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 23,
+ "text_bytes": 64119,
+ "offenders": [
+  {
+   "path": "Rune/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 20628,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "rune",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create rune --namespace foundry-staging",
+  "FOUNDRY_SEED=rune /Users/mohameddiomande/.config/foundry/bin/foundry-push rune main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging rune",
+  "registry: foundry_base=rune; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/rune/",
+ "first_merge_fits_gate": true
+}

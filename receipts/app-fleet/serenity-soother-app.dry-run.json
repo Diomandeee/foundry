@@ -1,0 +1,21 @@
+{
+ "id": "serenity-soother-app",
+ "title": "Serenity-Soother-App",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Serenity-Soother-App",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 310,
+ "text_bytes": 3928056,
+ "offenders": [],
+ "base": "serenity-soother-app",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create serenity-soother-app --namespace foundry-staging",
+  "FOUNDRY_SEED=serenity-soother-app /Users/mohameddiomande/.config/foundry/bin/foundry-push serenity-soother-app main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging serenity-soother-app",
+  "registry: foundry_base=serenity-soother-app; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,762 @@
+{
+ "id": "agent-orchestrator",
+ "title": "agent-orchestrator",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/agent-orchestrator",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2731,
+ "text_bytes": 25902088,
+ "offenders": [
+  {
+   "path": "assets/ao-dashboard-preview.png",
+   "bytes": 213677,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/first.png",
+   "bytes": 804324,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/image.png",
+   "bytes": 147317,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/second.png",
+   "bytes": 502751,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/third.png",
+   "bytes": 187409,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/tweet1.png",
+   "bytes": 463405,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/tweet2.png",
+   "bytes": 398251,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/tweet3.png",
+   "bytes": 267285,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/agents/autohand-stacked-dark.png",
+   "bytes": 28531,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/agents/autohand-stacked-light.png",
+   "bytes": 28533,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/browser-preview.png",
+   "bytes": 105515,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/browser.png",
+   "bytes": 740646,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/create-task.png",
+   "bytes": 1243960,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/dashboard.png",
+   "bytes": 103299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/hero.png",
+   "bytes": 549617,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/new-task.png",
+   "bytes": 635973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/orchestrator.png",
+   "bytes": 642573,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/review.png",
+   "bytes": 747945,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/reviews-tab.png",
+   "bytes": 109088,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/session-terminal.png",
+   "bytes": 79345,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/readme/tui.png",
+   "bytes": 640614,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/delegation-demo/delegation-demo.gif",
+   "bytes": 123063,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/delegation-demo/delegation-demo.mp4",
+   "bytes": 152541,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/delegation-demo/orchestrator.jpg",
+   "bytes": 97457,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/delegation-demo/worker.jpg",
+   "bytes": 88835,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/cta-after.jpg",
+   "bytes": 88927,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/features-after.jpg",
+   "bytes": 111848,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/hero-after.jpg",
+   "bytes": 163751,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/hero-before.jpg",
+   "bytes": 179192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/hero-mobile-after.jpg",
+   "bytes": 46772,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/hero-mobile-before.jpg",
+   "bytes": 44649,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/install-after.jpg",
+   "bytes": 117171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/social-after.jpg",
+   "bytes": 119983,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/social-before.jpg",
+   "bytes": 133595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/landing-refresh/video-after.jpg",
+   "bytes": 146548,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-3730/chat-font-scaling-evidence.png",
+   "bytes": 251606,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-3953/a-before-original-stale-idle.png",
+   "bytes": 102584,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-3953/a-before-unverified-quiescence.png",
+   "bytes": 131933,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-3953/b-after-original-stale-idle.png",
+   "bytes": 154738,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-3953/b-after-unverified-quiescence.png",
+   "bytes": 133832,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-4104/git-url-onboarding-control-alignment.png",
+   "bytes": 220325,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-4533/after-hover.png",
+   "bytes": 326453,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-4533/after-idle.png",
+   "bytes": 325527,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-4533/after-inline-edit.png",
+   "bytes": 146881,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/pr-4533/before-spacing-feedback.png",
+   "bytes": 157954,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/toc-scroll-issue/toc-issue-1.png",
+   "bytes": 167931,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/toc-scroll-issue/toc-issue-2.png",
+   "bytes": 215687,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/toc-scroll-issue/toc-issue-3.png",
+   "bytes": 192666,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/screenshots/toc-scroll-issue/toc-issue-4.png",
+   "bytes": 14650,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/assets/icon.icns",
+   "bytes": 161937,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/assets/icon.png",
+   "bytes": 51274,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/assets/trayIconTemplate.png",
+   "bytes": 560,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/assets/trayIconTemplate@2x.png",
+   "bytes": 818,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/agy.png",
+   "bytes": 25278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/aider.png",
+   "bytes": 93930,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/continue.png",
+   "bytes": 813,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/crush.png",
+   "bytes": 1294,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/devin.png",
+   "bytes": 582,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/droid.png",
+   "bytes": 926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/grok.png",
+   "bytes": 362,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/kilocode.png",
+   "bytes": 1313,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/kimi.png",
+   "bytes": 1664,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/kiro.png",
+   "bytes": 652,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/muse.png",
+   "bytes": 20037,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/pi.png",
+   "bytes": 785,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/qwen.png",
+   "bytes": 407,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/agents/vibe.png",
+   "bytes": 377,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/coverage-aider.png",
+   "bytes": 93930,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/app-icons/terminal.png",
+   "bytes": 57276,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/assets/emails/logo.png",
+   "bytes": 11099,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/design-partners/hero-car-engine-olive.png",
+   "bytes": 1508940,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/design-partners/roadmap-engine-room-olive.png",
+   "bytes": 1849890,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/design-partners/roadmap-fleet-olive.png",
+   "bytes": 1386448,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/design-partners/roadmap-mission-control-olive.png",
+   "bytes": 1765067,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/design-partners/roadmap-roi-olive.png",
+   "bytes": 1790027,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/design-partners/shared-workspace-olive.png",
+   "bytes": 1532777,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/docs/logos/aider.png",
+   "bytes": 93930,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/feature.png",
+   "bytes": 9187951,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/feature2.png",
+   "bytes": 10306287,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/feature3.png",
+   "bytes": 8321055,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/feature4.png",
+   "bytes": 8062886,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/hero-background.jpeg",
+   "bytes": 706131,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/mux-video-preview.jpg",
+   "bytes": 141677,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/og-image.png",
+   "bytes": 170232,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/design-partners/hero-car-engine-olive.webp",
+   "bytes": 79922,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/design-partners/roadmap-engine-room-olive.webp",
+   "bytes": 61938,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/design-partners/roadmap-fleet-olive.webp",
+   "bytes": 60602,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/design-partners/roadmap-mission-control-olive.webp",
+   "bytes": 59298,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/design-partners/roadmap-roi-olive.webp",
+   "bytes": 65780,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/design-partners/shared-workspace-olive.webp",
+   "bytes": 76392,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/feature.webp",
+   "bytes": 52438,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/feature2.webp",
+   "bytes": 62420,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/feature3.webp",
+   "bytes": 143680,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/feature4.webp",
+   "bytes": 117512,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/optimized/hero-background.webp",
+   "bytes": 221118,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/testimonials/aditya-purohit.webp",
+   "bytes": 5004,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/testimonials/akash-parashar.webp",
+   "bytes": 4196,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/landing/public/testimonials/harshit-singh-bhandari.webp",
+   "bytes": 4022,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/agy.png",
+   "bytes": 25278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/aider.png",
+   "bytes": 93930,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/continue.png",
+   "bytes": 813,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/crush.png",
+   "bytes": 1294,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/devin.png",
+   "bytes": 582,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/droid.png",
+   "bytes": 926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/grok.png",
+   "bytes": 362,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/kimi.png",
+   "bytes": 1664,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/kiro.png",
+   "bytes": 652,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/muse.png",
+   "bytes": 20037,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/omp.png",
+   "bytes": 50490,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/pi.png",
+   "bytes": 785,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/prime-agent.png",
+   "bytes": 13648,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/qwen.png",
+   "bytes": 407,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/agents/vibe.png",
+   "bytes": 377,
+   "why": "binary-ext"
+  },
+  {
+   "path": "frontend/src/renderer/assets/ao-logo.png",
+   "bytes": 56220,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/AO.icon/Assets/creature.png",
+   "bytes": 38690,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/AO.icon/Assets/tip-glow.png",
+   "bytes": 10574,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/AO.icon/Assets/wand.png",
+   "bytes": 23063,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/agy.png",
+   "bytes": 25278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/aider.png",
+   "bytes": 17341,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/amp.png",
+   "bytes": 2742,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/auggie.png",
+   "bytes": 386,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/autohand.png",
+   "bytes": 3179,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/claude-code.png",
+   "bytes": 680,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/cline.png",
+   "bytes": 2448,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/codex.png",
+   "bytes": 4588,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/continue.png",
+   "bytes": 2640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/copilot.png",
+   "bytes": 1208,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/crush.png",
+   "bytes": 6239,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/cursor.png",
+   "bytes": 1978,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/devin.png",
+   "bytes": 1283,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/droid.png",
+   "bytes": 1549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/goose.png",
+   "bytes": 551,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/grok.png",
+   "bytes": 583,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/kilocode.png",
+   "bytes": 1271,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/kimchi.png",
+   "bytes": 4817,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/kimi.png",
+   "bytes": 1662,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/kiro.png",
+   "bytes": 1213,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/muse.png",
+   "bytes": 20037,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/opencode.png",
+   "bytes": 592,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/pi.png",
+   "bytes": 1989,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/qwen.png",
+   "bytes": 396,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/agents/vibe.png",
+   "bytes": 625,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/android-icon-foreground.png",
+   "bytes": 40216,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/android-icon-monochrome.png",
+   "bytes": 16368,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/favicon.png",
+   "bytes": 11939,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/icon.png",
+   "bytes": 56036,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/mascot.png",
+   "bytes": 13041,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packages/mobile/assets/splash-icon.png",
+   "bytes": 51213,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "agent-orchestrator",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create agent-orchestrator --namespace foundry-staging",
+  "FOUNDRY_SEED=agent-orchestrator /Users/mohameddiomande/.config/foundry/bin/foundry-push agent-orchestrator main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging agent-orchestrator",
+  "registry: foundry_base=agent-orchestrator; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/agent-orchestrator/",
+ "first_merge_fits_gate": false
+}

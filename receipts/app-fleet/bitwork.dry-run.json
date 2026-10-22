@@ -1,0 +1,21 @@
+{
+ "id": "bitwork",
+ "title": "bitwork",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/bitwork",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 68,
+ "text_bytes": 395294,
+ "offenders": [],
+ "base": "bitwork",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create bitwork --namespace foundry-staging",
+  "FOUNDRY_SEED=bitwork /Users/mohameddiomande/.config/foundry/bin/foundry-push bitwork main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging bitwork",
+  "registry: foundry_base=bitwork; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "firstdate-mega",
+ "title": "firstdate-mega",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/firstdate-mega",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 40,
+ "text_bytes": 200870,
+ "offenders": [],
+ "base": "firstdate-mega",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create firstdate-mega --namespace foundry-staging",
+  "FOUNDRY_SEED=firstdate-mega /Users/mohameddiomande/.config/foundry/bin/foundry-push firstdate-mega main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging firstdate-mega",
+  "registry: foundry_base=firstdate-mega; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "epoch-protocol",
+ "title": "epoch-protocol",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/epoch-protocol",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 104,
+ "text_bytes": 1196171,
+ "offenders": [],
+ "base": "epoch-protocol",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create epoch-protocol --namespace foundry-staging",
+  "FOUNDRY_SEED=epoch-protocol /Users/mohameddiomande/.config/foundry/bin/foundry-push epoch-protocol main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging epoch-protocol",
+  "registry: foundry_base=epoch-protocol; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

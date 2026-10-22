@@ -1,0 +1,572 @@
+{
+ "id": "portfolio",
+ "title": "portfolio",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/portfolio",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 199,
+ "text_bytes": 643897,
+ "offenders": [
+  {
+   "path": "app/avatar.jpg",
+   "bytes": 930072,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/opengraph-image.jpg",
+   "bytes": 91243,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/placeholder.jpg",
+   "bytes": 4670,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/kaisei-tokumin-bold.ttf",
+   "bytes": 93608,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/backend/neon.png",
+   "bytes": 247093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/backend/og.png",
+   "bytes": 79422,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/career/banners.png",
+   "bytes": 499677,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/career/lamp.png",
+   "bytes": 50192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/career/react-dark.png",
+   "bytes": 35059,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/career/react-light.png",
+   "bytes": 34821,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/career/shirts.png",
+   "bytes": 703181,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/career/swing.png",
+   "bytes": 95790,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/cmf/virality.png",
+   "bytes": 187715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/content-marketing-personal-brand/final-views.png",
+   "bytes": 9864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/content-marketing-personal-brand/google.gif",
+   "bytes": 28757,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/content-marketing-personal-brand/originally-posted.png",
+   "bytes": 13099,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/content-marketing-personal-brand/reddit.png",
+   "bytes": 15276,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/content-marketing-personal-brand/spongebob.gif",
+   "bytes": 2071922,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/heroku/2008.png",
+   "bytes": 1400663,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/heroku/2011.png",
+   "bytes": 1253669,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/heroku/ide.png",
+   "bytes": 224466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/heroku/platform.png",
+   "bytes": 139838,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/heroku/trends.png",
+   "bytes": 139849,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/home/filming.jpg",
+   "bytes": 1410928,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/home/meetups.jpg",
+   "bytes": 4136952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/home/reactathon.jpg",
+   "bytes": 801992,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/home/ship.jpg",
+   "bytes": 1174775,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/home/smashing.jpg",
+   "bytes": 367650,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/home/summit.jpg",
+   "bytes": 2660802,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/home/vercel.jpg",
+   "bytes": 5406,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/animation-example.gif",
+   "bytes": 1248671,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/banner.png",
+   "bytes": 69745,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/buttons.gif",
+   "bytes": 106278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/camphor.png",
+   "bytes": 29036,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/color-palette.png",
+   "bytes": 3811,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/css-example.gif",
+   "bytes": 205960,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/spinning-animation.gif",
+   "bytes": 628054,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/typography.png",
+   "bytes": 34473,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-stripe-designs-beautiful-websites/website.png",
+   "bytes": 302058,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/how-to-print-in-react-using-iframes/print.gif",
+   "bytes": 266245,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/hypergrowth/banner.jpg",
+   "bytes": 111277,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/image-gallery-supabase-tailwind-nextjs/banner.png",
+   "bytes": 575629,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/image-gallery-supabase-tailwind-nextjs/supabase.png",
+   "bytes": 2131536,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/image-gallery-supabase-tailwind-nextjs/swag.png",
+   "bytes": 6550684,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/javascript/edge-runtime.png",
+   "bytes": 394009,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/loading-placeholder-with-sass/example.gif",
+   "bytes": 95337,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/loading-placeholder-with-sass/facebook.png",
+   "bytes": 5702,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/loading-placeholder-with-sass/final-result.gif",
+   "bytes": 73566,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/loading-placeholder-with-sass/linkedin.png",
+   "bytes": 8073,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/mysql-planetscale/checkly-firebase.png",
+   "bytes": 221273,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/mysql-planetscale/checkly.png",
+   "bytes": 84259,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/mysql-planetscale/firebase.png",
+   "bytes": 3565910,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/mysql-planetscale/redis.png",
+   "bytes": 3638213,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/nextjs-conf-2022-recap/qna.jpg",
+   "bytes": 400171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-frameworks/evolving.jpg",
+   "bytes": 86009,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-frameworks/iceberg.png",
+   "bytes": 200536,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-state-management/amazon.png",
+   "bytes": 492771,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-state-management/context.png",
+   "bytes": 102299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-state-management/figma.png",
+   "bytes": 142263,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-state-management/immer.png",
+   "bytes": 33641,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-state-management/nomad.png",
+   "bytes": 600340,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-state-management/redux.png",
+   "bytes": 95106,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/react-state-management/state-machines.gif",
+   "bytes": 548962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/real-time-post-views/blog-post-views.png",
+   "bytes": 27243,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/real-time-post-views/db-usage.png",
+   "bytes": 8790,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/real-time-post-views/firebase/step1.png",
+   "bytes": 73507,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/real-time-post-views/firebase/step2.png",
+   "bytes": 61874,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/real-time-post-views/firebase/step3.png",
+   "bytes": 47960,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/real-time-post-views/firebase/step4.png",
+   "bytes": 10268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/real-time-post-views/firebase/step5.png",
+   "bytes": 43164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/real-time-post-views/testing-database.png",
+   "bytes": 9285,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/space-invaders-with-python/space-invaders.png",
+   "bytes": 64766,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/atomize.png",
+   "bytes": 59330,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/banner.jpg",
+   "bytes": 49533,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/button.png",
+   "bytes": 512,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/buttons.png",
+   "bytes": 28682,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/component-driven-development.jpg",
+   "bytes": 61298,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/component-library.png",
+   "bytes": 54720,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/components.png",
+   "bytes": 30666,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/design-system.png",
+   "bytes": 15080,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/design-tokens.png",
+   "bytes": 52310,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/icons.png",
+   "bytes": 20804,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/monorepo.png",
+   "bytes": 10549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/storybook-docs.png",
+   "bytes": 104733,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/storybook-flow.png",
+   "bytes": 26627,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/style-guide.png",
+   "bytes": 141890,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/style-guides-component-libraries-design-systems/website.png",
+   "bytes": 5357,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/tailwind/analytics.jpg",
+   "bytes": 73419,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/teach-online/reddit.png",
+   "bytes": 15529,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/technical-recruiting-is-broken/alexa.jpg",
+   "bytes": 56642,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/technical-recruiting-is-broken/amazon.jpg",
+   "bytes": 520724,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/technical-recruiting-is-broken/derek.jpg",
+   "bytes": 75531,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/technical-recruiting-is-broken/katie.jpg",
+   "bytes": 65733,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/technical-recruiting-is-broken/linkedin-bio.jpg",
+   "bytes": 68050,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/technical-recruiting-is-broken/recruiter.jpg",
+   "bytes": 88101,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/technical-recruiting-is-broken/recruiter2.jpg",
+   "bytes": 81754,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/technical-recruiting-is-broken/recruiter3.jpg",
+   "bytes": 79108,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/aperture.png",
+   "bytes": 301315,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/banner.png",
+   "bytes": 923395,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/diffused.png",
+   "bytes": 222966,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/exposure.png",
+   "bytes": 349524,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/focal-lengths.gif",
+   "bytes": 1318094,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/lighting.png",
+   "bytes": 286727,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/motion-blur.png",
+   "bytes": 388103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/peaks.png",
+   "bytes": 120737,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/pop-filter.png",
+   "bytes": 934804,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/resolution.png",
+   "bytes": 407771,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/shutter-speed.png",
+   "bytes": 660918,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/video/studio.png",
+   "bytes": 407488,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/og-bg.png",
+   "bytes": 824732,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "portfolio",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create portfolio --namespace foundry-staging",
+  "FOUNDRY_SEED=portfolio /Users/mohameddiomande/.config/foundry/bin/foundry-push portfolio main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging portfolio",
+  "registry: foundry_base=portfolio; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/portfolio/",
+ "first_merge_fits_gate": true
+}

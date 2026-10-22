@@ -1,0 +1,37 @@
+{
+ "id": "chain_memory",
+ "title": "chain_memory",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/chain_memory",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 11,
+ "text_bytes": 46466,
+ "offenders": [
+  {
+   "path": "chain_memory/data/CTDAbook.pdf",
+   "bytes": 19936505,
+   "why": "binary-ext"
+  },
+  {
+   "path": "chain_memory/data/coordinates_tree.npy",
+   "bytes": 11111,
+   "why": "binary-ext"
+  },
+  {
+   "path": "chain_memory/data/example.csv",
+   "bytes": 29234038,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "chain_memory",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create chain_memory --namespace foundry-staging",
+  "FOUNDRY_SEED=chain_memory /Users/mohameddiomande/.config/foundry/bin/foundry-push chain_memory main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging chain_memory",
+  "registry: foundry_base=chain_memory; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/chain_memory/",
+ "first_merge_fits_gate": true
+}

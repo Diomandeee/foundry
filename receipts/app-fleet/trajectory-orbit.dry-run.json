@@ -1,0 +1,107 @@
+{
+ "id": "trajectory-orbit",
+ "title": "trajectory-orbit",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/trajectory-orbit",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 188,
+ "text_bytes": 2286817,
+ "offenders": [
+  {
+   "path": "orbit-desktop/src-tauri/binaries/orbit-server-aarch64-apple-darwin",
+   "bytes": 7241392,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/128x128.png",
+   "bytes": 299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/128x128@2x.png",
+   "bytes": 855,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/32x32.png",
+   "bytes": 104,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square107x107Logo.png",
+   "bytes": 239,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square142x142Logo.png",
+   "bytes": 331,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square150x150Logo.png",
+   "bytes": 349,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square284x284Logo.png",
+   "bytes": 975,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square30x30Logo.png",
+   "bytes": 103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square310x310Logo.png",
+   "bytes": 1095,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square44x44Logo.png",
+   "bytes": 121,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square71x71Logo.png",
+   "bytes": 171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/Square89x89Logo.png",
+   "bytes": 199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/StoreLogo.png",
+   "bytes": 130,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/app-icon.png",
+   "bytes": 5705,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/icon.icns",
+   "bytes": 14605,
+   "why": "binary-ext"
+  },
+  {
+   "path": "orbit-desktop/src-tauri/icons/icon.png",
+   "bytes": 2199,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "trajectory-orbit",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create trajectory-orbit --namespace foundry-staging",
+  "FOUNDRY_SEED=trajectory-orbit /Users/mohameddiomande/.config/foundry/bin/foundry-push trajectory-orbit main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging trajectory-orbit",
+  "registry: foundry_base=trajectory-orbit; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/trajectory-orbit/",
+ "first_merge_fits_gate": true
+}

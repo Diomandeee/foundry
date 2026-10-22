@@ -1,0 +1,177 @@
+{
+ "id": "photocraft",
+ "title": "photocraft",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/photocraft",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1658,
+ "text_bytes": 28895695,
+ "offenders": [
+  {
+   "path": "assets/app-icon/hicolor/128x128/apps/ai.storyteller.photocraft.png",
+   "bytes": 19873,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/16x16/apps/ai.storyteller.photocraft.png",
+   "bytes": 784,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/24x24/apps/ai.storyteller.photocraft.png",
+   "bytes": 1404,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/256x256/apps/ai.storyteller.photocraft.png",
+   "bytes": 61803,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/32x32/apps/ai.storyteller.photocraft.png",
+   "bytes": 2179,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/48x48/apps/ai.storyteller.photocraft.png",
+   "bytes": 3999,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/512x512/apps/ai.storyteller.photocraft.png",
+   "bytes": 171997,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/64x64/apps/ai.storyteller.photocraft.png",
+   "bytes": 6313,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/photocraft-1024.png",
+   "bytes": 305621,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/photocraft.icns",
+   "bytes": 737151,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/dict/en_US-scowl-50.txt.gz",
+   "bytes": 219066,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Medium.ttf",
+   "bytes": 417300,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Regular.ttf",
+   "bytes": 411640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-SemiBold.ttf",
+   "bytes": 419744,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/JetBrainsMono-Regular.ttf",
+   "bytes": 270224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/plugins/tests/fixtures/invert.wasm",
+   "bytes": 833,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo-white.png",
+   "bytes": 32161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo.png",
+   "bytes": 31302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark-black.png",
+   "bytes": 26793,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark.png",
+   "bytes": 24715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-adjustments.jpg",
+   "bytes": 936575,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-demo.jpg",
+   "bytes": 1078162,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-export-light.jpg",
+   "bytes": 906306,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-filters.jpg",
+   "bytes": 1136296,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-layer-styles.jpg",
+   "bytes": 359330,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-masks.jpg",
+   "bytes": 604485,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-transform.jpg",
+   "bytes": 680075,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-type.jpg",
+   "bytes": 784596,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/photocraft-vector.jpg",
+   "bytes": 939821,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/preferences-apply-after.png",
+   "bytes": 148490,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/preferences-apply-before.png",
+   "bytes": 92577,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "photocraft",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create photocraft --namespace foundry-staging",
+  "FOUNDRY_SEED=photocraft /Users/mohameddiomande/.config/foundry/bin/foundry-push photocraft main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging photocraft",
+  "registry: foundry_base=photocraft; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/photocraft/",
+ "first_merge_fits_gate": false
+}

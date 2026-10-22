@@ -1,0 +1,27 @@
+{
+ "id": "ember",
+ "title": "Ember",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Ember",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 27,
+ "text_bytes": 139465,
+ "offenders": [
+  {
+   "path": "Ember/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 799989,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "ember",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ember --namespace foundry-staging",
+  "FOUNDRY_SEED=ember /Users/mohameddiomande/.config/foundry/bin/foundry-push ember main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ember",
+  "registry: foundry_base=ember; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/ember/",
+ "first_merge_fits_gate": true
+}

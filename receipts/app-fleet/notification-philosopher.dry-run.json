@@ -1,0 +1,21 @@
+{
+ "id": "notification-philosopher",
+ "title": "notification-philosopher",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/notification-philosopher",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 8,
+ "text_bytes": 41399,
+ "offenders": [],
+ "base": "notification-philosopher",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create notification-philosopher --namespace foundry-staging",
+  "FOUNDRY_SEED=notification-philosopher /Users/mohameddiomande/.config/foundry/bin/foundry-push notification-philosopher main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging notification-philosopher",
+  "registry: foundry_base=notification-philosopher; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

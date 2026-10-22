@@ -1,0 +1,47 @@
+{
+ "id": "securiclaw-codex",
+ "title": "SecuriClaw-Codex",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/SecuriClaw-Codex",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 399,
+ "text_bytes": 55362348,
+ "offenders": [
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/AVFoundation-CZANCF8I01AP4JHTQ16KYM52N.pcm",
+   "bytes": 6024784,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/Accelerate-7WGAM1VWO1P4DFU1N1KN90EDI.pcm",
+   "bytes": 12341344,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/Foundation-6VPSP4E38JXT2YPQC2AUFMT0F.pcm",
+   "bytes": 5503680,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/UIKit-9QRDTMR0HZGLC8B4Y0SI33PFA.pcm",
+   "bytes": 10390224,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/XCBuildData/build.db",
+   "bytes": 589824,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "securiclaw-codex",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create securiclaw-codex --namespace foundry-staging",
+  "FOUNDRY_SEED=securiclaw-codex /Users/mohameddiomande/.config/foundry/bin/foundry-push securiclaw-codex main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging securiclaw-codex",
+  "registry: foundry_base=securiclaw-codex; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/securiclaw-codex/",
+ "first_merge_fits_gate": false
+}

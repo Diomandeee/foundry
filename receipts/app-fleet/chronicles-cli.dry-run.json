@@ -1,0 +1,21 @@
+{
+ "id": "chronicles-cli",
+ "title": "chronicles-cli",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/chronicles-cli",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 1850,
+ "offenders": [],
+ "base": "chronicles-cli",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create chronicles-cli --namespace foundry-staging",
+  "FOUNDRY_SEED=chronicles-cli /Users/mohameddiomande/.config/foundry/bin/foundry-push chronicles-cli main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging chronicles-cli",
+  "registry: foundry_base=chronicles-cli; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

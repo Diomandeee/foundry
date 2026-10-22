@@ -1,0 +1,27 @@
+{
+ "id": "parameter-golf",
+ "title": "parameter-golf",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/parameter-golf",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 101,
+ "text_bytes": 3125277,
+ "offenders": [
+  {
+   "path": "records/track_10min_16mb/2026-03-17_LoRA_TTT/ablations.png",
+   "bytes": 281924,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "parameter-golf",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create parameter-golf --namespace foundry-staging",
+  "FOUNDRY_SEED=parameter-golf /Users/mohameddiomande/.config/foundry/bin/foundry-push parameter-golf main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging parameter-golf",
+  "registry: foundry_base=parameter-golf; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/parameter-golf/",
+ "first_merge_fits_gate": true
+}

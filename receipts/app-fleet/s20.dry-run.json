@@ -1,0 +1,21 @@
+{
+ "id": "s20",
+ "title": "S20",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/S20",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 99,
+ "text_bytes": 953675,
+ "offenders": [],
+ "base": "s20",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create s20 --namespace foundry-staging",
+  "FOUNDRY_SEED=s20 /Users/mohameddiomande/.config/foundry/bin/foundry-push s20 main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging s20",
+  "registry: foundry_base=s20; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

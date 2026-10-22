@@ -1,0 +1,18 @@
+{
+ "approved_by": "Mohamed 2026-10-22: re-sent the three decisions; lane defaults: foundry-staging, scaffold portfolio first",
+ "started": "20261022T172352Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "ambientlisten",
+   "base": "ambientlisten",
+   "origin_commit": "34afee0e54801e68ccc592b76e9d5ebc64c26ad0",
+   "seed_commit": "d1c47f0fc8226f30c3a7d7682a5b2a345ec11698",
+   "files": 29,
+   "stripped": 1,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"5df8ccc4ad27437db9931cfda1174b9b\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

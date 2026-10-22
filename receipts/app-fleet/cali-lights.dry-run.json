@@ -1,0 +1,107 @@
+{
+ "id": "cali-lights",
+ "title": "cali-lights",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/cali-lights",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 249,
+ "text_bytes": 1710667,
+ "offenders": [
+  {
+   "path": "apps/expo/assets/adaptive-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/expo/assets/favicon.png",
+   "bytes": 1466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/expo/assets/icon.png",
+   "bytes": 22380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/expo/assets/splash-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/IMG_1980.JPG",
+   "bytes": 674068,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_0004.JPG",
+   "bytes": 677767,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_0028.JPG",
+   "bytes": 900524,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_0036 2.JPG",
+   "bytes": 888445,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_0036.JPG",
+   "bytes": 588454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_1980 2.jpg",
+   "bytes": 505702,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_2886.HEIC",
+   "bytes": 1591656,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_3562.JPG",
+   "bytes": 21214189,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_3563.JPG",
+   "bytes": 20108760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_3564.JPG",
+   "bytes": 19327730,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_3565.JPG",
+   "bytes": 17674277,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_6342.HEIC",
+   "bytes": 1320144,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/media/sfx/Sofia IMG/IMG_6343.HEIC",
+   "bytes": 1450270,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "cali-lights",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cali-lights --namespace foundry-staging",
+  "FOUNDRY_SEED=cali-lights /Users/mohameddiomande/.config/foundry/bin/foundry-push cali-lights main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cali-lights",
+  "registry: foundry_base=cali-lights; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cali-lights/",
+ "first_merge_fits_gate": true
+}

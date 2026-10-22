@@ -1,0 +1,21 @@
+{
+ "id": "pane-awareness",
+ "title": "pane-awareness",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/pane-awareness",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 110,
+ "text_bytes": 508570,
+ "offenders": [],
+ "base": "pane-awareness",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create pane-awareness --namespace foundry-staging",
+  "FOUNDRY_SEED=pane-awareness /Users/mohameddiomande/.config/foundry/bin/foundry-push pane-awareness main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging pane-awareness",
+  "registry: foundry_base=pane-awareness; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

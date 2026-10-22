@@ -1,0 +1,327 @@
+{
+ "id": "meshcontrol",
+ "title": "MeshControl",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/MeshControl",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 13293,
+ "text_bytes": 508444172,
+ "offenders": [
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+   "bytes": 114543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-120.png",
+   "bytes": 7861,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-152.png",
+   "bytes": 10588,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-167.png",
+   "bytes": 11731,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-180.png",
+   "bytes": 13040,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-20.png",
+   "bytes": 827,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-29.png",
+   "bytes": 1345,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-40.png",
+   "bytes": 2029,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-58.png",
+   "bytes": 3285,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-60.png",
+   "bytes": 3390,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-76.png",
+   "bytes": 4602,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-80.png",
+   "bytes": 4830,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-87.png",
+   "bytes": 5415,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 114543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Intermediates.noindex/ExplicitPrecompiledModules/Foundation-5BZVOW16P10XV7HHG2JZX4B4H.pcm",
+   "bytes": 4556920,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/Build/Intermediates.noindex/MeshControl.build/Debug-iphoneos/MeshControl.build/Objects-normal/arm64/QuadrantTerminalView.o",
+   "bytes": 6456680,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/Build/Intermediates.noindex/MeshControl.build/Debug-iphoneos/MeshControl.build/assetcatalog_output/thinned/AppIcon60x60@2x.png",
+   "bytes": 7461,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Intermediates.noindex/MeshControl.build/Debug-iphoneos/MeshControl.build/assetcatalog_output/thinned/AppIcon76x76@2x~ipad.png",
+   "bytes": 9659,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Intermediates.noindex/MeshControl.build/Debug-iphoneos/MeshControl.build/assetcatalog_output/thinned/Assets.car",
+   "bytes": 415176,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/CCryptoBoringSSL-AIENEJS4OOWTG359BIMDNGIQ9.pcm",
+   "bytes": 4699832,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/Build/Intermediates.noindex/XCBuildData/4f0b953a2ff82c3f9f80be933fdbf19c.xcbuilddata/manifest.json",
+   "bytes": 7827949,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/Build/Intermediates.noindex/XCBuildData/build.db",
+   "bytes": 10633216,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/MeshControl.app/AppIcon60x60@2x.png",
+   "bytes": 7461,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/MeshControl.app/AppIcon76x76@2x~ipad.png",
+   "bytes": 9659,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/MeshControl.app/Assets.car",
+   "bytes": 415176,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/MeshControl.app/Frameworks/libswiftCompatibilitySpan.dylib",
+   "bytes": 172064,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/MeshControl.app/__preview.dylib",
+   "bytes": 35024,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/NIOCore.o",
+   "bytes": 5671542,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/NIOPosix.o",
+   "bytes": 4331896,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/NIOSSH.o",
+   "bytes": 5782437,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/Build/Products/Debug-iphoneos/SwiftTerm.o",
+   "bytes": 6463240,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/MeshControl.ipa",
+   "bytes": 11739836,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/MeshControl.xcarchive/Products/Applications/MeshControl.app/AppIcon60x60@2x.png",
+   "bytes": 7461,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/MeshControl.xcarchive/Products/Applications/MeshControl.app/AppIcon76x76@2x~ipad.png",
+   "bytes": 9659,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/MeshControl.xcarchive/Products/Applications/MeshControl.app/Assets.car",
+   "bytes": 415176,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/MeshControl.xcarchive/Products/Applications/MeshControl.app/Frameworks/libswiftCompatibilitySpan.dylib",
+   "bytes": 172064,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/MeshControl.xcarchive/Products/Applications/MeshControl.app/MeshControl",
+   "bytes": 12522000,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/MeshControl.xcarchive/SwiftSupport/iphoneos/libswiftCompatibilitySpan.dylib",
+   "bytes": 171952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/MeshControl.xcarchive/dSYMs/MeshControl.app.dSYM/Contents/Resources/Relocations/aarch64/MeshControl.yml",
+   "bytes": 8321340,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/ModuleCache.noindex/AVFoundation-548HFGJI9FVSLB7ZTR6W3RT6P.pcm",
+   "bytes": 6024288,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/ModuleCache.noindex/Foundation-8H30AUE4SVSI4U3Q75ZVNQ2L7.pcm",
+   "bytes": 5503184,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/ModuleCache.noindex/Foundation-8PF6OJ8A343FSZLQ7M1SIMMK4.pcm",
+   "bytes": 5503136,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/ModuleCache.noindex/Foundation-D5WVILWR4IMMWBGINJWN2HIS2.pcm",
+   "bytes": 5503192,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/ModuleCache.noindex/UIKit-6UXBQNO1UN60O5OXDBB2STFFS.pcm",
+   "bytes": 10389912,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/ModuleCache.noindex/UIKit-D0V1G4C57TP9RRH2OCSWR6OMO.pcm",
+   "bytes": 10389872,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SourcePackages/repositories/BigInt-7b87d7d1/objects/pack/pack-42f0bfafc4f701a2723945dc4bb97c6fca35c981.pack",
+   "bytes": 4330301,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SourcePackages/repositories/SwiftTerm-74b92343/objects/pack/pack-979e2c3381283a0dc0f259063e3803c336085871.pack",
+   "bytes": 5451362,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SourcePackages/repositories/swift-argument-parser-54a11a8d/objects/pack/pack-d3e2fdaea1b9d4a92697c80477d3873d793077e4.pack",
+   "bytes": 5604880,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SourcePackages/repositories/swift-collections-9a58d5cf/objects/pack/pack-57b56fde0522626fa9e530d9e852b304994aba19.pack",
+   "bytes": 19908494,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SourcePackages/repositories/swift-crypto-7e0614ea/objects/pack/pack-0475d2981ef10cfaa908e72dd9893a9857aa1d41.pack",
+   "bytes": 23478959,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/dev/MeshControl.ipa",
+   "bytes": 5464404,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/dev2/MeshControl.ipa",
+   "bytes": 5647318,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/dist/MeshControl.ipa",
+   "bytes": 11741093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "output/MeshControl-build12.xcarchive/Products/Applications/MeshControl.app/AppIcon60x60@2x.png",
+   "bytes": 7461,
+   "why": "binary-ext"
+  },
+  {
+   "path": "output/MeshControl-build12.xcarchive/Products/Applications/MeshControl.app/AppIcon76x76@2x~ipad.png",
+   "bytes": 9659,
+   "why": "binary-ext"
+  },
+  {
+   "path": "output/MeshControl-build12.xcarchive/Products/Applications/MeshControl.app/Assets.car",
+   "bytes": 415176,
+   "why": "binary-ext"
+  },
+  {
+   "path": "output/MeshControl-build12.xcarchive/Products/Applications/MeshControl.app/Frameworks/libswiftCompatibilitySpan.dylib",
+   "bytes": 172064,
+   "why": "binary-ext"
+  },
+  {
+   "path": "output/MeshControl-build12.xcarchive/Products/Applications/MeshControl.app/MeshControl",
+   "bytes": 13606432,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "output/MeshControl-build12.xcarchive/SwiftSupport/iphoneos/libswiftCompatibilitySpan.dylib",
+   "bytes": 171952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "output/MeshControl-build12.xcarchive/dSYMs/MeshControl.app.dSYM/Contents/Resources/Relocations/aarch64/MeshControl.yml",
+   "bytes": 9075237,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "output/export-build12/MeshControl.ipa",
+   "bytes": 13269875,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "meshcontrol",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create meshcontrol --namespace foundry-staging",
+  "FOUNDRY_SEED=meshcontrol /Users/mohameddiomande/.config/foundry/bin/foundry-push meshcontrol main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging meshcontrol",
+  "registry: foundry_base=meshcontrol; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/meshcontrol/",
+ "first_merge_fits_gate": false
+}

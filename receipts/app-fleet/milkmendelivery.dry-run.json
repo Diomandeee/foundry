@@ -1,0 +1,852 @@
+{
+ "id": "milkmendelivery",
+ "title": "milkmendelivery",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/milkmendelivery",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1188,
+ "text_bytes": 9388099,
+ "offenders": [
+  {
+   "path": "contacts.db",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "koji.db",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00000.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00001.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00002.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00003.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00004.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00005.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00006.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00007.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00008.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00009.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00010.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00011.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00012.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00013.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00014.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00015.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00016.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00017.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00018.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00019.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00020.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00021.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00022.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00023.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00024.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00025.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00026.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00027.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00028.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00029.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00030.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00031.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00032.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00033.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00034.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00035.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00036.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00037.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00038.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00039.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00040.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00041.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00042.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00043.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00044.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00045.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00046.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00047.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00048.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00049.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00050.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00051.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00052.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00053.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00054.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00055.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00056.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00057.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00058.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00059.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00060.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00061.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00062.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00063.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00064.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00065.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00066.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00067.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00068.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00069.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00070.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00071.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00072.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00073.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00074.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00075.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00076.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00077.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00078.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00079.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00080.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00081.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00082.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00083.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00084.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00085.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00086.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00087.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00088.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00089.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00090.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00091.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00092.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00093.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00094.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00095.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00096.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00097.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00098.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00099.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00100.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00101.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00102.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00103.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00104.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00105.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00106.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00107.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00108.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00109.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00110.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00111.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00112.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00113.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00114.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00115.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00116.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00117.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00118.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00119.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00120.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00121.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00122.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00123.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00124.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00125.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00126.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00127.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00128.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00129.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00130.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00131.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00132.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00133.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00134.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00135.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00136.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00137.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00138.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00139.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00140.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00141.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00142.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00143.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00144.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00145.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00146.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00147.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00148.png",
+   "bytes": 33962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/frames_2026-02-22T00-31-38/frame_00149.png",
+   "bytes": 33987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/market-sweep-demo_2026-02-22T00-34-49.mp4",
+   "bytes": 139100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/market-sweep-demo_2026-02-22T00-37-18.mp4",
+   "bytes": 1022761,
+   "why": "binary-ext"
+  },
+  {
+   "path": "recordings/market-sweep-demo_2026-02-22T00-43-09.mp4",
+   "bytes": 1017660,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/google-laindustria-test.png",
+   "bytes": 921079,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/imginn-test.png",
+   "bytes": 36744,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/laindustriamiami-feed.png",
+   "bytes": 220423,
+   "why": "binary-ext"
+  },
+  {
+   "path": "supabase-local.db",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "tmp/screenshots/11th-street-cafe.png",
+   "bytes": 3075935,
+   "why": "binary-ext"
+  },
+  {
+   "path": "tmp/screenshots/3coffee.png",
+   "bytes": 538101,
+   "why": "binary-ext"
+  },
+  {
+   "path": "tmp/screenshots/4thstreet-foodcoop.png",
+   "bytes": 1387331,
+   "why": "binary-ext"
+  },
+  {
+   "path": "tmp/screenshots/51st-bakery.png",
+   "bytes": 3525542,
+   "why": "binary-ext"
+  },
+  {
+   "path": "tmp/screenshots/67gourmet.png",
+   "bytes": 3016125,
+   "why": "binary-ext"
+  },
+  {
+   "path": "tmp/screenshots/787coffee.png",
+   "bytes": 1394108,
+   "why": "binary-ext"
+  },
+  {
+   "path": "tmp/screenshots/abbotsford.png",
+   "bytes": 3820972,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "milkmendelivery",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create milkmendelivery --namespace foundry-staging",
+  "FOUNDRY_SEED=milkmendelivery /Users/mohameddiomande/.config/foundry/bin/foundry-push milkmendelivery main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging milkmendelivery",
+  "registry: foundry_base=milkmendelivery; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/milkmendelivery/",
+ "first_merge_fits_gate": false
+}

@@ -1,0 +1,21 @@
+{
+ "id": "rag-plusplus",
+ "title": "rag-plusplus",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/rag-plusplus",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 11,
+ "text_bytes": 194687,
+ "offenders": [],
+ "base": "rag-plusplus",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create rag-plusplus --namespace foundry-staging",
+  "FOUNDRY_SEED=rag-plusplus /Users/mohameddiomande/.config/foundry/bin/foundry-push rag-plusplus main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging rag-plusplus",
+  "registry: foundry_base=rag-plusplus; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

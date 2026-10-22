@@ -1,0 +1,37 @@
+{
+ "id": "content-studio",
+ "title": "content-studio",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/content-studio",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 46,
+ "text_bytes": 264075,
+ "offenders": [
+  {
+   "path": "blog/model-benchmark-2026-02-14/assets/architecture-comparison.png",
+   "bytes": 159510,
+   "why": "binary-ext"
+  },
+  {
+   "path": "blog/model-benchmark-2026-02-14/assets/context-diagram.png",
+   "bytes": 153705,
+   "why": "binary-ext"
+  },
+  {
+   "path": "blog/model-benchmark-2026-02-14/assets/score-chart.png",
+   "bytes": 157975,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "content-studio",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create content-studio --namespace foundry-staging",
+  "FOUNDRY_SEED=content-studio /Users/mohameddiomande/.config/foundry/bin/foundry-push content-studio main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging content-studio",
+  "registry: foundry_base=content-studio; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/content-studio/",
+ "first_merge_fits_gate": true
+}

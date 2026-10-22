@@ -1,0 +1,21 @@
+{
+ "id": "rag-plusplus-core",
+ "title": "rag-plusplus-core",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/rag-plusplus-core",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 79,
+ "text_bytes": 961577,
+ "offenders": [],
+ "base": "rag-plusplus-core",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create rag-plusplus-core --namespace foundry-staging",
+  "FOUNDRY_SEED=rag-plusplus-core /Users/mohameddiomande/.config/foundry/bin/foundry-push rag-plusplus-core main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging rag-plusplus-core",
+  "registry: foundry_base=rag-plusplus-core; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

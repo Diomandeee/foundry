@@ -1,0 +1,172 @@
+{
+ "id": "nko-brain-scanner",
+ "title": "nko-brain-scanner",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/nko-brain-scanner",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 652,
+ "text_bytes": 21665537,
+ "offenders": [
+  {
+   "path": "arxiv-submission/brain_scan_delta.png",
+   "bytes": 89683,
+   "why": "binary-ext"
+  },
+  {
+   "path": "arxiv-submission/brain_scan_l2_comparison.png",
+   "bytes": 141306,
+   "why": "binary-ext"
+  },
+  {
+   "path": "blog/assets/activation_comparison.png",
+   "bytes": 530473,
+   "why": "binary-ext"
+  },
+  {
+   "path": "blog/assets/heatmap_coarse.png",
+   "bytes": 213463,
+   "why": "binary-ext"
+  },
+  {
+   "path": "data/path_encoder.npz",
+   "bytes": 1401990,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/activation_comparison.png",
+   "bytes": 530473,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/assets/heatmap_coarse.png",
+   "bytes": 213463,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/brain_scan_delta.png",
+   "bytes": 89683,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/brain_scan_l2_comparison.png",
+   "bytes": 141306,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/brain_scan_sparsity.png",
+   "bytes": 202368,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/fig1_cer_comparison.pdf",
+   "bytes": 34549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/fig1_cer_comparison.png",
+   "bytes": 94555,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/fig2_compositional_generalization.pdf",
+   "bytes": 27054,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/fig2_compositional_generalization.png",
+   "bytes": 50392,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/fig3_vocabulary_expansion.pdf",
+   "bytes": 29492,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/fig3_vocabulary_expansion.png",
+   "bytes": 60210,
+   "why": "binary-ext"
+  },
+  {
+   "path": "figures/v3_training_loss.png",
+   "bytes": 138350,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/main.pdf",
+   "bytes": 424165,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/main_v2.pdf",
+   "bytes": 254973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/nko-brain-scanner.pdf",
+   "bytes": 513366,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/nko_asr_paper_v2.pdf",
+   "bytes": 324079,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/nko_monograph.pdf",
+   "bytes": 263546,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/nko_paper_v3.pdf",
+   "bytes": 274224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/nko_theorems.pdf",
+   "bytes": 221419,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/paper1_dead_circuits.pdf",
+   "bytes": 284845,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/archive/paper2_living_speech.pdf",
+   "bytes": 305164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/current/paper2_living_speech.pdf",
+   "bytes": 311926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/current/paper4_script_advantage.pdf",
+   "bytes": 365302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "paper/current/paper_canonical_nko_agp_20cer.pdf",
+   "bytes": 584590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "transcription-app/public/fonts/NotoSansNKo-Regular.ttf",
+   "bytes": 24608,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "nko-brain-scanner",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create nko-brain-scanner --namespace foundry-staging",
+  "FOUNDRY_SEED=nko-brain-scanner /Users/mohameddiomande/.config/foundry/bin/foundry-push nko-brain-scanner main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging nko-brain-scanner",
+  "registry: foundry_base=nko-brain-scanner; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/nko-brain-scanner/",
+ "first_merge_fits_gate": false
+}

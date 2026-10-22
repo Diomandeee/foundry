@@ -1,0 +1,42 @@
+{
+ "id": "timbre",
+ "title": "Timbre",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Timbre",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 50,
+ "text_bytes": 380612,
+ "offenders": [
+  {
+   "path": "Timbre/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 491774,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/01_discover.png",
+   "bytes": 794018,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02_query_builder.png",
+   "bytes": 804334,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/03_schema_playground.png",
+   "bytes": 289911,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "timbre",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create timbre --namespace foundry-staging",
+  "FOUNDRY_SEED=timbre /Users/mohameddiomande/.config/foundry/bin/foundry-push timbre main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging timbre",
+  "registry: foundry_base=timbre; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/timbre/",
+ "first_merge_fits_gate": true
+}

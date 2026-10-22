@@ -1,0 +1,21 @@
+{
+ "id": "chain_trees",
+ "title": "chain_trees",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/chain_trees",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 106,
+ "text_bytes": 1309827,
+ "offenders": [],
+ "base": "chain_trees",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create chain_trees --namespace foundry-staging",
+  "FOUNDRY_SEED=chain_trees /Users/mohameddiomande/.config/foundry/bin/foundry-push chain_trees main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging chain_trees",
+  "registry: foundry_base=chain_trees; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

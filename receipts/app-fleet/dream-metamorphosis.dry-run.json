@@ -1,0 +1,21 @@
+{
+ "id": "dream-metamorphosis",
+ "title": "dream-metamorphosis",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/dream-metamorphosis",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 101,
+ "text_bytes": 797301,
+ "offenders": [],
+ "base": "dream-metamorphosis",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create dream-metamorphosis --namespace foundry-staging",
+  "FOUNDRY_SEED=dream-metamorphosis /Users/mohameddiomande/.config/foundry/bin/foundry-push dream-metamorphosis main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging dream-metamorphosis",
+  "registry: foundry_base=dream-metamorphosis; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

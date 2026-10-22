@@ -1,0 +1,21 @@
+{
+ "id": "obsidian-vault-writer",
+ "title": "obsidian-vault-writer",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/obsidian-vault-writer",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 15,
+ "text_bytes": 165501,
+ "offenders": [],
+ "base": "obsidian-vault-writer",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create obsidian-vault-writer --namespace foundry-staging",
+  "FOUNDRY_SEED=obsidian-vault-writer /Users/mohameddiomande/.config/foundry/bin/foundry-push obsidian-vault-writer main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging obsidian-vault-writer",
+  "registry: foundry_base=obsidian-vault-writer; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

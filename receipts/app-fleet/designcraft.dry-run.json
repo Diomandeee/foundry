@@ -1,0 +1,217 @@
+{
+ "id": "designcraft",
+ "title": "designcraft",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/designcraft",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 429,
+ "text_bytes": 8728382,
+ "offenders": [
+  {
+   "path": "assets/app-icon/designcraft-1024.png",
+   "bytes": 302401,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/designcraft-macos-512.png",
+   "bytes": 99920,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/designcraft.icns",
+   "bytes": 627186,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/128x128/apps/ai.storyteller.designcraft.png",
+   "bytes": 16195,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/16x16/apps/ai.storyteller.designcraft.png",
+   "bytes": 717,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/24x24/apps/ai.storyteller.designcraft.png",
+   "bytes": 1198,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/256x256/apps/ai.storyteller.designcraft.png",
+   "bytes": 50154,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/32x32/apps/ai.storyteller.designcraft.png",
+   "bytes": 1758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/48x48/apps/ai.storyteller.designcraft.png",
+   "bytes": 3268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/512x512/apps/ai.storyteller.designcraft.png",
+   "bytes": 128861,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/64x64/apps/ai.storyteller.designcraft.png",
+   "bytes": 5061,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Medium.ttf",
+   "bytes": 417300,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Regular.ttf",
+   "bytes": 411640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-SemiBold.ttf",
+   "bytes": 419744,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/JetBrainsMono-Regular.ttf",
+   "bytes": 270224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSans3-Bold.ttf",
+   "bytes": 428176,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSans3-It.ttf",
+   "bytes": 315812,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSans3-Regular.ttf",
+   "bytes": 431196,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSans3-Semibold.ttf",
+   "bytes": 425904,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSerif4-Bold.ttf",
+   "bytes": 271568,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSerif4-BoldIt.ttf",
+   "bytes": 191832,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSerif4-It.ttf",
+   "bytes": 187808,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSerif4-Regular.ttf",
+   "bytes": 261868,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSerif4-Semibold.ttf",
+   "bytes": 272088,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/render/tests/golden/drop-shadow-spread.png",
+   "bytes": 1461,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/render/tests/golden/drop-shadow-text.png",
+   "bytes": 10988,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/render/tests/golden/drop-shadow.png",
+   "bytes": 3156,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/render/tests/golden/feather.png",
+   "bytes": 3353,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/render/tests/golden/inner-shadow.png",
+   "bytes": 1867,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/render/tests/golden/outer-glow.png",
+   "bytes": 3367,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo-white.png",
+   "bytes": 32161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo.png",
+   "bytes": 31302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark-black.png",
+   "bytes": 26793,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark.png",
+   "bytes": 24715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/page-2.png",
+   "bytes": 209329,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/page-3.png",
+   "bytes": 320360,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/page-4.png",
+   "bytes": 87699,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/page-cover.png",
+   "bytes": 257485,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/ui-spread.png",
+   "bytes": 611373,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "designcraft",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create designcraft --namespace foundry-staging",
+  "FOUNDRY_SEED=designcraft /Users/mohameddiomande/.config/foundry/bin/foundry-push designcraft main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging designcraft",
+  "registry: foundry_base=designcraft; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/designcraft/",
+ "first_merge_fits_gate": false
+}

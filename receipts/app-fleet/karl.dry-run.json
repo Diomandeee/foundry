@@ -1,0 +1,21 @@
+{
+ "id": "karl",
+ "title": "karl",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/karl",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 106,
+ "text_bytes": 1163058,
+ "offenders": [],
+ "base": "karl",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create karl --namespace foundry-staging",
+  "FOUNDRY_SEED=karl /Users/mohameddiomande/.config/foundry/bin/foundry-push karl main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging karl",
+  "registry: foundry_base=karl; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

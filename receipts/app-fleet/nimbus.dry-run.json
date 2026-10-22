@@ -1,0 +1,27 @@
+{
+ "id": "nimbus",
+ "title": "Nimbus",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Nimbus",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 22,
+ "text_bytes": 42199,
+ "offenders": [
+  {
+   "path": "Nimbus/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 20628,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "nimbus",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create nimbus --namespace foundry-staging",
+  "FOUNDRY_SEED=nimbus /Users/mohameddiomande/.config/foundry/bin/foundry-push nimbus main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging nimbus",
+  "registry: foundry_base=nimbus; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/nimbus/",
+ "first_merge_fits_gate": true
+}

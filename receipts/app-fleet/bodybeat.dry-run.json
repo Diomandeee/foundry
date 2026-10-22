@@ -1,0 +1,92 @@
+{
+ "id": "bodybeat",
+ "title": "BodyBeat",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/BodyBeat",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 36,
+ "text_bytes": 113598,
+ "offenders": [
+  {
+   "path": "BodyBeat/Assets.xcassets/AppIcon.appiconset/AppIcon-120.png",
+   "bytes": 12484,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BodyBeat/Assets.xcassets/AppIcon.appiconset/AppIcon-152.png",
+   "bytes": 19434,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BodyBeat/Assets.xcassets/AppIcon.appiconset/AppIcon-167.png",
+   "bytes": 23214,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BodyBeat/Assets.xcassets/AppIcon.appiconset/AppIcon-180.png",
+   "bytes": 26914,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BodyBeat/Assets.xcassets/AppIcon.appiconset/AppIcon-76.png",
+   "bytes": 6013,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BodyBeat/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 583036,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/hit-mode.png",
+   "bytes": 589633,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-hit-mode.png",
+   "bytes": 671803,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-layer-mode.png",
+   "bytes": 636202,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-loop-mode.png",
+   "bytes": 634250,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-mix-mode.png",
+   "bytes": 625563,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/layer-mode.png",
+   "bytes": 542877,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/loop-mode.png",
+   "bytes": 540263,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/mix-mode.png",
+   "bytes": 530157,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "bodybeat",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create bodybeat --namespace foundry-staging",
+  "FOUNDRY_SEED=bodybeat /Users/mohameddiomande/.config/foundry/bin/foundry-push bodybeat main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging bodybeat",
+  "registry: foundry_base=bodybeat; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/bodybeat/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "meshd",
+ "title": "meshd",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/meshd",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 11,
+ "text_bytes": 73457,
+ "offenders": [],
+ "base": "meshd",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create meshd --namespace foundry-staging",
+  "FOUNDRY_SEED=meshd /Users/mohameddiomande/.config/foundry/bin/foundry-push meshd main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging meshd",
+  "registry: foundry_base=meshd; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

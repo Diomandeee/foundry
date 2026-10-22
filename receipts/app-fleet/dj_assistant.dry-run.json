@@ -1,0 +1,27 @@
+{
+ "id": "dj_assistant",
+ "title": "dj_assistant",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/dj_assistant",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 43,
+ "text_bytes": 601410,
+ "offenders": [
+  {
+   "path": "public/Cyphon - International Chromies Vol. 8 - 05 Insidious.wav",
+   "bytes": 57257286,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "dj_assistant",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create dj_assistant --namespace foundry-staging",
+  "FOUNDRY_SEED=dj_assistant /Users/mohameddiomande/.config/foundry/bin/foundry-push dj_assistant main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging dj_assistant",
+  "registry: foundry_base=dj_assistant; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/dj_assistant/",
+ "first_merge_fits_gate": true
+}

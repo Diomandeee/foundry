@@ -1,0 +1,27 @@
+{
+ "id": "dream-weaver-engine",
+ "title": "dream-weaver-engine",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/dream-weaver-engine",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 80,
+ "text_bytes": 744028,
+ "offenders": [
+  {
+   "path": "kimi_memory.db",
+   "bytes": 0,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "dream-weaver-engine",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create dream-weaver-engine --namespace foundry-staging",
+  "FOUNDRY_SEED=dream-weaver-engine /Users/mohameddiomande/.config/foundry/bin/foundry-push dream-weaver-engine main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging dream-weaver-engine",
+  "registry: foundry_base=dream-weaver-engine; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/dream-weaver-engine/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,27 @@
+{
+ "id": "kinetictheater",
+ "title": "KineticTheater",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/KineticTheater",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 37,
+ "text_bytes": 175249,
+ "offenders": [
+  {
+   "path": "KineticTheater/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 586745,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "kinetictheater",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create kinetictheater --namespace foundry-staging",
+  "FOUNDRY_SEED=kinetictheater /Users/mohameddiomande/.config/foundry/bin/foundry-push kinetictheater main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging kinetictheater",
+  "registry: foundry_base=kinetictheater; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/kinetictheater/",
+ "first_merge_fits_gate": true
+}

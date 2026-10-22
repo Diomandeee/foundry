@@ -1,0 +1,310 @@
+[
+ [
+  "AmbientListen",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Anvil",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Arbor",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Augur",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "Beacon",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Cadence",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "CardForge",
+  {
+   "project.yml": 12
+  }
+ ],
+ [
+  "Cipher",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Dictum",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "DreamScape",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "DreamStudio",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Drift",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Ember",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Envoy",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "FeedDeck",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "FleetCommand",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Flux",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Folio",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "Glyph",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "Helix",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "IdeaGarden",
+  {
+   "project.yml": 11
+  }
+ ],
+ [
+  "kinetic-theater",
+  {}
+ ],
+ [
+  "KineticTheater",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Ledger",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "Loom",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Meridian",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Morph",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Nimbus",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "OpenClawKit",
+  {
+   "Package.swift": 10
+  }
+ ],
+ [
+  "PaneViz",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Pith",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "PrintWorlds",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Prism",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "PromptExplorer",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Quill",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "ResearchBrowser",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "RouteForge",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Rune",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Steep",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "Sway",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "TeleprompterPro",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Thrum",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "Timbre",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Torrent",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "trajectory-search",
+  {}
+ ],
+ [
+  "TrajectorySearch",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "Transpose",
+  {
+   "project.yml": 4
+  }
+ ],
+ [
+  "Vesper",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "Vigil",
+  {
+   "project.yml": 3
+  }
+ ],
+ [
+  "VisionMesh",
+  {
+   "project.yml": 9
+  }
+ ],
+ [
+  "VoiceAgent",
+  {
+   "project.yml": 12
+  }
+ ],
+ [
+  "Wren",
+  {
+   "project.yml": 4
+  }
+ ]
+]

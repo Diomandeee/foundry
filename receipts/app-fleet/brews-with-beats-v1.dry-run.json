@@ -1,0 +1,437 @@
+{
+ "id": "brews-with-beats-v1",
+ "title": "brews-with-beats-v1",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/brews-with-beats-v1",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 653,
+ "text_bytes": 14951794,
+ "offenders": [
+  {
+   "path": "data/training-data-algo.jsonl",
+   "bytes": 5878641,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "enhanced-training-data-10000.jsonl",
+   "bytes": 5921005,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "enhanced-v1-training-data-20251001_011126.jsonl",
+   "bytes": 8594677,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "public/$brewswithbeats.png",
+   "bytes": 10768,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/apple-icon.png",
+   "bytes": 566397,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/icon.png",
+   "bytes": 566397,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/Coltivare-83_inzs74.jpg",
+   "bytes": 460330,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/booking.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/coffee-beans-close.jpg",
+   "bytes": 1571102,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/company/upkeep.jpg",
+   "bytes": 80050,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/concept-coffee.jpg",
+   "bytes": 816805,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/concept-main.jpg",
+   "bytes": 627436,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/concept.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events1.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events2.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events3.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events4.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events5.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events6.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery1.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery2.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery3.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery4.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery5.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery6.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/hero.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/hero-bg.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/hero-texture.jpg",
+   "bytes": 825738,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/logo-white.png",
+   "bytes": 1548886,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/logo.png",
+   "bytes": 566397,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/affogato.jpg",
+   "bytes": 2122400,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/americano.jpg",
+   "bytes": 2155762,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/baileys-coffee.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/black-eye.jpg",
+   "bytes": 2150428,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/cappuccino.jpg",
+   "bytes": 2168702,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/caramel-macchiato.jpg",
+   "bytes": 2195796,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/chai-latte.jpg",
+   "bytes": 2142898,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/cinnamon-latte.jpg",
+   "bytes": 2163048,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/coffee-old-fashioned.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/cold-brew.jpg",
+   "bytes": 1780598,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/con-panna.jpg",
+   "bytes": 2043185,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/cortado.jpg",
+   "bytes": 1937242,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/dirty-chai.jpg",
+   "bytes": 1831251,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/earl-grey-latte.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/espresso-martini.jpg",
+   "bytes": 426483,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/espresso.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/flat-white.jpg",
+   "bytes": 1637064,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/frappuccino.jpg",
+   "bytes": 2150908,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/hazelnut-latte.jpg",
+   "bytes": 2130459,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/iced-americano.jpg",
+   "bytes": 2055973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/iced-latte.jpg",
+   "bytes": 2080531,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/irish-coffee.jpg",
+   "bytes": 1235399,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/latte.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/london-fog.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/macchiato.jpg",
+   "bytes": 2026198,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/matcha-latte.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu1.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu2.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu3.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu4.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu5.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu6.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/mocha.jpg",
+   "bytes": 2099304,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/nitro-cold-brew.jpg",
+   "bytes": 2064617,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/pumpkin-spice-latte.jpg",
+   "bytes": 2176934,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/red-eye.jpg",
+   "bytes": 2235149,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/shirt.jpg",
+   "bytes": 282899,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/tote.jpeg",
+   "bytes": 40491,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/vanilla-latte.jpg",
+   "bytes": 2200396,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/white-chocolate-mocha.jpg",
+   "bytes": 2180099,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/noise.png",
+   "bytes": 2682178,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/og-image.jpg",
+   "bytes": 766460,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/placeholder.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/vinyl-record.jpg",
+   "bytes": 652747,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/vinyl-texture.png",
+   "bytes": 2648132,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/zelle.jpg",
+   "bytes": 178958,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/music/afrobeats.mp3",
+   "bytes": 8246954,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/music/converted_audio.mp3",
+   "bytes": 4014750,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/music/converted_audio_2.mp3",
+   "bytes": 2713226,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/app/fonts/GeistMonoVF.woff",
+   "bytes": 67864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/app/fonts/GeistVF.woff",
+   "bytes": 66268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "ultimate-comprehensive-training-data.jsonl",
+   "bytes": 33313754,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "ultra-comprehensive-training-data.jsonl",
+   "bytes": 8028035,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "brews-with-beats-v1",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create brews-with-beats-v1 --namespace foundry-staging",
+  "FOUNDRY_SEED=brews-with-beats-v1 /Users/mohameddiomande/.config/foundry/bin/foundry-push brews-with-beats-v1 main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging brews-with-beats-v1",
+  "registry: foundry_base=brews-with-beats-v1; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/brews-with-beats-v1/",
+ "first_merge_fits_gate": false
+}

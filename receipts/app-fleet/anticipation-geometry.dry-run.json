@@ -1,0 +1,21 @@
+{
+ "id": "anticipation-geometry",
+ "title": "anticipation-geometry",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/anticipation-geometry",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 138,
+ "text_bytes": 1477317,
+ "offenders": [],
+ "base": "anticipation-geometry",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create anticipation-geometry --namespace foundry-staging",
+  "FOUNDRY_SEED=anticipation-geometry /Users/mohameddiomande/.config/foundry/bin/foundry-push anticipation-geometry main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging anticipation-geometry",
+  "registry: foundry_base=anticipation-geometry; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

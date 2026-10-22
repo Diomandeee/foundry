@@ -1,0 +1,27 @@
+{
+ "id": "routeforge",
+ "title": "RouteForge",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/RouteForge",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 28,
+ "text_bytes": 119402,
+ "offenders": [
+  {
+   "path": "RouteForge/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 1153501,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "routeforge",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create routeforge --namespace foundry-staging",
+  "FOUNDRY_SEED=routeforge /Users/mohameddiomande/.config/foundry/bin/foundry-push routeforge main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging routeforge",
+  "registry: foundry_base=routeforge; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/routeforge/",
+ "first_merge_fits_gate": true
+}

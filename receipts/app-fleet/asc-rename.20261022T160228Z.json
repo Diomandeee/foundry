@@ -1,0 +1,172 @@
+{
+ "approved_by": "Mohamed 2026-10-22: Open claw. As you can see, we need to change all of that and remove it.",
+ "results": [
+  {
+   "asc_app_id": "6760225743",
+   "bundle_id": "Buf-Barista.BodyBeat",
+   "localization_id": "ddc060e4-b167-4e09-86f4-ebb7e7533941",
+   "locale": "en-US",
+   "old": "BodyBeat \u2014 OpenClaw",
+   "new": "BodyBeat",
+   "subtitle": "Your Body Is the Instrument",
+   "chars": 8,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"54764161-e9c8-47c0-9383-7294b405e0e2\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093535",
+   "bundle_id": "com.openclaw.anvil",
+   "localization_id": "0e0c6f5a-f1a6-4f26-b3ac-0568e7dcffd2",
+   "locale": "en-US",
+   "old": "Anvil \u2014 OpenClaw",
+   "new": "Anvil",
+   "subtitle": null,
+   "chars": 5,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"d95c17e5-50b9-4a3b-b14d-57e025911491\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093850",
+   "bundle_id": "com.openclaw.wren",
+   "localization_id": "86924132-d0ab-43c1-a71f-35fb58fd0373",
+   "locale": "en-US",
+   "old": "Wren \u2014 OpenClaw",
+   "new": "Wren",
+   "subtitle": null,
+   "chars": 4,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"bdc4ef2c-3391-49d7-857a-d1d3582305b3\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093971",
+   "bundle_id": "com.openclaw.torrent",
+   "localization_id": "2ca55b2f-3cae-475a-a777-8f9a9eda70c9",
+   "locale": "en-US",
+   "old": "Torrent \u2014 OpenClaw",
+   "new": "Torrent",
+   "subtitle": null,
+   "chars": 7,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"1b8c0e84-0cb7-4dc1-86a6-e91b62163e1d\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093806",
+   "bundle_id": "com.openclaw.rune",
+   "localization_id": "c7904514-3120-46f3-a4e7-5151605e8ce7",
+   "locale": "en-US",
+   "old": "Rune \u2014 OpenClaw",
+   "new": "Rune",
+   "subtitle": null,
+   "chars": 4,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"f6c18d28-041f-4d08-9f66-bec7dd85607f\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093803",
+   "bundle_id": "com.openclaw.quill",
+   "localization_id": "95673f14-a887-4074-803c-fcb5b3b90de1",
+   "locale": "en-US",
+   "old": "Quill \u2014 OpenClaw",
+   "new": "Quill",
+   "subtitle": null,
+   "chars": 5,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"87e870c1-347c-4676-a16f-c8a28d173449\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761094020",
+   "bundle_id": "com.openclaw.prism",
+   "localization_id": "0b22dbf6-5715-44b9-b845-8c43d624b93d",
+   "locale": "en-US",
+   "old": "Prism \u2014 OpenClaw",
+   "new": "Prism",
+   "subtitle": null,
+   "chars": 5,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"afb577c2-7b20-4bdb-b27c-865c666ef3dc\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761094018",
+   "bundle_id": "com.openclaw.nimbus",
+   "localization_id": "7d3d2ff2-19b2-4580-855e-d688d7ceac9a",
+   "locale": "en-US",
+   "old": "Nimbus \u2014 OpenClaw",
+   "new": "Nimbus",
+   "subtitle": null,
+   "chars": 6,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"727dbd22-ddd3-45ad-9047-e842cfb11267\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093937",
+   "bundle_id": "com.openclaw.helix",
+   "localization_id": "d3853db2-c699-4e09-a1ff-b9e928ff90c9",
+   "locale": "en-US",
+   "old": "Helix \u2014 OpenClaw",
+   "new": "Helix",
+   "subtitle": null,
+   "chars": 5,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"5bf4afc0-412d-4935-a27a-93b2cf27dc75\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093969",
+   "bundle_id": "com.openclaw.flux",
+   "localization_id": "af4a7862-679a-485f-b928-374644e02666",
+   "locale": "en-US",
+   "old": "Flux \u2014 OpenClaw",
+   "new": "Flux",
+   "subtitle": null,
+   "chars": 4,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"4f9071c4-bb8f-4bec-a88a-5a284f6b7266\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093799",
+   "bundle_id": "com.openclaw.cipher",
+   "localization_id": "3b7b0731-21b6-401c-9c2f-dfcf18c9080d",
+   "locale": "en-US",
+   "old": "Cipher \u2014 OpenClaw",
+   "new": "Cipher",
+   "subtitle": null,
+   "chars": 6,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"21d0d2ef-a789-47e2-be0e-cf427abd174b\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761094026",
+   "bundle_id": "com.openclaw.beaconapp",
+   "localization_id": "4dd5cc8d-e4ab-454d-8989-08fd75afe466",
+   "locale": "en-US",
+   "old": "Beacon \u2014 OpenClaw",
+   "new": "Beacon",
+   "subtitle": null,
+   "chars": 6,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"169f8166-fe21-407f-82ff-a862b15a6d33\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6761093966",
+   "bundle_id": "com.openclaw.arbor",
+   "localization_id": "c64bdfa9-8dd7-4e0e-af7a-692eb634eb91",
+   "locale": "en-US",
+   "old": "Arbor \u2014 OpenClaw",
+   "new": "Arbor",
+   "subtitle": null,
+   "chars": 5,
+   "status": 409,
+   "error": "{\n  \"errors\" : [ {\n    \"id\" : \"5501de7d-e02a-478d-86de-552d59eaf346\",\n    \"status\" : \"409\",\n    \"code\" : \"ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE.DIFFERENT_ACCOUNT\",\n    \"title\" : \"The provided entity includes an attribute with a value that has already been used on a different account.\",\n    \"detai"
+  },
+  {
+   "asc_app_id": "6760883668",
+   "bundle_id": "com.openclaw.nkoscribe",
+   "localization_id": "fb1a5c61-a0f4-4d05-9d43-499dc77a1ed1",
+   "locale": "en-US",
+   "old": "NKoScribe - OpenClaw",
+   "new": "NKoScribe",
+   "subtitle": null,
+   "chars": 9,
+   "status": 200
+  }
+ ]
+}

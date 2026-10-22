@@ -1,0 +1,21 @@
+{
+ "id": "compass",
+ "title": "compass",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/compass",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 105,
+ "text_bytes": 1078237,
+ "offenders": [],
+ "base": "compass",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create compass --namespace foundry-staging",
+  "FOUNDRY_SEED=compass /Users/mohameddiomande/.config/foundry/bin/foundry-push compass main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging compass",
+  "registry: foundry_base=compass; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

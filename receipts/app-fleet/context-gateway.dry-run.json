@@ -1,0 +1,21 @@
+{
+ "id": "context-gateway",
+ "title": "context-gateway",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/context-gateway",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 13,
+ "text_bytes": 87997,
+ "offenders": [],
+ "base": "context-gateway",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create context-gateway --namespace foundry-staging",
+  "FOUNDRY_SEED=context-gateway /Users/mohameddiomande/.config/foundry/bin/foundry-push context-gateway main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging context-gateway",
+  "registry: foundry_base=context-gateway; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

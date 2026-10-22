@@ -1,0 +1,27 @@
+{
+ "id": "dreamscape",
+ "title": "DreamScape",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/DreamScape",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 31,
+ "text_bytes": 137310,
+ "offenders": [
+  {
+   "path": "DreamScape/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 1115498,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "dreamscape",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create dreamscape --namespace foundry-staging",
+  "FOUNDRY_SEED=dreamscape /Users/mohameddiomande/.config/foundry/bin/foundry-push dreamscape main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging dreamscape",
+  "registry: foundry_base=dreamscape; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/dreamscape/",
+ "first_merge_fits_gate": true
+}

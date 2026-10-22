@@ -1,0 +1,21 @@
+{
+ "id": "agent-swarm",
+ "title": "agent-swarm",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/agent-swarm",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 58,
+ "text_bytes": 236588,
+ "offenders": [],
+ "base": "agent-swarm",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create agent-swarm --namespace foundry-staging",
+  "FOUNDRY_SEED=agent-swarm /Users/mohameddiomande/.config/foundry/bin/foundry-push agent-swarm main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging agent-swarm",
+  "registry: foundry_base=agent-swarm; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

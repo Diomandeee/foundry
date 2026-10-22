@@ -1,0 +1,27 @@
+{
+ "id": "image-gallery",
+ "title": "image-gallery",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/image-gallery",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 29,
+ "text_bytes": 70558,
+ "offenders": [
+  {
+   "path": "public/og-image.png",
+   "bytes": 487623,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "image-gallery",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create image-gallery --namespace foundry-staging",
+  "FOUNDRY_SEED=image-gallery /Users/mohameddiomande/.config/foundry/bin/foundry-push image-gallery main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging image-gallery",
+  "registry: foundry_base=image-gallery; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/image-gallery/",
+ "first_merge_fits_gate": true
+}

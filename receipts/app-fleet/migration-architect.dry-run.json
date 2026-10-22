@@ -1,0 +1,21 @@
+{
+ "id": "migration-architect",
+ "title": "migration-architect",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/migration-architect",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 71,
+ "text_bytes": 1348497,
+ "offenders": [],
+ "base": "migration-architect",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create migration-architect --namespace foundry-staging",
+  "FOUNDRY_SEED=migration-architect /Users/mohameddiomande/.config/foundry/bin/foundry-push migration-architect main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging migration-architect",
+  "registry: foundry_base=migration-architect; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

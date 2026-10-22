@@ -1,0 +1,117 @@
+{
+ "id": "stabent",
+ "title": "stabent",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/stabent",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 666,
+ "text_bytes": 4477402,
+ "offenders": [
+  {
+   "path": "public/android-chrome-192x192.png",
+   "bytes": 339093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/android-chrome-512x512.png",
+   "bytes": 339093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/apple-touch-icon.png",
+   "bytes": 339093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/share_.png",
+   "bytes": 53727,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/branding.jpeg",
+   "bytes": 321990,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/coffee-and-dance.png",
+   "bytes": 745456,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/coffeeanddance.png",
+   "bytes": 122989,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/fishfail.gif",
+   "bytes": 2090220,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/food.png",
+   "bytes": 218333,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/not_wine.png",
+   "bytes": 215543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/plaisir.png",
+   "bytes": 15065,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/sleeves.jpeg",
+   "bytes": 290387,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/stabent.jpeg",
+   "bytes": 172424,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/stabent.png",
+   "bytes": 339093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/step_1.jpeg",
+   "bytes": 92738,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/step_2.jpeg",
+   "bytes": 260241,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/step_3.jpeg",
+   "bytes": 202240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/step_4.jpeg",
+   "bytes": 164415,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/wine.png",
+   "bytes": 245891,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "stabent",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create stabent --namespace foundry-staging",
+  "FOUNDRY_SEED=stabent /Users/mohameddiomande/.config/foundry/bin/foundry-push stabent main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging stabent",
+  "registry: foundry_base=stabent; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/stabent/",
+ "first_merge_fits_gate": true
+}

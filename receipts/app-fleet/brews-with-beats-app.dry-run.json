@@ -1,0 +1,32 @@
+{
+ "id": "brews-with-beats-app",
+ "title": "brews-with-beats-app",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/brews-with-beats-app",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 41,
+ "text_bytes": 457469,
+ "offenders": [
+  {
+   "path": "assets/images/favicon.png",
+   "bytes": 1466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/images/icon.png",
+   "bytes": 22380,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "brews-with-beats-app",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create brews-with-beats-app --namespace foundry-staging",
+  "FOUNDRY_SEED=brews-with-beats-app /Users/mohameddiomande/.config/foundry/bin/foundry-push brews-with-beats-app main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging brews-with-beats-app",
+  "registry: foundry_base=brews-with-beats-app; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/brews-with-beats-app/",
+ "first_merge_fits_gate": true
+}

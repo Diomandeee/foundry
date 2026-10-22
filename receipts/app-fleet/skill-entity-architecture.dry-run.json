@@ -1,0 +1,21 @@
+{
+ "id": "skill-entity-architecture",
+ "title": "skill-entity-architecture",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/skill-entity-architecture",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 30,
+ "text_bytes": 220469,
+ "offenders": [],
+ "base": "skill-entity-architecture",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create skill-entity-architecture --namespace foundry-staging",
+  "FOUNDRY_SEED=skill-entity-architecture /Users/mohameddiomande/.config/foundry/bin/foundry-push skill-entity-architecture main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging skill-entity-architecture",
+  "registry: foundry_base=skill-entity-architecture; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

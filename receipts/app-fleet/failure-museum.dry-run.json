@@ -1,0 +1,21 @@
+{
+ "id": "failure-museum",
+ "title": "failure-museum",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/failure-museum",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 54975,
+ "offenders": [],
+ "base": "failure-museum",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create failure-museum --namespace foundry-staging",
+  "FOUNDRY_SEED=failure-museum /Users/mohameddiomande/.config/foundry/bin/foundry-push failure-museum main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging failure-museum",
+  "registry: foundry_base=failure-museum; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

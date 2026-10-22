@@ -1,0 +1,21 @@
+{
+ "id": "motionperspectives",
+ "title": "MotionPerspectives",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/MotionPerspectives",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 47,
+ "text_bytes": 671713,
+ "offenders": [],
+ "base": "motionperspectives",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create motionperspectives --namespace foundry-staging",
+  "FOUNDRY_SEED=motionperspectives /Users/mohameddiomande/.config/foundry/bin/foundry-push motionperspectives main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging motionperspectives",
+  "registry: foundry_base=motionperspectives; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

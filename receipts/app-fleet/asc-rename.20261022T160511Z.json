@@ -1,0 +1,159 @@
+{
+ "approved_by": "Mohamed 2026-10-22: Open claw. As you can see, we need to change all of that and remove it. (bare names refused 409 DUPLICATE.DIFFERENT_ACCOUNT; suffix chosen by the lane, swap on request)",
+ "results": [
+  {
+   "asc_app_id": "6760225743",
+   "bundle_id": "Buf-Barista.BodyBeat",
+   "localization_id": "ddc060e4-b167-4e09-86f4-ebb7e7533941",
+   "locale": "en-US",
+   "old": "BodyBeat \u2014 OpenClaw",
+   "new": "BodyBeat by Diomande",
+   "subtitle": "Your Body Is the Instrument",
+   "chars": 20,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093535",
+   "bundle_id": "com.openclaw.anvil",
+   "localization_id": "0e0c6f5a-f1a6-4f26-b3ac-0568e7dcffd2",
+   "locale": "en-US",
+   "old": "Anvil \u2014 OpenClaw",
+   "new": "Anvil by Diomande",
+   "subtitle": null,
+   "chars": 17,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093850",
+   "bundle_id": "com.openclaw.wren",
+   "localization_id": "86924132-d0ab-43c1-a71f-35fb58fd0373",
+   "locale": "en-US",
+   "old": "Wren \u2014 OpenClaw",
+   "new": "Wren by Diomande",
+   "subtitle": null,
+   "chars": 16,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093971",
+   "bundle_id": "com.openclaw.torrent",
+   "localization_id": "2ca55b2f-3cae-475a-a777-8f9a9eda70c9",
+   "locale": "en-US",
+   "old": "Torrent \u2014 OpenClaw",
+   "new": "Torrent by Diomande",
+   "subtitle": null,
+   "chars": 19,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093806",
+   "bundle_id": "com.openclaw.rune",
+   "localization_id": "c7904514-3120-46f3-a4e7-5151605e8ce7",
+   "locale": "en-US",
+   "old": "Rune \u2014 OpenClaw",
+   "new": "Rune by Diomande",
+   "subtitle": null,
+   "chars": 16,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093803",
+   "bundle_id": "com.openclaw.quill",
+   "localization_id": "95673f14-a887-4074-803c-fcb5b3b90de1",
+   "locale": "en-US",
+   "old": "Quill \u2014 OpenClaw",
+   "new": "Quill by Diomande",
+   "subtitle": null,
+   "chars": 17,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761094020",
+   "bundle_id": "com.openclaw.prism",
+   "localization_id": "0b22dbf6-5715-44b9-b845-8c43d624b93d",
+   "locale": "en-US",
+   "old": "Prism \u2014 OpenClaw",
+   "new": "Prism by Diomande",
+   "subtitle": null,
+   "chars": 17,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761094018",
+   "bundle_id": "com.openclaw.nimbus",
+   "localization_id": "7d3d2ff2-19b2-4580-855e-d688d7ceac9a",
+   "locale": "en-US",
+   "old": "Nimbus \u2014 OpenClaw",
+   "new": "Nimbus by Diomande",
+   "subtitle": null,
+   "chars": 18,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093937",
+   "bundle_id": "com.openclaw.helix",
+   "localization_id": "d3853db2-c699-4e09-a1ff-b9e928ff90c9",
+   "locale": "en-US",
+   "old": "Helix \u2014 OpenClaw",
+   "new": "Helix by Diomande",
+   "subtitle": null,
+   "chars": 17,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093969",
+   "bundle_id": "com.openclaw.flux",
+   "localization_id": "af4a7862-679a-485f-b928-374644e02666",
+   "locale": "en-US",
+   "old": "Flux \u2014 OpenClaw",
+   "new": "Flux by Diomande",
+   "subtitle": null,
+   "chars": 16,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093799",
+   "bundle_id": "com.openclaw.cipher",
+   "localization_id": "3b7b0731-21b6-401c-9c2f-dfcf18c9080d",
+   "locale": "en-US",
+   "old": "Cipher \u2014 OpenClaw",
+   "new": "Cipher by Diomande",
+   "subtitle": null,
+   "chars": 18,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761094026",
+   "bundle_id": "com.openclaw.beaconapp",
+   "localization_id": "4dd5cc8d-e4ab-454d-8989-08fd75afe466",
+   "locale": "en-US",
+   "old": "Beacon \u2014 OpenClaw",
+   "new": "Beacon by Diomande",
+   "subtitle": null,
+   "chars": 18,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6761093966",
+   "bundle_id": "com.openclaw.arbor",
+   "localization_id": "c64bdfa9-8dd7-4e0e-af7a-692eb634eb91",
+   "locale": "en-US",
+   "old": "Arbor \u2014 OpenClaw",
+   "new": "Arbor by Diomande",
+   "subtitle": null,
+   "chars": 17,
+   "status": 200
+  },
+  {
+   "asc_app_id": "6760883668",
+   "bundle_id": "com.openclaw.nkoscribe",
+   "localization_id": "fb1a5c61-a0f4-4d05-9d43-499dc77a1ed1",
+   "locale": "en-US",
+   "old": "NKoScribe - OpenClaw",
+   "new": "NKoScribe by Diomande",
+   "subtitle": null,
+   "chars": 21,
+   "status": 200
+  }
+ ]
+}

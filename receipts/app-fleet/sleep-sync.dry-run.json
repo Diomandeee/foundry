@@ -1,0 +1,21 @@
+{
+ "id": "sleep-sync",
+ "title": "sleep-sync",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/sleep-sync",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 17,
+ "text_bytes": 238501,
+ "offenders": [],
+ "base": "sleep-sync",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create sleep-sync --namespace foundry-staging",
+  "FOUNDRY_SEED=sleep-sync /Users/mohameddiomande/.config/foundry/bin/foundry-push sleep-sync main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging sleep-sync",
+  "registry: foundry_base=sleep-sync; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

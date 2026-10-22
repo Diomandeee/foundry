@@ -1,0 +1,21 @@
+{
+ "id": "linguistic_synthesizer",
+ "title": "linguistic_synthesizer",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/linguistic_synthesizer",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 7670,
+ "offenders": [],
+ "base": "linguistic_synthesizer",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create linguistic_synthesizer --namespace foundry-staging",
+  "FOUNDRY_SEED=linguistic_synthesizer /Users/mohameddiomande/.config/foundry/bin/foundry-push linguistic_synthesizer main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging linguistic_synthesizer",
+  "registry: foundry_base=linguistic_synthesizer; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "synergetics-studio",
+ "title": "synergetics-studio",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/synergetics-studio",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1,
+ "text_bytes": 187,
+ "offenders": [],
+ "base": "synergetics-studio",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create synergetics-studio --namespace foundry-staging",
+  "FOUNDRY_SEED=synergetics-studio /Users/mohameddiomande/.config/foundry/bin/foundry-push synergetics-studio main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging synergetics-studio",
+  "registry: foundry_base=synergetics-studio; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

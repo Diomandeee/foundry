@@ -1,0 +1,27 @@
+{
+ "id": "ideagarden",
+ "title": "IdeaGarden",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/IdeaGarden",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 60,
+ "text_bytes": 484023,
+ "offenders": [
+  {
+   "path": "IdeaGarden/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 750653,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "ideagarden",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ideagarden --namespace foundry-staging",
+  "FOUNDRY_SEED=ideagarden /Users/mohameddiomande/.config/foundry/bin/foundry-push ideagarden main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ideagarden",
+  "registry: foundry_base=ideagarden; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/ideagarden/",
+ "first_merge_fits_gate": true
+}

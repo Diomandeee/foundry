@@ -1,0 +1,32 @@
+{
+ "id": "airdeck",
+ "title": "AirDeck",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/AirDeck",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 62,
+ "text_bytes": 633854,
+ "offenders": [
+  {
+   "path": "App/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
+   "bytes": 471684,
+   "why": "binary-ext"
+  },
+  {
+   "path": "App/Assets.xcassets/logo-mark.imageset/logo-mark.png",
+   "bytes": 537009,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "airdeck",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create airdeck --namespace foundry-staging",
+  "FOUNDRY_SEED=airdeck /Users/mohameddiomande/.config/foundry/bin/foundry-push airdeck main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging airdeck",
+  "registry: foundry_base=airdeck; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/airdeck/",
+ "first_merge_fits_gate": true
+}

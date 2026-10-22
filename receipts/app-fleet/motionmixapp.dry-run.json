@@ -1,0 +1,582 @@
+{
+ "id": "motionmixapp",
+ "title": "MotionMixApp",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/MotionMixApp",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2791,
+ "text_bytes": 37776727,
+ "offenders": [
+  {
+   "path": "Frameworks/INSCameraServiceSDK.xcframework/ios-arm64-simulator/INSCameraServiceSDK.framework/INSCameraServiceSDK",
+   "bytes": 6514656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCameraServiceSDK.xcframework/ios-arm64-simulator/dSYMs/INSCameraServiceSDK.framework.dSYM/Contents/Resources/DWARF/INSCameraServiceSDK",
+   "bytes": 10041562,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCameraServiceSDK.xcframework/ios-arm64/dSYMs/INSCameraServiceSDK.framework.dSYM/Contents/Resources/DWARF/INSCameraServiceSDK",
+   "bytes": 13514947,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64-simulator/INSCameraServiceSDK.framework/INSCameraServiceSDK",
+   "bytes": 4220416,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64-simulator/dSYMs/INSCameraServiceSDK.framework.dSYM/Contents/Resources/DWARF/INSCameraServiceSDK",
+   "bytes": 6940676,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64_arm64_32_armv7k/INSCameraServiceSDK.framework/INSCameraServiceSDK",
+   "bytes": 12157976,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64_arm64_32_armv7k/dSYMs/INSCameraServiceSDK.framework.dSYM/Contents/Resources/DWARF/INSCameraServiceSDK",
+   "bytes": 19255478,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCoreMedia.xcframework/watchos-arm64_arm64_32_armv7k/INSCoreMedia.framework/INSCoreMedia",
+   "bytes": 18937136,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCoreMedia.xcframework/watchos-arm64_arm64_32_armv7k/dSYMs/INSCoreMedia.framework.dSYM/Contents/Resources/DWARF/INSCoreMedia",
+   "bytes": 15944656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCoreMedia.xcframework/watchos-arm64_x86_64-simulator/INSCoreMedia.framework/INSCoreMedia",
+   "bytes": 14578144,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/INSCoreMedia.xcframework/watchos-arm64_x86_64-simulator/dSYMs/INSCoreMedia.framework.dSYM/Contents/Resources/DWARF/INSCoreMedia",
+   "bytes": 12044257,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "Frameworks/libechelon_ios.a",
+   "bytes": 26117800,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/boom_1.wav",
+   "bytes": 70638,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/chest_flex_reference.wav",
+   "bytes": 825546,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/chest_hit.wav",
+   "bytes": 88278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_00_intro.wav",
+   "bytes": 1710454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_01_instagram.wav",
+   "bytes": 529278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_02_scrolling.wav",
+   "bytes": 541980,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_03_ck_shots.wav",
+   "bytes": 749426,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_04_times_square.wav",
+   "bytes": 552564,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_05_portrait.wav",
+   "bytes": 597016,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_06_mountain.wav",
+   "bytes": 463658,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_07_app_demo.wav",
+   "bytes": 965340,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_08_pipeline.wav",
+   "bytes": 791762,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_09_inbox.wav",
+   "bytes": 1045778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_10_ledger.wav",
+   "bytes": 986508,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_11_landing.wav",
+   "bytes": 806580,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/fd_12_outro.wav",
+   "bytes": 1151618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/hit_1.wav",
+   "bytes": 13308,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/snap_1.wav",
+   "bytes": 8898,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/vocal_clap.wav",
+   "bytes": 13308,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/vocal_hat.wav",
+   "bytes": 8898,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/vocal_kick.wav",
+   "bytes": 66228,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/vocal_stab.wav",
+   "bytes": 70638,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/voice_geometry_30s.wav",
+   "bytes": 2646078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/voice_nko_30s.wav",
+   "bytes": 2646078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Audio/VocalSFX/voice_omega_30s.wav",
+   "bytes": 2646078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/MLModels/ConditioningEncoder.mlpackage/Data/com.apple.CoreML/model.mlmodel",
+   "bytes": 3505,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/MLModels/ConditioningEncoder.mlpackage/Data/com.apple.CoreML/weights/weight.bin",
+   "bytes": 1108544,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/MLModels/FlowGenerator1Step.mlpackage/Data/com.apple.CoreML/model.mlmodel",
+   "bytes": 143682,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/MLModels/FlowGenerator1Step.mlpackage/Data/com.apple.CoreML/weights/weight.bin",
+   "bytes": 39486562,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Models/MotionToMusic.mlpackage/Data/com.apple.CoreML/model.mlmodel",
+   "bytes": 5736,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Models/MotionToMusic.mlpackage/Data/com.apple.CoreML/weights/weight.bin",
+   "bytes": 79896,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 10336,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixApp/Resources/san_weights.bin",
+   "bytes": 665764,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MotionMixWatch/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 10387,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/contact_sheets/DW2q-rrEsFO_contact_sheet.jpg",
+   "bytes": 773120,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/contact_sheets/DWUyMp-EqAP_contact_sheet.jpg",
+   "bytes": 1148182,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/contact_sheets/DWa3SqHEiC-_contact_sheet.jpg",
+   "bytes": 400650,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/contact_sheets/DYXY4pst8He_contact_sheet.jpg",
+   "bytes": 632779,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/contact_sheets/DYj57ybxLUq_contact_sheet.jpg",
+   "bytes": 377914,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/contact_sheets/DZIq3tEJxSf_contact_sheet.jpg",
+   "bytes": 301730,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/contact_sheets/DZXvnK9ixuk_contact_sheet.jpg",
+   "bytes": 246011,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DW2q-rrEsFO/01_00-04.jpg",
+   "bytes": 116065,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DW2q-rrEsFO/02_00-12.jpg",
+   "bytes": 170216,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DW2q-rrEsFO/03_00-21.jpg",
+   "bytes": 327541,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DW2q-rrEsFO/04_00-29.jpg",
+   "bytes": 274815,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DW2q-rrEsFO/05_00-38.jpg",
+   "bytes": 192313,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DW2q-rrEsFO/06_00-46.jpg",
+   "bytes": 215483,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DW2q-rrEsFO/07_00-54.jpg",
+   "bytes": 462741,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DW2q-rrEsFO/08_01-03.jpg",
+   "bytes": 314478,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWUyMp-EqAP/01_00-03.jpg",
+   "bytes": 287015,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWUyMp-EqAP/02_00-10.jpg",
+   "bytes": 259127,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWUyMp-EqAP/03_00-16.jpg",
+   "bytes": 228014,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWUyMp-EqAP/04_00-23.jpg",
+   "bytes": 248112,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWUyMp-EqAP/05_00-30.jpg",
+   "bytes": 208479,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWUyMp-EqAP/06_00-36.jpg",
+   "bytes": 253424,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWUyMp-EqAP/07_00-43.jpg",
+   "bytes": 241543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWUyMp-EqAP/08_00-50.jpg",
+   "bytes": 225190,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWa3SqHEiC-/01_00-07.jpg",
+   "bytes": 37017,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWa3SqHEiC-/02_00-21.jpg",
+   "bytes": 35035,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWa3SqHEiC-/03_00-35.jpg",
+   "bytes": 50066,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWa3SqHEiC-/04_00-49.jpg",
+   "bytes": 74802,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWa3SqHEiC-/05_01-03.jpg",
+   "bytes": 27346,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWa3SqHEiC-/06_01-17.jpg",
+   "bytes": 227920,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWa3SqHEiC-/07_01-32.jpg",
+   "bytes": 47105,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DWa3SqHEiC-/08_01-46.jpg",
+   "bytes": 32703,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYXY4pst8He/01_00-03.jpg",
+   "bytes": 121243,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYXY4pst8He/02_00-09.jpg",
+   "bytes": 254464,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYXY4pst8He/03_00-15.jpg",
+   "bytes": 373923,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYXY4pst8He/04_00-21.jpg",
+   "bytes": 320438,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYXY4pst8He/05_00-27.jpg",
+   "bytes": 386935,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYXY4pst8He/06_00-33.jpg",
+   "bytes": 381115,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYj57ybxLUq/01_00-04.jpg",
+   "bytes": 379592,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYj57ybxLUq/02_00-12.jpg",
+   "bytes": 117152,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYj57ybxLUq/03_00-20.jpg",
+   "bytes": 69724,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYj57ybxLUq/04_00-28.jpg",
+   "bytes": 47541,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYj57ybxLUq/05_00-37.jpg",
+   "bytes": 93454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYj57ybxLUq/06_00-45.jpg",
+   "bytes": 64659,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYj57ybxLUq/07_00-53.jpg",
+   "bytes": 91477,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DYj57ybxLUq/08_01-01.jpg",
+   "bytes": 47866,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZIq3tEJxSf/01_00-05.jpg",
+   "bytes": 85911,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZIq3tEJxSf/02_00-16.jpg",
+   "bytes": 87758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZIq3tEJxSf/03_00-27.jpg",
+   "bytes": 99865,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZIq3tEJxSf/04_00-39.jpg",
+   "bytes": 93405,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZIq3tEJxSf/05_00-50.jpg",
+   "bytes": 110844,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZIq3tEJxSf/06_01-01.jpg",
+   "bytes": 89983,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZIq3tEJxSf/07_01-12.jpg",
+   "bytes": 89510,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZIq3tEJxSf/08_01-23.jpg",
+   "bytes": 95038,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZXvnK9ixuk/01_00-02.jpg",
+   "bytes": 135006,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZXvnK9ixuk/02_00-07.jpg",
+   "bytes": 137696,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZXvnK9ixuk/03_00-12.jpg",
+   "bytes": 134931,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZXvnK9ixuk/04_00-17.jpg",
+   "bytes": 95167,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZXvnK9ixuk/05_00-22.jpg",
+   "bytes": 131101,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/frames/DZXvnK9ixuk/06_00-27.jpg",
+   "bytes": 107353,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/transcripts/audio/DW2q-rrEsFO.wav",
+   "bytes": 2137846,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/transcripts/audio/DWUyMp-EqAP.wav",
+   "bytes": 1718772,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/transcripts/audio/DWa3SqHEiC-.wav",
+   "bytes": 3570424,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/transcripts/audio/DYXY4pst8He.wav",
+   "bytes": 1174868,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/transcripts/audio/DYj57ybxLUq.wav",
+   "bytes": 2108124,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/transcripts/audio/DZIq3tEJxSf.wav",
+   "bytes": 2866024,
+   "why": "binary-ext"
+  },
+  {
+   "path": "analysis/aristides_lab_video_study/transcripts/audio/DZXvnK9ixuk.wav",
+   "bytes": 959386,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "motionmixapp",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create motionmixapp --namespace foundry-staging",
+  "FOUNDRY_SEED=motionmixapp /Users/mohameddiomande/.config/foundry/bin/foundry-push motionmixapp main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging motionmixapp",
+  "registry: foundry_base=motionmixapp; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/motionmixapp/",
+ "first_merge_fits_gate": false
+}

@@ -1,0 +1,21 @@
+{
+ "id": "context-handshake",
+ "title": "context-handshake",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/context-handshake",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 95,
+ "text_bytes": 1578803,
+ "offenders": [],
+ "base": "context-handshake",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create context-handshake --namespace foundry-staging",
+  "FOUNDRY_SEED=context-handshake /Users/mohameddiomande/.config/foundry/bin/foundry-push context-handshake main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging context-handshake",
+  "registry: foundry_base=context-handshake; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

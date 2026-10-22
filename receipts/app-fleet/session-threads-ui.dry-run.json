@@ -1,0 +1,21 @@
+{
+ "id": "session-threads-ui",
+ "title": "session-threads-ui",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/session-threads-ui",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 40,
+ "text_bytes": 428667,
+ "offenders": [],
+ "base": "session-threads-ui",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create session-threads-ui --namespace foundry-staging",
+  "FOUNDRY_SEED=session-threads-ui /Users/mohameddiomande/.config/foundry/bin/foundry-push session-threads-ui main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging session-threads-ui",
+  "registry: foundry_base=session-threads-ui; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

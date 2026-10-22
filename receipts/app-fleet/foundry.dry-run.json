@@ -1,0 +1,47 @@
+{
+ "id": "foundry",
+ "title": "foundry",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/foundry",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2226,
+ "text_bytes": 63766904,
+ "offenders": [
+  {
+   "path": "docs/cloud-workspaces/validation-2026-10-18/compiler-cache/1663R2CBX9G1W/AppKit-2VI8NB39I5AT6.pcm",
+   "bytes": 11053664,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "docs/cloud-workspaces/validation-2026-10-18/compiler-cache/1663R2CBX9G1W/CoreServices-39NCTJOEW7PQ2.pcm",
+   "bytes": 4512856,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "docs/cloud-workspaces/validation-2026-10-18/compiler-cache/1663R2CBX9G1W/Darwin-1FXX23EKWOBA9.pcm",
+   "bytes": 5920152,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "docs/cloud-workspaces/validation-2026-10-18/compiler-cache/1663R2CBX9G1W/Foundation-24LYWIP48SHNP.pcm",
+   "bytes": 6798736,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "docs/cloud-workspaces/validation-2026-10-18/compiler-cache/1663R2CBX9G1W/IOKit-1IAL9NTK1TABA.pcm",
+   "bytes": 4371264,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "foundry",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create foundry --namespace foundry-staging",
+  "FOUNDRY_SEED=foundry /Users/mohameddiomande/.config/foundry/bin/foundry-push foundry main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging foundry",
+  "registry: foundry_base=foundry; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/foundry/",
+ "first_merge_fits_gate": false
+}

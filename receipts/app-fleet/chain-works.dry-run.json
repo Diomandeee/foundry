@@ -1,0 +1,32 @@
+{
+ "id": "chain-works",
+ "title": "chain-works",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/chain-works",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 65,
+ "text_bytes": 356169,
+ "offenders": [
+  {
+   "path": "public/hero.png",
+   "bytes": 179615,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/logo.png",
+   "bytes": 11173,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "chain-works",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create chain-works --namespace foundry-staging",
+  "FOUNDRY_SEED=chain-works /Users/mohameddiomande/.config/foundry/bin/foundry-push chain-works main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging chain-works",
+  "registry: foundry_base=chain-works; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/chain-works/",
+ "first_merge_fits_gate": true
+}

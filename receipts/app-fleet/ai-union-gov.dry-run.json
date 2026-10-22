@@ -1,0 +1,21 @@
+{
+ "id": "ai-union-gov",
+ "title": "ai-union-gov",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/ai-union-gov",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 42152,
+ "offenders": [],
+ "base": "ai-union-gov",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ai-union-gov --namespace foundry-staging",
+  "FOUNDRY_SEED=ai-union-gov /Users/mohameddiomande/.config/foundry/bin/foundry-push ai-union-gov main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ai-union-gov",
+  "registry: foundry_base=ai-union-gov; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

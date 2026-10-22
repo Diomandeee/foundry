@@ -1,0 +1,21 @@
+{
+ "id": "motion-to-music-live",
+ "title": "motion-to-music-live",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/motion-to-music-live",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 7,
+ "text_bytes": 64353,
+ "offenders": [],
+ "base": "motion-to-music-live",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create motion-to-music-live --namespace foundry-staging",
+  "FOUNDRY_SEED=motion-to-music-live /Users/mohameddiomande/.config/foundry/bin/foundry-push motion-to-music-live main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging motion-to-music-live",
+  "registry: foundry_base=motion-to-music-live; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

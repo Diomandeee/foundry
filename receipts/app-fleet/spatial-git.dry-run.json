@@ -1,0 +1,21 @@
+{
+ "id": "spatial-git",
+ "title": "spatial-git",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/spatial-git",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 6,
+ "text_bytes": 517035,
+ "offenders": [],
+ "base": "spatial-git",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create spatial-git --namespace foundry-staging",
+  "FOUNDRY_SEED=spatial-git /Users/mohameddiomande/.config/foundry/bin/foundry-push spatial-git main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging spatial-git",
+  "registry: foundry_base=spatial-git; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

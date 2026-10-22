@@ -1,0 +1,27 @@
+{
+ "id": "dreamstudio",
+ "title": "DreamStudio",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/DreamStudio",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 35,
+ "text_bytes": 176962,
+ "offenders": [
+  {
+   "path": "DreamStudio/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 970887,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "dreamstudio",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create dreamstudio --namespace foundry-staging",
+  "FOUNDRY_SEED=dreamstudio /Users/mohameddiomande/.config/foundry/bin/foundry-push dreamstudio main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging dreamstudio",
+  "registry: foundry_base=dreamstudio; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/dreamstudio/",
+ "first_merge_fits_gate": true
+}

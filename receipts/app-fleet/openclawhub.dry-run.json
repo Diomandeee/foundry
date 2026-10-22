@@ -1,0 +1,27 @@
+{
+ "id": "openclawhub",
+ "title": "OpenClawHub",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/OpenClawHub",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 143,
+ "text_bytes": 1284446,
+ "offenders": [
+  {
+   "path": "OpenClawHub/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 714007,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "openclawhub",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create openclawhub --namespace foundry-staging",
+  "FOUNDRY_SEED=openclawhub /Users/mohameddiomande/.config/foundry/bin/foundry-push openclawhub main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging openclawhub",
+  "registry: foundry_base=openclawhub; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/openclawhub/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "creator-shield",
+ "title": "creator-shield",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/creator-shield",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 57,
+ "text_bytes": 273920,
+ "offenders": [],
+ "base": "creator-shield",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create creator-shield --namespace foundry-staging",
+  "FOUNDRY_SEED=creator-shield /Users/mohameddiomande/.config/foundry/bin/foundry-push creator-shield main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging creator-shield",
+  "registry: foundry_base=creator-shield; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

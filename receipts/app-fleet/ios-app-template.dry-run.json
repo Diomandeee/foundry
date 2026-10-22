@@ -1,0 +1,21 @@
+{
+ "id": "ios-app-template",
+ "title": "ios-app-template",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/ios-app-template",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 4,
+ "text_bytes": 147078,
+ "offenders": [],
+ "base": "ios-app-template",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ios-app-template --namespace foundry-staging",
+  "FOUNDRY_SEED=ios-app-template /Users/mohameddiomande/.config/foundry/bin/foundry-push ios-app-template main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ios-app-template",
+  "registry: foundry_base=ios-app-template; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

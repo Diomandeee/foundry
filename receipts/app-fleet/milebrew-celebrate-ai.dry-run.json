@@ -1,0 +1,21 @@
+{
+ "id": "milebrew-celebrate-ai",
+ "title": "milebrew-celebrate-ai",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/milebrew-celebrate-ai",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 301,
+ "text_bytes": 2013509,
+ "offenders": [],
+ "base": "milebrew-celebrate-ai",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create milebrew-celebrate-ai --namespace foundry-staging",
+  "FOUNDRY_SEED=milebrew-celebrate-ai /Users/mohameddiomande/.config/foundry/bin/foundry-push milebrew-celebrate-ai main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging milebrew-celebrate-ai",
+  "registry: foundry_base=milebrew-celebrate-ai; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

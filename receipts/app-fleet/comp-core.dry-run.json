@@ -1,0 +1,1012 @@
+{
+ "id": "comp-core",
+ "title": "Comp-Core",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/Comp-Core",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 5620,
+ "text_bytes": 143767576,
+ "offenders": [
+  {
+   "path": "Docs/architecture/diagrams/pdf/anticipation-pipeline.pdf",
+   "bytes": 125361,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/audio-engine.pdf",
+   "bytes": 158516,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/comp-core-architecture.pdf",
+   "bytes": 2176448,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/data-flow.pdf",
+   "bytes": 297956,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/dell-equilibrium.pdf",
+   "bytes": 141219,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/deployment.pdf",
+   "bytes": 313164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/gesture-pipeline.pdf",
+   "bytes": 104598,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/orbit-orchestration.pdf",
+   "bytes": 172161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/pipeline-ordering.pdf",
+   "bytes": 125392,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/rag-architecture.pdf",
+   "bytes": 136829,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/sensor-fusion.pdf",
+   "bytes": 145020,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/pdf/system-overview.pdf",
+   "bytes": 446103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/anticipation-pipeline.png",
+   "bytes": 529478,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/audio-engine.png",
+   "bytes": 537331,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/data-flow.png",
+   "bytes": 216021,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/dell-equilibrium.png",
+   "bytes": 478274,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/deployment.png",
+   "bytes": 128632,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/gesture-pipeline.png",
+   "bytes": 492600,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/orbit-orchestration.png",
+   "bytes": 631371,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/pipeline-ordering.png",
+   "bytes": 626855,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/rag-architecture.png",
+   "bytes": 802504,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/sensor-fusion.png",
+   "bytes": 648406,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/architecture/diagrams/png/system-overview.png",
+   "bytes": 667424,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/desktop/echelon/echelon-tauri/src-tauri/icons/128x128.png",
+   "bytes": 372,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/desktop/echelon/echelon-tauri/src-tauri/icons/128x128@2x.png",
+   "bytes": 914,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/desktop/echelon/echelon-tauri/src-tauri/icons/32x32.png",
+   "bytes": 100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/desktop/echelon/echelon-tauri/src-tauri/icons/icon.png",
+   "bytes": 100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/128x128.png",
+   "bytes": 299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/128x128@2x.png",
+   "bytes": 855,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/32x32.png",
+   "bytes": 104,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square107x107Logo.png",
+   "bytes": 239,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square142x142Logo.png",
+   "bytes": 331,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square150x150Logo.png",
+   "bytes": 349,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square284x284Logo.png",
+   "bytes": 975,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square30x30Logo.png",
+   "bytes": 103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square310x310Logo.png",
+   "bytes": 1095,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square44x44Logo.png",
+   "bytes": 121,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square71x71Logo.png",
+   "bytes": 171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/Square89x89Logo.png",
+   "bytes": 199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/StoreLogo.png",
+   "bytes": 130,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/app-icon.png",
+   "bytes": 5705,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/icon.icns",
+   "bytes": 14605,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-desktop/src-tauri/icons/icon.png",
+   "bytes": 2199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/binaries/orbit-server-aarch64-apple-darwin",
+   "bytes": 7241392,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/128x128.png",
+   "bytes": 299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/128x128@2x.png",
+   "bytes": 855,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/32x32.png",
+   "bytes": 104,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square107x107Logo.png",
+   "bytes": 239,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square142x142Logo.png",
+   "bytes": 331,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square150x150Logo.png",
+   "bytes": 349,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square284x284Logo.png",
+   "bytes": 975,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square30x30Logo.png",
+   "bytes": 103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square310x310Logo.png",
+   "bytes": 1095,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square44x44Logo.png",
+   "bytes": 121,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square71x71Logo.png",
+   "bytes": 171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/Square89x89Logo.png",
+   "bytes": 199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/StoreLogo.png",
+   "bytes": 130,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/app-icon.png",
+   "bytes": 5705,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/icon.icns",
+   "bytes": 14605,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/trajectory/trajectory-orbit/orbit-desktop/src-tauri/icons/icon.png",
+   "bytes": 2199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/web/cc-dashboard/src/app/fonts/GeistMonoVF.woff",
+   "bytes": 67864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/web/cc-dashboard/src/app/fonts/GeistVF.woff",
+   "bytes": 66268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/128x128.png",
+   "bytes": 11059,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/128x128@2x.png",
+   "bytes": 23137,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/32x32.png",
+   "bytes": 2225,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square107x107Logo.png",
+   "bytes": 9202,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square142x142Logo.png",
+   "bytes": 12530,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square150x150Logo.png",
+   "bytes": 13032,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square284x284Logo.png",
+   "bytes": 25943,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square30x30Logo.png",
+   "bytes": 2078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square310x310Logo.png",
+   "bytes": 28507,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square44x44Logo.png",
+   "bytes": 3419,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square71x71Logo.png",
+   "bytes": 6027,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/Square89x89Logo.png",
+   "bytes": 7551,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/StoreLogo.png",
+   "bytes": 3971,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/icon.icns",
+   "bytes": 277003,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-mcs/src-tauri/icons/icon.png",
+   "bytes": 49979,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/apps/ircp-search-app/public/coordinate_prediction.png",
+   "bytes": 50831,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/apps/ircp-search-app/public/insights_summary.png",
+   "bytes": 163480,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/apps/ircp-search-app/public/model_comparison_comprehensive.png",
+   "bytes": 1004963,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/apps/ircp-search-app/public/performance_radar.png",
+   "bytes": 180674,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/apps/ircp-search-app/public/semantic_performance.png",
+   "bytes": 42949,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/apps/ircp-search-app/public/speed_comparison.png",
+   "bytes": 47098,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/docs/architecture/ircp_coordinate_space.png",
+   "bytes": 212506,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/docs/ircp/ircp_search_visualization.png",
+   "bytes": 496452,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/docs/outputs/dlm_coordinates.png",
+   "bytes": 313083,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/training/ircp/backups/ircp_training_backup_20250815_173556/training_dashboard.png",
+   "bytes": 1362173,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/training/ircp/backups/ircp_training_backup_20250815_173556/training_progress_20250815_172124.png",
+   "bytes": 355153,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/training/ircp/full_dataset/training_dashboard.png",
+   "bytes": 1362173,
+   "why": "binary-ext"
+  },
+  {
+   "path": "backend/cc-trajectory/legacy/cc-tpo-original/cc-tpo/training/ircp/full_dataset/training_progress_20250815_172124.png",
+   "bytes": 355153,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_diag.png",
+   "bytes": 94616,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_none.png",
+   "bytes": 108800,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_psd.png",
+   "bytes": 71992,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_gaussian_diag.png",
+   "bytes": 111213,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/Hypothesis/test_01_multi_step_contraction/plots/contraction_gaussian_psd.png",
+   "bytes": 130145,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/Hypothesis/test_07_timescale_separation/plots/timescale_separation.png",
+   "bytes": 133267,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/checkpoints/dataset_stats.npz",
+   "bytes": 2018,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/checkpoints/lim_rps/lim_rps_20251207_125702/best_model.pt",
+   "bytes": 13535864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/checkpoints/lim_rps_extended/lim_rps_20251207_140713/best_model.pt",
+   "bytes": 13535672,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/checkpoints/lim_rps_extended/lim_rps_20251207_140713/checkpoint_epoch10.pt",
+   "bytes": 13538016,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/checkpoints/lim_rps_extended/lim_rps_20251207_140713/checkpoint_epoch20.pt",
+   "bytes": 13538016,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/checkpoints/lim_rps_extended/lim_rps_20251207_140713/final_model.pt",
+   "bytes": 4516435,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/device_coherence_demo.png",
+   "bytes": 295330,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/evaluation/augmentation_comparison/augmentation_comparison.png",
+   "bytes": 188489,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/evaluation/lim_rps_analysis.png",
+   "bytes": 110620,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/evaluation/lim_rps_training_epoch1.png",
+   "bytes": 227799,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/evaluation/lim_rps_v2_real_data_test.png",
+   "bytes": 355495,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/evaluation/lim_rps_v2_training.png",
+   "bytes": 144185,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_0_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_0_weight.npy",
+   "bytes": 49280,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_1_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_1_weight.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_3_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_3_weight.npy",
+   "bytes": 65664,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_4_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_4_weight.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_6_bias.npy",
+   "bytes": 164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/decoder_net_6_weight.npy",
+   "bytes": 4736,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/encoder_encoder_encoder_limb_embedding_embedding_weight.npy",
+   "bytes": 224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/encoder_encoder_encoder_mlp_0_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/encoder_encoder_encoder_mlp_0_weight.npy",
+   "bytes": 5760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/encoder_encoder_encoder_mlp_2_bias.npy",
+   "bytes": 256,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/encoder_encoder_encoder_mlp_2_weight.npy",
+   "bytes": 16512,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/equilibrium_operator_hidden_layers_0_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/equilibrium_operator_hidden_layers_0_u.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/equilibrium_operator_hidden_layers_0_weight.npy",
+   "bytes": 49280,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/equilibrium_operator_hidden_layers_1_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/equilibrium_operator_hidden_layers_1_u.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/equilibrium_operator_hidden_layers_1_weight.npy",
+   "bytes": 65664,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/equilibrium_operator_output_layer_u.npy",
+   "bytes": 512,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/equilibrium_operator_output_layer_weight.npy",
+   "bytes": 49280,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_log_var_head_bias.npy",
+   "bytes": 164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_log_var_head_weight.npy",
+   "bytes": 4736,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_mean_head_bias.npy",
+   "bytes": 164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_mean_head_weight.npy",
+   "bytes": 4736,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_net_0_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_net_0_weight.npy",
+   "bytes": 49280,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_net_1_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_net_1_weight.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_net_3_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_net_3_weight.npy",
+   "bytes": 65664,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_net_4_bias.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-core/exports/cc_brain/numpy/predictor_net_4_weight.npy",
+   "bytes": 640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/diffusion/data_output/phrase_db/phrases.db",
+   "bytes": 442368,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/diffusion/diffusion/data_output/phrase_db/phrases.db",
+   "bytes": 16384,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/checkpoints/lim_rps/lim_rps_20251207_132841/best_model.pt",
+   "bytes": 13535672,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/checkpoints/lim_rps/lim_rps_20251207_132841/final_model.pt",
+   "bytes": 4516435,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/checkpoints/lim_rps_v2/v2_20251207_161711/best_model.pt",
+   "bytes": 1018693,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/checkpoints/lim_rps_v2/v2_20251207_161955/best_model.pt",
+   "bytes": 1018693,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/checkpoints/lim_rps_v2/v2_20251207_161955/checkpoint_epoch10.pt",
+   "bytes": 1018517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/checkpoints/lim_rps_v2/v2_20251207_161955/checkpoint_epoch20.pt",
+   "bytes": 1018517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/checkpoints/lim_rps_v2/v2_20251207_161955/checkpoint_epoch30.pt",
+   "bytes": 1018517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/checkpoints/lim_rps_v2/v2_20251207_161955/final_model.pt",
+   "bytes": 451230,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/models/exports/rps_equilibrium_bundle.pt",
+   "bytes": 47839,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/checkpoints/gesture/best_model.pt",
+   "bytes": 700469,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/checkpoints/gesture/latest_model.pt",
+   "bytes": 700627,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/checkpoints/lookahead/best_model.pt",
+   "bytes": 2457973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/checkpoints/lookahead/latest_model.pt",
+   "bytes": 2458153,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/checkpoints/normalizer/stats.npz",
+   "bytes": 5286,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production/training_dashboard.png",
+   "bytes": 110004,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/checkpoints/best.pt",
+   "bytes": 644299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/checkpoints/epoch_000.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/checkpoints/epoch_005.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/checkpoints/epoch_010.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/checkpoints/epoch_015.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/checkpoints/epoch_020.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/checkpoints/epoch_025.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/checkpoints/latest.pt",
+   "bytes": 644377,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_production_lr5e4/training_dashboard.png",
+   "bytes": 236637,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_training_cpu/checkpoints/best.pt",
+   "bytes": 644299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_training_cpu/checkpoints/epoch_000.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_training_cpu/checkpoints/epoch_005.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_training_cpu/checkpoints/epoch_010.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_training_cpu/checkpoints/epoch_015.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_training_cpu/checkpoints/epoch_020.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_training_cpu/checkpoints/epoch_025.pt",
+   "bytes": 646222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/dell_training_cpu/checkpoints/latest.pt",
+   "bytes": 644377,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/mapper_training/checkpoints/best.pt",
+   "bytes": 8109409,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/mapper_training/checkpoints/latest.pt",
+   "bytes": 8109565,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/rps_training/checkpoints/best.pt",
+   "bytes": 340497,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/rps_training/checkpoints/epoch_000.pt",
+   "bytes": 345231,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/rps_training/checkpoints/epoch_010.pt",
+   "bytes": 346191,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/experiments/rps_training/checkpoints/latest.pt",
+   "bytes": 342109,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/plots/mapper_training_curves.png",
+   "bytes": 262631,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-ml/training/plots/rps_training_curves.png",
+   "bytes": 473374,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-rag-plus-plus/cache/media_captions_checkpoint.jsonl",
+   "bytes": 6710335,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "core/cc-rag-plus-plus/cache/turns_embedding_checkpoint.jsonl",
+   "bytes": 16780416,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "core/cc-rag-plus-plus/cache/turns_embedding_checkpoint.jsonl.bak",
+   "bytes": 16780416,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "core/cc-rag-plus-plus/models/functiongemma-mlx/data/train.jsonl",
+   "bytes": 8694226,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "core/cc-semantic-language/repro/phase9_bundle_v1/figures/drift_distributions.png",
+   "bytes": 88464,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-semantic-language/repro/phase9_bundle_v1/figures/failure_surface_heatmap.png",
+   "bytes": 100692,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-semantic-language/repro/phase9_bundle_v1/figures/invariance_trajectories.png",
+   "bytes": 87927,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-semantic-language/repro/phase9_bundle_v1/figures/operator_correlation.png",
+   "bytes": 81538,
+   "why": "binary-ext"
+  },
+  {
+   "path": "core/cc-semantic-language/repro/phase9_bundle_v1/figures/promotion_rates.png",
+   "bytes": 64497,
+   "why": "binary-ext"
+  },
+  {
+   "path": "data/processed/dell_training/442_W_13th_St-2025-11-02_04-37-38_frames.parquet",
+   "bytes": 9090636,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "data/processed/dell_training/92-77_Queens_Blvd-2025-11-02_20-11-33_frames.parquet",
+   "bytes": 13194748,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "data/processed/dell_training/Left-2025-11-02_02-10-10-7ab80f052a2d400c811d911f72bd1ff4_frames.parquet",
+   "bytes": 14087472,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "data/processed/dell_training/Right-2025-11-02_02-10-10-0938198cbf5642e090569c5071f0b49c_frames.parquet",
+   "bytes": 13577829,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "comp-core",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create comp-core --namespace foundry-staging",
+  "FOUNDRY_SEED=comp-core /Users/mohameddiomande/.config/foundry/bin/foundry-push comp-core main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging comp-core",
+  "registry: foundry_base=comp-core; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/comp-core/",
+ "first_merge_fits_gate": false
+}

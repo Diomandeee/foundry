@@ -1,0 +1,21 @@
+{
+ "id": "agent-reputation",
+ "title": "agent-reputation",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/agent-reputation",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 28,
+ "text_bytes": 905695,
+ "offenders": [],
+ "base": "agent-reputation",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create agent-reputation --namespace foundry-staging",
+  "FOUNDRY_SEED=agent-reputation /Users/mohameddiomande/.config/foundry/bin/foundry-push agent-reputation main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging agent-reputation",
+  "registry: foundry_base=agent-reputation; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

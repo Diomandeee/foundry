@@ -1,0 +1,27 @@
+{
+ "id": "vigil",
+ "title": "Vigil",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Vigil",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 28,
+ "text_bytes": 174121,
+ "offenders": [
+  {
+   "path": "Vigil/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 808563,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "vigil",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create vigil --namespace foundry-staging",
+  "FOUNDRY_SEED=vigil /Users/mohameddiomande/.config/foundry/bin/foundry-push vigil main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging vigil",
+  "registry: foundry_base=vigil; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/vigil/",
+ "first_merge_fits_gate": true
+}

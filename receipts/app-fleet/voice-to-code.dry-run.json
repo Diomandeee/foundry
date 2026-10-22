@@ -1,0 +1,27 @@
+{
+ "id": "voice-to-code",
+ "title": "voice-to-code",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/voice-to-code",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 80,
+ "text_bytes": 3496300,
+ "offenders": [
+  {
+   "path": "storyboard.db",
+   "bytes": 28672,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "voice-to-code",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create voice-to-code --namespace foundry-staging",
+  "FOUNDRY_SEED=voice-to-code /Users/mohameddiomande/.config/foundry/bin/foundry-push voice-to-code main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging voice-to-code",
+  "registry: foundry_base=voice-to-code; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/voice-to-code/",
+ "first_merge_fits_gate": true
+}

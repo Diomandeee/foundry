@@ -1,0 +1,21 @@
+{
+ "id": "pebble",
+ "title": "Pebble",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Pebble",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 41,
+ "text_bytes": 315487,
+ "offenders": [],
+ "base": "pebble",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create pebble --namespace foundry-staging",
+  "FOUNDRY_SEED=pebble /Users/mohameddiomande/.config/foundry/bin/foundry-push pebble main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging pebble",
+  "registry: foundry_base=pebble; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

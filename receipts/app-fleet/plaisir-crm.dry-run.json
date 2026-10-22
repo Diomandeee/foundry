@@ -1,0 +1,32 @@
+{
+ "id": "plaisir-crm",
+ "title": "plaisir-crm",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/plaisir-crm",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 590,
+ "text_bytes": 4329006,
+ "offenders": [
+  {
+   "path": "src/app/fonts/GeistMonoVF.woff",
+   "bytes": 67864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/app/fonts/GeistVF.woff",
+   "bytes": 66268,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "plaisir-crm",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create plaisir-crm --namespace foundry-staging",
+  "FOUNDRY_SEED=plaisir-crm /Users/mohameddiomande/.config/foundry/bin/foundry-push plaisir-crm main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging plaisir-crm",
+  "registry: foundry_base=plaisir-crm; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/plaisir-crm/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "sharedservices",
+ "title": "SharedServices",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/SharedServices",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 15,
+ "text_bytes": 61574,
+ "offenders": [],
+ "base": "sharedservices",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create sharedservices --namespace foundry-staging",
+  "FOUNDRY_SEED=sharedservices /Users/mohameddiomande/.config/foundry/bin/foundry-push sharedservices main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging sharedservices",
+  "registry: foundry_base=sharedservices; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

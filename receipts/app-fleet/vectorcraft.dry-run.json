@@ -1,0 +1,207 @@
+{
+ "id": "vectorcraft",
+ "title": "vectorcraft",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/vectorcraft",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1590,
+ "text_bytes": 26757271,
+ "offenders": [
+  {
+   "path": "assets/app-icon/hicolor/128x128/apps/ai.storyteller.vectorcraft.png",
+   "bytes": 18450,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/16x16/apps/ai.storyteller.vectorcraft.png",
+   "bytes": 715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/24x24/apps/ai.storyteller.vectorcraft.png",
+   "bytes": 1279,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/256x256/apps/ai.storyteller.vectorcraft.png",
+   "bytes": 56885,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/32x32/apps/ai.storyteller.vectorcraft.png",
+   "bytes": 1985,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/48x48/apps/ai.storyteller.vectorcraft.png",
+   "bytes": 3679,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/512x512/apps/ai.storyteller.vectorcraft.png",
+   "bytes": 151702,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/64x64/apps/ai.storyteller.vectorcraft.png",
+   "bytes": 5771,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/vectorcraft-1024.png",
+   "bytes": 356294,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/vectorcraft-macos-512.png",
+   "bytes": 116070,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/vectorcraft.icns",
+   "bytes": 707932,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Medium.ttf",
+   "bytes": 417300,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Regular.ttf",
+   "bytes": 411640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-SemiBold.ttf",
+   "bytes": 419744,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/JetBrainsMono-Regular.ttf",
+   "bytes": 270224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSans3-Bold.ttf",
+   "bytes": 428176,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSans3-It.ttf",
+   "bytes": 315812,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSans3-Regular.ttf",
+   "bytes": 431196,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSans3-Semibold.ttf",
+   "bytes": 425904,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/SourceSerif4-Regular.ttf",
+   "bytes": 261868,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/plugins/tests/fixtures/desaturate.wasm",
+   "bytes": 60341,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo-white.png",
+   "bytes": 32161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo.png",
+   "bytes": 31302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark-black.png",
+   "bytes": 26793,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark.png",
+   "bytes": 24715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/art-envelope.png",
+   "bytes": 35006,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/art-mesh.png",
+   "bytes": 89357,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/art-neon-drive.png",
+   "bytes": 209918,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/art-pathfinder.png",
+   "bytes": 20297,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/art-repeat.png",
+   "bytes": 61909,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/art-ribbons.png",
+   "bytes": 867150,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/dusk-poster.png",
+   "bytes": 53083,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/shot-1-neon.png",
+   "bytes": 649660,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/shot-2-ribbons.png",
+   "bytes": 1466308,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/shot-3-sheet.png",
+   "bytes": 519015,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/shot-4-bezier.png",
+   "bytes": 230203,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/shot-5-perspective.png",
+   "bytes": 428091,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "vectorcraft",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create vectorcraft --namespace foundry-staging",
+  "FOUNDRY_SEED=vectorcraft /Users/mohameddiomande/.config/foundry/bin/foundry-push vectorcraft main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging vectorcraft",
+  "registry: foundry_base=vectorcraft; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/vectorcraft/",
+ "first_merge_fits_gate": false
+}

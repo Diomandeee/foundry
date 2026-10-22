@@ -1,0 +1,27 @@
+{
+ "id": "memory-defrag",
+ "title": "memory-defrag",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/memory-defrag",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 3,
+ "text_bytes": 26027,
+ "offenders": [
+  {
+   "path": "defrag.db",
+   "bytes": 24576,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "memory-defrag",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create memory-defrag --namespace foundry-staging",
+  "FOUNDRY_SEED=memory-defrag /Users/mohameddiomande/.config/foundry/bin/foundry-push memory-defrag main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging memory-defrag",
+  "registry: foundry_base=memory-defrag; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/memory-defrag/",
+ "first_merge_fits_gate": true
+}

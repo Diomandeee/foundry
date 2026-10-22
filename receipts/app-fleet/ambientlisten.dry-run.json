@@ -1,0 +1,27 @@
+{
+ "id": "ambientlisten",
+ "title": "AmbientListen",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/AmbientListen",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 28,
+ "text_bytes": 104839,
+ "offenders": [
+  {
+   "path": "AmbientListen/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 708842,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "ambientlisten",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ambientlisten --namespace foundry-staging",
+  "FOUNDRY_SEED=ambientlisten /Users/mohameddiomande/.config/foundry/bin/foundry-push ambientlisten main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ambientlisten",
+  "registry: foundry_base=ambientlisten; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/ambientlisten/",
+ "first_merge_fits_gate": true
+}

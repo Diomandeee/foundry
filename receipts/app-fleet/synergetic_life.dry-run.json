@@ -1,0 +1,27 @@
+{
+ "id": "synergetic_life",
+ "title": "synergetic_life",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/synergetic_life",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 65,
+ "text_bytes": 97713,
+ "offenders": [
+  {
+   "path": "public/meta.jpg",
+   "bytes": 66619,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "synergetic_life",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create synergetic_life --namespace foundry-staging",
+  "FOUNDRY_SEED=synergetic_life /Users/mohameddiomande/.config/foundry/bin/foundry-push synergetic_life main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging synergetic_life",
+  "registry: foundry_base=synergetic_life; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/synergetic_life/",
+ "first_merge_fits_gate": true
+}

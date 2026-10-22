@@ -1,0 +1,112 @@
+{
+ "id": "mfp",
+ "title": "mfp",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/mfp",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 223,
+ "text_bytes": 558713,
+ "offenders": [
+  {
+   "path": "public/favicons/apple-touch-icon.png",
+   "bytes": 1085,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/favicons/dark.png",
+   "bytes": 231,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/favicons/light.png",
+   "bytes": 214,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-Bold.ttf",
+   "bytes": 135932,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-BoldItalic.ttf",
+   "bytes": 142636,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-ExtraLight.ttf",
+   "bytes": 134160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-ExtraLightItalic.ttf",
+   "bytes": 142780,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-Italic.ttf",
+   "bytes": 142032,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-Light.ttf",
+   "bytes": 133392,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-LightItalic.ttf",
+   "bytes": 141520,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-Medium.ttf",
+   "bytes": 134880,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-MediumItalic.ttf",
+   "bytes": 142128,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-Regular.ttf",
+   "bytes": 133720,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-SemiBold.ttf",
+   "bytes": 138372,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-SemiBoldItalic.ttf",
+   "bytes": 145452,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-Thin.ttf",
+   "bytes": 136076,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/fonts/IBMPlexMono-ThinItalic.ttf",
+   "bytes": 144240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "readme/og-image-share.png",
+   "bytes": 1109225,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "mfp",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create mfp --namespace foundry-staging",
+  "FOUNDRY_SEED=mfp /Users/mohameddiomande/.config/foundry/bin/foundry-push mfp main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging mfp",
+  "registry: foundry_base=mfp; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/mfp/",
+ "first_merge_fits_gate": true
+}

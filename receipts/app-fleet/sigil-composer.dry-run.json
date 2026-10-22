@@ -1,0 +1,21 @@
+{
+ "id": "sigil-composer",
+ "title": "sigil-composer",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/sigil-composer",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 89,
+ "text_bytes": 1572414,
+ "offenders": [],
+ "base": "sigil-composer",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create sigil-composer --namespace foundry-staging",
+  "FOUNDRY_SEED=sigil-composer /Users/mohameddiomande/.config/foundry/bin/foundry-push sigil-composer main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging sigil-composer",
+  "registry: foundry_base=sigil-composer; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

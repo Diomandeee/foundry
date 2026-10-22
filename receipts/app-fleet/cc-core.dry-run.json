@@ -1,0 +1,57 @@
+{
+ "id": "cc-core",
+ "title": "cc-core",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/cc-core",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 139,
+ "text_bytes": 952502,
+ "offenders": [
+  {
+   "path": "Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_diag.png",
+   "bytes": 94616,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_none.png",
+   "bytes": 108800,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Hypothesis/test_01_multi_step_contraction/plots/contraction_circle_psd.png",
+   "bytes": 71992,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Hypothesis/test_01_multi_step_contraction/plots/contraction_gaussian_diag.png",
+   "bytes": 111213,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Hypothesis/test_01_multi_step_contraction/plots/contraction_gaussian_psd.png",
+   "bytes": 130145,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Hypothesis/test_07_timescale_separation/plots/timescale_separation.png",
+   "bytes": 133267,
+   "why": "binary-ext"
+  },
+  {
+   "path": "device_coherence_demo.png",
+   "bytes": 295330,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "cc-core",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cc-core --namespace foundry-staging",
+  "FOUNDRY_SEED=cc-core /Users/mohameddiomande/.config/foundry/bin/foundry-push cc-core main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cc-core",
+  "registry: foundry_base=cc-core; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cc-core/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "pulse-gateway-api",
+ "title": "pulse-gateway-api",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/pulse-gateway-api",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 81,
+ "text_bytes": 737827,
+ "offenders": [],
+ "base": "pulse-gateway-api",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create pulse-gateway-api --namespace foundry-staging",
+  "FOUNDRY_SEED=pulse-gateway-api /Users/mohameddiomande/.config/foundry/bin/foundry-push pulse-gateway-api main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging pulse-gateway-api",
+  "registry: foundry_base=pulse-gateway-api; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

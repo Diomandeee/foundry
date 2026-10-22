@@ -1,0 +1,32 @@
+{
+ "id": "bufbarista-crm",
+ "title": "bufbarista-crm",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/bufbarista-crm",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 726,
+ "text_bytes": 4439632,
+ "offenders": [
+  {
+   "path": "src/app/fonts/GeistMonoVF.woff",
+   "bytes": 67864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/app/fonts/GeistVF.woff",
+   "bytes": 66268,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "bufbarista-crm",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create bufbarista-crm --namespace foundry-staging",
+  "FOUNDRY_SEED=bufbarista-crm /Users/mohameddiomande/.config/foundry/bin/foundry-push bufbarista-crm main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging bufbarista-crm",
+  "registry: foundry_base=bufbarista-crm; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/bufbarista-crm/",
+ "first_merge_fits_gate": true
+}

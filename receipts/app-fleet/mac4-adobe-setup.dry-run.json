@@ -1,0 +1,21 @@
+{
+ "id": "mac4-adobe-setup",
+ "title": "mac4-adobe-setup",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/mac4-adobe-setup",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 5,
+ "text_bytes": 11332,
+ "offenders": [],
+ "base": "mac4-adobe-setup",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create mac4-adobe-setup --namespace foundry-staging",
+  "FOUNDRY_SEED=mac4-adobe-setup /Users/mohameddiomande/.config/foundry/bin/foundry-push mac4-adobe-setup main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging mac4-adobe-setup",
+  "registry: foundry_base=mac4-adobe-setup; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

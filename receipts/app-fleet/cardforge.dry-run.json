@@ -1,0 +1,27 @@
+{
+ "id": "cardforge",
+ "title": "CardForge",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/CardForge",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 33,
+ "text_bytes": 203730,
+ "offenders": [
+  {
+   "path": "CardForge/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 942844,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "cardforge",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cardforge --namespace foundry-staging",
+  "FOUNDRY_SEED=cardforge /Users/mohameddiomande/.config/foundry/bin/foundry-push cardforge main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cardforge",
+  "registry: foundry_base=cardforge; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cardforge/",
+ "first_merge_fits_gate": true
+}
