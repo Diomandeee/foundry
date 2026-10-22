@@ -135,6 +135,9 @@ Open from the review and the rotation, in the order they should close:
 4. BWB Prisma string via computer use; `vercel login`; row 8 logins; Cloudflare token; SSH phase 3; F9 Mac4 root LaunchDaemon.
 5. H2 bearers out of `~`, gate-only base tokens, H10, M5, H11.
 6. Comp-Core pre-push hook (f7 holding until Mohamed approves): `--not --remotes` scope plus glob pathspecs for every `.env`.
+7. **F12 (2026-10-22 20:30Z): the first seeder copied secret files into 18 bases.** Found by the supervisor's `tools/app-fleet/base-secret-scan.py`; fixed in `onboard.py` 8778e5a (name + content rules, path and rule only in `.foundry/assets.json`); batch 3 restarted on the fixed code; the 17 seed-only bases with hits deleted and reseeded. Every exposed value was tested from its GitHub origin (ledger 20:30Z): LIVE and for Mohamed's batch: a Supabase service_role key for project `wovknbcvxjvayfdflxkn` (milkmendelivery; the project belongs to neither known Supabase account), the Gemini key already deferred, and a Google key (`milkmendelivery`, `dlm`, `cc-trajectory`; Places answers 403, restricted not proven dead). Dead: BWB legacy JWTs, both OpenAI keys. Low: birthday-pass CSR key. False positives: jeli-nko, the .npmrc and .env placeholders. GitHub-side cleanup (the same values sit in those private repos' history) is rotation, not history rewriting.
+
+**Mohamed's batch (console or spend, needs him present):** Supabase account for `wovknbcvxjvayfdflxkn` (disable legacy JWT keys), Gemini key delete at AI Studio, Google key `#8e4ac6` delete at Cloud console, the row 5 provider deletions, Vast key + instance 56197013, BWB Prisma string, `vercel login`, Hugging Face re-login (unblocks deleting the 48 GB of HF caches on Mac4/Mac5), the Mac5 reboot test (SonoBus reconnect), and the data-dir deletions listed in `docs/STORAGE-2026-10-22.md` (now reproducible from GCS: Mac4 30 GB, Mac5 33 GB, HD2 69 GB when its job verifies).
 
 ## 6. What happens next, in order
 
