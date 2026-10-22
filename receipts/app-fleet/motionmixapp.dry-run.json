@@ -3,66 +3,11 @@
  "title": "MotionMixApp",
  "tier": "hot",
  "origin": "https://github.com/Diomandeee/MotionMixApp",
- "default_branch": "main",
+ "default_branch": "trunk/build128-20261021",
  "truncated_tree": false,
- "files": 2791,
- "text_bytes": 37776727,
+ "files": 555,
+ "text_bytes": 7439602,
  "offenders": [
-  {
-   "path": "Frameworks/INSCameraServiceSDK.xcframework/ios-arm64-simulator/INSCameraServiceSDK.framework/INSCameraServiceSDK",
-   "bytes": 6514656,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCameraServiceSDK.xcframework/ios-arm64-simulator/dSYMs/INSCameraServiceSDK.framework.dSYM/Contents/Resources/DWARF/INSCameraServiceSDK",
-   "bytes": 10041562,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCameraServiceSDK.xcframework/ios-arm64/dSYMs/INSCameraServiceSDK.framework.dSYM/Contents/Resources/DWARF/INSCameraServiceSDK",
-   "bytes": 13514947,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64-simulator/INSCameraServiceSDK.framework/INSCameraServiceSDK",
-   "bytes": 4220416,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64-simulator/dSYMs/INSCameraServiceSDK.framework.dSYM/Contents/Resources/DWARF/INSCameraServiceSDK",
-   "bytes": 6940676,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64_arm64_32_armv7k/INSCameraServiceSDK.framework/INSCameraServiceSDK",
-   "bytes": 12157976,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCameraServiceSDK.xcframework/watchos-arm64_arm64_32_armv7k/dSYMs/INSCameraServiceSDK.framework.dSYM/Contents/Resources/DWARF/INSCameraServiceSDK",
-   "bytes": 19255478,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCoreMedia.xcframework/watchos-arm64_arm64_32_armv7k/INSCoreMedia.framework/INSCoreMedia",
-   "bytes": 18937136,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCoreMedia.xcframework/watchos-arm64_arm64_32_armv7k/dSYMs/INSCoreMedia.framework.dSYM/Contents/Resources/DWARF/INSCoreMedia",
-   "bytes": 15944656,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCoreMedia.xcframework/watchos-arm64_x86_64-simulator/INSCoreMedia.framework/INSCoreMedia",
-   "bytes": 14578144,
-   "why": "over-4MiB"
-  },
-  {
-   "path": "Frameworks/INSCoreMedia.xcframework/watchos-arm64_x86_64-simulator/dSYMs/INSCoreMedia.framework.dSYM/Contents/Resources/DWARF/INSCoreMedia",
-   "bytes": 12044257,
-   "why": "over-4MiB"
-  },
   {
    "path": "Frameworks/libechelon_ios.a",
    "bytes": 26117800,
@@ -573,10 +518,10 @@
  "namespace": "foundry-staging",
  "steps": [
   "npx wrangler artifacts repos create motionmixapp --namespace foundry-staging",
-  "FOUNDRY_SEED=motionmixapp /Users/mohameddiomande/.config/foundry/bin/foundry-push motionmixapp main:main   (from a clean clone minus offenders)",
+  "FOUNDRY_SEED=motionmixapp /Users/mohameddiomande/.config/foundry/bin/foundry-push motionmixapp trunk/build128-20261021:main   (from a clean clone minus offenders)",
   "bash tools/subscribe-repo.sh staging motionmixapp",
   "registry: foundry_base=motionmixapp; audit list reads registry"
  ],
  "bundle": "gdrive:Assets/app-fleet/motionmixapp/",
- "first_merge_fits_gate": false
+ "first_merge_fits_gate": true
 }

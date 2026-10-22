@@ -120,6 +120,11 @@ def plan_record(rec, namespace):
         branch, t, err = tree(owner_repo, rec.get("seed_branch"))
     if err:
         return {"id": rec["id"], "skip": f"github: {err}"}
+    scope = rec.get("seed_paths")
+    if scope:
+        # Path-scoped seed: a monorepo too big for the merger's in-memory clone (Worker, 128 MB) is seeded
+        # only with the subtrees its live work needs. Widen the scope with a new seed, never by hand.
+        t = {**t, "tree": [e for e in t.get("tree", []) if any(e["path"] == q or e["path"].startswith(q + "/") for q in scope)]}
     n, text_bytes, offenders = lint(t.get("tree", []))
     return {
         "id": rec["id"], "title": rec["title"], "tier": rec["tier"], "origin": origin,
@@ -160,18 +165,25 @@ def seed_one(rec, plan, a):
         loc = rec["seed_local"]
         origin_sha = sh(["git", "-C", loc["path"], "rev-parse", loc["rev"] + "^{commit}"]).stdout.strip()
         src.mkdir()
-        arch = subprocess.run(["git", "-C", loc["path"], "archive", "--format=tar", origin_sha], capture_output=True, check=True).stdout
-        subprocess.run(["tar", "-x", "-C", str(src)], input=arch, check=True)
+        arch = subprocess.run(["git", "-C", loc["path"], "archive", "--format=tar", origin_sha, "--", *(rec.get("seed_paths") or [])],
+                              capture_output=True, check=True).stdout
+        # Python's tarfile, not bsdtar: bsdtar treats committed ._* AppleDouble files as metadata and fails.
+        import io, tarfile
+        with tarfile.open(fileobj=io.BytesIO(arch)) as tf:
+            tf.extractall(src, filter="data")
     else:
         sh(["git", "clone", "--quiet", "--depth", "1", "--branch", branch, rec["origin"], str(src)])
         origin_sha = sh(["git", "rev-parse", "HEAD"], cwd=src).stdout.strip()
     offenders = {o["path"] for o in plan["offenders"]}
     assets = []
     snap.mkdir()
+    scope = rec.get("seed_paths")
     for root, dirs, files in os.walk(src):
         dirs[:] = [d for d in dirs if d != ".git"]
         for f in files:
             full = pathlib.Path(root, f); rel = str(full.relative_to(src))
+            if scope and not any(rel == q or rel.startswith(q + "/") for q in scope):
+                continue
             if full.is_symlink():
                 # The gate carries text files only; keep the link target on record so the
                 # GitHub mirror check can tell a symlink from an ungated difference.
@@ -194,10 +206,11 @@ def seed_one(rec, plan, a):
             shutil.copyfile(full, dst); shutil.copymode(full, dst)
     (snap / ".foundry").mkdir(exist_ok=True)
     (snap / ".foundry/assets.json").write_text(json.dumps({"format": "foundry.assets.v1", "origin": rec["origin"],
-        "origin_commit": origin_sha, "origin_branch": branch, "stripped": assets}, indent=1))
+        "origin_commit": origin_sha, "origin_branch": branch, "scope": scope or None, "stripped": assets}, indent=1))
     (snap / "FOUNDRY-SEED.md").write_text(f"# Foundry seed\n\nSeeded from {rec['origin']} at `{origin_sha}` ({branch}) on "
         f"{datetime.datetime.now(datetime.timezone.utc).date()} by the app-fleet lane. One text-only commit; "
-        f"{len(assets)} binary or oversized files are listed in `.foundry/assets.json` and stay on the origin commit.\n")
+        f"{len(assets)} binary, oversized, symlinked or withheld files are listed in `.foundry/assets.json` and stay on the origin commit.\n"
+        + (f"\nPath-scoped seed. Only these subtrees are in this base: {', '.join(scope)}.\n" if scope else ""))
     env = {**os.environ, "GIT_AUTHOR_NAME": "app-fleet seed", "GIT_AUTHOR_EMAIL": "fleet@local",
            "GIT_COMMITTER_NAME": "app-fleet seed", "GIT_COMMITTER_EMAIL": "fleet@local"}
     sh(["git", "init", "--quiet", "-b", "main"], cwd=snap, env=env)

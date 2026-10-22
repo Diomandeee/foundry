@@ -1,0 +1,75 @@
+{
+ "approved_by": "Mohamed 2026-10-22: re-sent the three decisions; lane defaults; batch 3b = remaining cold repos on the secret-withholding seeder (8778e5a)",
+ "started": "20261022T183253Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "admissibility-kernel",
+   "error": "repos create admissibility-kernel refused (exists or error), not seeding: \u001b[33m\u25b2 \u001b[43;33m[\u001b[43;30mWARNING\u001b[43;33m]\u001b[0m \u001b[1m\ud83d\udea7 `wrangler artifacts repos create` is an open beta command. Please report any issues to https://github.com/clo"
+  },
+  {
+   "id": "apple-notes-audit",
+   "skipped": "github: gh: Git Repository is empty. (HTTP 409)"
+  },
+  {
+   "id": "brews-with-beats-mobile",
+   "skipped": "github: gh: Git Repository is empty. (HTTP 409)"
+  },
+  {
+   "id": "chain-tree",
+   "skipped": "github: gh: Git Repository is empty. (HTTP 409)"
+  },
+  {
+   "id": "hyevo",
+   "error": "git clone --quiet --depth 1 --branch main https://github.com/Diomandeee/HyEvo /var/folders/57/d047wvwx1l5dnyjn5hkqs0n40000gn/T/app-fleet-seed/hyevo.src: rc=128 git-lfs filter-process: git-lfs: command not found\nfatal: the remote end hung up unexpectedly\nwarning: Clone succeeded, but checkout failed.\nYou can inspect what was checked out with 'git status'\nand retry with 'git restore --source=HEAD :/"
+  },
+  {
+   "id": "linguistic-dna",
+   "error": "repos create linguistic-dna refused (exists or error), not seeding: \u001b[33m\u25b2 \u001b[43;33m[\u001b[43;30mWARNING\u001b[43;33m]\u001b[0m \u001b[1m\ud83d\udea7 `wrangler artifacts repos create` is an open beta command. Please report any issues to https://github.com/clo"
+  },
+  {
+   "id": "linguistic_synthesizer",
+   "base": "linguistic_synthesizer",
+   "origin_commit": "0d0a85d5be2dfcfda4d6207163c52a9981dc5d4b",
+   "seed_commit": "de2fca3a9aded784ae2b58c3c737c068b143cb85",
+   "files": 4,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"8141cd9ac7754634b10223eb725f3bf7\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "linkit",
+   "base": "linkit",
+   "origin_commit": "f2d3d04197dbdef3752edf5a04f87d16a716d821",
+   "seed_commit": "dd97a2fb8d8f0eba9803641edc14094da2b784b8",
+   "files": 679,
+   "stripped": 32,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"b7a224c5446a487f9f31fdd127b05028\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "live-knowledge-graphs",
+   "base": "live-knowledge-graphs",
+   "origin_commit": "cf7ca62809452eb0f9ff6c4ba0d72282d2d7d9a1",
+   "seed_commit": "f6c3fe45fa805e15830f94b467bf713efa020c33",
+   "files": 60,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"f0f20a43bf4f45669aa0a05c61320bc2\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "living-docs",
+   "base": "living-docs",
+   "origin_commit": "b071741f5aef4518fce47a937ccc5cfcca422874",
+   "seed_commit": "6461767326086498f74efa1a85891627bdc1fc5b",
+   "files": 37,
+   "stripped": 20,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"f3a946f204b845d3a40661774503714e\",\"created_at\":\"2026-10-22T18:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}
