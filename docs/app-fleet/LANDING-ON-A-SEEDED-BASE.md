@@ -55,6 +55,19 @@ The gate diffs trees by object id since hotfix 2ebf8fa and lands file modes, inc
    Mohamed retired for this family on 2026-10-22.
 6. Keep the fork's history and delete the fork: step 7 of nko-speech `docs/ONBOARDING.md`.
 
+## Lessons from the first day (2026-10-22/23)
+
+- **No decision row within 2 minutes:** re-run `tools/subscribe-repo.sh staging '<fork>'`, amend the date and push again.
+  A fork's push subscription can exist and still not deliver (batch1b, 470 files: nothing reached the gate until
+  the re-subscribe, then it merged as decision 146). The gate's own failures now land in the
+  `foundry-push-events-staging-dlq` queue, so silence means the event never arrived.
+- **Never re-POST a task id.** Opening the same `taskId` again can overwrite `~/.config/foundry/task-<id>.json`, the
+  fork's token file. Reuse the existing task file; pick a new task id for a new attempt.
+- **Sync a working checkout with `git merge --ff-only`, never `git reset --hard`.** A hard reset on
+  `~/Developer/MotionMix` once deleted 469 unlanded files from disk (restored, nothing lost).
+- Rows that say "no task ticket for fork <base>" right after a merge are the gate seeing its own push to the base.
+  They are expected, not a stranger writing to the base.
+
 ## Limits
 
 - 4 MiB per file, 8 MiB of text and 2000 changed paths per merge. No limit on the tree size (M7 fixed in 2ebf8fa).
