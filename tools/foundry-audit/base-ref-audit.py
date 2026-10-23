@@ -57,11 +57,16 @@ def main():
         subprocess.run(["git", "init", "-q", CACHE], check=True)
     # merges per base: the fork name is "<task>--<agent>", the base is the ticket's baseRepo; decisions carry
     # merged_sha and the task id, and tickets map task -> base. Read both.
-    merges = d1("select d.merged_sha as sha, t.base_repo as base from decisions d join tickets t on t.fork_repo = d.repo "
+    # LEFT JOIN: ticket rows can be gone (a lane deletes its fork after the merge), and an inner join then made
+    # real gated merges look unexplained (2026-10-23: decisions 115/117/119 on motionmix). A merge SHA is unique,
+    # so membership in the set of all gate merges is the proof; the ticket only names the base when it still exists.
+    merges = d1("select d.merged_sha as sha, t.base_repo as base from decisions d left join tickets t on t.fork_repo = d.repo "
                 "where d.verdict = 'merge' and d.merged_sha is not null")
-    by_base = {}
+    by_base, all_gated = {}, set()
     for m in merges:
-        by_base.setdefault(m["base"], set()).add(m["sha"])
+        all_gated.add(m["sha"])
+        if m["base"]:
+            by_base.setdefault(m["base"], set()).add(m["sha"])
     repos = sys.argv[1:] or sorted(set(by_base) | set(EXTRA_REPOS) | set(registry_bases()))
     findings, report = [], []
     for repo in repos:
@@ -76,7 +81,7 @@ def main():
                 findings.append("%s: fetch failed (%s)" % (repo, (r.stderr or "").strip()[-160:]))
             continue
         chain = git("rev-list", "--first-parent", ref).split()
-        gated = by_base.get(repo, set())
+        gated = all_gated
         if gated:
             first = [c for c in reversed(chain) if c in gated][0] if any(c in gated for c in chain) else None
             parents = git("rev-list", "--parents", "-n", "1", first).split()[1:] if first else []
