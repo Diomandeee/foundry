@@ -129,7 +129,7 @@ Target after lane B: Mac1 and Mac4 under 60% used, every surviving folder with a
 
 Open from the review and the rotation, in the order they should close:
 
-1. participation-coordinator C1 kill switch (commit 8901867) still not deployed; the public hole is live.
+1. participation-coordinator C1: closed in code (protocol v2, deployed 2026-10-22 from its own base; kill switch removed). The subtree left this repo on 2026-10-23.
 2. Daemon 1.4 rollout to Mac5/Mac1/Mac4 (phone approvals + Mac5 FDA re-grant).
 3. Provider key deletions at dashboards: Gemini #dbb5f9 (now also in Comp-Core GitHub history), fal, W&B, Ollama, Together, ElevenLabs old keys; Vast key + instance 56197013; TrajectoryOS Supabase service key before any unpause; Comp-Core unclassified values (Supabase PAT, DB password, PyPI, Cloudinary).
 4. BWB Prisma string via computer use; `vercel login`; row 8 logins; Cloudflare token; SSH phase 3; F9 Mac4 root LaunchDaemon.

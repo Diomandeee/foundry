@@ -103,7 +103,7 @@ Production verified · Advisory · Planned/incomplete.
 | `substrate/trajectory-memory-ledger` | Reference + **CI-verified as of 2026-10-15** | schema `examples/trajectory-card.schema-v2.json`; **16 tests local and green**, and now run by CI (they were not, until this pass). No runtime import — Foundry writes no trajectory events (§8 item 6). |
 | `substrate/spatial-git` | Reference + **Integrated** (feed adapter) | viewer + CLI vendored; `workers/api` now serves `/git-history.json` in the viewer's shape — see §7 |
 | `packages/plan-check` (PACT) | Integrated but **advisory by default** | `decide.ts` step 1b; rejects only when `enforce` is set; outages fail open (`checked=false, ok=true`) |
-| `workers/participation-coordinator` | Integrated (separate product line) | `@foundry/participation-coordinator`, own D1, same Cloudflare account/subdomain |
+| `workers/participation-coordinator` | Retired from this repo 2026-10-23 | Own Foundry base `participation-coordinator` (deploys only from a gated MERGE); mirror `Diomandeee/participation-coordinator`; same Cloudflare account, own D1 |
 
 `substrate/README.md` states nothing under `substrate/` is imported by Foundry's
 own build. That holds: the Rust trees are the authority for ports, not runtime

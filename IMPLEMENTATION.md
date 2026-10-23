@@ -256,7 +256,8 @@ foundry/
     gate/          decide.ts (+test)  merge.ts (+test)  pipeline.ts (+test)
                    index.ts (queue)  schema.sql  wrangler.toml
     api/           index.ts (+test)  wrangler.toml
-    participation-coordinator/  (separate MotionMix system; own README)
+    (participation-coordinator/ retired 2026-10-23: the MotionMix coordinator lives in its own Foundry base,
+     foundry-staging/participation-coordinator, mirror github.com/Diomandeee/participation-coordinator)
   packages/
     gate-ts/         reject.ts  types.ts  gate.ts (+test)
     artifacts-port/  port.ts  git.ts (+test)  testing.ts  cloudflare.ts
