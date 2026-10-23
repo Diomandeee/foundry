@@ -1,0 +1,21 @@
+{
+ "id": "s2o",
+ "title": "s2o",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/s2o",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 9,
+ "text_bytes": 63195,
+ "offenders": [],
+ "base": "s2o",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create s2o --namespace foundry-staging",
+  "FOUNDRY_SEED=s2o /Users/mohameddiomande/.config/foundry/bin/foundry-push s2o main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging s2o",
+  "registry: foundry_base=s2o; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

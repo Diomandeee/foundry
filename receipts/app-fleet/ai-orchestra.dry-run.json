@@ -1,0 +1,21 @@
+{
+ "id": "ai-orchestra",
+ "title": "ai-orchestra",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/ai-orchestra",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 59,
+ "text_bytes": 902182,
+ "offenders": [],
+ "base": "ai-orchestra",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ai-orchestra --namespace foundry-staging",
+  "FOUNDRY_SEED=ai-orchestra /Users/mohameddiomande/.config/foundry/bin/foundry-push ai-orchestra main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ai-orchestra",
+  "registry: foundry_base=ai-orchestra; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "buffbarista-dance",
+ "title": "buffbarista-dance",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/buffbarista-dance",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 24,
+ "text_bytes": 309253,
+ "offenders": [],
+ "base": "buffbarista-dance",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create buffbarista-dance --namespace foundry-staging",
+  "FOUNDRY_SEED=buffbarista-dance /Users/mohameddiomande/.config/foundry/bin/foundry-push buffbarista-dance main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging buffbarista-dance",
+  "registry: foundry_base=buffbarista-dance; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

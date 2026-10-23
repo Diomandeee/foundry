@@ -1,0 +1,51 @@
+{
+ "approved_by": "all NEW code in the MotionMix family must go through Foundry, cloud first, the way it's meant to work, starting before he flies tomorrow (Mohamed direct, relayed by mohameddiomande-f7 2026-10-22T14:33Z)",
+ "started": "20261022T175301Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "lume-motion-state",
+   "base": "lume-motion-state",
+   "origin_commit": "d5d4dd5bdfbd414e4d719c4612d17eceaca1fb51",
+   "seed_commit": "238b6acef9b7773d3104f5a3b13d5555123dae93",
+   "files": 78,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"ab6ee8bbebe54029a97ce6d7f810ed03\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "motionmix",
+   "base": "motionmix",
+   "origin_commit": "8c99ee9c3016b4fd473bda41394d6d63edd04ce3",
+   "seed_commit": "5e7c1d993f60d6fdc0c9759945db7188ab8a1cc9",
+   "files": 44,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"61dcaf72a9f448169124fed52878e0e5\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "motionmix-ableton",
+   "base": "motionmix-ableton",
+   "origin_commit": "95c824319b32d0badaf01159b2b1bd7e29be5477",
+   "seed_commit": "b4ea961463bbf8544e53863ba46b6577ce1a52db",
+   "files": 557,
+   "stripped": 57,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"e05338ab60764f2e977e64904c453149\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "sharedservices",
+   "base": "sharedservices",
+   "origin_commit": "4fea04becdc8a9024f3f446395c4b7e7c17377d4",
+   "seed_commit": "4d966fd0a472b1f866cd55b2985739df348276d7",
+   "files": 16,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"4477208928bc41c888d974c8a1dddcdd\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

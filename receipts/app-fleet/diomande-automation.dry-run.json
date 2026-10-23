@@ -1,0 +1,207 @@
+{
+ "id": "diomande-automation",
+ "title": "diomande-automation",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/diomande-automation",
+ "default_branch": "master",
+ "truncated_tree": false,
+ "files": 203,
+ "text_bytes": 882231,
+ "offenders": [
+  {
+   "path": "public/projects/icons/aura.png",
+   "bytes": 17386,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/icons/bwb-customer.png",
+   "bytes": 579591,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/icons/bwb-pos.png",
+   "bytes": 579591,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/icons/creative-director.png",
+   "bytes": 26517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/icons/serenity-soother.png",
+   "bytes": 25486,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/icons/speakflow.png",
+   "bytes": 1104886,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/icons/spore.png",
+   "bytes": 170173,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/audio-engine.png",
+   "bytes": 144637,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/buff-flow.png",
+   "bytes": 585944,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/buffbarista-dance.png",
+   "bytes": 454683,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/bwb.png",
+   "bytes": 64108,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/cali-lights.png",
+   "bytes": 57781,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/cc-dashboard.png",
+   "bytes": 17216,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/conductor-engine.png",
+   "bytes": 432599,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/dependency-oracle.png",
+   "bytes": 56821,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/diomande-automation.png",
+   "bytes": 547170,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/gesture-system.png",
+   "bytes": 52356,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/granddiomande.png",
+   "bytes": 694354,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/learnnko.png",
+   "bytes": 358335,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/linkit.png",
+   "bytes": 209761,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/meaning-full-power.png",
+   "bytes": 854747,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/mediapipe-creative.png",
+   "bytes": 259247,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/mfp-landing.png",
+   "bytes": 853553,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/mfp-storefront.png",
+   "bytes": 451191,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/milkmen-delivery.png",
+   "bytes": 24034,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/mocopi-integration.png",
+   "bytes": 446875,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/nexus-portal.png",
+   "bytes": 76782,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/plaisir.png",
+   "bytes": 25147,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/pulse.png",
+   "bytes": 849594,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/qr-dynamic.png",
+   "bytes": 94373,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/serenity-soother.png",
+   "bytes": 1153854,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/serenity-store.png",
+   "bytes": 705372,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/session-threads-ui.png",
+   "bytes": 21794,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/sound-sigils.png",
+   "bytes": 40677,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/spatial-git.png",
+   "bytes": 57781,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/stabent.png",
+   "bytes": 218462,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/projects/screenshots/timeline-app.png",
+   "bytes": 60011,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "diomande-automation",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create diomande-automation --namespace foundry-staging",
+  "FOUNDRY_SEED=diomande-automation /Users/mohameddiomande/.config/foundry/bin/foundry-push diomande-automation master:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging diomande-automation",
+  "registry: foundry_base=diomande-automation; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/diomande-automation/",
+ "first_merge_fits_gate": true
+}

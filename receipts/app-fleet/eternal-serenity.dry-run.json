@@ -1,0 +1,27 @@
+{
+ "id": "eternal-serenity",
+ "title": "eternal-serenity",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/eternal-serenity",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 109,
+ "text_bytes": 798586,
+ "offenders": [
+  {
+   "path": "Eternal_Serenity/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 48699,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "eternal-serenity",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create eternal-serenity --namespace foundry-staging",
+  "FOUNDRY_SEED=eternal-serenity /Users/mohameddiomande/.config/foundry/bin/foundry-push eternal-serenity main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging eternal-serenity",
+  "registry: foundry_base=eternal-serenity; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/eternal-serenity/",
+ "first_merge_fits_gate": true
+}

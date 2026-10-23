@@ -1,0 +1,21 @@
+{
+ "id": "goal-archaeologist",
+ "title": "goal-archaeologist",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/goal-archaeologist",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 4,
+ "text_bytes": 92873,
+ "offenders": [],
+ "base": "goal-archaeologist",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create goal-archaeologist --namespace foundry-staging",
+  "FOUNDRY_SEED=goal-archaeologist /Users/mohameddiomande/.config/foundry/bin/foundry-push goal-archaeologist main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging goal-archaeologist",
+  "registry: foundry_base=goal-archaeologist; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

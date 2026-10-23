@@ -1,0 +1,21 @@
+{
+ "id": "illuminated_vanguard",
+ "title": "illuminated_vanguard",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/illuminated_vanguard",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 3100,
+ "offenders": [],
+ "base": "illuminated_vanguard",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create illuminated_vanguard --namespace foundry-staging",
+  "FOUNDRY_SEED=illuminated_vanguard /Users/mohameddiomande/.config/foundry/bin/foundry-push illuminated_vanguard main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging illuminated_vanguard",
+  "registry: foundry_base=illuminated_vanguard; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

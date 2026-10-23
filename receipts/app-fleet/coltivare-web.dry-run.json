@@ -1,0 +1,21 @@
+{
+ "id": "coltivare-web",
+ "title": "coltivare-web",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/coltivare-web",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 48,
+ "text_bytes": 548307,
+ "offenders": [],
+ "base": "coltivare-web",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create coltivare-web --namespace foundry-staging",
+  "FOUNDRY_SEED=coltivare-web /Users/mohameddiomande/.config/foundry/bin/foundry-push coltivare-web main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging coltivare-web",
+  "registry: foundry_base=coltivare-web; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

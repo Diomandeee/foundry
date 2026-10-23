@@ -1,0 +1,21 @@
+{
+ "id": "crm-app",
+ "title": "crm-app",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/crm-app",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 19,
+ "text_bytes": 229397,
+ "offenders": [],
+ "base": "crm-app",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create crm-app --namespace foundry-staging",
+  "FOUNDRY_SEED=crm-app /Users/mohameddiomande/.config/foundry/bin/foundry-push crm-app main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging crm-app",
+  "registry: foundry_base=crm-app; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,27 @@
+{
+ "id": "prism",
+ "title": "Prism",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Prism",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 22,
+ "text_bytes": 48238,
+ "offenders": [
+  {
+   "path": "Prism/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 20628,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "prism",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create prism --namespace foundry-staging",
+  "FOUNDRY_SEED=prism /Users/mohameddiomande/.config/foundry/bin/foundry-push prism main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging prism",
+  "registry: foundry_base=prism; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/prism/",
+ "first_merge_fits_gate": true
+}

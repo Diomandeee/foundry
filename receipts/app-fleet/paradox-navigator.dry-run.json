@@ -1,0 +1,21 @@
+{
+ "id": "paradox-navigator",
+ "title": "paradox-navigator",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/paradox-navigator",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 41,
+ "text_bytes": 1580924,
+ "offenders": [],
+ "base": "paradox-navigator",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create paradox-navigator --namespace foundry-staging",
+  "FOUNDRY_SEED=paradox-navigator /Users/mohameddiomande/.config/foundry/bin/foundry-push paradox-navigator main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging paradox-navigator",
+  "registry: foundry_base=paradox-navigator; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

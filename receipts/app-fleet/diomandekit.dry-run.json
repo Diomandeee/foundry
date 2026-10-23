@@ -1,0 +1,21 @@
+{
+ "id": "diomandekit",
+ "title": "DiomandeKit",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/DiomandeKit",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 13,
+ "text_bytes": 60787,
+ "offenders": [],
+ "base": "diomandekit",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create diomandekit --namespace foundry-staging",
+  "FOUNDRY_SEED=diomandekit /Users/mohameddiomande/.config/foundry/bin/foundry-push diomandekit main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging diomandekit",
+  "registry: foundry_base=diomandekit; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

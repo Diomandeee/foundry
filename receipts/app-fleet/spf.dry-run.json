@@ -1,0 +1,32 @@
+{
+ "id": "spf",
+ "title": "spf",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/spf",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 61,
+ "text_bytes": 579297,
+ "offenders": [
+  {
+   "path": "nextjs-image-gallery/public/og-image.png",
+   "bytes": 487623,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/og-image.png",
+   "bytes": 487623,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "spf",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create spf --namespace foundry-staging",
+  "FOUNDRY_SEED=spf /Users/mohameddiomande/.config/foundry/bin/foundry-push spf main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging spf",
+  "registry: foundry_base=spf; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/spf/",
+ "first_merge_fits_gate": true
+}

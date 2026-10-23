@@ -1,0 +1,4032 @@
+{
+ "id": "meaning-full-power",
+ "title": "Meaning-Full-Power",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/Meaning-Full-Power",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1531,
+ "text_bytes": 5789911,
+ "offenders": [
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/AppIcon.appiconset/AppIcon-1024-dark.png",
+   "bytes": 235952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/AppIcon.appiconset/AppIcon-1024-tinted.png",
+   "bytes": 235952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+   "bytes": 235952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Brand/mfp_logo_flower_of_life.imageset/mfp_logo_flower_of_life.png",
+   "bytes": 760925,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_001.gif",
+   "bytes": 10119689,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_002.gif",
+   "bytes": 9049218,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_003.gif",
+   "bytes": 11565263,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_004.gif",
+   "bytes": 8625134,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_005.gif",
+   "bytes": 11167116,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_006.gif",
+   "bytes": 10377940,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_007.gif",
+   "bytes": 9934577,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_008.gif",
+   "bytes": 9868490,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_009.gif",
+   "bytes": 10590491,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_010.gif",
+   "bytes": 11066521,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_011.gif",
+   "bytes": 11224885,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_012.gif",
+   "bytes": 10854412,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_013.gif",
+   "bytes": 10985549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_014.gif",
+   "bytes": 10113046,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_015.gif",
+   "bytes": 12007567,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_016.gif",
+   "bytes": 10514017,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_017.gif",
+   "bytes": 11818128,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_018.gif",
+   "bytes": 12356054,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_019.gif",
+   "bytes": 11177088,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_020.gif",
+   "bytes": 10359967,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_021.gif",
+   "bytes": 11122875,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_022.gif",
+   "bytes": 9892781,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_023.gif",
+   "bytes": 11029768,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_024.gif",
+   "bytes": 11122590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_025.gif",
+   "bytes": 9524909,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_026.gif",
+   "bytes": 10362432,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_027.gif",
+   "bytes": 10072158,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_028.gif",
+   "bytes": 11105963,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_029.gif",
+   "bytes": 12153120,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_030.gif",
+   "bytes": 9518222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_031.gif",
+   "bytes": 11573905,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_032.gif",
+   "bytes": 11880149,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_033.gif",
+   "bytes": 11256285,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_034.gif",
+   "bytes": 10396903,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_035.gif",
+   "bytes": 10858393,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_036.gif",
+   "bytes": 10338170,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_037.gif",
+   "bytes": 10501771,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_038.gif",
+   "bytes": 10335047,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/GIFs/gif_039.gif",
+   "bytes": 9818933,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_001.imageset/card_back_001.png",
+   "bytes": 630082,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_002.imageset/card_back_002.png",
+   "bytes": 630462,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_003.imageset/card_back_003.png",
+   "bytes": 636450,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_004.imageset/card_back_004.png",
+   "bytes": 633756,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_005.imageset/card_back_005.png",
+   "bytes": 633214,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_006.imageset/card_back_006.png",
+   "bytes": 639320,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_007.imageset/card_back_007.png",
+   "bytes": 644216,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_008.imageset/card_back_008.png",
+   "bytes": 640535,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_009.imageset/card_back_009.png",
+   "bytes": 642097,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_010.imageset/card_back_010.png",
+   "bytes": 633137,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_011.imageset/card_back_011.png",
+   "bytes": 633816,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_012.imageset/card_back_012.png",
+   "bytes": 635445,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_013.imageset/card_back_013.png",
+   "bytes": 644592,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_014.imageset/card_back_014.png",
+   "bytes": 642555,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_015.imageset/card_back_015.png",
+   "bytes": 648459,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_016.imageset/card_back_016.png",
+   "bytes": 644963,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_017.imageset/card_back_017.png",
+   "bytes": 642444,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_018.imageset/card_back_018.png",
+   "bytes": 644778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_019.imageset/card_back_019.png",
+   "bytes": 671024,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_020.imageset/card_back_020.png",
+   "bytes": 668222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_021.imageset/card_back_021.png",
+   "bytes": 672433,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_022.imageset/card_back_022.png",
+   "bytes": 644585,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_023.imageset/card_back_023.png",
+   "bytes": 646023,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_024.imageset/card_back_024.png",
+   "bytes": 644210,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_025.imageset/card_back_025.png",
+   "bytes": 651232,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_026.imageset/card_back_026.png",
+   "bytes": 646275,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_027.imageset/card_back_027.png",
+   "bytes": 649637,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_028.imageset/card_back_028.png",
+   "bytes": 646656,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_029.imageset/card_back_029.png",
+   "bytes": 636806,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_030.imageset/card_back_030.png",
+   "bytes": 641103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_031.imageset/card_back_031.png",
+   "bytes": 644034,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_032.imageset/card_back_032.png",
+   "bytes": 644671,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_033.imageset/card_back_033.png",
+   "bytes": 643651,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_034.imageset/card_back_034.png",
+   "bytes": 674337,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_035.imageset/card_back_035.png",
+   "bytes": 672635,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_036.imageset/card_back_036.png",
+   "bytes": 674002,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_037.imageset/card_back_037.png",
+   "bytes": 664783,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_038.imageset/card_back_038.png",
+   "bytes": 664805,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_039.imageset/card_back_039.png",
+   "bytes": 669549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_040.imageset/card_back_040.png",
+   "bytes": 638290,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_041.imageset/card_back_041.png",
+   "bytes": 642843,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_042.imageset/card_back_042.png",
+   "bytes": 639187,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_043.imageset/card_back_043.png",
+   "bytes": 643431,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_044.imageset/card_back_044.png",
+   "bytes": 637337,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_back_045.imageset/card_back_045.png",
+   "bytes": 643258,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_001.imageset/card_front_001.png",
+   "bytes": 577906,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_002.imageset/card_front_002.png",
+   "bytes": 608523,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_003.imageset/card_front_003.png",
+   "bytes": 720949,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_004.imageset/card_front_004.png",
+   "bytes": 588949,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_005.imageset/card_front_005.png",
+   "bytes": 633925,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_006.imageset/card_front_006.png",
+   "bytes": 715792,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_007.imageset/card_front_007.png",
+   "bytes": 554103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_008.imageset/card_front_008.png",
+   "bytes": 543377,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_009.imageset/card_front_009.png",
+   "bytes": 661568,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_010.imageset/card_front_010.png",
+   "bytes": 677096,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_011.imageset/card_front_011.png",
+   "bytes": 626787,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_012.imageset/card_front_012.png",
+   "bytes": 588444,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_013.imageset/card_front_013.png",
+   "bytes": 575450,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_014.imageset/card_front_014.png",
+   "bytes": 656167,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_015.imageset/card_front_015.png",
+   "bytes": 709611,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_016.imageset/card_front_016.png",
+   "bytes": 461440,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_017.imageset/card_front_017.png",
+   "bytes": 513699,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_018.imageset/card_front_018.png",
+   "bytes": 609944,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_019.imageset/card_front_019.png",
+   "bytes": 601551,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_020.imageset/card_front_020.png",
+   "bytes": 569621,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_021.imageset/card_front_021.png",
+   "bytes": 606208,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_022.imageset/card_front_022.png",
+   "bytes": 534705,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_023.imageset/card_front_023.png",
+   "bytes": 581983,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_024.imageset/card_front_024.png",
+   "bytes": 585871,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_025.imageset/card_front_025.png",
+   "bytes": 576453,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_026.imageset/card_front_026.png",
+   "bytes": 531676,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_027.imageset/card_front_027.png",
+   "bytes": 737085,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_028.imageset/card_front_028.png",
+   "bytes": 669818,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_029.imageset/card_front_029.png",
+   "bytes": 537977,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_030.imageset/card_front_030.png",
+   "bytes": 664819,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_031.imageset/card_front_031.png",
+   "bytes": 523882,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_032.imageset/card_front_032.png",
+   "bytes": 559095,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_033.imageset/card_front_033.png",
+   "bytes": 547139,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_034.imageset/card_front_034.png",
+   "bytes": 749017,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_035.imageset/card_front_035.png",
+   "bytes": 643956,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_036.imageset/card_front_036.png",
+   "bytes": 617746,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_037.imageset/card_front_037.png",
+   "bytes": 605074,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_038.imageset/card_front_038.png",
+   "bytes": 571030,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_039.imageset/card_front_039.png",
+   "bytes": 591936,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_040.imageset/card_front_040.png",
+   "bytes": 533575,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_041.imageset/card_front_041.png",
+   "bytes": 562701,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_042.imageset/card_front_042.png",
+   "bytes": 701625,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_043.imageset/card_front_043.png",
+   "bytes": 517860,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_044.imageset/card_front_044.png",
+   "bytes": 545061,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/card_front_045.imageset/card_front_045.png",
+   "bytes": 812650,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_001.imageset/design_001.jpg",
+   "bytes": 1257817,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_002.imageset/design_002.jpg",
+   "bytes": 1014028,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_003.imageset/design_003.jpg",
+   "bytes": 210155,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_004.imageset/design_004.jpg",
+   "bytes": 4008759,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_005.imageset/design_005.jpg",
+   "bytes": 239123,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_006.imageset/design_006.jpg",
+   "bytes": 230479,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_007.imageset/design_007.jpg",
+   "bytes": 163153,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_008.imageset/design_008.jpg",
+   "bytes": 218834,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_009.imageset/design_009.jpg",
+   "bytes": 202409,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_010.imageset/design_010.jpg",
+   "bytes": 165138,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_011.imageset/design_011.jpg",
+   "bytes": 209754,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_012.imageset/design_012.jpg",
+   "bytes": 183057,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_013.imageset/design_013.jpg",
+   "bytes": 195457,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_014.imageset/design_014.jpg",
+   "bytes": 224824,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_015.imageset/design_015.jpg",
+   "bytes": 216925,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_016.imageset/design_016.jpg",
+   "bytes": 185835,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_017.imageset/design_017.jpg",
+   "bytes": 209837,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_018.imageset/design_018.jpg",
+   "bytes": 221381,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_019.imageset/design_019.jpg",
+   "bytes": 175174,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_020.imageset/design_020.jpg",
+   "bytes": 238502,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_021.imageset/design_021.jpg",
+   "bytes": 165718,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_022.imageset/design_022.jpg",
+   "bytes": 165839,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_023.imageset/design_023.jpg",
+   "bytes": 195618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_024.imageset/design_024.jpg",
+   "bytes": 184424,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_025.imageset/design_025.jpg",
+   "bytes": 166794,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_026.imageset/design_026.jpg",
+   "bytes": 194698,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_027.imageset/design_027.jpg",
+   "bytes": 269082,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_028.imageset/design_028.jpg",
+   "bytes": 204592,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_029.imageset/design_029.jpg",
+   "bytes": 174269,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_030.imageset/design_030.jpg",
+   "bytes": 178199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_031.imageset/design_031.jpg",
+   "bytes": 179060,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_032.imageset/design_032.jpg",
+   "bytes": 195941,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_033.imageset/design_033.jpg",
+   "bytes": 203527,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_034.imageset/design_034.jpg",
+   "bytes": 207130,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_035.imageset/design_035.jpg",
+   "bytes": 194835,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_036.imageset/design_036.jpg",
+   "bytes": 223815,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_037.imageset/design_037.jpg",
+   "bytes": 201324,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_038.imageset/design_038.jpg",
+   "bytes": 209800,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_039.imageset/design_039.jpg",
+   "bytes": 173892,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_040.imageset/design_040.jpg",
+   "bytes": 197292,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_041.imageset/design_041.jpg",
+   "bytes": 192148,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_042.imageset/design_042.jpg",
+   "bytes": 172202,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_043.imageset/design_043.jpg",
+   "bytes": 247643,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_044.imageset/design_044.jpg",
+   "bytes": 248649,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/design_045.imageset/design_045.jpg",
+   "bytes": 207732,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_001.imageset/qrcode_001.jpg",
+   "bytes": 12395386,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_002.imageset/qrcode_002.jpg",
+   "bytes": 12947324,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_003.imageset/qrcode_003.jpg",
+   "bytes": 13734228,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_004.imageset/qrcode_004.jpg",
+   "bytes": 8275817,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_005.imageset/qrcode_005.jpg",
+   "bytes": 13607295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_006.imageset/qrcode_006.jpg",
+   "bytes": 12668600,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_007.imageset/qrcode_007.jpg",
+   "bytes": 13592349,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_008.imageset/qrcode_008.jpg",
+   "bytes": 12608760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_009.imageset/qrcode_009.jpg",
+   "bytes": 12860078,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_010.imageset/qrcode_010.jpg",
+   "bytes": 11003902,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_011.imageset/qrcode_011.jpg",
+   "bytes": 8940566,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_012.imageset/qrcode_012.jpg",
+   "bytes": 12110446,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_013.imageset/qrcode_013.jpg",
+   "bytes": 11095217,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_014.imageset/qrcode_014.jpg",
+   "bytes": 10936786,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_015.imageset/qrcode_015.jpg",
+   "bytes": 15574240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_016.imageset/qrcode_016.jpg",
+   "bytes": 14611044,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_017.imageset/qrcode_017.jpg",
+   "bytes": 11883820,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_018.imageset/qrcode_018.jpg",
+   "bytes": 15513599,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_019.imageset/qrcode_019.jpg",
+   "bytes": 13358853,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_020.imageset/qrcode_020.jpg",
+   "bytes": 11516595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_021.imageset/qrcode_021.jpg",
+   "bytes": 9332475,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_022.imageset/qrcode_022.jpg",
+   "bytes": 8933033,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_023.imageset/qrcode_023.jpg",
+   "bytes": 9094435,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_024.imageset/qrcode_024.jpg",
+   "bytes": 9834168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_025.imageset/qrcode_025.jpg",
+   "bytes": 11525570,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_026.imageset/qrcode_026.jpg",
+   "bytes": 10659521,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_027.imageset/qrcode_027.jpg",
+   "bytes": 13726424,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_028.imageset/qrcode_028.jpg",
+   "bytes": 10543926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_029.imageset/qrcode_029.jpg",
+   "bytes": 10994900,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_030.imageset/qrcode_030.jpg",
+   "bytes": 7415172,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_031.imageset/qrcode_031.jpg",
+   "bytes": 13021456,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_032.imageset/qrcode_032.jpg",
+   "bytes": 12822679,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_033.imageset/qrcode_033.jpg",
+   "bytes": 12456901,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_034.imageset/qrcode_034.jpg",
+   "bytes": 14344739,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_035.imageset/qrcode_035.jpg",
+   "bytes": 7088427,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_036.imageset/qrcode_036.jpg",
+   "bytes": 9890427,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_037.imageset/qrcode_037.jpg",
+   "bytes": 9447694,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_038.imageset/qrcode_038.jpg",
+   "bytes": 10266757,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/qrcode_039.imageset/qrcode_039.jpg",
+   "bytes": 8692558,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_001.imageset/text_001.jpg",
+   "bytes": 3969021,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_002.imageset/text_002.jpg",
+   "bytes": 3130049,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_003.imageset/text_003.jpg",
+   "bytes": 3189197,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_004.imageset/text_004.jpg",
+   "bytes": 4008759,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_005.imageset/text_005.jpg",
+   "bytes": 3569789,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_006.imageset/text_006.jpg",
+   "bytes": 1551817,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_007.imageset/text_007.jpg",
+   "bytes": 1814177,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_008.imageset/text_008.jpg",
+   "bytes": 3694020,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_009.imageset/text_009.jpg",
+   "bytes": 3741089,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_010.imageset/text_010.jpg",
+   "bytes": 4461247,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_011.imageset/text_011.jpg",
+   "bytes": 3335232,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_012.imageset/text_012.jpg",
+   "bytes": 3245519,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_013.imageset/text_013.jpg",
+   "bytes": 4583001,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_014.imageset/text_014.jpg",
+   "bytes": 3474674,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_015.imageset/text_015.jpg",
+   "bytes": 3514472,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_016.imageset/text_016.jpg",
+   "bytes": 4789774,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_017.imageset/text_017.jpg",
+   "bytes": 3070842,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_018.imageset/text_018.jpg",
+   "bytes": 3465964,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_019.imageset/text_019.jpg",
+   "bytes": 4936723,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_020.imageset/text_020.jpg",
+   "bytes": 3421555,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_021.imageset/text_021.jpg",
+   "bytes": 3735504,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_022.imageset/text_022.jpg",
+   "bytes": 4127734,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_023.imageset/text_023.jpg",
+   "bytes": 3476204,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_024.imageset/text_024.jpg",
+   "bytes": 3812416,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_025.imageset/text_025.jpg",
+   "bytes": 4525838,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_026.imageset/text_026.jpg",
+   "bytes": 3445184,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_027.imageset/text_027.jpg",
+   "bytes": 3633757,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_028.imageset/text_028.jpg",
+   "bytes": 4295205,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_029.imageset/text_029.jpg",
+   "bytes": 3261195,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_030.imageset/text_030.jpg",
+   "bytes": 3196722,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_031.imageset/text_031.jpg",
+   "bytes": 4373544,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_032.imageset/text_032.jpg",
+   "bytes": 3213168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_033.imageset/text_033.jpg",
+   "bytes": 3516882,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_034.imageset/text_034.jpg",
+   "bytes": 4399298,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_035.imageset/text_035.jpg",
+   "bytes": 3084641,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_036.imageset/text_036.jpg",
+   "bytes": 3720176,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_037.imageset/text_037.jpg",
+   "bytes": 4388221,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_038.imageset/text_038.jpg",
+   "bytes": 3237407,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_039.imageset/text_039.jpg",
+   "bytes": 3943810,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_040.imageset/text_040.jpg",
+   "bytes": 7258520,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_041.imageset/text_041.jpg",
+   "bytes": 10214048,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_042.imageset/text_042.jpg",
+   "bytes": 4363807,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_043.imageset/text_043.jpg",
+   "bytes": 4531039,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_044.imageset/text_044.jpg",
+   "bytes": 7280442,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Meaning Full Power/Meaning Full Power/Assets.xcassets/Cards/text_045.imageset/text_045.jpg",
+   "bytes": 8584108,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeaningFullPower-Expo/assets/adaptive-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeaningFullPower-Expo/assets/favicon.png",
+   "bytes": 1466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeaningFullPower-Expo/assets/icon.png",
+   "bytes": 22380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "MeaningFullPower-Expo/assets/splash-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/AppIcon.png",
+   "bytes": 390818,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-1024.png",
+   "bytes": 235952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-120.png",
+   "bytes": 11105,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-152.png",
+   "bytes": 15945,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-167.png",
+   "bytes": 17992,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-180.png",
+   "bytes": 20538,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-20.png",
+   "bytes": 700,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-29.png",
+   "bytes": 1126,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-40.png",
+   "bytes": 1954,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-58.png",
+   "bytes": 3532,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-60.png",
+   "bytes": 3664,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-76.png",
+   "bytes": 5457,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-80.png",
+   "bytes": 5870,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app-store/AppIcon.appiconset/icon-87.png",
+   "bytes": 6554,
+   "why": "binary-ext"
+  },
+  {
+   "path": "brand/mfp-logo-primary.png",
+   "bytes": 760925,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/2026-02-09-mfp-inner-strength-4k.png",
+   "bytes": 21473469,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/2026-02-09-mfp-inner-strength-v2.png",
+   "bytes": 6892505,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-001-the-spark.png",
+   "bytes": 2406111,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-002-the-doubt.png",
+   "bytes": 2511017,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-003-the-flame.png",
+   "bytes": 2854925,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-004-the-hourglass.png",
+   "bytes": 2451769,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-005-the-distraction.png",
+   "bytes": 2599488,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-006-the-legacy.png",
+   "bytes": 2764836,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-007-the-wound.png",
+   "bytes": 2305776,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-008-the-numbness.png",
+   "bytes": 2236693,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-009-the-mending.png",
+   "bytes": 2597082,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-010-the-cage.png",
+   "bytes": 2670165,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-011-the-fear.png",
+   "bytes": 2536038,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-012-the-flight.png",
+   "bytes": 2373406,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-013-the-ordinary.png",
+   "bytes": 2218800,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-014-the-gravity.png",
+   "bytes": 2532242,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-015-the-ascension.png",
+   "bytes": 2719867,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-016-the-seed.png",
+   "bytes": 2032532,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-017-the-despair.png",
+   "bytes": 2129643,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-018-the-dawn.png",
+   "bytes": 2462960,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-019-the-mirror.png",
+   "bytes": 2471482,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-020-the-ego.png",
+   "bytes": 2380126,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-021-the-balance.png",
+   "bytes": 2458999,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-022-the-lens.png",
+   "bytes": 2195074,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-023-the-cynic.png",
+   "bytes": 2410665,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-024-the-architect.png",
+   "bytes": 2380529,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-025-the-hunger.png",
+   "bytes": 2350505,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-026-the-comparison.png",
+   "bytes": 2203680,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-027-the-harvest.png",
+   "bytes": 2853358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-028-the-dormant.png",
+   "bytes": 2639749,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-029-the-ceiling.png",
+   "bytes": 2231736,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-030-the-unleashed.png",
+   "bytes": 2619040,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-031-the-scale.png",
+   "bytes": 2163123,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-032-the-injustice.png",
+   "bytes": 2320338,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-033-the-bridge.png",
+   "bytes": 2255015,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-034-the-grudge.png",
+   "bytes": 2934066,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-035-the-scar.png",
+   "bytes": 2572788,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-036-the-release.png",
+   "bytes": 2486613,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-037-the-reflection.png",
+   "bytes": 2492340,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-038-the-excuse.png",
+   "bytes": 2403535,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-039-the-anchor.png",
+   "bytes": 2468564,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-040-the-morning.png",
+   "bytes": 2270801,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-041-the-regret.png",
+   "bytes": 2366823,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-042-the-present.png",
+   "bytes": 2764042,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-043-the-journey.png",
+   "bytes": 2192795,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-044-the-weariness.png",
+   "bytes": 2245590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/fronts/MFP-045-the-eternal.png",
+   "bytes": 3125163,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-001-back.png",
+   "bytes": 2815295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-002-back.png",
+   "bytes": 2814478,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-003-back.png",
+   "bytes": 2818471,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-004-back.png",
+   "bytes": 2839758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-005-back.png",
+   "bytes": 2840027,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-006-back.png",
+   "bytes": 2838657,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-007-back.png",
+   "bytes": 2861164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-008-back.png",
+   "bytes": 2859487,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-009-back.png",
+   "bytes": 2859735,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-010-back.png",
+   "bytes": 2841944,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-011-back.png",
+   "bytes": 2841015,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-012-back.png",
+   "bytes": 2841691,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-013-back.png",
+   "bytes": 2845974,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-014-back.png",
+   "bytes": 2846850,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-015-back.png",
+   "bytes": 2847427,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-016-back.png",
+   "bytes": 2853936,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-017-back.png",
+   "bytes": 2849521,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-018-back.png",
+   "bytes": 2850788,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-019-back.png",
+   "bytes": 2880601,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-020-back.png",
+   "bytes": 2878981,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-021-back.png",
+   "bytes": 2870760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-022-back.png",
+   "bytes": 2848077,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-023-back.png",
+   "bytes": 2846955,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-024-back.png",
+   "bytes": 2850277,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-025-back.png",
+   "bytes": 2857632,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-026-back.png",
+   "bytes": 2855657,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-027-back.png",
+   "bytes": 2855432,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-028-back.png",
+   "bytes": 2846153,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-029-back.png",
+   "bytes": 2841139,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-030-back.png",
+   "bytes": 2840616,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-031-back.png",
+   "bytes": 2854530,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-032-back.png",
+   "bytes": 2852220,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-033-back.png",
+   "bytes": 2852094,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-034-back.png",
+   "bytes": 2936456,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-035-back.png",
+   "bytes": 2937898,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-036-back.png",
+   "bytes": 2935767,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-037-back.png",
+   "bytes": 2894412,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-038-back.png",
+   "bytes": 2896077,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-039-back.png",
+   "bytes": 2895738,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-040-back.png",
+   "bytes": 2841638,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-041-back.png",
+   "bytes": 2840504,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-042-back.png",
+   "bytes": 2840362,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-043-back.png",
+   "bytes": 2845274,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-044-back.png",
+   "bytes": 2844106,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/backs/MFP-045-back.png",
+   "bytes": 2845053,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-003-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-006-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-009-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-015-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-018-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-027-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-030-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-033-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-036-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-042-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/foil-masks/MFP-045-foil-mask.png",
+   "bytes": 3358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-001-print.png",
+   "bytes": 2279973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-002-print.png",
+   "bytes": 2364081,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-003-print.png",
+   "bytes": 2701248,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-004-print.png",
+   "bytes": 2341314,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-005-print.png",
+   "bytes": 2448934,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-006-print.png",
+   "bytes": 2619081,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-007-print.png",
+   "bytes": 2178436,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-008-print.png",
+   "bytes": 2093751,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-009-print.png",
+   "bytes": 2452797,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-010-print.png",
+   "bytes": 2501006,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-011-print.png",
+   "bytes": 2332035,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-012-print.png",
+   "bytes": 2217767,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-013-print.png",
+   "bytes": 2090527,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-014-print.png",
+   "bytes": 2381655,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-015-print.png",
+   "bytes": 2560190,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-016-print.png",
+   "bytes": 1924008,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-017-print.png",
+   "bytes": 1963220,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-018-print.png",
+   "bytes": 2312832,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-019-print.png",
+   "bytes": 2296021,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-020-print.png",
+   "bytes": 2231275,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-021-print.png",
+   "bytes": 2312498,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-022-print.png",
+   "bytes": 2049620,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-023-print.png",
+   "bytes": 2283125,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-024-print.png",
+   "bytes": 2264503,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-025-print.png",
+   "bytes": 2211081,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-026-print.png",
+   "bytes": 2071891,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-027-print.png",
+   "bytes": 2705070,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-028-print.png",
+   "bytes": 2471960,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-029-print.png",
+   "bytes": 2040793,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-030-print.png",
+   "bytes": 2481757,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-031-print.png",
+   "bytes": 1998201,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-032-print.png",
+   "bytes": 2139928,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-033-print.png",
+   "bytes": 2092498,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-034-print.png",
+   "bytes": 2756049,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-035-print.png",
+   "bytes": 2425577,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-036-print.png",
+   "bytes": 2340584,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-037-print.png",
+   "bytes": 2348643,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-038-print.png",
+   "bytes": 2265982,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-039-print.png",
+   "bytes": 2318410,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-040-print.png",
+   "bytes": 2124658,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-041-print.png",
+   "bytes": 2217395,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-042-print.png",
+   "bytes": 2613409,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-043-print.png",
+   "bytes": 2060874,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-044-print.png",
+   "bytes": 2112703,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts-v2/MFP-045-print.png",
+   "bytes": 2972374,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-001-print.png",
+   "bytes": 2698865,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-002-print.png",
+   "bytes": 2779369,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-003-print.png",
+   "bytes": 3179226,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-004-print.png",
+   "bytes": 2740146,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-005-print.png",
+   "bytes": 2892302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-006-print.png",
+   "bytes": 3067578,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-007-print.png",
+   "bytes": 2583265,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-008-print.png",
+   "bytes": 2520038,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-009-print.png",
+   "bytes": 2902161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-010-print.png",
+   "bytes": 2977320,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-011-print.png",
+   "bytes": 2829789,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-012-print.png",
+   "bytes": 2647795,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-013-print.png",
+   "bytes": 2483974,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-014-print.png",
+   "bytes": 2812626,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-015-print.png",
+   "bytes": 3036185,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-016-print.png",
+   "bytes": 2292262,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-017-print.png",
+   "bytes": 2391404,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-018-print.png",
+   "bytes": 2760224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-019-print.png",
+   "bytes": 2738593,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-020-print.png",
+   "bytes": 2659876,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-021-print.png",
+   "bytes": 2744853,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-022-print.png",
+   "bytes": 2449889,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-023-print.png",
+   "bytes": 2697446,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-024-print.png",
+   "bytes": 2668388,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-025-print.png",
+   "bytes": 2616471,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-026-print.png",
+   "bytes": 2463913,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-027-print.png",
+   "bytes": 3174574,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-028-print.png",
+   "bytes": 2939617,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-029-print.png",
+   "bytes": 2474664,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-030-print.png",
+   "bytes": 2921284,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-031-print.png",
+   "bytes": 2430679,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-032-print.png",
+   "bytes": 2546018,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-033-print.png",
+   "bytes": 2537346,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-034-print.png",
+   "bytes": 3245224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-035-print.png",
+   "bytes": 2881435,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-036-print.png",
+   "bytes": 2785695,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-037-print.png",
+   "bytes": 2772160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-038-print.png",
+   "bytes": 2666295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-039-print.png",
+   "bytes": 2755923,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-040-print.png",
+   "bytes": 2534934,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-041-print.png",
+   "bytes": 2628812,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-042-print.png",
+   "bytes": 3072268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-043-print.png",
+   "bytes": 2464645,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-044-print.png",
+   "bytes": 2521801,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/print/fronts/MFP-045-print.png",
+   "bytes": 3443295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/contact-sheet-all-45.png",
+   "bytes": 7268936,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/pair-MFP-001.png",
+   "bytes": 457875,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/pair-MFP-015.png",
+   "bytes": 562582,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/pair-MFP-045.png",
+   "bytes": 601235,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-001-the-spark.png",
+   "bytes": 141275,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-002-the-doubt.png",
+   "bytes": 152184,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-003-the-flame.png",
+   "bytes": 183333,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-004-the-hourglass.png",
+   "bytes": 143810,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-005-the-distraction.png",
+   "bytes": 160125,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-006-the-legacy.png",
+   "bytes": 180358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-007-the-wound.png",
+   "bytes": 140663,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-008-the-numbness.png",
+   "bytes": 138011,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-009-the-mending.png",
+   "bytes": 172201,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-010-the-cage.png",
+   "bytes": 176615,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-011-the-fear.png",
+   "bytes": 160669,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-012-the-flight.png",
+   "bytes": 156003,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-013-the-ordinary.png",
+   "bytes": 150003,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-014-the-gravity.png",
+   "bytes": 171859,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-015-the-ascension.png",
+   "bytes": 185565,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-016-the-seed.png",
+   "bytes": 110982,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-017-the-despair.png",
+   "bytes": 131139,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-018-the-dawn.png",
+   "bytes": 156138,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-019-the-mirror.png",
+   "bytes": 150390,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-020-the-ego.png",
+   "bytes": 141693,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-021-the-balance.png",
+   "bytes": 150273,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-022-the-lens.png",
+   "bytes": 140158,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-023-the-cynic.png",
+   "bytes": 146807,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-024-the-architect.png",
+   "bytes": 152564,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-025-the-hunger.png",
+   "bytes": 146440,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-026-the-comparison.png",
+   "bytes": 135591,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-027-the-harvest.png",
+   "bytes": 184486,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-028-the-dormant.png",
+   "bytes": 173047,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-029-the-ceiling.png",
+   "bytes": 142115,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-030-the-unleashed.png",
+   "bytes": 173350,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-031-the-scale.png",
+   "bytes": 132527,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-032-the-injustice.png",
+   "bytes": 143503,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-033-the-bridge.png",
+   "bytes": 135804,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-034-the-grudge.png",
+   "bytes": 187032,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-035-the-scar.png",
+   "bytes": 165626,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-036-the-release.png",
+   "bytes": 160156,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-037-the-reflection.png",
+   "bytes": 150684,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-038-the-excuse.png",
+   "bytes": 137169,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-039-the-anchor.png",
+   "bytes": 145148,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-040-the-morning.png",
+   "bytes": 134652,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-041-the-regret.png",
+   "bytes": 141008,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-042-the-present.png",
+   "bytes": 179653,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-043-the-journey.png",
+   "bytes": 128595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-044-the-weariness.png",
+   "bytes": 138739,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/thumb-MFP-045-the-eternal.png",
+   "bytes": 208818,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/v2/contact-sheet-all-45.png",
+   "bytes": 3080773,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/proof/v2/contact-sheet-sample.png",
+   "bytes": 260861,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/tmp/openai-image-gen-2026-02-09-01-29-12/001-premium-collectible-trading-card-design-.png",
+   "bytes": 3214294,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch01-passion-panoramic.png",
+   "bytes": 18910150,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch02-time-panoramic.png",
+   "bytes": 19394173,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch03-healing-panoramic.png",
+   "bytes": 17666141,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch04-freedom-panoramic.png",
+   "bytes": 18499554,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch05-transcendence-panoramic.png",
+   "bytes": 18304660,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch06-hope-panoramic.png",
+   "bytes": 16306914,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch07-confidence-panoramic.png",
+   "bytes": 18047361,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch08-optimism-panoramic.png",
+   "bytes": 17268647,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch09-fulfillment-panoramic.png",
+   "bytes": 17636921,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch10-potential-panoramic.png",
+   "bytes": 18297470,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch11-equality-panoramic.png",
+   "bytes": 15650873,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch12-forgiveness-panoramic.png",
+   "bytes": 19073774,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch13-accountability-panoramic.png",
+   "bytes": 17920286,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch14-today-panoramic.png",
+   "bytes": 18714573,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/panoramic/ch15-life-panoramic.png",
+   "bytes": 18933214,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-001-the-spark.png",
+   "bytes": 5611835,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-002-the-doubt.png",
+   "bytes": 5782840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-003-the-flame.png",
+   "bytes": 6696441,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-004-the-hourglass.png",
+   "bytes": 5776353,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-005-the-distraction.png",
+   "bytes": 6144180,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-006-the-legacy.png",
+   "bytes": 6526004,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-007-the-wound.png",
+   "bytes": 5597750,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-008-the-numbness.png",
+   "bytes": 5373386,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-009-the-mending.png",
+   "bytes": 6257028,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-010-the-cage.png",
+   "bytes": 6394188,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-011-the-fear.png",
+   "bytes": 5870950,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-012-the-flight.png",
+   "bytes": 5644191,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-013-the-ordinary.png",
+   "bytes": 4914400,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-014-the-gravity.png",
+   "bytes": 5780432,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-015-the-ascension.png",
+   "bytes": 6398371,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-016-the-seed.png",
+   "bytes": 4837036,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-017-the-despair.png",
+   "bytes": 5089943,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-018-the-dawn.png",
+   "bytes": 5912815,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-019-the-mirror.png",
+   "bytes": 5852053,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-020-the-ego.png",
+   "bytes": 5852247,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-021-the-balance.png",
+   "bytes": 5776162,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-022-the-lens.png",
+   "bytes": 4971411,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-023-the-cynic.png",
+   "bytes": 5676533,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-024-the-architect.png",
+   "bytes": 5771039,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-025-the-hunger.png",
+   "bytes": 5355313,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-026-the-comparison.png",
+   "bytes": 5020452,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-027-the-harvest.png",
+   "bytes": 6540070,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-028-the-dormant.png",
+   "bytes": 6078684,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-029-the-ceiling.png",
+   "bytes": 5082690,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-030-the-unleashed.png",
+   "bytes": 6253400,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-031-the-scale.png",
+   "bytes": 4912587,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-032-the-injustice.png",
+   "bytes": 5267060,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-033-the-bridge.png",
+   "bytes": 5283177,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-034-the-grudge.png",
+   "bytes": 6708043,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-035-the-scar.png",
+   "bytes": 6085333,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-036-the-release.png",
+   "bytes": 5851723,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-037-the-reflection.png",
+   "bytes": 5879425,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-038-the-excuse.png",
+   "bytes": 5604030,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-039-the-anchor.png",
+   "bytes": 5843815,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-040-the-morning.png",
+   "bytes": 5453774,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-041-the-regret.png",
+   "bytes": 5732979,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-042-the-present.png",
+   "bytes": 6625084,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-043-the-journey.png",
+   "bytes": 5313464,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-044-the-weariness.png",
+   "bytes": 5422381,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/triptychs/sliced/card-045-the-eternal.png",
+   "bytes": 7255252,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/variations/v1-art.png",
+   "bytes": 3461125,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/variations/v1-classic-gold.png",
+   "bytes": 69123,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/variations/v2-minimalist-dark.png",
+   "bytes": 29692,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/variations/v3-neon-energy.png",
+   "bytes": 48900,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/variations/v4-elegant-serif.png",
+   "bytes": 49731,
+   "why": "binary-ext"
+  },
+  {
+   "path": "cards/variations/v5-dark-premium.png",
+   "bytes": 34221,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/debug-qr-mask-orig.png",
+   "bytes": 8532,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-01.png",
+   "bytes": 174997,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-02.png",
+   "bytes": 185406,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-03.png",
+   "bytes": 262886,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-04.png",
+   "bytes": 176292,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-05.png",
+   "bytes": 194289,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-06.png",
+   "bytes": 204749,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-07.png",
+   "bytes": 170856,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-08.png",
+   "bytes": 102753,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-09.png",
+   "bytes": 102629,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-10.png",
+   "bytes": 96595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-11.png",
+   "bytes": 106759,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-12.png",
+   "bytes": 87214,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-13.png",
+   "bytes": 102677,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-14.png",
+   "bytes": 106749,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-15.png",
+   "bytes": 105588,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-16.png",
+   "bytes": 98924,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-17.png",
+   "bytes": 102717,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-18.png",
+   "bytes": 101123,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-19.png",
+   "bytes": 93788,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-20.png",
+   "bytes": 102040,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-21.png",
+   "bytes": 97287,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-22.png",
+   "bytes": 89812,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-23.png",
+   "bytes": 101340,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-24.png",
+   "bytes": 95782,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-25.png",
+   "bytes": 94773,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-26.png",
+   "bytes": 104149,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-27.png",
+   "bytes": 110191,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-28.png",
+   "bytes": 103501,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-29.png",
+   "bytes": 101454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-30.png",
+   "bytes": 95562,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-31.png",
+   "bytes": 98845,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-32.png",
+   "bytes": 101963,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-33.png",
+   "bytes": 104415,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-34.png",
+   "bytes": 105232,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-35.png",
+   "bytes": 95047,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-36.png",
+   "bytes": 105448,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-37.png",
+   "bytes": 99656,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-38.png",
+   "bytes": 99643,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-final/card-back-39.png",
+   "bytes": 94739,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-01.png",
+   "bytes": 172808,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-02.png",
+   "bytes": 183655,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-03.png",
+   "bytes": 260913,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-04.png",
+   "bytes": 172115,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-05.png",
+   "bytes": 190500,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-06.png",
+   "bytes": 200561,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-07.png",
+   "bytes": 167707,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-08.png",
+   "bytes": 99538,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-09.png",
+   "bytes": 99341,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-10.png",
+   "bytes": 94810,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-11.png",
+   "bytes": 105094,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-12.png",
+   "bytes": 85794,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-13.png",
+   "bytes": 98405,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-14.png",
+   "bytes": 103303,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-15.png",
+   "bytes": 101800,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-16.png",
+   "bytes": 95523,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-17.png",
+   "bytes": 99605,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-18.png",
+   "bytes": 97823,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-19.png",
+   "bytes": 89458,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-20.png",
+   "bytes": 98463,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-21.png",
+   "bytes": 93475,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-22.png",
+   "bytes": 85726,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-23.png",
+   "bytes": 96796,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-24.png",
+   "bytes": 91200,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-25.png",
+   "bytes": 93252,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-26.png",
+   "bytes": 102372,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-27.png",
+   "bytes": 108623,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-28.png",
+   "bytes": 99016,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-29.png",
+   "bytes": 97431,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-30.png",
+   "bytes": 90997,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-31.png",
+   "bytes": 94311,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-32.png",
+   "bytes": 97274,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-33.png",
+   "bytes": 99508,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-34.png",
+   "bytes": 103398,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-35.png",
+   "bytes": 93425,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-36.png",
+   "bytes": 103582,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-37.png",
+   "bytes": 97986,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-38.png",
+   "bytes": 97415,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-39.png",
+   "bytes": 92239,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-40.png",
+   "bytes": 131278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-41.png",
+   "bytes": 157301,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-42.png",
+   "bytes": 130033,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-43.png",
+   "bytes": 230690,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-44.png",
+   "bytes": 196273,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-pro/card-back-45.png",
+   "bytes": 184382,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-v2/card-back-01.png",
+   "bytes": 391453,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-v2/card-back-02.png",
+   "bytes": 412057,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-v2/card-back-03.png",
+   "bytes": 633220,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-v2/card-back-04.png",
+   "bytes": 383568,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-v2/card-back-05.png",
+   "bytes": 424955,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-v2/card-back-06.png",
+   "bytes": 461380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard-v3/card-back-01.png",
+   "bytes": 170627,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/composite-01.png",
+   "bytes": 168289,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/composite-02.png",
+   "bytes": 179521,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/composite-03.png",
+   "bytes": 262369,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/composite-04.png",
+   "bytes": 168869,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/composite-05.png",
+   "bytes": 185997,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/composite-06.png",
+   "bytes": 195267,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/qr-art-01.png",
+   "bytes": 1078399,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/qr-art-02.png",
+   "bytes": 1375856,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/qr-art-03.png",
+   "bytes": 1402381,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/qr-art-04.png",
+   "bytes": 1228263,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/qr-art-05.png",
+   "bytes": 1201768,
+   "why": "binary-ext"
+  },
+  {
+   "path": "editions/standard/qr-art-06.png",
+   "bytes": 1331743,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/mfp-logo-flower-of-life.png",
+   "bytes": 760925,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-001-qr.png",
+   "bytes": 2212,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-002-qr.png",
+   "bytes": 2164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-003-qr.png",
+   "bytes": 2146,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-004-qr.png",
+   "bytes": 2258,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-005-qr.png",
+   "bytes": 2249,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-006-qr.png",
+   "bytes": 2169,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-007-qr.png",
+   "bytes": 2226,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-008-qr.png",
+   "bytes": 2200,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-009-qr.png",
+   "bytes": 2154,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-010-qr.png",
+   "bytes": 2174,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-011-qr.png",
+   "bytes": 2193,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-012-qr.png",
+   "bytes": 2148,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-013-qr.png",
+   "bytes": 2160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-014-qr.png",
+   "bytes": 2197,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-015-qr.png",
+   "bytes": 2144,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-016-qr.png",
+   "bytes": 2168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-017-qr.png",
+   "bytes": 2253,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-018-qr.png",
+   "bytes": 2209,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-019-qr.png",
+   "bytes": 2178,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-020-qr.png",
+   "bytes": 2219,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-021-qr.png",
+   "bytes": 2226,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-022-qr.png",
+   "bytes": 2178,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-023-qr.png",
+   "bytes": 2243,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-024-qr.png",
+   "bytes": 2215,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-025-qr.png",
+   "bytes": 2161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-026-qr.png",
+   "bytes": 2159,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-027-qr.png",
+   "bytes": 2139,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-028-qr.png",
+   "bytes": 2114,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-029-qr.png",
+   "bytes": 2264,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-030-qr.png",
+   "bytes": 2236,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-031-qr.png",
+   "bytes": 2131,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-032-qr.png",
+   "bytes": 2269,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-033-qr.png",
+   "bytes": 2207,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-034-qr.png",
+   "bytes": 2156,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-035-qr.png",
+   "bytes": 2230,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-036-qr.png",
+   "bytes": 2184,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-037-qr.png",
+   "bytes": 2119,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-038-qr.png",
+   "bytes": 2159,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-039-qr.png",
+   "bytes": 2225,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-040-qr.png",
+   "bytes": 2167,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-041-qr.png",
+   "bytes": 2214,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-042-qr.png",
+   "bytes": 2185,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-043-qr.png",
+   "bytes": 2164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-044-qr.png",
+   "bytes": 2205,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/assets/qr-codes/png/MFP-045-qr.png",
+   "bytes": 2198,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/foil-masks/foil-mask-MFP-003.png",
+   "bytes": 12160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/foil-masks/foil-mask-MFP-006.png",
+   "bytes": 12160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/foil-masks/foil-mask-MFP-009.png",
+   "bytes": 12160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/foil-masks/foil-mask-MFP-015.png",
+   "bytes": 12160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/foil-masks/foil-mask-MFP-018.png",
+   "bytes": 12160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/foil-masks/foil-mask-MFP-030.png",
+   "bytes": 12160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/foil-masks/foil-mask-MFP-045.png",
+   "bytes": 12160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/logo/mfp-logo-primary.png",
+   "bytes": 760925,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/packaging/booster-pack-design.png",
+   "bytes": 306231,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/packaging/chapter-pack-design.png",
+   "bytes": 198891,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/packaging/display-box-design.png",
+   "bytes": 249763,
+   "why": "binary-ext"
+  },
+  {
+   "path": "physical-cards/prototype-upload/packaging/oracle-deck-box-design.png",
+   "bytes": 456528,
+   "why": "binary-ext"
+  },
+  {
+   "path": "std-card-01.png",
+   "bytes": 1583529,
+   "why": "binary-ext"
+  },
+  {
+   "path": "std-card-02.png",
+   "bytes": 1470543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "std-card-03.png",
+   "bytes": 1227590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-001.webp",
+   "bytes": 14778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-002.webp",
+   "bytes": 16126,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-003.webp",
+   "bytes": 23786,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-004.webp",
+   "bytes": 15630,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-005.webp",
+   "bytes": 19830,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-006.webp",
+   "bytes": 21760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-007.webp",
+   "bytes": 15464,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-008.webp",
+   "bytes": 13894,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-009.webp",
+   "bytes": 21682,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-010.webp",
+   "bytes": 27492,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-011.webp",
+   "bytes": 21796,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-012.webp",
+   "bytes": 21302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-013.webp",
+   "bytes": 20364,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-014.webp",
+   "bytes": 18442,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-015.webp",
+   "bytes": 24468,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-016.webp",
+   "bytes": 9278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-017.webp",
+   "bytes": 13384,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-018.webp",
+   "bytes": 17780,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-019.webp",
+   "bytes": 17094,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-020.webp",
+   "bytes": 15208,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-021.webp",
+   "bytes": 17934,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-022.webp",
+   "bytes": 15638,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-023.webp",
+   "bytes": 16302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-024.webp",
+   "bytes": 19636,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-025.webp",
+   "bytes": 16322,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-026.webp",
+   "bytes": 14962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-027.webp",
+   "bytes": 23668,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-028.webp",
+   "bytes": 24218,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-029.webp",
+   "bytes": 18066,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-030.webp",
+   "bytes": 27090,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-031.webp",
+   "bytes": 13840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-032.webp",
+   "bytes": 15418,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-033.webp",
+   "bytes": 14196,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-034.webp",
+   "bytes": 22794,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-035.webp",
+   "bytes": 18986,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-036.webp",
+   "bytes": 18496,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-037.webp",
+   "bytes": 18792,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-038.webp",
+   "bytes": 14436,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-039.webp",
+   "bytes": 17700,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-040.webp",
+   "bytes": 15488,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-041.webp",
+   "bytes": 16732,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-042.webp",
+   "bytes": 26536,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-043.webp",
+   "bytes": 14396,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-044.webp",
+   "bytes": 14280,
+   "why": "binary-ext"
+  },
+  {
+   "path": "storefront/public/card-fronts/MFP-045.webp",
+   "bytes": 31622,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "meaning-full-power",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create meaning-full-power --namespace foundry-staging",
+  "FOUNDRY_SEED=meaning-full-power /Users/mohameddiomande/.config/foundry/bin/foundry-push meaning-full-power main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging meaning-full-power",
+  "registry: foundry_base=meaning-full-power; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/meaning-full-power/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "motion-autocomplete",
+ "title": "motion-autocomplete",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/motion-autocomplete",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 35,
+ "text_bytes": 340618,
+ "offenders": [],
+ "base": "motion-autocomplete",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create motion-autocomplete --namespace foundry-staging",
+  "FOUNDRY_SEED=motion-autocomplete /Users/mohameddiomande/.config/foundry/bin/foundry-push motion-autocomplete main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging motion-autocomplete",
+  "registry: foundry_base=motion-autocomplete; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

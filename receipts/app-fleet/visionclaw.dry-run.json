@@ -1,0 +1,92 @@
+{
+ "id": "visionclaw",
+ "title": "VisionClaw",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/VisionClaw",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 107,
+ "text_bytes": 556221,
+ "offenders": [
+  {
+   "path": "assets/cover.png",
+   "bytes": 4654305,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/dev_mode.png",
+   "bytes": 501896,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/how.png",
+   "bytes": 837555,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/teaserimage.png",
+   "bytes": 307456,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/title.png",
+   "bytes": 298935,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/AppIcon.appiconset/imagine_a_film_camera_in_the_style.jpeg",
+   "bytes": 268775,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/cameraAccessIcon.imageset/cameraAccessIcon.png",
+   "bytes": 20533,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/smartGlassesIcon.imageset/smartGlassesIcon.png",
+   "bytes": 813,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/soundIcon.imageset/soundIcon.png",
+   "bytes": 581,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/tapIcon.imageset/tapIcon.png",
+   "bytes": 1317,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/videoIcon.imageset/videoIcon.png",
+   "bytes": 795,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/walkingIcon.imageset/walkingIcon.png",
+   "bytes": 1041,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccessTests/Assets/plant.mp4",
+   "bytes": 2231432,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccessTests/Assets/plant.png",
+   "bytes": 2347789,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "visionclaw",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create visionclaw --namespace foundry-staging",
+  "FOUNDRY_SEED=visionclaw /Users/mohameddiomande/.config/foundry/bin/foundry-push visionclaw main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging visionclaw",
+  "registry: foundry_base=visionclaw; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/visionclaw/",
+ "first_merge_fits_gate": true
+}

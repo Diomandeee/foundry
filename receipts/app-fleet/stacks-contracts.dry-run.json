@@ -1,0 +1,21 @@
+{
+ "id": "stacks-contracts",
+ "title": "stacks-contracts",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/stacks-contracts",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 97,
+ "text_bytes": 751094,
+ "offenders": [],
+ "base": "stacks-contracts",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create stacks-contracts --namespace foundry-staging",
+  "FOUNDRY_SEED=stacks-contracts /Users/mohameddiomande/.config/foundry/bin/foundry-push stacks-contracts main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging stacks-contracts",
+  "registry: foundry_base=stacks-contracts; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

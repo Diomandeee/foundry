@@ -1,0 +1,21 @@
+{
+ "id": "mocopiintegration",
+ "title": "MocopiIntegration",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/MocopiIntegration",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 26,
+ "text_bytes": 355152,
+ "offenders": [],
+ "base": "mocopiintegration",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create mocopiintegration --namespace foundry-staging",
+  "FOUNDRY_SEED=mocopiintegration /Users/mohameddiomande/.config/foundry/bin/foundry-push mocopiintegration main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging mocopiintegration",
+  "registry: foundry_base=mocopiintegration; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

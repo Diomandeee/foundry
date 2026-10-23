@@ -1,0 +1,22 @@
+{
+ "sha256": "d77f046a4cbb0c5adb7e7336bafaedaf3d8dbd759c8ff099f4e183c665a65fd3",
+ "seal": {
+  "helper": {
+   "path": "/Library/Foundry/bin/mac-tree-guard",
+   "sha256": "703035a4fd974f1a3b9da67228ad8ef60d0a21847b679bda1d05f771e2a2b898"
+  },
+  "tree": {
+   "path": "/Library/Foundry/VM/capabilities/d77f046a4cbb0c5adb7e7336bafaedaf3d8dbd759c8ff099f4e183c665a65fd3",
+   "mountPoint": "/Library/Foundry/VM/capabilities/d77f046a4cbb0c5adb7e7336bafaedaf3d8dbd759c8ff099f4e183c665a65fd3",
+   "filesystem": "apfs",
+   "fsid": [
+    16777250,
+    26
+   ],
+   "mountSource": "/dev/disk9s3",
+   "volumeUuid": "329dc490-ee1a-41eb-9f5e-73ad32b469bb",
+   "rootDevice": "16777250",
+   "rootInode": "2"
+  }
+ }
+}

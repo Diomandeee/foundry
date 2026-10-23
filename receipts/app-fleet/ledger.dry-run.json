@@ -1,0 +1,47 @@
+{
+ "id": "ledger",
+ "title": "Ledger",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Ledger",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 71,
+ "text_bytes": 459819,
+ "offenders": [
+  {
+   "path": "Ledger/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 819083,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/01_onboarding.png",
+   "bytes": 848741,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02_dashboard.png",
+   "bytes": 763207,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/03_budgets.png",
+   "bytes": 707829,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/04_pulse.png",
+   "bytes": 814990,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "ledger",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ledger --namespace foundry-staging",
+  "FOUNDRY_SEED=ledger /Users/mohameddiomande/.config/foundry/bin/foundry-push ledger main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ledger",
+  "registry: foundry_base=ledger; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/ledger/",
+ "first_merge_fits_gate": true
+}

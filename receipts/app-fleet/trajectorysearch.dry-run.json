@@ -1,0 +1,27 @@
+{
+ "id": "trajectorysearch",
+ "title": "TrajectorySearch",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/TrajectorySearch",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 38,
+ "text_bytes": 198408,
+ "offenders": [
+  {
+   "path": "TrajectorySearch/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 641821,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "trajectorysearch",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create trajectorysearch --namespace foundry-staging",
+  "FOUNDRY_SEED=trajectorysearch /Users/mohameddiomande/.config/foundry/bin/foundry-push trajectorysearch main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging trajectorysearch",
+  "registry: foundry_base=trajectorysearch; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/trajectorysearch/",
+ "first_merge_fits_gate": true
+}

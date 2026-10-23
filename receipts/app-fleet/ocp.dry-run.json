@@ -1,0 +1,21 @@
+{
+ "id": "ocp",
+ "title": "ocp",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/ocp",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 28,
+ "text_bytes": 171326,
+ "offenders": [],
+ "base": "ocp",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ocp --namespace foundry-staging",
+  "FOUNDRY_SEED=ocp /Users/mohameddiomande/.config/foundry/bin/foundry-push ocp main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ocp",
+  "registry: foundry_base=ocp; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

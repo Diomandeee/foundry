@@ -1,0 +1,21 @@
+{
+ "id": "timeline-app",
+ "title": "timeline-app",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/timeline-app",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 52,
+ "text_bytes": 432972,
+ "offenders": [],
+ "base": "timeline-app",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create timeline-app --namespace foundry-staging",
+  "FOUNDRY_SEED=timeline-app /Users/mohameddiomande/.config/foundry/bin/foundry-push timeline-app main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging timeline-app",
+  "registry: foundry_base=timeline-app; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

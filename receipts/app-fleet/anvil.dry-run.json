@@ -1,0 +1,27 @@
+{
+ "id": "anvil",
+ "title": "Anvil",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Anvil",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 21,
+ "text_bytes": 42467,
+ "offenders": [
+  {
+   "path": "Anvil/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 20628,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "anvil",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create anvil --namespace foundry-staging",
+  "FOUNDRY_SEED=anvil /Users/mohameddiomande/.config/foundry/bin/foundry-push anvil main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging anvil",
+  "registry: foundry_base=anvil; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/anvil/",
+ "first_merge_fits_gate": true
+}

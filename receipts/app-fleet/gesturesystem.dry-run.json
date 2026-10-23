@@ -1,0 +1,21 @@
+{
+ "id": "gesturesystem",
+ "title": "GestureSystem",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/GestureSystem",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 43,
+ "text_bytes": 483664,
+ "offenders": [],
+ "base": "gesturesystem",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create gesturesystem --namespace foundry-staging",
+  "FOUNDRY_SEED=gesturesystem /Users/mohameddiomande/.config/foundry/bin/foundry-push gesturesystem main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging gesturesystem",
+  "registry: foundry_base=gesturesystem; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "foundry.mac-guest-image.v1",
+  "name": "macos-27.0.1-xcode-27.1-r4",
+  "source_tart_vm": "foundry-macos27-base",
+  "exported_at": "2026-10-21T21:34:59+00:00",
+  "files": {
+    "boot.raw": {
+      "bytes": 100000000000,
+      "allocated_bytes": 43905380352,
+      "sha256": "2a0ac712595f2cf573b92ce0f10c670666ab590b0e7395bba45996cead682fea"
+    },
+    "auxiliary.bin": {
+      "bytes": 33579164,
+      "allocated_bytes": 1519616,
+      "sha256": "4bb9616f2dbf93313dd0309727b1e435aedaaa597be0c7c611606a0fe766d71e"
+    },
+    "hardware-model.bin": {
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3"
+    },
+    "machine-identifier.bin": {
+      "bytes": 60,
+      "allocated_bytes": 4096,
+      "sha256": "fc5b61c48c07d383a50bf74c5e3b3ba6be79e4852b63a7961058ebcc2d3eeb13"
+    }
+  }
+}

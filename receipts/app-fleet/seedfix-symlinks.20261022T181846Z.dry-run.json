@@ -1,0 +1,37 @@
+[
+ {
+  "id": "lume-motion-state",
+  "base": "lume-motion-state",
+  "result": "no symlinks at origin"
+ },
+ {
+  "id": "motionmix",
+  "base": "motionmix",
+  "error": "/Users/mohameddiomande/.config/foundry/bin/foundry-fetch motionmix failed: error: RPC failed; curl 56 Recv failure: Connection reset by peer\nerror: 65278 bytes of body are still expected\nfetch-pack: unexpected disconnect while reading sideband packet\nfatal: early EOF\nfatal: "
+ },
+ {
+  "id": "motionmix-ableton",
+  "base": "motionmix-ableton",
+  "result": "would add",
+  "missing": [
+   "links/canonical-set.als",
+   "links/current-project",
+   "links/echelon-controls.mid",
+   "links/isolated-proof-set.als",
+   "links/proof-adapter.amxd"
+  ]
+ },
+ {
+  "id": "motionmixapp",
+  "base": "motionmixapp",
+  "result": "no symlinks at origin"
+ },
+ {
+  "id": "sharedservices",
+  "base": "sharedservices",
+  "result": "would add",
+  "missing": [
+   "SharedServices"
+  ]
+ }
+]

@@ -1,0 +1,127 @@
+{
+ "id": "creativedirector",
+ "title": "CreativeDirector",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/CreativeDirector",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 333,
+ "text_bytes": 21569578,
+ "offenders": [
+  {
+   "path": "CDWatchApp/Assets.xcassets/AppIcon.appiconset/AppIcon1024.png",
+   "bytes": 26517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 746116,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_1024x1024@1x.png",
+   "bytes": 26517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_20x20@2x.png",
+   "bytes": 1167,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_20x20@3x.png",
+   "bytes": 1858,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_29x29@2x.png",
+   "bytes": 1735,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_29x29@3x.png",
+   "bytes": 2848,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_40x40@2x.png",
+   "bytes": 2535,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_40x40@3x.png",
+   "bytes": 4141,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_60x60@2x.png",
+   "bytes": 4141,
+   "why": "binary-ext"
+  },
+  {
+   "path": "CreativeDirector/Assets.xcassets/AppIcon.appiconset/icon_60x60@3x.png",
+   "bytes": 6737,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CreativeDirector.build/Debug-iphoneos/CDWatchApp.build/assetcatalog_output/thinned/AppIcon60x60@2x.png",
+   "bytes": 3947,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CreativeDirector.build/Debug-iphoneos/CDWatchApp.build/assetcatalog_output/thinned/AppIcon76x76@2x~ipad.png",
+   "bytes": 5088,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CreativeDirector.build/Debug-iphoneos/CDWatchApp.build/assetcatalog_output/thinned/Assets.car",
+   "bytes": 61560,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CreativeDirector.xcarchive/Products/Applications/CreativeDirector.app/AppIcon60x60@2x.png",
+   "bytes": 4641,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CreativeDirector.xcarchive/Products/Applications/CreativeDirector.app/Assets.car",
+   "bytes": 81672,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CreativeDirector.xcarchive/Products/Applications/CreativeDirector.app/Watch/CDWatchApp.app/Assets.car",
+   "bytes": 39544,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/CreativeDirector.xcarchive/dSYMs/CreativeDirector.app.dSYM/Contents/Resources/DWARF/CreativeDirector",
+   "bytes": 20463428,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/XCBuildData/build.db",
+   "bytes": 663552,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/export/CreativeDirector.ipa",
+   "bytes": 4146706,
+   "why": "binary-ext"
+  },
+  {
+   "path": "icon_1024.png",
+   "bytes": 26517,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "creativedirector",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create creativedirector --namespace foundry-staging",
+  "FOUNDRY_SEED=creativedirector /Users/mohameddiomande/.config/foundry/bin/foundry-push creativedirector main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging creativedirector",
+  "registry: foundry_base=creativedirector; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/creativedirector/",
+ "first_merge_fits_gate": false
+}

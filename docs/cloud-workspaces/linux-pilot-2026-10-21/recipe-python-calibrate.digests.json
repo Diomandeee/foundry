@@ -1,0 +1,67 @@
+{
+ "serverProfileHash": "202e9c920cc4312767e97a688454b8f4b46ad946687f819553f984320550e28b",
+ "localRecipeHash": "6fae58481dad4605f9a1947b33b13addbcbf6d2b6cd0b81f91d66dcb7662f647",
+ "maxInputBytes": 67108864,
+ "brokerProfile": {
+  "image": "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+  "architecture": "amd64",
+  "commands": [
+   [
+    "/usr/local/bin/python3",
+    "-m",
+    "pip",
+    "install",
+    "--no-index",
+    "--no-cache-dir",
+    "--target",
+    "/work/site",
+    "--find-links",
+    "/work/source/wheels",
+    "numpy",
+    "pytest"
+   ],
+   [
+    "/usr/local/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/work/out/junit.xml",
+    "/work/source/calibrate_extrinsics"
+   ]
+  ],
+  "env": {
+   "PATH": "/usr/bin:/bin",
+   "LANG": "C",
+   "LC_ALL": "C",
+   "HOME": "/work",
+   "TMPDIR": "/tmp",
+   "CMAKE_BUILD_PARALLEL_LEVEL": "2",
+   "NPM_CONFIG_OFFLINE": "true",
+   "NPM_CONFIG_CACHE": "/work/npm-cache",
+   "NPM_CONFIG_USERCONFIG": "/dev/null",
+   "NPM_CONFIG_GLOBALCONFIG": "/dev/null",
+   "CARGO_HOME": "/work/cargo",
+   "CARGO_TARGET_DIR": "/work/target",
+   "CARGO_NET_OFFLINE": "true",
+   "PYTHONPATH": "/work/site:/work/source",
+   "PYTHONDONTWRITEBYTECODE": "1",
+   "PYTHONHASHSEED": "0",
+   "PIP_NO_INDEX": "1",
+   "PIP_NO_CACHE_DIR": "1",
+   "PIP_DISABLE_PIP_VERSION_CHECK": "1"
+  },
+  "cpu": 2,
+  "ramMib": 3072,
+  "pids": 512,
+  "tmpMib": 512,
+  "timeoutMs": 900000,
+  "maxOutputBytes": 1048576,
+  "maxInputBytes": 67108864,
+  "outputPaths": [
+   "out/junit.xml"
+  ],
+  "sourceCopy": true
+ }
+}

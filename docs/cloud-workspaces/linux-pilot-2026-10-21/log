@@ -1,0 +1,11 @@
+Looking in links: /work/source/wheels
+Processing ./wheels/numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Processing ./wheels/pytest-9.1.1-py3-none-any.whl
+Processing ./wheels/iniconfig-2.3.1-py3-none-any.whl (from pytest)
+Processing ./wheels/packaging-26.3-py3-none-any.whl (from pytest)
+Processing ./wheels/pluggy-1.7.0-py3-none-any.whl (from pytest)
+Processing ./wheels/pygments-2.21.0-py3-none-any.whl (from pytest)
+Installing collected packages: pygments, pluggy, packaging, numpy, iniconfig, pytest
+Successfully installed iniconfig-2.3.1 numpy-2.2.6 packaging-26.3 pluggy-1.7.0 pygments-2.21.0 pytest-9.1.1
+..........................................                               [100%]
+42 passed, 2 skipped in 59.82s

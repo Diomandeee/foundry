@@ -1,0 +1,21 @@
+{
+ "id": "agent-intelligence",
+ "title": "agent-intelligence",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/agent-intelligence",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 38,
+ "text_bytes": 98932,
+ "offenders": [],
+ "base": "agent-intelligence",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create agent-intelligence --namespace foundry-staging",
+  "FOUNDRY_SEED=agent-intelligence /Users/mohameddiomande/.config/foundry/bin/foundry-push agent-intelligence main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging agent-intelligence",
+  "registry: foundry_base=agent-intelligence; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

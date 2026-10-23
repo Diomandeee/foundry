@@ -1,0 +1,122 @@
+{
+ "id": "cadcraft",
+ "title": "cadcraft",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/cadcraft",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 617,
+ "text_bytes": 7695707,
+ "offenders": [
+  {
+   "path": "assets/app-icon/cadcraft-1024.png",
+   "bytes": 56907,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/cadcraft-256.png",
+   "bytes": 16017,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/cadcraft-64.png",
+   "bytes": 4190,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/cadcraft-macos-512.png",
+   "bytes": 33106,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/cadcraft.icns",
+   "bytes": 277862,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/128x128/apps/ai.storyteller.cadcraft.png",
+   "bytes": 8068,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/16x16/apps/ai.storyteller.cadcraft.png",
+   "bytes": 811,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/24x24/apps/ai.storyteller.cadcraft.png",
+   "bytes": 1558,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/256x256/apps/ai.storyteller.cadcraft.png",
+   "bytes": 16298,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/32x32/apps/ai.storyteller.cadcraft.png",
+   "bytes": 2263,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/48x48/apps/ai.storyteller.cadcraft.png",
+   "bytes": 3291,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/512x512/apps/ai.storyteller.cadcraft.png",
+   "bytes": 32718,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/64x64/apps/ai.storyteller.cadcraft.png",
+   "bytes": 4306,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo-white.png",
+   "bytes": 32161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo.png",
+   "bytes": 31302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark-black.png",
+   "bytes": 26793,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark.png",
+   "bytes": 24715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/ui-apartment.png",
+   "bytes": 409291,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/ui-bracket.png",
+   "bytes": 371885,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/ui-layout.png",
+   "bytes": 302343,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "cadcraft",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cadcraft --namespace foundry-staging",
+  "FOUNDRY_SEED=cadcraft /Users/mohameddiomande/.config/foundry/bin/foundry-push cadcraft main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cadcraft",
+  "registry: foundry_base=cadcraft; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cadcraft/",
+ "first_merge_fits_gate": true
+}

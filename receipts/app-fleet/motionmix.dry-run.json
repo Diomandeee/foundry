@@ -1,0 +1,57 @@
+{
+ "id": "motionmix",
+ "title": "MotionMix",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/MotionMix",
+ "default_branch": "panel/lan-mirror-and-subset-recording",
+ "truncated_tree": false,
+ "files": 878,
+ "text_bytes": 28003750,
+ "offenders": [
+  {
+   "path": "audio/beats/01-tae-bo-fit-sculpt_seg01.wav",
+   "bytes": 97,
+   "why": "binary-ext"
+  },
+  {
+   "path": "audio/beats/02-billy-blanks-bootcamp_seg01.wav",
+   "bytes": 101,
+   "why": "binary-ext"
+  },
+  {
+   "path": "audio/beats/03-billy-blanks-cardio-boot-camp_seg01.wav",
+   "bytes": 109,
+   "why": "binary-ext"
+  },
+  {
+   "path": "audio/beats/04-boot-camp-elite-mission-2_seg01.wav",
+   "bytes": 105,
+   "why": "binary-ext"
+  },
+  {
+   "path": "audio/beats/05-rock-solid-abs_seg01.wav",
+   "bytes": 94,
+   "why": "binary-ext"
+  },
+  {
+   "path": "audio/beats/06-ultimate-tae-bo-anniversary_seg01.wav",
+   "bytes": 107,
+   "why": "binary-ext"
+  },
+  {
+   "path": "datasets/spatial-director/camera-viability-hd1-20260622Tcurrent/dataset.jsonl",
+   "bytes": 9331659,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "motionmix",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create motionmix --namespace foundry-staging",
+  "FOUNDRY_SEED=motionmix /Users/mohameddiomande/.config/foundry/bin/foundry-push motionmix panel/lan-mirror-and-subset-recording:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging motionmix",
+  "registry: foundry_base=motionmix; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/motionmix/",
+ "first_merge_fits_gate": false
+}

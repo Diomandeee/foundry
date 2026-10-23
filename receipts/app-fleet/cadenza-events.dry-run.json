@@ -1,0 +1,21 @@
+{
+ "id": "cadenza-events",
+ "title": "cadenza-events",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/cadenza-events",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 80,
+ "text_bytes": 570583,
+ "offenders": [],
+ "base": "cadenza-events",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cadenza-events --namespace foundry-staging",
+  "FOUNDRY_SEED=cadenza-events /Users/mohameddiomande/.config/foundry/bin/foundry-push cadenza-events main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cadenza-events",
+  "registry: foundry_base=cadenza-events; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,27 @@
+{
+ "id": "folio",
+ "title": "Folio",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Folio",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 23,
+ "text_bytes": 57454,
+ "offenders": [
+  {
+   "path": "Folio/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 1021387,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "folio",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create folio --namespace foundry-staging",
+  "FOUNDRY_SEED=folio /Users/mohameddiomande/.config/foundry/bin/foundry-push folio main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging folio",
+  "registry: foundry_base=folio; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/folio/",
+ "first_merge_fits_gate": true
+}

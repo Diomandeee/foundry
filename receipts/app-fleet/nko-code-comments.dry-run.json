@@ -1,0 +1,21 @@
+{
+ "id": "nko-code-comments",
+ "title": "nko-code-comments",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/nko-code-comments",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 4,
+ "text_bytes": 26921,
+ "offenders": [],
+ "base": "nko-code-comments",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create nko-code-comments --namespace foundry-staging",
+  "FOUNDRY_SEED=nko-code-comments /Users/mohameddiomande/.config/foundry/bin/foundry-push nko-code-comments main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging nko-code-comments",
+  "registry: foundry_base=nko-code-comments; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "vm-architecture",
+ "title": "vm-architecture",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/vm-architecture",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 9,
+ "text_bytes": 35721,
+ "offenders": [],
+ "base": "vm-architecture",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create vm-architecture --namespace foundry-staging",
+  "FOUNDRY_SEED=vm-architecture /Users/mohameddiomande/.config/foundry/bin/foundry-push vm-architecture main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging vm-architecture",
+  "registry: foundry_base=vm-architecture; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

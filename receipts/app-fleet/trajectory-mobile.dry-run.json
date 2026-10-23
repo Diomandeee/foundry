@@ -1,0 +1,42 @@
+{
+ "id": "trajectory-mobile",
+ "title": "trajectory-mobile",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/trajectory-mobile",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 34,
+ "text_bytes": 500773,
+ "offenders": [
+  {
+   "path": "assets/adaptive-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/favicon.png",
+   "bytes": 1466,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/icon.png",
+   "bytes": 22380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/splash-icon.png",
+   "bytes": 17547,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "trajectory-mobile",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create trajectory-mobile --namespace foundry-staging",
+  "FOUNDRY_SEED=trajectory-mobile /Users/mohameddiomande/.config/foundry/bin/foundry-push trajectory-mobile main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging trajectory-mobile",
+  "registry: foundry_base=trajectory-mobile; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/trajectory-mobile/",
+ "first_merge_fits_gate": true
+}

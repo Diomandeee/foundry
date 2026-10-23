@@ -1,0 +1,27 @@
+{
+ "id": "28-days-of-code",
+ "title": "28-days-of-code",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/28-days-of-code",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 27,
+ "text_bytes": 192513,
+ "offenders": [
+  {
+   "path": "apps/nko-keyboard/screenshot.jpg",
+   "bytes": 92575,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "28-days-of-code",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create 28-days-of-code --namespace foundry-staging",
+  "FOUNDRY_SEED=28-days-of-code /Users/mohameddiomande/.config/foundry/bin/foundry-push 28-days-of-code main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging 28-days-of-code",
+  "registry: foundry_base=28-days-of-code; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/28-days-of-code/",
+ "first_merge_fits_gate": true
+}

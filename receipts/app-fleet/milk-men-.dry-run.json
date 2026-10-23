@@ -1,0 +1,62 @@
+{
+ "id": "milk-men-",
+ "title": "Milk-Men-",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/Milk-Men-",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2181,
+ "text_bytes": 29311091,
+ "offenders": [
+  {
+   "path": ".legacy/bufbarista-crm-main/src/app/fonts/GeistMonoVF.woff",
+   "bytes": 67864,
+   "why": "binary-ext"
+  },
+  {
+   "path": ".legacy/bufbarista-crm-main/src/app/fonts/GeistVF.woff",
+   "bytes": 66268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Expo/milkmen-expo/assets/adaptive-icon.png",
+   "bytes": 9489,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Expo/milkmen-expo/assets/favicon.png",
+   "bytes": 2171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Expo/milkmen-expo/assets/icon.png",
+   "bytes": 11481,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Expo/milkmen-expo/assets/splash-icon.png",
+   "bytes": 39389,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Milk Men/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 8922,
+   "why": "binary-ext"
+  },
+  {
+   "path": "sql/locations_rows.sql",
+   "bytes": 7472889,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "milk-men-",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create milk-men- --namespace foundry-staging",
+  "FOUNDRY_SEED=milk-men- /Users/mohameddiomande/.config/foundry/bin/foundry-push milk-men- main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging milk-men-",
+  "registry: foundry_base=milk-men-; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/milk-men-/",
+ "first_merge_fits_gate": false
+}

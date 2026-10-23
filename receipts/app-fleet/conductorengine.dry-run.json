@@ -1,0 +1,21 @@
+{
+ "id": "conductorengine",
+ "title": "ConductorEngine",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/ConductorEngine",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 26,
+ "text_bytes": 333795,
+ "offenders": [],
+ "base": "conductorengine",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create conductorengine --namespace foundry-staging",
+  "FOUNDRY_SEED=conductorengine /Users/mohameddiomande/.config/foundry/bin/foundry-push conductorengine main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging conductorengine",
+  "registry: foundry_base=conductorengine; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

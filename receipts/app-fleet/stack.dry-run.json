@@ -1,0 +1,92 @@
+{
+ "id": "stack",
+ "title": "Stack",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Stack",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 33,
+ "text_bytes": 92765,
+ "offenders": [
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+   "bytes": 103753,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-120.png",
+   "bytes": 6739,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-152.png",
+   "bytes": 9183,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-167.png",
+   "bytes": 10434,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-180.png",
+   "bytes": 11323,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-20.png",
+   "bytes": 747,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-29.png",
+   "bytes": 1134,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-40.png",
+   "bytes": 1626,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-58.png",
+   "bytes": 2570,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-60.png",
+   "bytes": 2659,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-76.png",
+   "bytes": 3675,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-80.png",
+   "bytes": 3911,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon-87.png",
+   "bytes": 4389,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Stack/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 103753,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "stack",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create stack --namespace foundry-staging",
+  "FOUNDRY_SEED=stack /Users/mohameddiomande/.config/foundry/bin/foundry-push stack main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging stack",
+  "registry: foundry_base=stack; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/stack/",
+ "first_merge_fits_gate": true
+}

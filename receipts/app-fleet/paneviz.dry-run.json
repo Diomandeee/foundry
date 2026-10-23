@@ -1,0 +1,27 @@
+{
+ "id": "paneviz",
+ "title": "PaneViz",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/PaneViz",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 22,
+ "text_bytes": 90691,
+ "offenders": [
+  {
+   "path": "PaneViz/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 736150,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "paneviz",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create paneviz --namespace foundry-staging",
+  "FOUNDRY_SEED=paneviz /Users/mohameddiomande/.config/foundry/bin/foundry-push paneviz main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging paneviz",
+  "registry: foundry_base=paneviz; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/paneviz/",
+ "first_merge_fits_gate": true
+}

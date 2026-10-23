@@ -13,15 +13,17 @@ export interface HostPolicy {
   uid: number; gid: number; dedicatedBuildUser: true; allowActivation: boolean;
   inputBase: string; workBase: string; journalRoot: string;
   /** Owner-vetted canonical absolute executables INSIDE the pinned image. */
-  imageExecutables?: Readonly<Partial<Record<'npm'|'cargo'|'cmake',string>>>;
+  imageExecutables?: Readonly<Partial<Record<'npm'|'cargo'|'cmake'|'python',string>>>;
 }
 export interface LinuxRecipe {
   kind: 'linux-build-v1'; image: string; architecture: 'x64' | 'arm64';
   /** Fixed executable INSIDE an owner-vetted image; no shell or remote argv. */
-  tool: 'npm'|'cargo'|'cmake'; args: readonly string[];
+  tool: 'npm'|'cargo'|'cmake'|'python'; args: readonly string[];
   network: 'none'|'approved-dependencies'; outputPaths: readonly string[];
   /** Owner-only configure arguments, separate from the approved build arguments. */
   configureArgs?: readonly string[];
+  /** python only: owner-approved offline `pip install --no-index --target /work/site` arguments run as a phase before `args`. */
+  installArgs?: readonly string[];
 }
 export interface XcodeRecipe {
   kind: 'xcode-build-v1'; developerDir: string; project: string; scheme: string;

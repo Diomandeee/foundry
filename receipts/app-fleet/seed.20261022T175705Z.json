@@ -1,0 +1,18 @@
+{
+ "approved_by": "all NEW code in the MotionMix family must go through Foundry, cloud first, the way it's meant to work, starting before he flies tomorrow (Mohamed direct, relayed by mohameddiomande-f7 2026-10-22T14:33Z); reseed from live branch",
+ "started": "20261022T175705Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "motionmix",
+   "base": "motionmix",
+   "origin_commit": "a6d7fd8372a7e8ca13674dc2a0446430ee932ec6",
+   "seed_commit": "5dd7d7e871651e730aade524bd58c9d1b27868c2",
+   "files": 868,
+   "stripped": 5,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+{
+ "id": "admissibility-kernel",
+ "title": "admissibility-kernel",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/admissibility-kernel",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 54,
+ "text_bytes": 541985,
+ "offenders": [],
+ "base": "admissibility-kernel",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create admissibility-kernel --namespace foundry-staging",
+  "FOUNDRY_SEED=admissibility-kernel /Users/mohameddiomande/.config/foundry/bin/foundry-push admissibility-kernel main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging admissibility-kernel",
+  "registry: foundry_base=admissibility-kernel; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

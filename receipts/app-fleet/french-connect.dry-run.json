@@ -1,0 +1,157 @@
+{
+ "id": "french-connect",
+ "title": "french-connect",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/french-connect",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 352,
+ "text_bytes": 1584844,
+ "offenders": [
+  {
+   "path": "public/images/booking.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/concept.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events1.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events2.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events3.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events4.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events5.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/events/events6.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery1.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery2.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery3.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery4.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery5.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/gallery6.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/gallery/hero.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/hero-bg.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/logo-white.png",
+   "bytes": 1548886,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/logo.png",
+   "bytes": 566397,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu1.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu2.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu3.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu4.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu5.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/menu/menu6.jpg",
+   "bytes": 0,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/noise.png",
+   "bytes": 358,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/app/fonts/GeistMonoVF.woff",
+   "bytes": 67864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/app/fonts/GeistVF.woff",
+   "bytes": 66268,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "french-connect",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create french-connect --namespace foundry-staging",
+  "FOUNDRY_SEED=french-connect /Users/mohameddiomande/.config/foundry/bin/foundry-push french-connect main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging french-connect",
+  "registry: foundry_base=french-connect; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/french-connect/",
+ "first_merge_fits_gate": true
+}

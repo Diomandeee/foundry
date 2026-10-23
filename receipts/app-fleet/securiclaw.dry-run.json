@@ -1,0 +1,21 @@
+{
+ "id": "securiclaw",
+ "title": "SecuriClaw",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/SecuriClaw",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 54,
+ "text_bytes": 440258,
+ "offenders": [],
+ "base": "securiclaw",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create securiclaw --namespace foundry-staging",
+  "FOUNDRY_SEED=securiclaw /Users/mohameddiomande/.config/foundry/bin/foundry-push securiclaw main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging securiclaw",
+  "registry: foundry_base=securiclaw; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

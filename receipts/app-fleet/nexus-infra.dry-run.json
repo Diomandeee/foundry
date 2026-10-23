@@ -1,0 +1,27 @@
+{
+ "id": "nexus-infra",
+ "title": "nexus-infra",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/nexus-infra",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1349,
+ "text_bytes": 22287933,
+ "offenders": [
+  {
+   "path": "clawdbot/skills/pulse-v3/dashboard/.next/static/chunks/main-app.js",
+   "bytes": 6035481,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "nexus-infra",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create nexus-infra --namespace foundry-staging",
+  "FOUNDRY_SEED=nexus-infra /Users/mohameddiomande/.config/foundry/bin/foundry-push nexus-infra main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging nexus-infra",
+  "registry: foundry_base=nexus-infra; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/nexus-infra/",
+ "first_merge_fits_gate": false
+}

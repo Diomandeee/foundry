@@ -1,0 +1,162 @@
+{
+ "id": "exo",
+ "title": "exo",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/exo",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 740,
+ "text_bytes": 3740450,
+ "offenders": [
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/1024-mac.png",
+   "bytes": 15062,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/128-mac.png",
+   "bytes": 2462,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/16-mac.png",
+   "bytes": 324,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/256-mac 1.png",
+   "bytes": 4522,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/256-mac.png",
+   "bytes": 4522,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/32-mac 1.png",
+   "bytes": 758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/32-mac.png",
+   "bytes": 758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/512-mac 1.png",
+   "bytes": 8624,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/512-mac.png",
+   "bytes": 8624,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/AppIcon.appiconset/64-mac.png",
+   "bytes": 1326,
+   "why": "binary-ext"
+  },
+  {
+   "path": "app/EXO/EXO/Assets.xcassets/menubar-icon.imageset/exo-logo-hq-square-transparent-bg.png",
+   "bytes": 4619,
+   "why": "binary-ext"
+  },
+  {
+   "path": "dashboard/exo-logo-hq-square-black-bg.jpg",
+   "bytes": 101034,
+   "why": "binary-ext"
+  },
+  {
+   "path": "dashboard/exo-logo-hq-square-black-bg.png",
+   "bytes": 34778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "dashboard/exo-logo-hq-square-black-bg.webp",
+   "bytes": 12004,
+   "why": "binary-ext"
+  },
+  {
+   "path": "dashboard/exo-logo.png",
+   "bytes": 1655,
+   "why": "binary-ext"
+  },
+  {
+   "path": "dashboard/static/exo-logo.png",
+   "bytes": 1655,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/benchmarks/jeffgeerling/mac-studio-cluster-ai-full-1-qwen3-235b.jpeg",
+   "bytes": 526859,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/benchmarks/jeffgeerling/mac-studio-cluster-ai-full-2-deepseek-3.1-671b.jpeg",
+   "bytes": 531385,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/benchmarks/jeffgeerling/mac-studio-cluster-ai-full-3-kimi-k2-thinking.jpeg",
+   "bytes": 497699,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/imgs/dashboard-cluster-view.png",
+   "bytes": 191691,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/imgs/exo-logo-black-bg.jpg",
+   "bytes": 8089,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/imgs/exo-logo-transparent-black-text.png",
+   "bytes": 129,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/imgs/exo-logo-transparent.png",
+   "bytes": 129,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/imgs/exo-rounded.png",
+   "bytes": 130,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/imgs/exo-screenshot.jpg",
+   "bytes": 302470,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/imgs/four-mac-studio-topology.png",
+   "bytes": 134429,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/imgs/macos-app-one-macbook.png",
+   "bytes": 175454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "packaging/dmg/background.png",
+   "bytes": 7010,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "exo",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create exo --namespace foundry-staging",
+  "FOUNDRY_SEED=exo /Users/mohameddiomande/.config/foundry/bin/foundry-push exo main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging exo",
+  "registry: foundry_base=exo; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/exo/",
+ "first_merge_fits_gate": true
+}

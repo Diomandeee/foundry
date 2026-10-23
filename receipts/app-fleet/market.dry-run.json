@@ -1,0 +1,47 @@
+{
+ "id": "market",
+ "title": "market",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/market",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 672,
+ "text_bytes": 6714424,
+ "offenders": [
+  {
+   "path": "public/android-chrome-192x192.png",
+   "bytes": 425113,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/android-chrome-512x512.png",
+   "bytes": 425113,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/apple-touch-icon.png",
+   "bytes": 425113,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/share.png",
+   "bytes": 53727,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/fishfail.gif",
+   "bytes": 2090220,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "market",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create market --namespace foundry-staging",
+  "FOUNDRY_SEED=market /Users/mohameddiomande/.config/foundry/bin/foundry-push market main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging market",
+  "registry: foundry_base=market; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/market/",
+ "first_merge_fits_gate": true
+}

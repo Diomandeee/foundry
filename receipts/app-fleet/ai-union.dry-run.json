@@ -1,0 +1,21 @@
+{
+ "id": "ai-union",
+ "title": "ai-union",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/ai-union",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 18,
+ "text_bytes": 367756,
+ "offenders": [],
+ "base": "ai-union",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create ai-union --namespace foundry-staging",
+  "FOUNDRY_SEED=ai-union /Users/mohameddiomande/.config/foundry/bin/foundry-push ai-union main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging ai-union",
+  "registry: foundry_base=ai-union; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

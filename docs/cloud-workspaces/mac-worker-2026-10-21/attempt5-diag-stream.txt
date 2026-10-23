@@ -1,0 +1,67 @@
+== date
+Wed Oct 21 14:02:02 UTC 2026
+== id
+uid=0(root) gid=0(wheel) groups=0(wheel),1(daemon),2(kmem),3(sys),4(tty),5(operator),8(procview),9(procmod),12(everyone),20(staff),29(certusers),61(localaccounts),80(admin),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae),701(com.apple.sharepoint.group.1)
+== euid=0 bash=3.2.57(1)-release pwd=/
+== env
+FLEET_HOST=mac5
+PATH=/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin
+PWD=/
+FLEET_REQUEST_ID=f1817f24bee6f971
+LANG=en_US.UTF-8
+SHLVL=1
+HOME=/var/root
+_=/usr/bin/env
+== dirs
+drwxr-xr-x  8 root  wheel  256 Oct 20 19:04 /Library/Foundry/VM
+drwxr-xr-x  3 root  wheel   96 Oct 21 09:59 /Library/Foundry/VM/capabilities
+drwxr-x---  6 root  wheel  192 Oct 21 09:59 /private/var/root
+== write probes
+cap-write-ok
+root-home-write-ok
+== log dir
+total 312
+drwx------  12 root  wheel    384 Oct 21 09:59 .
+drwxr-xr-x   8 root  wheel    256 Oct 20 21:59 ..
+-rw-------   1 root  wheel    106 Oct 21 09:15 0f5554f2842718f5.out
+-rw-------   1 root  wheel     56 Oct 21 09:10 5ced1e824a326d7e.out
+-rw-------   1 root  wheel      0 Oct 21 09:59 73a26584453c096b.out
+-rw-------   1 root  wheel      0 Oct 21 09:32 7ff2a89d6af66495.out
+-rw-------   1 root  wheel     27 Oct 20 22:00 882ae5dcc98b22f9.out
+-rw-------   1 root  wheel     17 Oct 20 22:00 8e9148da29e0c99c.out
+-rw-------   1 root  wheel     38 Oct 20 22:01 a20c11d4e7503774.out
+-rw-------   1 root  wheel    201 Oct 21 09:20 c1273ccdc7602511.out
+-rw-r--r--   1 root  wheel      0 Oct 20 21:59 daemon.err
+-rw-------   1 root  wheel  73852 Oct 21 10:02 receipts.jsonl
+== output of 0f5554f2842718f5
+== volume
+Error encountered enabling user/group ownership: A disk with a mount point is required (-69854)
+== output of c1273ccdc7602511
+/Library/FleetAuthority/pending/c1273ccdc7602511/script.sh: line 45: /Library/Foundry/VM/capabilities/d77f046a4cbb0c5adb7e7336bafaedaf3d8dbd759c8ff099f4e183c665a65fd3.seal.log: Operation not permitted
+== output of 5ced1e824a326d7e
+fleet-approve-id-test OK
+Wed Oct 21 13:10:11 UTC 2026
+0
+== receipts mentioning the seal attempts
+8b9388612","kind":"shown","prev":"e3134d81794de2cd5a4d909bbfde25fe4ec278a513e524975d128637f843f74d","request_id":"0f5554f2842718f5","seq":75}
+{"at":"2026-10-21T13:15:07Z","by":"uid:450","daemon":"fleet-authority/1.0","fp":"e0ddc3c80ff02a489748e0e89a2032777ff944eee8e1121839fbbce3f421135a","hash":"78e4c58d36ab77b99908065e6ac3915ea4c536691febbee5c41ca1e858421e92","kind":"approved","prev":"eb7565cd882c5e3b49333f1f3adbaca19e4fbe77074993daf4c3df78b9388612","request_id":"0f5554f2842718f5","seq":76,"tier":3}
+{"at":"2026-10-21T13:15:09Z","daemon":"fleet-authority/1.0","exit_code":1,"fp":"e0ddc3c80ff02a489748e0e89a2032777ff944eee8e1121839fbbce3f421135a","hash":"795b48d528bc848b63a809d415f120e924101d13b94602aa86716879dec0c88a","kind":"executed","limited":false,"out_bytes":106,"out_sha256":"eabc0d508a4ddb62a7904f2a02714c159bad22197d76bd521eb7ba4dabff4bbb","prev":"78e4c58d36ab77b99908065e6ac3915ea4c536691febbee5c41ca1e858421e92","request_id":"0f5554f2842718f5","seq":77,"timed_out":false}
+{"at":"2026-10-21T13:18:26Z","by_uid":501,"daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"f84254186782b371ec0c4abc8b39a379067a5de177f74806743b41c864db1e06","kind":"staged","policy_hash":"789bf4ce21ca47a4a21f5fac1de1eda0e3a97943479e15f1618fccd70b965a01","prev":"795b48d528bc848b63a809d415f120e924101d13b94602aa86716879dec0c88a","request_id":"c1273ccdc7602511","seq":78,"template":"","tier":3}
+{"at":"2026-10-21T13:18:39Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"828ecff01c245b212d77f4c19381820c5e67781f48e20bb549916f76d10a437e","kind":"shown","prev":"f84254186782b371ec0c4abc8b39a379067a5de177f74806743b41c864db1e06","request_id":"c1273ccdc7602511","seq":79}
+{"at":"2026-10-21T13:18:49Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"12978ec61816aec0ecbb847e76b9d39e221560f0734451949d83bf29c7e75170","kind":"shown","prev":"828ecff01c245b212d77f4c19381820c5e67781f48e20bb549916f76d10a437e","request_id":"c1273ccdc7602511","seq":80}
+{"at":"2026-10-21T13:18:59Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"a0aa311d3d9f6b41b2081ca080258a8ba663516c81a888f11c81e1c5e5830cfc","kind":"shown","prev":"12978ec61816aec0ecbb847e76b9d39e221560f0734451949d83bf29c7e75170","request_id":"c1273ccdc7602511","seq":81}
+{"at":"2026-10-21T13:19:09Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"b1e948ab58e5bbfb4bdb8ddd12c0ed4522815213dc36e1c225a4e4528ad98184","kind":"shown","prev":"a0aa311d3d9f6b41b2081ca080258a8ba663516c81a888f11c81e1c5e5830cfc","request_id":"c1273ccdc7602511","seq":82}
+{"at":"2026-10-21T13:19:19Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"cb0f6c5514bcf713cfd8ae1b31dc723ba7bd1b24054bf5d56d09ac2f56d603b1","kind":"shown","prev":"b1e948ab58e5bbfb4bdb8ddd12c0ed4522815213dc36e1c225a4e4528ad98184","request_id":"c1273ccdc7602511","seq":83}
+{"at":"2026-10-21T13:19:29Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"b2be687e423f07ecbb67d3b0e37e2d0bee2e8902dbaa2db85cf7e85e32361228","kind":"shown","prev":"cb0f6c5514bcf713cfd8ae1b31dc723ba7bd1b24054bf5d56d09ac2f56d603b1","request_id":"c1273ccdc7602511","seq":84}
+{"at":"2026-10-21T13:19:40Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"49fb606081d0263c7d654d779c49d0850c259f415d6dd34ce173eb5dd4243df6","kind":"shown","prev":"b2be687e423f07ecbb67d3b0e37e2d0bee2e8902dbaa2db85cf7e85e32361228","request_id":"c1273ccdc7602511","seq":85}
+{"at":"2026-10-21T13:19:50Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"e30546cdf90e3b49aeb96bba8835e8cd58e732f0b112bcd9435ae179ed5a1802","kind":"shown","prev":"49fb606081d0263c7d654d779c49d0850c259f415d6dd34ce173eb5dd4243df6","request_id":"c1273ccdc7602511","seq":86}
+{"at":"2026-10-21T13:20:00Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"387513af993ac867304c21864c5699e4b7391c21f1c10ea62154d6c3841c1082","kind":"shown","prev":"e30546cdf90e3b49aeb96bba8835e8cd58e732f0b112bcd9435ae179ed5a1802","request_id":"c1273ccdc7602511","seq":87}
+{"at":"2026-10-21T13:20:10Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"1f8083aad4a02084e54caa974323289c9411acc3d93b13984db39515096cb08f","kind":"shown","prev":"387513af993ac867304c21864c5699e4b7391c21f1c10ea62154d6c3841c1082","request_id":"c1273ccdc7602511","seq":88}
+{"at":"2026-10-21T13:20:23Z","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"893201a79845c9edf630735d9a32a364e84a228d5a183abd6790310b4645fb55","kind":"shown","prev":"1f8083aad4a02084e54caa974323289c9411acc3d93b13984db39515096cb08f","request_id":"c1273ccdc7602511","seq":89}
+{"at":"2026-10-21T13:20:38Z","by":"uid:450","daemon":"fleet-authority/1.0","fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"beb41f832e79e76c0266078ae8457754f1db2429d5224c1d1e5e8884db527938","kind":"approved","prev":"893201a79845c9edf630735d9a32a364e84a228d5a183abd6790310b4645fb55","request_id":"c1273ccdc7602511","seq":90,"tier":3}
+{"at":"2026-10-21T13:20:38Z","daemon":"fleet-authority/1.0","exit_code":1,"fp":"8e40474c20250595a9298aa8eae2cd274ee3ef0b9b193120e6e0a8e212bc4525","hash":"a0a1e489fb863bab69f22f19363b4c563c3a657e6d23b663efca993914d39f01","kind":"executed","limited":false,"out_bytes":201,"out_sha256":"ee6bfe2fc375dc2d746033f5123bb480485702d7d1a321391d87f2c6a0853102","prev":"beb41f832e79e76c0266078ae8457754f1db2429d5224c1d1e5e8884db527938","request_id":"c1273ccdc7602511","seq":91,"timed_out":false}
+== daemon.err tail
+== volume
+   Mounted:                   No
+   Owners:                    Disabled
+   Volume UUID:               329DC490-EE1A-41EB-9F5E-73AD32B469BB

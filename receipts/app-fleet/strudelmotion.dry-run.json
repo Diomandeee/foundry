@@ -1,0 +1,21 @@
+{
+ "id": "strudelmotion",
+ "title": "StrudelMotion",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/StrudelMotion",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 42,
+ "text_bytes": 715029,
+ "offenders": [],
+ "base": "strudelmotion",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create strudelmotion --namespace foundry-staging",
+  "FOUNDRY_SEED=strudelmotion /Users/mohameddiomande/.config/foundry/bin/foundry-push strudelmotion main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging strudelmotion",
+  "registry: foundry_base=strudelmotion; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

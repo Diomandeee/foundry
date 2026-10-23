@@ -1,0 +1,67 @@
+{
+ "id": "uctm-harness",
+ "title": "uctm-harness",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/uctm-harness",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 8507,
+ "text_bytes": 82989227,
+ "offenders": [
+  {
+   "path": ".github/codex-cli-splash.png",
+   "bytes": 838131,
+   "why": "binary-ext"
+  },
+  {
+   "path": "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-experimental.json.zst",
+   "bytes": 160782,
+   "why": "binary-ext"
+  },
+  {
+   "path": "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-stable.json.zst",
+   "bytes": 155435,
+   "why": "binary-ext"
+  },
+  {
+   "path": "codex-rs/skills/src/assets/samples/imagegen/assets/imagegen.png",
+   "bytes": 1711,
+   "why": "binary-ext"
+  },
+  {
+   "path": "codex-rs/skills/src/assets/samples/openai-docs/assets/openai.png",
+   "bytes": 1429,
+   "why": "binary-ext"
+  },
+  {
+   "path": "codex-rs/skills/src/assets/samples/plugin-creator/assets/plugin-creator.png",
+   "bytes": 1563,
+   "why": "binary-ext"
+  },
+  {
+   "path": "codex-rs/skills/src/assets/samples/skill-creator/assets/skill-creator.png",
+   "bytes": 1563,
+   "why": "binary-ext"
+  },
+  {
+   "path": "codex-rs/skills/src/assets/samples/skill-installer/assets/skill-installer.png",
+   "bytes": 1086,
+   "why": "binary-ext"
+  },
+  {
+   "path": "codex-rs/vendor/bubblewrap/bubblewrap.jpg",
+   "bytes": 40239,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "uctm-harness",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create uctm-harness --namespace foundry-staging",
+  "FOUNDRY_SEED=uctm-harness /Users/mohameddiomande/.config/foundry/bin/foundry-push uctm-harness main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging uctm-harness",
+  "registry: foundry_base=uctm-harness; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/uctm-harness/",
+ "first_merge_fits_gate": false
+}

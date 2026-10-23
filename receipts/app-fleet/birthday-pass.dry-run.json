@@ -1,0 +1,62 @@
+{
+ "id": "birthday-pass",
+ "title": "birthday-pass",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/birthday-pass",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 25,
+ "text_bytes": 99171,
+ "offenders": [
+  {
+   "path": "template/icon.png",
+   "bytes": 100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "template/icon@2x.png",
+   "bytes": 139,
+   "why": "binary-ext"
+  },
+  {
+   "path": "template/logo.png",
+   "bytes": 176,
+   "why": "binary-ext"
+  },
+  {
+   "path": "template/logo@2x.png",
+   "bytes": 339,
+   "why": "binary-ext"
+  },
+  {
+   "path": "template/strip.png",
+   "bytes": 298,
+   "why": "binary-ext"
+  },
+  {
+   "path": "template/strip@2x.png",
+   "bytes": 737,
+   "why": "binary-ext"
+  },
+  {
+   "path": "template/thumbnail.png",
+   "bytes": 201,
+   "why": "binary-ext"
+  },
+  {
+   "path": "template/thumbnail@2x.png",
+   "bytes": 419,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "birthday-pass",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create birthday-pass --namespace foundry-staging",
+  "FOUNDRY_SEED=birthday-pass /Users/mohameddiomande/.config/foundry/bin/foundry-push birthday-pass main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging birthday-pass",
+  "registry: foundry_base=birthday-pass; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/birthday-pass/",
+ "first_merge_fits_gate": true
+}

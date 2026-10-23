@@ -1,0 +1,427 @@
+{
+ "id": "granddiomande.com",
+ "title": "granddiomande.com",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/granddiomande.com",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1299,
+ "text_bytes": 42582529,
+ "offenders": [
+  {
+   "path": "public/research/papers/drafts/agp-deployment-final-split.pdf",
+   "bytes": 274388,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/cognitive-twin-draft.pdf",
+   "bytes": 409093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/dead-circuits-draft.pdf",
+   "bytes": 284845,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/featural-acoustic-coding-draft.pdf",
+   "bytes": 204923,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/graph-kernel-v2-draft.pdf",
+   "bytes": 329760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/living-speech-script-native-asr-draft.pdf",
+   "bytes": 311926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/nko-computational-infrastructure-draft.pdf",
+   "bytes": 584590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/phonemic-evaluation-final-split.pdf",
+   "bytes": 235194,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/script-aware-asr-deployment-draft.pdf",
+   "bytes": 180090,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/script-design-ctc-draft.pdf",
+   "bytes": 365302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/script-invisibility-draft.pdf",
+   "bytes": 581556,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/script-invisibility-final-split.pdf",
+   "bytes": 581556,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/papers/drafts/script-native-asr-final-split.pdf",
+   "bytes": 332865,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/agp-deployment-final-split-hb47x8.pdf",
+   "bytes": 274388,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/anticipation-pipeline-pw3nh3.pdf",
+   "bytes": 125361,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/audio-engine-1ul2rvq.pdf",
+   "bytes": 158516,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/cog-rlm-paper-1vj0lx3.pdf",
+   "bytes": 430844,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/cognitive-twin-draft-1hsqba.pdf",
+   "bytes": 409093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/cognitive-twin-research-paper-1ohem8w.pdf",
+   "bytes": 409093,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/cognitive-twin-theorems-1uvpeq0.pdf",
+   "bytes": 304333,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/cognitivetwin-v3-cog-rlm-documentation-15h42mc.pdf",
+   "bytes": 471813,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/comp-core-architecture-u93tyk.pdf",
+   "bytes": 2176448,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/dead-circuits-draft-xa18su.pdf",
+   "bytes": 284845,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/featural-acoustic-coding-draft-lhuvsn.pdf",
+   "bytes": 204923,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig1-cer-comparison-1b64upm.pdf",
+   "bytes": 34549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig1-cer-comparison-635slh.pdf",
+   "bytes": 34549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig1-cer-comparison-gemku7.pdf",
+   "bytes": 34549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig2-compositional-generalization-19eonnj.pdf",
+   "bytes": 27054,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig2-loss-curves-j6cu2y.pdf",
+   "bytes": 32710,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig2-loss-curves-z621w1.pdf",
+   "bytes": 32710,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig3-delta-2rg45j.pdf",
+   "bytes": 37293,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig3-delta-58ekao.pdf",
+   "bytes": 37293,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig3-vocabulary-expansion-170lgbw.pdf",
+   "bytes": 29492,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig4-data-scale-1ygk9p6.pdf",
+   "bytes": 30037,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig4-data-scale-smvc1f.pdf",
+   "bytes": 30037,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig5-expf-compositional-1nt7ugv.pdf",
+   "bytes": 32511,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig5-expf-compositional-1yv52oh.pdf",
+   "bytes": 32511,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig6-exph-vocab-expansion-11t80ws.pdf",
+   "bytes": 32586,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig6-exph-vocab-expansion-rt1zy.pdf",
+   "bytes": 32586,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig7-djoko-quality-10u6o8a.pdf",
+   "bytes": 45086,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/fig7-djoko-quality-f7j3yo.pdf",
+   "bytes": 45086,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/graph-kernel-paper-1nl6tl3.pdf",
+   "bytes": 288369,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/graph-kernel-paper-v2-18xg6ow.pdf",
+   "bytes": 329760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/graph-kernel-paper-v2-2xpzl1.pdf",
+   "bytes": 329760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/graph-kernel-research-paper-1fv2zrk.pdf",
+   "bytes": 288369,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/graph-kernel-v2-draft-1hwslcs.pdf",
+   "bytes": 329760,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/living-speech-script-native-asr-draft-gpl7l9.pdf",
+   "bytes": 311926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/main-archive-16nyh63.pdf",
+   "bytes": 424165,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/main-arxiv-submission-1dp4r49.pdf",
+   "bytes": 462860,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/main-latex-1rsi97.pdf",
+   "bytes": 445512,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/main-nko-acoustic-coding-50lahq.pdf",
+   "bytes": 204923,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/main-v2-1u6f97u.pdf",
+   "bytes": 254973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/nko-asr-paper-v2-1sjftwc.pdf",
+   "bytes": 263546,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/nko-asr-paper-v2-1sr39xy.pdf",
+   "bytes": 324079,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/nko-brain-scanner-23behq.pdf",
+   "bytes": 513366,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/nko-computational-infrastructure-draft-85im7o.pdf",
+   "bytes": 584590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/nko-monograph-1m6b0w8.pdf",
+   "bytes": 263546,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/nko-paper-v3-4v8kas.pdf",
+   "bytes": 274224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/nko-theorems-1kwe2tu.pdf",
+   "bytes": 221419,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/nko-theorems-1ygks1f.pdf",
+   "bytes": 221419,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper-01-script-invisibility-vyfy4o.pdf",
+   "bytes": 581556,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper-02-phonemic-evaluation-12n1txs.pdf",
+   "bytes": 235194,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper-03-script-native-asr-anchor-2amqr4.pdf",
+   "bytes": 332865,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper-04-agp-deployment-1un10oa.pdf",
+   "bytes": 274388,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper-canonical-nko-agp-20cer-52fl7q.pdf",
+   "bytes": 584590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper1-dead-circuits-ghmpw6.pdf",
+   "bytes": 284845,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper2-living-speech-1tl75xq.pdf",
+   "bytes": 305164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper2-living-speech-1xkli3o.pdf",
+   "bytes": 311926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper4-script-advantage-yqmoq4.pdf",
+   "bytes": 365302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper4-script-design-advantage-et0ebz.pdf",
+   "bytes": 334131,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper4-scriptadvantage-297k-dfvt81.pdf",
+   "bytes": 364839,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/paper5-deployment-1ja32lm.pdf",
+   "bytes": 180090,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/phonemic-evaluation-final-split-1dwhgbq.pdf",
+   "bytes": 235194,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/rag-architecture-1rp47hc.pdf",
+   "bytes": 136829,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/script-aware-asr-deployment-draft-tt1we3.pdf",
+   "bytes": 180090,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/script-design-ctc-draft-uulc04.pdf",
+   "bytes": 365302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/script-invisibility-draft-y59cab.pdf",
+   "bytes": 581556,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/script-invisibility-final-split-1watisp.pdf",
+   "bytes": 581556,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/script-native-asr-final-split-8hw9sl.pdf",
+   "bytes": 332865,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/system-overview-1ilkl6i.pdf",
+   "bytes": 446103,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/research/pdfs/files/universal-sigil-framework-19qvvsz.pdf",
+   "bytes": 26144,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "granddiomande.com",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create granddiomande.com --namespace foundry-staging",
+  "FOUNDRY_SEED=granddiomande.com /Users/mohameddiomande/.config/foundry/bin/foundry-push granddiomande.com main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging granddiomande.com",
+  "registry: foundry_base=granddiomande.com; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/granddiomande.com/",
+ "first_merge_fits_gate": false
+}

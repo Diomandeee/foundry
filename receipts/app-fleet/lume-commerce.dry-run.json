@@ -1,0 +1,32 @@
+{
+ "id": "lume-commerce",
+ "title": "lume-commerce",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/lume-commerce",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 472,
+ "text_bytes": 4518808,
+ "offenders": [
+  {
+   "path": "stage/mac4/femto/lume-real-femto-snapshot.png",
+   "bytes": 509286,
+   "why": "binary-ext"
+  },
+  {
+   "path": "tools/research/pinto/hand_compare-20261019-upright.jpg",
+   "bytes": 149584,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "lume-commerce",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create lume-commerce --namespace foundry-staging",
+  "FOUNDRY_SEED=lume-commerce /Users/mohameddiomande/.config/foundry/bin/foundry-push lume-commerce main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging lume-commerce",
+  "registry: foundry_base=lume-commerce; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/lume-commerce/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,67 @@
+{
+ "id": "speakflow",
+ "title": "SpeakFlow",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/SpeakFlow",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 84,
+ "text_bytes": 616501,
+ "offenders": [
+  {
+   "path": "SpeakFlow/Assets.xcassets/AppIcon.appiconset/app_icon_1024.png",
+   "bytes": 4263215,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SpeakFlow/Assets.xcassets/AppIcon.appiconset/app_icon_128.png",
+   "bytes": 87912,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SpeakFlow/Assets.xcassets/AppIcon.appiconset/app_icon_16.png",
+   "bytes": 5049,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SpeakFlow/Assets.xcassets/AppIcon.appiconset/app_icon_256.png",
+   "bytes": 305053,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SpeakFlow/Assets.xcassets/AppIcon.appiconset/app_icon_32.png",
+   "bytes": 8454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SpeakFlow/Assets.xcassets/AppIcon.appiconset/app_icon_512.png",
+   "bytes": 1104886,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SpeakFlow/Assets.xcassets/AppIcon.appiconset/app_icon_64.png",
+   "bytes": 18475,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SpeakFlowMobile/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 622958,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SpeakFlowMobile/Assets.xcassets/AppIcon.appiconset/app_icon_1024.png",
+   "bytes": 539953,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "speakflow",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create speakflow --namespace foundry-staging",
+  "FOUNDRY_SEED=speakflow /Users/mohameddiomande/.config/foundry/bin/foundry-push speakflow main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging speakflow",
+  "registry: foundry_base=speakflow; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/speakflow/",
+ "first_merge_fits_gate": true
+}

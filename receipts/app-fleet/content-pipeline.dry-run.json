@@ -1,0 +1,21 @@
+{
+ "id": "content-pipeline",
+ "title": "content-pipeline",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/content-pipeline",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 492,
+ "text_bytes": 1043002,
+ "offenders": [],
+ "base": "content-pipeline",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create content-pipeline --namespace foundry-staging",
+  "FOUNDRY_SEED=content-pipeline /Users/mohameddiomande/.config/foundry/bin/foundry-push content-pipeline main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging content-pipeline",
+  "registry: foundry_base=content-pipeline; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

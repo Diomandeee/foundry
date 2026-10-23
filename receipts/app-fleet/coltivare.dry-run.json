@@ -1,0 +1,277 @@
+{
+ "id": "coltivare",
+ "title": "coltivare",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/coltivare",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 304,
+ "text_bytes": 3128805,
+ "offenders": [
+  {
+   "path": "Coltivare/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 19297,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Coltivare/Resources/Fonts/GrenzeGotisch.ttf",
+   "bytes": 96232,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/coltivare-swiftui-moodboard.png",
+   "bytes": 1900717,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/design/coltivare-product-design-direction.pdf",
+   "bytes": 3675409,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/design/coltivare-reference-board.jpeg",
+   "bytes": 379416,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/coltivare-atelier-home-iphone17pro-recheck.png",
+   "bytes": 3971007,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/museum-v2-artists.png",
+   "bytes": 1797515,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/museum-v2-gigs.png",
+   "bytes": 1869336,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/museum-v2-home.png",
+   "bytes": 3822881,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/museum-v2-scene.png",
+   "bytes": 1837794,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/museum-v2-work.png",
+   "bytes": 2863516,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/museum-v2-you.png",
+   "bytes": 1263217,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-03/home-route-harness-20260714T213757Z.png",
+   "bytes": 3822166,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-04/component-gallery-20260714T215725Z.png",
+   "bytes": 963409,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-accessibility-xxxl-iphone16e-20260716T031532Z.png",
+   "bytes": 2687908,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-default-iphone17pro-20260716T030200Z.png",
+   "bytes": 2967222,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-default-iphone17pro-accepted-20260716T030512Z.png",
+   "bytes": 2481675,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-default-iphone17pro-final-20260716T030325Z.png",
+   "bytes": 2514261,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-default-iphone17pro-final-current-20260716T031852Z.png",
+   "bytes": 2716801,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-keyboard-iphone16e-20260716T030726Z.png",
+   "bytes": 1266531,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-narrow-iphone16e-20260716T030636Z.png",
+   "bytes": 2420884,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-narrow-iphone16e-accepted-20260716T031129Z.png",
+   "bytes": 2594227,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-software-keyboard-iphone16e-20260716T030946Z.png",
+   "bytes": 232663,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-software-keyboard-iphone16e-accepted-20260716T031217Z.png",
+   "bytes": 1348325,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-08/onboarding-software-keyboard-iphone16e-final-20260716T031448Z.png",
+   "bytes": 589536,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-24/home-hero-fixed.png",
+   "bytes": 1313068,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-24/home-hero-frozen.png",
+   "bytes": 1314501,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-24/scene-base.png",
+   "bytes": 1745177,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-24/scene-denied.png",
+   "bytes": 1741145,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-24/scene-list.png",
+   "bytes": 291785,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-24/scene-selected.png",
+   "bytes": 1645849,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-24/scene-work.png",
+   "bytes": 1631910,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-26/screens/account-standard.png",
+   "bytes": 1142623,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-26/screens/dashboard-standard.png",
+   "bytes": 2792036,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-26/screens/earnings-empty.png",
+   "bytes": 2216051,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-26/screens/earnings-failure.png",
+   "bytes": 2042186,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-26/screens/earnings-standard.png",
+   "bytes": 2776596,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Docs/verification/production-v3/prompt-29/journey-2026-07-27/contact-sheet.png",
+   "bytes": 2151695,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/coltivare-logo.png",
+   "bytes": 471107,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/art-room.jpg",
+   "bytes": 312840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/crowd-stage.jpg",
+   "bytes": 360785,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/dance-floor.jpg",
+   "bytes": 159315,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/disco-room.jpg",
+   "bytes": 495229,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/flash-duo.jpg",
+   "bytes": 324023,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/group-close.jpg",
+   "bytes": 522188,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/laughing.jpg",
+   "bytes": 373327,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/orange-stage.jpg",
+   "bytes": 421447,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/portrait-green.jpg",
+   "bytes": 342180,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/portrait-shadow.jpg",
+   "bytes": 157884,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/stage-projection.jpg",
+   "bytes": 369905,
+   "why": "binary-ext"
+  },
+  {
+   "path": "web/media/toast.jpg",
+   "bytes": 387748,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "coltivare",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create coltivare --namespace foundry-staging",
+  "FOUNDRY_SEED=coltivare /Users/mohameddiomande/.config/foundry/bin/foundry-push coltivare main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging coltivare",
+  "registry: foundry_base=coltivare; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/coltivare/",
+ "first_merge_fits_gate": true
+}

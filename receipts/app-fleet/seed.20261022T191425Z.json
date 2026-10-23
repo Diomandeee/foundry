@@ -1,0 +1,51 @@
+{
+ "approved_by": "Mohamed 2026-10-22 lane defaults; purge 2: four unfiltered batch-3 seeds with secret hits (scan 19:02Z) reseeded on the withholding seeder",
+ "started": "20261022T191425Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "exo",
+   "base": "exo",
+   "origin_commit": "7a36d3968d8bf6e760886e2b0a71aa801e1e5f3c",
+   "seed_commit": "8ed2d5fb9617e9763dcca0abc02d8f5b7c509bed",
+   "files": 699,
+   "stripped": 32,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "french-connect",
+   "base": "french-connect",
+   "origin_commit": "bd60a54d552732562702d53cb37230091a97e068",
+   "seed_commit": "307b2c9bbf8e84487b0cd286cb7f70f60d1e4bb2",
+   "files": 324,
+   "stripped": 30,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "granddiomande.com",
+   "base": "granddiomande.com",
+   "origin_commit": "815b8447319b9ce5da3980637ad57bbcded882bc",
+   "seed_commit": "ee8b3d1990a7a69369100cb383451c0f426797a0",
+   "files": 1215,
+   "stripped": 86,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "karl",
+   "base": "karl",
+   "origin_commit": "952fc75ebc292f78c138e8abe625eabf9af5bdfb",
+   "seed_commit": "4cc90c83de7be4e8f98706a821578d05bd64b258",
+   "files": 107,
+   "stripped": 1,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

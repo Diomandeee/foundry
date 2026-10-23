@@ -1,0 +1,122 @@
+{
+ "id": "pos",
+ "title": "pos",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/pos",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 700,
+ "text_bytes": 17748301,
+ "offenders": [
+  {
+   "path": "public/android-chrome-192x192.png",
+   "bytes": 223023,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/android-chrome-512x512.png",
+   "bytes": 223023,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/apple-touch-icon.png",
+   "bytes": 223023,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/share_.png",
+   "bytes": 53727,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/1.png",
+   "bytes": 190633,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/2.png",
+   "bytes": 594742,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/3 copy.png",
+   "bytes": 318019,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/3.png",
+   "bytes": 318019,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/4 copy.jpeg",
+   "bytes": 280859,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/4.png",
+   "bytes": 280859,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/branding.jpeg",
+   "bytes": 321990,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/buf.png",
+   "bytes": 669558,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/coffee-and-dance.png",
+   "bytes": 745456,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/coffeeanddance.png",
+   "bytes": 122989,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/fishfail.gif",
+   "bytes": 2090220,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/sleeves.jpeg",
+   "bytes": 290387,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/step_1.jpeg",
+   "bytes": 92738,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/step_2.jpeg",
+   "bytes": 260241,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/step_3.jpeg",
+   "bytes": 202240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src/@images/step_4.jpeg",
+   "bytes": 164415,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "pos",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create pos --namespace foundry-staging",
+  "FOUNDRY_SEED=pos /Users/mohameddiomande/.config/foundry/bin/foundry-push pos main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging pos",
+  "registry: foundry_base=pos; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/pos/",
+ "first_merge_fits_gate": false
+}

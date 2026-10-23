@@ -36,12 +36,16 @@ export function approveRecipe(value: Approval): Readonly<Approval> {
   r.outputPaths.forEach(localPath);
   if (r.kind === 'linux-build-v1') {
     check(/^[a-z0-9][a-z0-9./:_-]{0,200}@sha256:[0-9a-f]{64}$/.test(r.image), 'digest-required');
-    check((r.architecture === 'x64' || r.architecture === 'arm64') && ['npm','cargo','cmake'].includes(r.tool), 'unsupported-linux-recipe');
+    check((r.architecture === 'x64' || r.architecture === 'arm64') && ['npm','cargo','cmake','python'].includes(r.tool), 'unsupported-linux-recipe');
     check(r.network === 'none','approved-dependencies-not-configured');
     check(Array.isArray(r.args) && r.args.length <= 32 && r.args.every(s => typeof s === 'string' && s.length > 0 && s.length <= 256 && !/[\x00-\x1f\x7f]/.test(s)), 'invalid-owner-tool-args');
     if (r.configureArgs) {
       check(r.tool === 'cmake' && r.configureArgs.length <= 32 && r.configureArgs.every(s => typeof s === 'string' && s.length <= 256 && !/[\x00-\x1f\x7f]/.test(s)), 'invalid-configure-args');
       Object.freeze(r.configureArgs);
+    }
+    if (r.installArgs) {
+      check(r.tool === 'python' && Array.isArray(r.installArgs) && r.installArgs.length > 0 && r.installArgs.length <= 32 && r.installArgs.every(s => typeof s === 'string' && s.length > 0 && s.length <= 256 && !/[\x00-\x1f\x7f]/.test(s)), 'invalid-install-args');
+      Object.freeze(r.installArgs);
     }
     const executable = h.imageExecutables?.[r.tool]; check(executable,'image-executable-mapping-required'); absolute(executable);
     Object.freeze(r.args);
@@ -61,7 +65,7 @@ export function profileDigest(a: Readonly<Approval>): string {
   // Explicit fields; field insertion order in the owner's object is immaterial.
   const r = a.recipe, l = a.limits, h = a.host;
   return hash(JSON.stringify([r.kind,[...r.outputPaths],
-    r.kind === 'linux-build-v1' ? [r.image,r.architecture,r.tool,[...r.args],r.configureArgs ?? [],r.network,h.imageExecutables?.[r.tool]] : [r.configuration,r.dependencyPolicy,r.developerDir,r.project,r.scheme,r.sdk,r.destination,r.trustedNativeProject,r.xcodeBuild,r.macos],
+    r.kind === 'linux-build-v1' ? [r.image,r.architecture,r.tool,[...r.args],r.configureArgs ?? [],r.network,h.imageExecutables?.[r.tool],r.installArgs ?? []] : [r.configuration,r.dependencyPolicy,r.developerDir,r.project,r.scheme,r.sdk,r.destination,r.trustedNativeProject,r.xcodeBuild,r.macos],
     l.cpu,l.ramMib,l.pids,l.timeoutMs,l.maxOutputBytes,l.tmpMib,l.minFreeBytes,
     h.uid,h.gid,h.dedicatedBuildUser,h.inputBase,h.workBase,h.journalRoot]));
 }
@@ -78,6 +82,10 @@ export function buildPlan(a: Readonly<Approval>, attempt: Attempt): RuntimePlan 
     env.NPM_CONFIG_OFFLINE = 'true'; env.NPM_CONFIG_CACHE = '/work/npm-cache';
     env.NPM_CONFIG_USERCONFIG = '/dev/null'; env.NPM_CONFIG_GLOBALCONFIG = '/dev/null';
     env.CARGO_HOME = '/work/cargo'; env.CARGO_TARGET_DIR = '/work/target'; env.CARGO_NET_OFFLINE = 'true';
+    if (r.tool === 'python') {
+      env.PYTHONPATH = '/work/site:/work/source'; env.PYTHONDONTWRITEBYTECODE = '1'; env.PYTHONHASHSEED = '0';
+      env.PIP_NO_INDEX = '1'; env.PIP_NO_CACHE_DIR = '1'; env.PIP_DISABLE_PIP_VERSION_CHECK = '1';
+    }
   } else {
     env.DEVELOPER_DIR = r.developerDir;
     env.CLANG_MODULE_CACHE_PATH = `${i.workRoot}/modules`;
@@ -94,6 +102,8 @@ export function buildPlan(a: Readonly<Approval>, attempt: Attempt): RuntimePlan 
   plans.set(p,a);
   const commands = r.kind === 'linux-build-v1' && r.tool === 'cmake'
     ? [[argv[0]!,'-S','/input','-B','/work/build',...(r.configureArgs ?? [])],argv]
+    : r.kind === 'linux-build-v1' && r.tool === 'python' && r.installArgs
+    ? [[argv[0]!,'-m','pip','install','--no-index','--no-cache-dir','--target','/work/site',...r.installArgs],argv]
     : [argv];
   phases.set(p,Object.freeze(commands.map(command => Object.freeze([...command]))));
   return p;

@@ -1,0 +1,202 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "foundry.repo-hygiene.inventory.v1",
+ "title": "Repo hygiene inventory: everything a repo holds outside git, one document per scan",
+ "type": "object",
+ "required": [
+  "schema",
+  "generated_at",
+  "repo",
+  "summary",
+  "items",
+  "dangling_refs",
+  "content_hash"
+ ],
+ "properties": {
+  "schema": {
+   "const": "foundry.repo-hygiene.inventory.v1"
+  },
+  "generated_at": {
+   "type": "string",
+   "format": "date-time"
+  },
+  "repo": {
+   "type": "object",
+   "required": [
+    "path",
+    "name"
+   ],
+   "properties": {
+    "path": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "head": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "branch": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "remote": {
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   }
+  },
+  "summary": {
+   "type": "object",
+   "properties": {
+    "entries": {
+     "type": "integer"
+    },
+    "by_state": {
+     "type": "object"
+    },
+    "by_kind": {
+     "type": "object"
+    },
+    "untracked_imported_by_tracked": {
+     "type": "integer"
+    },
+    "docs_tracked": {
+     "type": "integer"
+    },
+    "docs_with_status": {
+     "type": "integer"
+    },
+    "dangling_refs": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    }
+   }
+  },
+  "items": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "path",
+     "state",
+     "kind",
+     "bytes",
+     "owner_lane",
+     "imported_by_tracked"
+    ],
+    "properties": {
+     "path": {
+      "type": "string",
+      "description": "repo-relative, one entry per file (untracked dirs are expanded)"
+     },
+     "state": {
+      "enum": [
+       "untracked",
+       "modified",
+       "deleted",
+       "added"
+      ]
+     },
+     "kind": {
+      "enum": [
+       "code",
+       "test",
+       "doc",
+       "data",
+       "generated",
+       "log",
+       "secret-risk",
+       "unknown"
+      ]
+     },
+     "bytes": {
+      "type": "integer"
+     },
+     "last_modified": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "format": "date-time"
+     },
+     "owner_lane": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "lane responsible for deciding this path's fate"
+     },
+     "imported_by_tracked": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "tracked files that import or invoke this path; non-empty on an untracked path = boundary violation R1"
+     },
+     "in_build_source_dir": {
+      "type": "boolean",
+      "description": "untracked .swift inside an XcodeGen/SwiftPM source root of a tracked target (also R1)"
+     },
+     "secret_reason": {
+      "enum": [
+       "name",
+       "content-pattern"
+      ],
+      "description": "why kind=secret-risk; content is never copied into the inventory"
+     },
+     "doc": {
+      "type": [
+       "object",
+       "null"
+      ],
+      "description": "parsed doc-status front matter, see doc-status.v1"
+     },
+     "decision": {
+      "enum": [
+       "commit",
+       "ignore",
+       "move-to-data-plane",
+       "delete-after-backup",
+       "quarantine-secret",
+       "keep-local",
+       null
+      ],
+      "description": "filled by the owner lane during cleanup; null until decided"
+     }
+    }
+   }
+  },
+  "dangling_refs": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "ref",
+     "sha"
+    ],
+    "properties": {
+     "ref": {
+      "type": "string"
+     },
+     "sha": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "content_hash": {
+   "type": "string",
+   "description": "sha256 of items (sorted keys), to tell whether two scans differ"
+  }
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "approved_by": "Mohamed 2026-10-22 lane defaults; batch 4b = bwb + milk-men- only; uctm-harness (83 MB) and meshcontrol (508 MB) need path scoping",
+ "started": "20261022T191617Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "bwb",
+   "error": "repos create bwb refused (exists or error), not seeding: \u001b[33m\u25b2 \u001b[43;33m[\u001b[43;30mWARNING\u001b[43;33m]\u001b[0m \u001b[1m\ud83d\udea7 `wrangler artifacts repos create` is an open beta command. Please report any issues to https://github.com/clo"
+  },
+  {
+   "id": "milk-men-",
+   "base": "milk-men-",
+   "origin_commit": "61739cce81e933727ab62a20099f48bc50d90d23",
+   "seed_commit": "b05b785a9b70b35aac560db5ee3b9f9e833ac298",
+   "files": 2089,
+   "stripped": 18,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"ee9a5c1ef0004a55926744704abb6403\",\"created_at\":\"2026-10-22T19:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

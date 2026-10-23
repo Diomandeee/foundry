@@ -1,0 +1,117 @@
+{
+ "id": "lobe-chat",
+ "title": "lobe-chat",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/lobe-chat",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 763,
+ "text_bytes": 1653365,
+ "offenders": [
+  {
+   "path": "public/icons/icon-192x192.png",
+   "bytes": 9294,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/icons/icon-512x512.png",
+   "bytes": 41135,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/icons/maskable-icon-192x192.png",
+   "bytes": 5598,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/icons/maskable-icon-512x512.png",
+   "bytes": 21146,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/banner_market_modal.webp",
+   "bytes": 70052,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/chatmode_chat_dark.webp",
+   "bytes": 12878,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/chatmode_chat_light.webp",
+   "bytes": 27500,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/chatmode_docs_dark.webp",
+   "bytes": 12854,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/chatmode_docs_light.webp",
+   "bytes": 26470,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/empty_topic_dark.webp",
+   "bytes": 45962,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/empty_topic_light.webp",
+   "bytes": 37212,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/screenshot_background.webp",
+   "bytes": 5164,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/theme_auto.webp",
+   "bytes": 5876,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/theme_dark.webp",
+   "bytes": 7872,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/images/theme_light.webp",
+   "bytes": 5394,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/screenshots/screenshot-1.png",
+   "bytes": 117769,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/screenshots/screenshot-2.png",
+   "bytes": 117474,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/screenshots/screenshot-3.png",
+   "bytes": 153382,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/screenshots/screenshot-4.png",
+   "bytes": 142072,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "lobe-chat",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create lobe-chat --namespace foundry-staging",
+  "FOUNDRY_SEED=lobe-chat /Users/mohameddiomande/.config/foundry/bin/foundry-push lobe-chat main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging lobe-chat",
+  "registry: foundry_base=lobe-chat; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/lobe-chat/",
+ "first_merge_fits_gate": true
+}

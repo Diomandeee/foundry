@@ -1,0 +1,42 @@
+{
+ "id": "eatup-events",
+ "title": "eatup-events",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/eatup-events",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 79,
+ "text_bytes": 601279,
+ "offenders": [
+  {
+   "path": "public/apple-touch-icon.png",
+   "bytes": 7033,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/icon-192.png",
+   "bytes": 8287,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/logo.webp",
+   "bytes": 72724,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/og-image.png",
+   "bytes": 33957,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "eatup-events",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create eatup-events --namespace foundry-staging",
+  "FOUNDRY_SEED=eatup-events /Users/mohameddiomande/.config/foundry/bin/foundry-push eatup-events main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging eatup-events",
+  "registry: foundry_base=eatup-events; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/eatup-events/",
+ "first_merge_fits_gate": true
+}

@@ -41,6 +41,7 @@ describe("createTask", () => {
     const res = await createTask(port, tickets, {
       baseRepo: "base",
       taskId: "t1",
+      allowedRoots: ["src"],
       agents: ["a", "b"],
     });
     expect(res.taskId).toBe("t1");
@@ -68,6 +69,7 @@ describe("createTask", () => {
     const res = await createTask(port, tickets, {
       baseRepo: "fresh",
       taskId: "t2",
+      allowedRoots: ["src"],
       agents: ["a"],
       instructions: "custom",
     });
@@ -117,6 +119,7 @@ describe("createTask", () => {
       {
         baseRepo: "fresh",
         taskId: "t3",
+        allowedRoots: ["src"],
         agents: ["a"],
         instructions: "x",
         chains: ["chain:genesis"],
@@ -144,6 +147,7 @@ describe("createTask", () => {
         {
           baseRepo: "fresh",
           taskId: "t4",
+          allowedRoots: ["src"],
           agents: ["a"],
           chains: ["chain:bogus"],
           planCheckEnforce: true,
@@ -165,6 +169,7 @@ describe("createTask", () => {
       {
         baseRepo: "fresh",
         taskId: "t5",
+        allowedRoots: ["src"],
         agents: ["a"],
         chains: ["chain:genesis"],
       },
@@ -190,12 +195,21 @@ describe("createTask", () => {
     }
   });
 
-  it("leaves scopes unrestricted when no roots are declared, and says so", async () => {
+  it("refuses a task that declares no roots (review H4)", async () => {
+    await kit.seedBase("base", { "app.ts": "v1\n" }, join(root, "w-base"));
+    await expect(createTask(port, tickets, { baseRepo: "base", taskId: "t7x", agents: ["a"] }))
+      .rejects.toThrow(/allowedRoots required/);
+    await expect(createTask(port, tickets, { baseRepo: "base", taskId: "t7y", agents: ["a"], allowedRoots: [] }))
+      .rejects.toThrow(/allowedRoots required/);
+  });
+
+  it("leaves scopes unrestricted only on an explicit opt-in, and says so", async () => {
     await kit.seedBase("base", { "app.ts": "v1\n" }, join(root, "w-base"));
     const res = await createTask(port, tickets, {
       baseRepo: "base",
       taskId: "t7",
       agents: ["a"],
+      unrestricted: true,
     });
     // The echo is the point: "unrestricted" is visible to the operator rather
     // than something you have to infer from an empty field in the store.

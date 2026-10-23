@@ -1,0 +1,28 @@
+{
+ "profile": {
+  "version": 1,
+  "projectId": "comp-core",
+  "kind": "linux-build-v1",
+  "limits": { "cpu": 2, "ramMib": 3072, "estimatedAdditionalBytes": 2147483648, "timeoutMs": 900000, "maxOutputBytes": 1048576 },
+  "recipe": {
+   "image": "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+   "architecture": "x64",
+   "tool": "python",
+   "args": ["-m", "pytest", "-q", "-p", "no:cacheprovider", "--junitxml=/work/out/junit.xml", "/work/source/calibrate_extrinsics"],
+   "network": "none",
+   "installArgs": ["--find-links", "/work/source/wheels", "numpy", "pytest"]
+  },
+  "outputPaths": ["out/junit.xml"],
+  "trustedProject": true,
+  "workerOptInRequired": true
+ },
+ "localPolicy": {
+  "host": {
+   "uid": 1100, "gid": 1100, "dedicatedBuildUser": true, "allowActivation": false,
+   "inputBase": "/var/lib/foundry-ctl/input", "workBase": "/var/lib/foundry-ctl/work", "journalRoot": "/var/lib/foundry-ctl/journal",
+   "imageExecutables": { "python": "/usr/local/bin/python3" }
+  },
+  "pids": 512, "tmpMib": 512, "minFreeBytes": 53687091200
+ },
+ "maxInputBytes": 67108864
+}

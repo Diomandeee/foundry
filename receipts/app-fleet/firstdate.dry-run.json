@@ -1,0 +1,222 @@
+{
+ "id": "firstdate",
+ "title": "FirstDate",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/FirstDate",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 177,
+ "text_bytes": 952632,
+ "offenders": [
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+   "bytes": 864907,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-120.png",
+   "bytes": 2917,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-152.png",
+   "bytes": 3746,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-167.png",
+   "bytes": 4082,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-180.png",
+   "bytes": 4479,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-20.png",
+   "bytes": 577,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-29.png",
+   "bytes": 750,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-40.png",
+   "bytes": 988,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-58.png",
+   "bytes": 1454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-60.png",
+   "bytes": 1504,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-76.png",
+   "bytes": 1874,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-80.png",
+   "bytes": 1939,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon-87.png",
+   "bytes": 2123,
+   "why": "binary-ext"
+  },
+  {
+   "path": "FirstDate/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 864907,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/01-brews-campaign.jpg",
+   "bytes": 22,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/01-ck-holiday-campaign.jpg",
+   "bytes": 70263,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/01-ck-holiday-campaign.png",
+   "bytes": 183763,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/02-ck-movement.jpg",
+   "bytes": 171116,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/02-times-square.jpg",
+   "bytes": 22,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/02-times-square.png",
+   "bytes": 571709,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/03-buf-barista-event.jpg",
+   "bytes": 22,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/03-ck-watch-portrait.jpg",
+   "bytes": 518958,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/03-ck-watch-portrait.png",
+   "bytes": 355446,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/04-ck-movement.png",
+   "bytes": 269688,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/04-summer-vibes.jpg",
+   "bytes": 22,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/04-times-square.jpg",
+   "bytes": 786414,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/05-portrait.jpg",
+   "bytes": 22,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/05-summer-vibes.jpg",
+   "bytes": 237537,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/05-summer-vibes.png",
+   "bytes": 482566,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/06-brews-campaign-jump.png",
+   "bytes": 504268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/06-brews-campaign.jpg",
+   "bytes": 518958,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/06-calvin-klein.jpg",
+   "bytes": 22,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/07-bucket-hat-smile.jpg",
+   "bytes": 552610,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/07-professional.jpg",
+   "bytes": 22,
+   "why": "binary-ext"
+  },
+  {
+   "path": "profile-photos/08-mountain.jpg",
+   "bytes": 22,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/01_hero.png",
+   "bytes": 92987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02_series.png",
+   "bytes": 122201,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/03_apply.png",
+   "bytes": 102403,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/04_pipeline.png",
+   "bytes": 100516,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/05_ledger.png",
+   "bytes": 183903,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "firstdate",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create firstdate --namespace foundry-staging",
+  "FOUNDRY_SEED=firstdate /Users/mohameddiomande/.config/foundry/bin/foundry-push firstdate main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging firstdate",
+  "registry: foundry_base=firstdate; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/firstdate/",
+ "first_merge_fits_gate": true
+}

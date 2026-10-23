@@ -1,0 +1,21 @@
+{
+ "id": "pulse-vision-pipeline",
+ "title": "pulse-vision-pipeline",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/pulse-vision-pipeline",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 4,
+ "text_bytes": 9971,
+ "offenders": [],
+ "base": "pulse-vision-pipeline",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create pulse-vision-pipeline --namespace foundry-staging",
+  "FOUNDRY_SEED=pulse-vision-pipeline /Users/mohameddiomande/.config/foundry/bin/foundry-push pulse-vision-pipeline main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging pulse-vision-pipeline",
+  "registry: foundry_base=pulse-vision-pipeline; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

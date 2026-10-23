@@ -1,0 +1,137 @@
+{
+ "id": "jeli-nko",
+ "title": "jeli-nko",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/jeli-nko",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 262,
+ "text_bytes": 5686344,
+ "offenders": [
+  {
+   "path": "deliverables/JELI-CHATGPT-HANDOFF-V1.zip",
+   "bytes": 2914145,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-CHATGPT-HANDOFF-V1/visuals/01_FULL_SYSTEM_CAD.png",
+   "bytes": 113455,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-CHATGPT-HANDOFF-V1/visuals/02_EMPTY_PI_DOCK_CAD.png",
+   "bytes": 75796,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-CHATGPT-HANDOFF-V1/visuals/03_PI_DOCK_WITH_PROXY.png",
+   "bytes": 73415,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-CHATGPT-HANDOFF-V1/visuals/04_HISTORICAL_BLENDER_BODY.png",
+   "bytes": 2259620,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-FULL-SYSTEM-V2.2/jeli-full-system.png",
+   "bytes": 113455,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-HEIRLOOM-TOKENS-V1.zip",
+   "bytes": 158274,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PI-DOCK-V2.2.zip",
+   "bytes": 183716,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PI-DOCK-V2.2/04_PREVIEWS/dock-assembled.png",
+   "bytes": 73415,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PI-DOCK-V2.2/04_PREVIEWS/dock-empty.png",
+   "bytes": 75796,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PRINT-PACK-V2.1.zip",
+   "bytes": 5616544,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PRINT-PACK-V2.1/04_PREVIEWS/V2_REFERENCE_assembled.png",
+   "bytes": 2259620,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PRINT-PACK-V2.1/04_PREVIEWS/V2_REFERENCE_internals.png",
+   "bytes": 2373749,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PRINT-PACK-V2.1/04_PREVIEWS/jeli-assembly-3q.png",
+   "bytes": 122288,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PRINT-PACK-V2.1/04_PREVIEWS/jeli-component-fit.png",
+   "bytes": 101399,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PRINT-PACK-V2.1/04_PREVIEWS/jeli-exploded.png",
+   "bytes": 117702,
+   "why": "binary-ext"
+  },
+  {
+   "path": "deliverables/JELI-PRINT-PACK-V2.1/04_PREVIEWS/jeli-founder-accessories.png",
+   "bytes": 56345,
+   "why": "binary-ext"
+  },
+  {
+   "path": "hardware/cad/jeli-print-v2_1/renders/jeli-assembly-3q.png",
+   "bytes": 122288,
+   "why": "binary-ext"
+  },
+  {
+   "path": "hardware/cad/jeli-print-v2_1/renders/jeli-component-fit.png",
+   "bytes": 101399,
+   "why": "binary-ext"
+  },
+  {
+   "path": "hardware/cad/jeli-print-v2_1/renders/jeli-exploded.png",
+   "bytes": 117702,
+   "why": "binary-ext"
+  },
+  {
+   "path": "hardware/cad/jeli-print-v2_1/renders/jeli-founder-accessories.png",
+   "bytes": 56345,
+   "why": "binary-ext"
+  },
+  {
+   "path": "hardware/reference/v2-blender/V2_REFERENCE_assembled.png",
+   "bytes": 2259620,
+   "why": "binary-ext"
+  },
+  {
+   "path": "hardware/reference/v2-blender/V2_REFERENCE_internals.png",
+   "bytes": 2373749,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "jeli-nko",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create jeli-nko --namespace foundry-staging",
+  "FOUNDRY_SEED=jeli-nko /Users/mohameddiomande/.config/foundry/bin/foundry-push jeli-nko main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging jeli-nko",
+  "registry: foundry_base=jeli-nko; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/jeli-nko/",
+ "first_merge_fits_gate": true
+}

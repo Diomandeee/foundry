@@ -1,0 +1,82 @@
+{
+ "id": "securiclaw-claude",
+ "title": "SecuriClaw-Claude",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/SecuriClaw-Claude",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 709,
+ "text_bytes": 119824134,
+ "offenders": [
+  {
+   "path": "SecuriClaw/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 415769,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/SecuriClaw.xcarchive/dSYMs/SecuriClaw.app.dSYM/Contents/Resources/DWARF/SecuriClaw",
+   "bytes": 4708656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/AVFoundation-1INAPPPADATH1ETWFVV9QWT0P.pcm",
+   "bytes": 6024696,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/AVFoundation-4N87OAFGPK94XB1N4AT1VHMOE.pcm",
+   "bytes": 6024840,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/Accelerate-65I28PIW2FJNYUDKVX5ACK8IN.pcm",
+   "bytes": 12341232,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/Accelerate-8PJG7DHZIYQUCYLGR00BXCL6A.pcm",
+   "bytes": 12341376,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/Foundation-11O7QJNGUFJ9DEMGOEHV6BWGP.pcm",
+   "bytes": 5503568,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/Foundation-9U1HSUC2TD41YRIO1XMKKXOCF.pcm",
+   "bytes": 5503720,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/UIKit-99Z8EB9R4EBSW21XZY5P1I4K.pcm",
+   "bytes": 10390264,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/SwiftExplicitPrecompiledModules/UIKit-SNXZEKQBX1IZI2JQ8WNRUPKM.pcm",
+   "bytes": 10390112,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "build/XCBuildData/build.db",
+   "bytes": 892928,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build/export-local/SecuriClaw.ipa",
+   "bytes": 838527,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "securiclaw-claude",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create securiclaw-claude --namespace foundry-staging",
+  "FOUNDRY_SEED=securiclaw-claude /Users/mohameddiomande/.config/foundry/bin/foundry-push securiclaw-claude main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging securiclaw-claude",
+  "registry: foundry_base=securiclaw-claude; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/securiclaw-claude/",
+ "first_merge_fits_gate": false
+}

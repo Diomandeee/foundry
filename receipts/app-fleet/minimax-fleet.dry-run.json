@@ -1,0 +1,21 @@
+{
+ "id": "minimax-fleet",
+ "title": "minimax-fleet",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/minimax-fleet",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 11445,
+ "offenders": [],
+ "base": "minimax-fleet",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create minimax-fleet --namespace foundry-staging",
+  "FOUNDRY_SEED=minimax-fleet /Users/mohameddiomande/.config/foundry/bin/foundry-push minimax-fleet main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging minimax-fleet",
+  "registry: foundry_base=minimax-fleet; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

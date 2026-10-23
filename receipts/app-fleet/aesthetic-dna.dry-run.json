@@ -1,0 +1,21 @@
+{
+ "id": "aesthetic-dna",
+ "title": "aesthetic-dna",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/aesthetic-dna",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 8,
+ "text_bytes": 43147,
+ "offenders": [],
+ "base": "aesthetic-dna",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create aesthetic-dna --namespace foundry-staging",
+  "FOUNDRY_SEED=aesthetic-dna /Users/mohameddiomande/.config/foundry/bin/foundry-push aesthetic-dna main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging aesthetic-dna",
+  "registry: foundry_base=aesthetic-dna; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

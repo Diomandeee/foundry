@@ -1,0 +1,102 @@
+{
+ "id": "trajectory-analytics",
+ "title": "trajectory-analytics",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/trajectory-analytics",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 91,
+ "text_bytes": 962816,
+ "offenders": [
+  {
+   "path": "src-tauri/icons/128x128.png",
+   "bytes": 13297,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/128x128@2x.png",
+   "bytes": 31840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/32x32.png",
+   "bytes": 1890,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square107x107Logo.png",
+   "bytes": 10687,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square142x142Logo.png",
+   "bytes": 15273,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square150x150Logo.png",
+   "bytes": 16141,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square284x284Logo.png",
+   "bytes": 38049,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square30x30Logo.png",
+   "bytes": 1740,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square310x310Logo.png",
+   "bytes": 43182,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square44x44Logo.png",
+   "bytes": 3047,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square71x71Logo.png",
+   "bytes": 6083,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/Square89x89Logo.png",
+   "bytes": 8279,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/StoreLogo.png",
+   "bytes": 3697,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/app-icon.png",
+   "bytes": 56827,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/icon.icns",
+   "bytes": 499781,
+   "why": "binary-ext"
+  },
+  {
+   "path": "src-tauri/icons/icon.png",
+   "bytes": 73594,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "trajectory-analytics",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create trajectory-analytics --namespace foundry-staging",
+  "FOUNDRY_SEED=trajectory-analytics /Users/mohameddiomande/.config/foundry/bin/foundry-push trajectory-analytics main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging trajectory-analytics",
+  "registry: foundry_base=trajectory-analytics; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/trajectory-analytics/",
+ "first_merge_fits_gate": true
+}

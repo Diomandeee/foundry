@@ -1,0 +1,27 @@
+{
+ "id": "cipher",
+ "title": "Cipher",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Cipher",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 23,
+ "text_bytes": 53287,
+ "offenders": [
+  {
+   "path": "Cipher/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 5699,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "cipher",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cipher --namespace foundry-staging",
+  "FOUNDRY_SEED=cipher /Users/mohameddiomande/.config/foundry/bin/foundry-push cipher main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cipher",
+  "registry: foundry_base=cipher; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cipher/",
+ "first_merge_fits_gate": true
+}

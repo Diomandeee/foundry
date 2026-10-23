@@ -1,0 +1,317 @@
+{
+ "id": "filmcraft",
+ "title": "filmcraft",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/filmcraft",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1342,
+ "text_bytes": 24994330,
+ "offenders": [
+  {
+   "path": "apps/filmcraft-web/web/favicon.png",
+   "bytes": 17152,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/filmcraft-1024.png",
+   "bytes": 399999,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/filmcraft-macos-512.png",
+   "bytes": 125210,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/filmcraft.icns",
+   "bytes": 738627,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/128x128/apps/ai.storyteller.filmcraft.png",
+   "bytes": 17152,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/16x16/apps/ai.storyteller.filmcraft.png",
+   "bytes": 685,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/24x24/apps/ai.storyteller.filmcraft.png",
+   "bytes": 1108,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/256x256/apps/ai.storyteller.filmcraft.png",
+   "bytes": 58560,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/32x32/apps/ai.storyteller.filmcraft.png",
+   "bytes": 1781,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/48x48/apps/ai.storyteller.filmcraft.png",
+   "bytes": 3280,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/512x512/apps/ai.storyteller.filmcraft.png",
+   "bytes": 164182,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/64x64/apps/ai.storyteller.filmcraft.png",
+   "bytes": 5230,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Bold.ttf",
+   "bytes": 420428,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Italic.ttf",
+   "bytes": 417388,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Medium.ttf",
+   "bytes": 417300,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Regular.ttf",
+   "bytes": 411640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-SemiBold.ttf",
+   "bytes": 419744,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/JetBrainsMono-Regular.ttf",
+   "bytes": 270224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/NotoSerif-Regular.ttf",
+   "bytes": 482540,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/blend_modes.png",
+   "bytes": 37912,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/crop.png",
+   "bytes": 7677,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/gaussian_blur.png",
+   "bytes": 7937,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/graphic_rich_text.png",
+   "bytes": 25584,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/graphic_shapes.png",
+   "bytes": 31149,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/graphic_template.png",
+   "bytes": 21053,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/graphic_title.png",
+   "bytes": 17311,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/hdr_tone_map.png",
+   "bytes": 4715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/log_to_rec709.png",
+   "bytes": 24310,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/lumetri_basic.png",
+   "bytes": 25016,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/lumetri_hdr_pq.png",
+   "bytes": 4740,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/lumetri_presets_grid.png",
+   "bytes": 31737,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/mask_blur.png",
+   "bytes": 7498,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/mask_color.png",
+   "bytes": 18429,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/mask_inverted.png",
+   "bytes": 24490,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/mask_opacity.png",
+   "bytes": 29229,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/text_burnin.png",
+   "bytes": 8304,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/transform_opacity.png",
+   "bytes": 26637,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/transition_cross_dissolve.png",
+   "bytes": 29914,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/transition_dip_to_black.png",
+   "bytes": 17162,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/transition_wipe.png",
+   "bytes": 26976,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/vfx_distort.png",
+   "bytes": 25057,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/vfx_glows.png",
+   "bytes": 34871,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/vfx_spacer_stroke_shadow.png",
+   "bytes": 18429,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/vfx_stylize.png",
+   "bytes": 38479,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/vfx_ultra_key.png",
+   "bytes": 3595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/golden/goldens/vfx_vr_rotate.png",
+   "bytes": 42952,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo-white.png",
+   "bytes": 32161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo.png",
+   "bytes": 31302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark-black.png",
+   "bytes": 26793,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark.png",
+   "bytes": 24715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-assembly.png",
+   "bytes": 1054638,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-color.png",
+   "bytes": 1622437,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-effects.png",
+   "bytes": 781656,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-export.png",
+   "bytes": 757987,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-hero.png",
+   "bytes": 1281948,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-keyframes.png",
+   "bytes": 1031297,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-lumetri.png",
+   "bytes": 99840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-scopes.png",
+   "bytes": 489454,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/filmcraft-timeline.png",
+   "bytes": 429408,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "filmcraft",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create filmcraft --namespace foundry-staging",
+  "FOUNDRY_SEED=filmcraft /Users/mohameddiomande/.config/foundry/bin/foundry-push filmcraft main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging filmcraft",
+  "registry: foundry_base=filmcraft; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/filmcraft/",
+ "first_merge_fits_gate": false
+}

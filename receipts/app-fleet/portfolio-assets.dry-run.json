@@ -1,0 +1,52 @@
+{
+ "id": "portfolio-assets",
+ "title": "portfolio-assets",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/portfolio-assets",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 9,
+ "text_bytes": 41092,
+ "offenders": [
+  {
+   "path": "icons/Aura.png",
+   "bytes": 17386,
+   "why": "binary-ext"
+  },
+  {
+   "path": "icons/CreativeDirector.png",
+   "bytes": 26517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "icons/FirstDate.png",
+   "bytes": 8565,
+   "why": "binary-ext"
+  },
+  {
+   "path": "icons/NKo.png",
+   "bytes": 20491,
+   "why": "binary-ext"
+  },
+  {
+   "path": "icons/SpeakFlow.png",
+   "bytes": 4263215,
+   "why": "binary-ext"
+  },
+  {
+   "path": "icons/Spore.png",
+   "bytes": 170173,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "portfolio-assets",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create portfolio-assets --namespace foundry-staging",
+  "FOUNDRY_SEED=portfolio-assets /Users/mohameddiomande/.config/foundry/bin/foundry-push portfolio-assets main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging portfolio-assets",
+  "registry: foundry_base=portfolio-assets; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/portfolio-assets/",
+ "first_merge_fits_gate": true
+}

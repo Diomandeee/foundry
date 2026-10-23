@@ -1,0 +1,237 @@
+{
+ "id": "bwb",
+ "title": "BWB",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/BWB",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2069,
+ "text_bytes": 27246766,
+ "offenders": [
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png",
+   "bytes": 579591,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/AppIcon.appiconset/app-icon-128.png",
+   "bytes": 14232,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/AppIcon.appiconset/app-icon-16.png",
+   "bytes": 460,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/AppIcon.appiconset/app-icon-256.png",
+   "bytes": 44267,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/AppIcon.appiconset/app-icon-32.png",
+   "bytes": 1370,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/AppIcon.appiconset/app-icon-512.png",
+   "bytes": 158115,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/AppIcon.appiconset/app-icon-64.png",
+   "bytes": 4523,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/Logo.imageset/logo@1x.png",
+   "bytes": 7549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/Logo.imageset/logo@2x.png",
+   "bytes": 23697,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Customer/BWB_Customer/Assets.xcassets/Logo.imageset/logo@3x.png",
+   "bytes": 47586,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png",
+   "bytes": 579591,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/bwb-barista.imageset/bwb-barista.jpg",
+   "bytes": 1495491,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/bwb-coffee-vinyl.imageset/bwb-coffee-vinyl.jpg",
+   "bytes": 894871,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/bwb-dj-cart.imageset/bwb-dj-cart.jpg",
+   "bytes": 1054881,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/bwb-logo-white.imageset/bwb-logo-white.png",
+   "bytes": 1548886,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/bwb-logo.imageset/bwb-logo.png",
+   "bytes": 566397,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-americano.imageset/menu-americano.jpg",
+   "bytes": 2155762,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-cappuccino.imageset/menu-cappuccino.jpg",
+   "bytes": 2168702,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-caramel-macchiato.imageset/menu-caramel-macchiato.jpg",
+   "bytes": 2195796,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-chai-latte.imageset/menu-chai-latte.jpg",
+   "bytes": 2142898,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-cold-brew.imageset/menu-cold-brew.jpg",
+   "bytes": 1780598,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-cortado.imageset/menu-cortado.jpg",
+   "bytes": 1937242,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-espresso.imageset/menu-espresso.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-flat-white.imageset/menu-flat-white.jpg",
+   "bytes": 1637064,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-latte.imageset/menu-latte.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-macchiato.imageset/menu-macchiato.jpg",
+   "bytes": 2026198,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-matcha-latte.imageset/menu-matcha-latte.jpg",
+   "bytes": 1465168,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_Kiosk/BWB_Kiosk/Assets.xcassets/menu-mocha.imageset/menu-mocha.jpg",
+   "bytes": 2099304,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png",
+   "bytes": 579591,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/AppIcon.appiconset/app-icon-128.png",
+   "bytes": 14232,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/AppIcon.appiconset/app-icon-16.png",
+   "bytes": 460,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/AppIcon.appiconset/app-icon-256.png",
+   "bytes": 44267,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/AppIcon.appiconset/app-icon-32.png",
+   "bytes": 1370,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/AppIcon.appiconset/app-icon-512.png",
+   "bytes": 158115,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/AppIcon.appiconset/app-icon-64.png",
+   "bytes": 4523,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/Logo.imageset/logo@1x.png",
+   "bytes": 7549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/Logo.imageset/logo@2x.png",
+   "bytes": 23697,
+   "why": "binary-ext"
+  },
+  {
+   "path": "BWB_POS/BWB_POS/Assets.xcassets/Logo.imageset/logo@3x.png",
+   "bytes": 47586,
+   "why": "binary-ext"
+  },
+  {
+   "path": "claude-hooks.zip",
+   "bytes": 44263,
+   "why": "binary-ext"
+  },
+  {
+   "path": "mcp-servers/bwb-mcp/node_modules/@esbuild/darwin-arm64/bin/esbuild",
+   "bytes": 10368562,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "mcp-servers/bwb-mcp/node_modules/esbuild/bin/esbuild",
+   "bytes": 10368562,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "mcp-servers/bwb-mcp/node_modules/typescript/lib/_tsc.js",
+   "bytes": 6213092,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "mcp-servers/bwb-mcp/node_modules/typescript/lib/typescript.js",
+   "bytes": 9112572,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "bwb",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create bwb --namespace foundry-staging",
+  "FOUNDRY_SEED=bwb /Users/mohameddiomande/.config/foundry/bin/foundry-push bwb main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging bwb",
+  "registry: foundry_base=bwb; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/bwb/",
+ "first_merge_fits_gate": false
+}

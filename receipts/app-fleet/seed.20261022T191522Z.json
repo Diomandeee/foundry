@@ -1,0 +1,18 @@
+{
+ "approved_by": "Mohamed 2026-10-22 lane defaults; batch 4 = five repos previously over the 2,000-file limit, gate fixed in 2ebf8fa",
+ "started": "20261022T191522Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "agent-orchestrator",
+   "base": "agent-orchestrator",
+   "origin_commit": "5eb10e3698bdbf0735b84c6aa4d3f06ea8d83ff2",
+   "seed_commit": "c2d8411d32a22093d6505adda07a73291871471a",
+   "files": 2582,
+   "stripped": 151,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"dfebbd3491504e1ba605d3924176a44d\",\"created_at\":\"2026-10-22T19:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

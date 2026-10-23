@@ -1,0 +1,21 @@
+{
+ "id": "sodms",
+ "title": "sodms",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/sodms",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 167,
+ "text_bytes": 2793980,
+ "offenders": [],
+ "base": "sodms",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create sodms --namespace foundry-staging",
+  "FOUNDRY_SEED=sodms /Users/mohameddiomande/.config/foundry/bin/foundry-push sodms main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging sodms",
+  "registry: foundry_base=sodms; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,27 @@
+{
+ "id": "admin-dashboard",
+ "title": "admin-dashboard",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/admin-dashboard",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 46,
+ "text_bytes": 209765,
+ "offenders": [
+  {
+   "path": "public/placeholder-user.jpg",
+   "bytes": 1635,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "admin-dashboard",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create admin-dashboard --namespace foundry-staging",
+  "FOUNDRY_SEED=admin-dashboard /Users/mohameddiomande/.config/foundry/bin/foundry-push admin-dashboard main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging admin-dashboard",
+  "registry: foundry_base=admin-dashboard; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/admin-dashboard/",
+ "first_merge_fits_gate": true
+}

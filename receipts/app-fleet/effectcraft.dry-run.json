@@ -1,0 +1,172 @@
+{
+ "id": "effectcraft",
+ "title": "effectcraft",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/effectcraft",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1064,
+ "text_bytes": 19950668,
+ "offenders": [
+  {
+   "path": "assets/app-icon/effectcraft-1024.png",
+   "bytes": 355764,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/effectcraft-macos-512.png",
+   "bytes": 116708,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/effectcraft.icns",
+   "bytes": 698295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/128x128/apps/ai.storyteller.effectcraft.png",
+   "bytes": 17306,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/16x16/apps/ai.storyteller.effectcraft.png",
+   "bytes": 733,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/24x24/apps/ai.storyteller.effectcraft.png",
+   "bytes": 1256,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/256x256/apps/ai.storyteller.effectcraft.png",
+   "bytes": 57151,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/32x32/apps/ai.storyteller.effectcraft.png",
+   "bytes": 1890,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/48x48/apps/ai.storyteller.effectcraft.png",
+   "bytes": 3549,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/512x512/apps/ai.storyteller.effectcraft.png",
+   "bytes": 150412,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/64x64/apps/ai.storyteller.effectcraft.png",
+   "bytes": 5579,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Bold.ttf",
+   "bytes": 420428,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Italic.ttf",
+   "bytes": 417388,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Medium.ttf",
+   "bytes": 417300,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Regular.ttf",
+   "bytes": 411640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-SemiBold.ttf",
+   "bytes": 419744,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/JetBrainsMono-Regular.ttf",
+   "bytes": 270224,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/NotoSerif-Regular.ttf",
+   "bytes": 482540,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/model/tests/fixtures/cube.obj",
+   "bytes": 536,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/model/tests/fixtures/quad.glb",
+   "bytes": 2028,
+   "why": "binary-ext"
+  },
+  {
+   "path": "crates/model/tests/fixtures/quad.gltf",
+   "bytes": 2996,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo-white.png",
+   "bytes": 32161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo.png",
+   "bytes": 31302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark-black.png",
+   "bytes": 26793,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark.png",
+   "bytes": 24715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/effectcraft-3d.png",
+   "bytes": 673719,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/effectcraft-effects.png",
+   "bytes": 456209,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/effectcraft-graph-editor.png",
+   "bytes": 757446,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/effectcraft-hero.png",
+   "bytes": 764159,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/effectcraft-render-queue.png",
+   "bytes": 626062,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "effectcraft",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create effectcraft --namespace foundry-staging",
+  "FOUNDRY_SEED=effectcraft /Users/mohameddiomande/.config/foundry/bin/foundry-push effectcraft main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging effectcraft",
+  "registry: foundry_base=effectcraft; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/effectcraft/",
+ "first_merge_fits_gate": false
+}

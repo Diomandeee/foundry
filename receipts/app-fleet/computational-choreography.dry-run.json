@@ -1,0 +1,42 @@
+{
+ "id": "computational-choreography",
+ "title": "computational-choreography",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/computational-choreography",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 384,
+ "text_bytes": 4185899,
+ "offenders": [
+  {
+   "path": "demo/demo_output.png",
+   "bytes": 846277,
+   "why": "binary-ext"
+  },
+  {
+   "path": "scripts/diffusion.npz",
+   "bytes": 4192060,
+   "why": "binary-ext"
+  },
+  {
+   "path": "scripts/encoder.npz",
+   "bytes": 2217566,
+   "why": "binary-ext"
+  },
+  {
+   "path": "scripts/synthetic_training_data.jsonl",
+   "bytes": 40224022,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "computational-choreography",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create computational-choreography --namespace foundry-staging",
+  "FOUNDRY_SEED=computational-choreography /Users/mohameddiomande/.config/foundry/bin/foundry-push computational-choreography main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging computational-choreography",
+  "registry: foundry_base=computational-choreography; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/computational-choreography/",
+ "first_merge_fits_gate": true
+}

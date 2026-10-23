@@ -1,0 +1,21 @@
+{
+ "id": "symphony_of_synthesis",
+ "title": "symphony_of_synthesis",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/symphony_of_synthesis",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 3101,
+ "offenders": [],
+ "base": "symphony_of_synthesis",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create symphony_of_synthesis --namespace foundry-staging",
+  "FOUNDRY_SEED=symphony_of_synthesis /Users/mohameddiomande/.config/foundry/bin/foundry-push symphony_of_synthesis main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging symphony_of_synthesis",
+  "registry: foundry_base=symphony_of_synthesis; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "mm-photo-match",
+ "title": "mm-photo-match",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/mm-photo-match",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 5,
+ "text_bytes": 14810,
+ "offenders": [],
+ "base": "mm-photo-match",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create mm-photo-match --namespace foundry-staging",
+  "FOUNDRY_SEED=mm-photo-match /Users/mohameddiomande/.config/foundry/bin/foundry-push mm-photo-match main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging mm-photo-match",
+  "registry: foundry_base=mm-photo-match; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

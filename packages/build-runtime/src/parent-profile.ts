@@ -56,7 +56,8 @@ export function approveParentProfile(ownerProfile:BuildProfile, expectedServerHa
     check(r.network === 'none','approved-dependencies-not-configured');
     if (r.tool === 'cmake') check(r.args[0] === '--build' && r.args[1] === '/work/build','cmake-build-tree-must-be-work-build');
     recipe = {kind:p.kind,image:r.image,architecture:r.architecture,tool:r.tool,args:[...r.args],network:r.network,outputPaths:[...p.outputPaths],
-      ...(policy.cmakeConfigureArgs ? {configureArgs:[...policy.cmakeConfigureArgs]} : {})};
+      ...(policy.cmakeConfigureArgs ? {configureArgs:[...policy.cmakeConfigureArgs]} : {}),
+      ...(r.tool === 'python' && r.installArgs ? {installArgs:[...r.installArgs]} : {})};
   } else {
     check(p.kind === 'xcode-build-v1','unsupported-parent-kind');
     const r = p.recipe as ParentXcodeRecipe;

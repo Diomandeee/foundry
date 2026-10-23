@@ -1,0 +1,27 @@
+{
+ "id": "hyevo",
+ "title": "HyEvo",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/HyEvo",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 13,
+ "text_bytes": 165489,
+ "offenders": [
+  {
+   "path": "audio/HyEvo_Explainer.mp3",
+   "bytes": 6502560,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "hyevo",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create hyevo --namespace foundry-staging",
+  "FOUNDRY_SEED=hyevo /Users/mohameddiomande/.config/foundry/bin/foundry-push hyevo main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging hyevo",
+  "registry: foundry_base=hyevo; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/hyevo/",
+ "first_merge_fits_gate": true
+}

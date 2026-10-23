@@ -1,0 +1,27 @@
+{
+ "id": "torrent",
+ "title": "Torrent",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Torrent",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 23,
+ "text_bytes": 47032,
+ "offenders": [
+  {
+   "path": "Torrent/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 20628,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "torrent",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create torrent --namespace foundry-staging",
+  "FOUNDRY_SEED=torrent /Users/mohameddiomande/.config/foundry/bin/foundry-push torrent main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging torrent",
+  "registry: foundry_base=torrent; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/torrent/",
+ "first_merge_fits_gate": true
+}

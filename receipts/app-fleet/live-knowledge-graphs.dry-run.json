@@ -1,0 +1,21 @@
+{
+ "id": "live-knowledge-graphs",
+ "title": "live-knowledge-graphs",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/live-knowledge-graphs",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 58,
+ "text_bytes": 706763,
+ "offenders": [],
+ "base": "live-knowledge-graphs",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create live-knowledge-graphs --namespace foundry-staging",
+  "FOUNDRY_SEED=live-knowledge-graphs /Users/mohameddiomande/.config/foundry/bin/foundry-push live-knowledge-graphs main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging live-knowledge-graphs",
+  "registry: foundry_base=live-knowledge-graphs; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,82 @@
+{
+ "id": "blog-starter-kit",
+ "title": "blog-starter-kit",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/blog-starter-kit",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 54,
+ "text_bytes": 47945,
+ "offenders": [
+  {
+   "path": "public/assets/blog/authors/jj.jpeg",
+   "bytes": 6186,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/assets/blog/authors/joe.jpeg",
+   "bytes": 7196,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/assets/blog/authors/tim.jpeg",
+   "bytes": 6148,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/assets/blog/dynamic-routing/cover.jpg",
+   "bytes": 117724,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/assets/blog/hello-world/cover.jpg",
+   "bytes": 105406,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/assets/blog/preview/cover.jpg",
+   "bytes": 44270,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/favicon/android-chrome-192x192.png",
+   "bytes": 4795,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/favicon/android-chrome-512x512.png",
+   "bytes": 14640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/favicon/apple-touch-icon.png",
+   "bytes": 1327,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/favicon/favicon-16x16.png",
+   "bytes": 595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/favicon/favicon-32x32.png",
+   "bytes": 880,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/favicon/mstile-150x150.png",
+   "bytes": 3567,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "blog-starter-kit",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create blog-starter-kit --namespace foundry-staging",
+  "FOUNDRY_SEED=blog-starter-kit /Users/mohameddiomande/.config/foundry/bin/foundry-push blog-starter-kit main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging blog-starter-kit",
+  "registry: foundry_base=blog-starter-kit; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/blog-starter-kit/",
+ "first_merge_fits_gate": true
+}

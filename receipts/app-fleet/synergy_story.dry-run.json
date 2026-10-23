@@ -1,0 +1,21 @@
+{
+ "id": "synergy_story",
+ "title": "synergy_story",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/synergy_story",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 7591,
+ "offenders": [],
+ "base": "synergy_story",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create synergy_story --namespace foundry-staging",
+  "FOUNDRY_SEED=synergy_story /Users/mohameddiomande/.config/foundry/bin/foundry-push synergy_story main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging synergy_story",
+  "registry: foundry_base=synergy_story; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

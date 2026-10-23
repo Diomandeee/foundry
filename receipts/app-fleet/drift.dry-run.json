@@ -1,0 +1,27 @@
+{
+ "id": "drift",
+ "title": "Drift",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Drift",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 40,
+ "text_bytes": 220600,
+ "offenders": [
+  {
+   "path": "Drift/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 911540,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "drift",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create drift --namespace foundry-staging",
+  "FOUNDRY_SEED=drift /Users/mohameddiomande/.config/foundry/bin/foundry-push drift main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging drift",
+  "registry: foundry_base=drift; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/drift/",
+ "first_merge_fits_gate": true
+}

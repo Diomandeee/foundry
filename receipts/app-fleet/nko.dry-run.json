@@ -1,0 +1,27 @@
+{
+ "id": "nko",
+ "title": "nko",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/nko",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 171,
+ "text_bytes": 11112649,
+ "offenders": [
+  {
+   "path": "data/training_data_large.json",
+   "bytes": 4921922,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "nko",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create nko --namespace foundry-staging",
+  "FOUNDRY_SEED=nko /Users/mohameddiomande/.config/foundry/bin/foundry-push nko main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging nko",
+  "registry: foundry_base=nko; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/nko/",
+ "first_merge_fits_gate": false
+}

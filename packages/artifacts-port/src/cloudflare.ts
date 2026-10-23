@@ -14,37 +14,54 @@ import type {
 type Binding = any; // narrowed by worker-configuration.d.ts at deploy time
 type RepoBinding = any;
 
-/** Complete bounded path -> object/type/mode inventory. A bound or missing
- * object is uncertainty, never a truncated complete diff. */
-async function treeEntries(binding:RepoBinding, treeHash:string):Promise<Map<string,string>> {
-  const out=new Map<string,string>();let visited=0;
-  async function walk(hash:string,prefix:string,depth:number):Promise<void>{
-    if(depth>64||++visited>4000)throw new Error('artifacts: tree budget');
+/** Changed paths between two trees, compared by object id (review M7). Only
+ * subtrees whose ids differ are read, so cost follows the size of the change,
+ * not of the repository. A budget overrun or a missing/invalid tree throws:
+ * uncertainty, never a truncated complete diff. */
+const DIFF_ENTRY_BUDGET = 20000;
+const DIFF_PATH_BUDGET = 5000;
+async function diffTrees(binding:RepoBinding, mine:string|null, theirs:string|null):Promise<string[]> {
+  const out:string[]=[];let visited=0;
+  async function read(hash:string|null):Promise<Map<string,{hash:string,type:string,mode:unknown}>>{
+    const m=new Map<string,{hash:string,type:string,mode:unknown}>();
+    if(hash===null)return m;
     const entries=await binding.readTree(hash);
     if(!Array.isArray(entries))throw new Error('artifacts: missing tree');
-    const names=new Set<string>();
     for(const e of entries){
-      if(++visited>4000||typeof e.name!=='string'||!e.name||/[\/\x00-\x1f\x7f]/.test(e.name)||
-        ['.','..'].includes(e.name)||names.has(e.name)||!/^[a-f0-9]{40}$/.test(e.hash)||e.mode===undefined)
+      if(++visited>DIFF_ENTRY_BUDGET)throw new Error('artifacts: tree budget');
+      if(typeof e.name!=='string'||!e.name||/[\/\x00-\x1f\x7f]/.test(e.name)||['.','..'].includes(e.name)||
+        m.has(e.name)||!/^[a-f0-9]{40}$/.test(e.hash)||e.mode===undefined)
         throw new Error('artifacts: incomplete or invalid tree');
-      names.add(e.name);const path=prefix?`${prefix}/${e.name}`:e.name;
-      if(e.type==='tree')await walk(e.hash,path,depth+1);
-      else {if(out.size>=2000)throw new Error('artifacts: file budget');out.set(path,JSON.stringify([e.hash,e.type,e.mode]));}
+      m.set(e.name,{hash:e.hash,type:e.type,mode:e.mode});
+    }
+    return m;
+  }
+  function add(path:string){if(out.length>=DIFF_PATH_BUDGET)throw new Error('artifacts: diff budget');out.push(path);}
+  async function walk(a:string|null,b:string|null,prefix:string,depth:number):Promise<void>{
+    if(depth>64)throw new Error('artifacts: tree budget');
+    if(a===b)return;
+    const [ma,mb]=await Promise.all([read(a),read(b)]);
+    for(const name of new Set([...ma.keys(),...mb.keys()])){
+      const ea=ma.get(name),eb=mb.get(name);const path=prefix?`${prefix}/${name}`:name;
+      if(ea&&eb&&ea.hash===eb.hash&&ea.type===eb.type&&ea.mode===eb.mode)continue;
+      const ta=ea?.type==='tree'?ea.hash:null,tb=eb?.type==='tree'?eb.hash:null;
+      if(ta!==null||tb!==null)await walk(ta,tb,path,depth+1);
+      // A non-tree entry on either side is a changed file path (added, removed, edited, or tree<->file).
+      if((ea&&ea.type!=='tree')||(eb&&eb.type!=='tree'))add(path);
     }
   }
-  await walk(treeHash,'',0);return out;
+  await walk(mine,theirs,'',0);
+  return out.sort();
 }
 async function diffFiles(binding:RepoBinding,c:any):Promise<string[]>{
   if(!Array.isArray(c.parents))throw new Error('artifacts: parent metadata');
-  const mine=await treeEntries(binding,c.treeHash);
-  let theirs=new Map<string,string>();
+  let parentTree:string|null=null;
   if(c.parents.length){
     const parent=await binding.readCommit(c.parents[0]);
     if(!parent)throw new Error('artifacts: missing parent');
-    theirs=await treeEntries(binding,parent.treeHash);
+    parentTree=parent.treeHash;
   }
-  const paths=new Set([...mine.keys(),...theirs.keys()]);
-  return [...paths].filter(p=>mine.get(p)!==theirs.get(p)).sort();
+  return diffTrees(binding,c.treeHash,parentTree);
 }
 
 function toHandle(

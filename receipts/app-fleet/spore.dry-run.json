@@ -1,0 +1,732 @@
+{
+ "id": "spore",
+ "title": "Spore",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/Spore",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 368,
+ "text_bytes": 2602067,
+ "offenders": [
+  {
+   "path": "Spore/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 910960,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Spore/Fonts/Quicksand-Bold.ttf",
+   "bytes": 108752,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Spore/Fonts/Quicksand-Light.ttf",
+   "bytes": 110500,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Spore/Fonts/Quicksand-Medium.ttf",
+   "bytes": 109880,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Spore/Fonts/Quicksand-Regular.ttf",
+   "bytes": 110268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "landing/og-image.png",
+   "bytes": 26668,
+   "why": "binary-ext"
+  },
+  {
+   "path": "landing/screenshots/screenshot_1.jpg",
+   "bytes": 31826,
+   "why": "binary-ext"
+  },
+  {
+   "path": "landing/screenshots/screenshot_2.jpg",
+   "bytes": 30871,
+   "why": "binary-ext"
+  },
+  {
+   "path": "landing/screenshots/screenshot_3.jpg",
+   "bytes": 31838,
+   "why": "binary-ext"
+  },
+  {
+   "path": "landing/screenshots/screenshot_4.jpg",
+   "bytes": 32217,
+   "why": "binary-ext"
+  },
+  {
+   "path": "landing/screenshots/screenshot_5.jpg",
+   "bytes": 38864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "landing/screenshots/screenshot_6.jpg",
+   "bytes": 30970,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/01-onboarding-plant.png",
+   "bytes": 3078233,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02-garden.png",
+   "bytes": 554423,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02-onboarding-grow.png",
+   "bytes": 3078233,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/03-garden-empty.png",
+   "bytes": 554423,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.1/screenshot1.png",
+   "bytes": 3266994,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.1/screenshot2.png",
+   "bytes": 2973730,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.1/screenshot3.png",
+   "bytes": 3315100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.1/screenshot4.png",
+   "bytes": 3277924,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.1/screenshot5.png",
+   "bytes": 3483537,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.1/screenshot6.png",
+   "bytes": 3211720,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.5/screenshot1.png",
+   "bytes": 3530885,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.5/screenshot2.png",
+   "bytes": 3206425,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.5/screenshot3.png",
+   "bytes": 3582601,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.5/screenshot4.png",
+   "bytes": 3546092,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.5/screenshot5.png",
+   "bytes": 3770582,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.5/screenshot6.png",
+   "bytes": 3469315,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.7/screenshot1.png",
+   "bytes": 3163357,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.7/screenshot2.png",
+   "bytes": 2826774,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.7/screenshot3.png",
+   "bytes": 3216619,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.7/screenshot4.png",
+   "bytes": 3187846,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.7/screenshot5.png",
+   "bytes": 3465652,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/FINAL-iPhone-6.7/screenshot6.png",
+   "bytes": 3112819,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot1_6.1.png",
+   "bytes": 3134644,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot1_6.7.png",
+   "bytes": 3581491,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot2_6.1.png",
+   "bytes": 2637740,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot2_6.7.png",
+   "bytes": 3001651,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot3_6.1.png",
+   "bytes": 3049355,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot3_6.7.png",
+   "bytes": 3479395,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot4_6.1.png",
+   "bytes": 3148251,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot4_6.7.png",
+   "bytes": 3597652,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot5_6.1.png",
+   "bytes": 3317330,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot5_6.7.png",
+   "bytes": 3790332,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot6_6.1.png",
+   "bytes": 2576238,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/asc-ready/screenshot6_6.7.png",
+   "bytes": 2928077,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-65/screenshot1.png",
+   "bytes": 2412139,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-65/screenshot2.png",
+   "bytes": 739683,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-65/screenshot3.png",
+   "bytes": 440119,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-65/screenshot4.png",
+   "bytes": 493806,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-65/screenshot5.png",
+   "bytes": 1920903,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-65/screenshot6.png",
+   "bytes": 388584,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-ipad/screenshot1.png",
+   "bytes": 3696558,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-ipad/screenshot2.png",
+   "bytes": 1127124,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-ipad/screenshot3.png",
+   "bytes": 654763,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-ipad/screenshot4.png",
+   "bytes": 733517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-ipad/screenshot5.png",
+   "bytes": 3196252,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real-ipad/screenshot6.png",
+   "bytes": 580186,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real/screenshot1.png",
+   "bytes": 2041578,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real/screenshot2.png",
+   "bytes": 643543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real/screenshot3.png",
+   "bytes": 365361,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real/screenshot4.png",
+   "bytes": 422601,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real/screenshot5.png",
+   "bytes": 882255,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/final-real/screenshot6.png",
+   "bytes": 324517,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/fixed/screenshot1.png",
+   "bytes": 3019349,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/fixed/screenshot2.png",
+   "bytes": 2552460,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/fixed/screenshot3.png",
+   "bytes": 2438946,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/fixed/screenshot4.png",
+   "bytes": 2379357,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/hires/screenshot1.png",
+   "bytes": 3163357,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/hires/screenshot2.png",
+   "bytes": 2826774,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/hires/screenshot3.png",
+   "bytes": 3216619,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/hires/screenshot4.png",
+   "bytes": 3187846,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/hires/screenshot5.png",
+   "bytes": 3465652,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/hires/screenshot6.png",
+   "bytes": 3112819,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-asc/screenshot1.png",
+   "bytes": 3791082,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-asc/screenshot2.png",
+   "bytes": 3196216,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-asc/screenshot3.png",
+   "bytes": 3386270,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-asc/screenshot4.png",
+   "bytes": 3745374,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-asc/screenshot5.png",
+   "bytes": 4925128,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-asc/screenshot6.png",
+   "bytes": 3155361,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-detail.png",
+   "bytes": 837663,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-final/screenshot1.png",
+   "bytes": 3701672,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-final/screenshot2.png",
+   "bytes": 2747022,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-final/screenshot3.png",
+   "bytes": 3164279,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-final/screenshot4.png",
+   "bytes": 3160702,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-final/screenshot5.png",
+   "bytes": 5104966,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-final/screenshot6.png",
+   "bytes": 3310319,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-garden.png",
+   "bytes": 982964,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-plant.png",
+   "bytes": 279197,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/ipad-settings.png",
+   "bytes": 417097,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone-detail.png",
+   "bytes": 577861,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone-garden.png",
+   "bytes": 588746,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone-plant.png",
+   "bytes": 168838,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone-settings.png",
+   "bytes": 367325,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone61/screenshot_1.png",
+   "bytes": 875071,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone61/screenshot_2.png",
+   "bytes": 842955,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone61/screenshot_3.png",
+   "bytes": 902890,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone61/screenshot_4.png",
+   "bytes": 881699,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone61/screenshot_5.png",
+   "bytes": 849935,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone61/screenshot_6.png",
+   "bytes": 875225,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/01-garden.png",
+   "bytes": 2375692,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/02-plant.png",
+   "bytes": 1891755,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/03-insights.png",
+   "bytes": 1891755,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/04-command.png",
+   "bytes": 1891755,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/05-glasses.png",
+   "bytes": 1891755,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/06-settings.png",
+   "bytes": 1891755,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/screenshot_1.png",
+   "bytes": 972795,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/screenshot_2.png",
+   "bytes": 939440,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/screenshot_3.png",
+   "bytes": 1008912,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/screenshot_4.png",
+   "bytes": 987572,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/screenshot_5.png",
+   "bytes": 950286,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/iphone67/screenshot_6.png",
+   "bytes": 978948,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/raw-app.png",
+   "bytes": 3689179,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/raw-app2.png",
+   "bytes": 3152068,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/raw-app3.png",
+   "bytes": 3152068,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/raw-garden.png",
+   "bytes": 2794633,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/raw-onboarding.png",
+   "bytes": 3689179,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/01-garden-final.png",
+   "bytes": 3608510,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/01-garden-main.png",
+   "bytes": 3547511,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/01-garden-populated.png",
+   "bytes": 3702364,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/01-garden-v2.png",
+   "bytes": 3596623,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/01-garden.png",
+   "bytes": 3603039,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/02-plant-view.png",
+   "bytes": 884447,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/03-garden-list-scrolled.png",
+   "bytes": 3210957,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/03-garden-list.png",
+   "bytes": 3404332,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/03-spore-detail.png",
+   "bytes": 394959,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/04-harvest-detail.png",
+   "bytes": 362346,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/05-settings.png",
+   "bytes": 387280,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/real/06-insights.png",
+   "bytes": 921901,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/screenshot1.png",
+   "bytes": 1252805,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/screenshot2.png",
+   "bytes": 1027022,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/screenshot3.png",
+   "bytes": 1211635,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/screenshot4.png",
+   "bytes": 1253570,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/screenshot5.png",
+   "bytes": 1356922,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/screenshot6.png",
+   "bytes": 989605,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spore-landing/public/og-image.png",
+   "bytes": 26668,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spore-landing/public/screenshot_1.jpg",
+   "bytes": 31826,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spore-landing/public/screenshot_2.jpg",
+   "bytes": 30871,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spore-landing/public/screenshot_3.jpg",
+   "bytes": 31838,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spore-landing/public/screenshot_4.jpg",
+   "bytes": 32217,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spore-landing/public/screenshot_5.jpg",
+   "bytes": 38864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "spore-landing/public/screenshot_6.jpg",
+   "bytes": 30970,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "spore",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create spore --namespace foundry-staging",
+  "FOUNDRY_SEED=spore /Users/mohameddiomande/.config/foundry/bin/foundry-push spore main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging spore",
+  "registry: foundry_base=spore; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/spore/",
+ "first_merge_fits_gate": true
+}

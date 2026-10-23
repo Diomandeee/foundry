@@ -1,0 +1,21 @@
+{
+ "id": "self-healing-code",
+ "title": "self-healing-code",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/self-healing-code",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 4,
+ "text_bytes": 150095,
+ "offenders": [],
+ "base": "self-healing-code",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create self-healing-code --namespace foundry-staging",
+  "FOUNDRY_SEED=self-healing-code /Users/mohameddiomande/.config/foundry/bin/foundry-push self-healing-code main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging self-healing-code",
+  "registry: foundry_base=self-healing-code; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

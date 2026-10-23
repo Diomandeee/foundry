@@ -1,0 +1,27 @@
+{
+ "id": "voiceagent",
+ "title": "VoiceAgent",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/VoiceAgent",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 40,
+ "text_bytes": 212923,
+ "offenders": [
+  {
+   "path": "VoiceAgent/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 1017989,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "voiceagent",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create voiceagent --namespace foundry-staging",
+  "FOUNDRY_SEED=voiceagent /Users/mohameddiomande/.config/foundry/bin/foundry-push voiceagent main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging voiceagent",
+  "registry: foundry_base=voiceagent; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/voiceagent/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "uncertainty-embracer",
+ "title": "uncertainty-embracer",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/uncertainty-embracer",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 3,
+ "text_bytes": 355060,
+ "offenders": [],
+ "base": "uncertainty-embracer",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create uncertainty-embracer --namespace foundry-staging",
+  "FOUNDRY_SEED=uncertainty-embracer /Users/mohameddiomande/.config/foundry/bin/foundry-push uncertainty-embracer main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging uncertainty-embracer",
+  "registry: foundry_base=uncertainty-embracer; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

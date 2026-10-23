@@ -1,0 +1,62 @@
+{
+ "id": "qr",
+ "title": "qr",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/qr",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 56,
+ "text_bytes": 271038,
+ "offenders": [
+  {
+   "path": "public/1.png",
+   "bytes": 994746,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/2.png",
+   "bytes": 1151440,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/3.png",
+   "bytes": 1113140,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/4.png",
+   "bytes": 991860,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/5.png",
+   "bytes": 987097,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/6.png",
+   "bytes": 981094,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/7.png",
+   "bytes": 1154119,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/og-image.png",
+   "bytes": 1122373,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "qr",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create qr --namespace foundry-staging",
+  "FOUNDRY_SEED=qr /Users/mohameddiomande/.config/foundry/bin/foundry-push qr main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging qr",
+  "registry: foundry_base=qr; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/qr/",
+ "first_merge_fits_gate": true
+}

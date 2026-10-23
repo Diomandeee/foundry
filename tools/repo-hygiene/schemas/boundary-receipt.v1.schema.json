@@ -1,0 +1,87 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "foundry.repo-hygiene.boundary-receipt.v1",
+ "title": "Result of the relevance-boundary check at the end of a work chunk",
+ "type": "object",
+ "required": [
+  "schema",
+  "repo",
+  "head",
+  "checked_at",
+  "pass",
+  "rules"
+ ],
+ "properties": {
+  "schema": {
+   "const": "foundry.repo-hygiene.boundary-receipt.v1"
+  },
+  "repo": {
+   "type": "string"
+  },
+  "head": {
+   "type": "string"
+  },
+  "checked_at": {
+   "type": "string",
+   "format": "date-time"
+  },
+  "lane": {
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "pass": {
+   "type": "boolean"
+  },
+  "mode": {
+   "enum": [
+    "enforce",
+    "ratchet",
+    "report"
+   ],
+   "description": "ratchet = fail only on violations not in the baseline"
+  },
+  "inventory_hash": {
+   "type": "string"
+  },
+  "rules": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "pass",
+     "violations"
+    ],
+    "properties": {
+     "id": {
+      "enum": [
+       "R1-untracked-but-used",
+       "R2-generated-or-data-not-ignored",
+       "R3-secret-risk-untracked",
+       "R4-doc-status",
+       "R5-doc-describes-changed",
+       "R6-dangling-refs-ledgered"
+      ]
+     },
+     "pass": {
+      "type": "boolean"
+     },
+     "violations": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "new_violations": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -23,7 +23,8 @@ BASE = Path('/Library/Foundry/VM/attempts')
 GUARD = '/Library/Foundry/bin/mac-tree-guard'
 ENV = {'PATH': '/usr/bin:/bin:/usr/sbin:/sbin', 'LANG': 'C', 'LC_ALL': 'C', 'HOME': '/var/root'}
 MAX_RAW = 16 * 1024**3
-MAX_TREE = 8 * 1024**2
+# Whole intake envelope: approved outputs (an .app bundle) plus log and receipt.
+MAX_TREE = 4 * 1024**3 + 128 * 1024**2
 DEADLINE = None
 LIB = None
 
@@ -310,7 +311,12 @@ def attach(image, mount, raw=False):
             '-owners', 'on', '-mountpoint', str(mount), '-plist']
     if raw:
         args += ['-imagekey', 'diskimage-class=CRawDiskImage']
-    data = plistlib.loads(command(args))
+    # hdiutil now prints deprecation warnings into the merged output stream;
+    # parse exactly the one plist document it emits.
+    raw_out = bytes(command(args))
+    start, end = raw_out.find(b'<?xml'), raw_out.rfind(b'</plist>')
+    need(start >= 0 and end > start and raw_out.count(b'</plist>') == 1, 'attach-plist')
+    data = plistlib.loads(raw_out[start:end+len(b'</plist>')])
     entities = data.get('system-entities', [])
     mounted = [e for e in entities if 'mount-point' in e]
     need(len(mounted) == 1 and mounted[0]['mount-point'] == str(mount)
@@ -326,7 +332,7 @@ def image_tree(work, tree, mount):
     try:
         os.fchmod(fd, 0o444)
         os.fsync(fd)
-        image_hash = hash_fd(fd, 4*1024**3)
+        image_hash = hash_fd(fd, 8*1024**3)
     finally:
         os.close(fd)
     attach(image, mount)

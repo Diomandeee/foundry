@@ -1,0 +1,194 @@
+{
+ "approved_by": "Mohamed 2026-10-22 lane defaults; purge+reseed of 17 bases whose first seed carried secret files (supervisor scan 18:31Z)",
+ "started": "20261022T183419Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "aura",
+   "base": "aura",
+   "origin_commit": "218a117afa5a4e4b61d471f964fd7a0cb468e8db",
+   "seed_commit": "0efc1e38dfea184fe27c525272643eb8bdaebecd",
+   "files": 386,
+   "stripped": 42,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "birthday-pass",
+   "base": "birthday-pass",
+   "origin_commit": "6ab06f2123e27e265bd24adeb6abe7b5ad7b3575",
+   "seed_commit": "446325657ff720e91604db669b5d64b8fac22d91",
+   "files": 17,
+   "stripped": 10,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "bitwork",
+   "base": "bitwork",
+   "origin_commit": "537cdf7e8f7abd6db1acb1b7dcc57e3d0a5364d6",
+   "seed_commit": "02969d48badb6347915462c3e68a92e48a96043c",
+   "files": 67,
+   "stripped": 3,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "brews-with-beats-app",
+   "base": "brews-with-beats-app",
+   "origin_commit": "735438f52c9edc1b62bd45fcee97e85cec471b30",
+   "seed_commit": "d1adeacaa2f967c44fc995a0f182dd13362823bd",
+   "files": 40,
+   "stripped": 3,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "brews-with-beats-mobile-app",
+   "base": "brews-with-beats-mobile-app",
+   "origin_commit": "9061ab663420b70e3ba31d07aa1c0c603bd1ebb5",
+   "seed_commit": "6e0e2477337619b98f83ef9ad3204f38c860527a",
+   "files": 198,
+   "stripped": 3,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "brews-with-beats-v1",
+   "base": "brews-with-beats-v1",
+   "origin_commit": "f6dcb9b9b02d85beadaa9541637ea8528bdfb38b",
+   "seed_commit": "ff3462b2eaef96f904c1e2adb13551fa9e4e48af",
+   "files": 568,
+   "stripped": 87,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "bufbarista-crm",
+   "base": "bufbarista-crm",
+   "origin_commit": "39874d70d627d97daee9a5005e83a86108f5514d",
+   "seed_commit": "33b8ab2669559c8206b5ef68768b3c29c51370ee",
+   "files": 724,
+   "stripped": 4,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "cali-lights-expo",
+   "base": "cali-lights-expo",
+   "origin_commit": "88856fe605b1e6d283fe15d35fdab0088d526bcd",
+   "seed_commit": "d0197d23e88015e54d25f97091cad354ba1a11e7",
+   "files": 36,
+   "stripped": 5,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "cc-trajectory",
+   "base": "cc-trajectory",
+   "origin_commit": "792a059c18336cf87db3fb4d64b4fb3457d300e0",
+   "seed_commit": "effae974f7de3375d68c8d5174ec02bee055e090",
+   "files": 844,
+   "stripped": 11,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "compass",
+   "base": "compass",
+   "origin_commit": "85e098755e04e8fcda0622ef57b06b54a79c3457",
+   "seed_commit": "b2dc546aaecded4a1b5fa383ebf78fa7218eddcc",
+   "files": 106,
+   "stripped": 1,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "dlm",
+   "base": "dlm",
+   "origin_commit": "9865309124df98cefa71b6e7b4eb72c323c59a46",
+   "seed_commit": "cf13979248c876bf082dc5b68f9ac69f48f68477",
+   "files": 230,
+   "stripped": 1,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "jeli-nko",
+   "base": "jeli-nko",
+   "origin_commit": "53598f3405185b41714508013641b90a172d423a",
+   "seed_commit": "7b8afdc76fdc61722830051efb30e534684ab471",
+   "files": 191,
+   "stripped": 73,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "learnnko",
+   "base": "learnnko",
+   "origin_commit": "229616b52e276980da8a07eb90ac0ed787b4d3a5",
+   "seed_commit": "476dcc126a02465cad21a8d0196fce4167c6a9b5",
+   "files": 563,
+   "stripped": 4,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "meaning-full-power",
+   "base": "meaning-full-power",
+   "origin_commit": "948480fb8005e245cd1cc25f737251e924a3677f",
+   "seed_commit": "3bd6090dd9580b2c00825a264581fffea9d0cfe5",
+   "files": 729,
+   "stripped": 804,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "milkmendelivery",
+   "base": "milkmendelivery",
+   "origin_commit": "3cec4fb3f47a96c3f7439324dd5fc2599ce1f933",
+   "seed_commit": "9e20bd3863c2ad2547dc214f7bbbe29aec1aef7c",
+   "files": 1015,
+   "stripped": 174,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "nko",
+   "base": "nko",
+   "origin_commit": "089d661747ded23f9594cc722ed8eaa3bea7224e",
+   "seed_commit": "4c9e951ef93ad3ffc24d575733f781b27bf7a7af",
+   "files": 170,
+   "stripped": 2,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "serenity-soother",
+   "base": "serenity-soother",
+   "origin_commit": "1fdc035c3f815e97063d1f1f1b013a2d3857ac7c",
+   "seed_commit": "977313269492cf717e89b6928aa9778cb8d14a54",
+   "files": 199,
+   "stripped": 106,
+   "created": true,
+   "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

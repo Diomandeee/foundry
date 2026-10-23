@@ -1,0 +1,21 @@
+{
+ "id": "frameworks",
+ "title": "Frameworks",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Frameworks",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 245,
+ "text_bytes": 384414,
+ "offenders": [],
+ "base": "frameworks",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create frameworks --namespace foundry-staging",
+  "FOUNDRY_SEED=frameworks /Users/mohameddiomande/.config/foundry/bin/foundry-push frameworks main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging frameworks",
+  "registry: foundry_base=frameworks; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

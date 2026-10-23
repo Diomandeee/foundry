@@ -1,0 +1,21 @@
+{
+ "id": "evoflow",
+ "title": "evoflow",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/evoflow",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 429,
+ "text_bytes": 3146503,
+ "offenders": [],
+ "base": "evoflow",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create evoflow --namespace foundry-staging",
+  "FOUNDRY_SEED=evoflow /Users/mohameddiomande/.config/foundry/bin/foundry-push evoflow main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging evoflow",
+  "registry: foundry_base=evoflow; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

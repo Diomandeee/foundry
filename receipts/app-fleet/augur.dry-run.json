@@ -1,0 +1,27 @@
+{
+ "id": "augur",
+ "title": "Augur",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Augur",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 22,
+ "text_bytes": 48438,
+ "offenders": [
+  {
+   "path": "Augur/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 1342555,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "augur",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create augur --namespace foundry-staging",
+  "FOUNDRY_SEED=augur /Users/mohameddiomande/.config/foundry/bin/foundry-push augur main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging augur",
+  "registry: foundry_base=augur; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/augur/",
+ "first_merge_fits_gate": true
+}

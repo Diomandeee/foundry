@@ -1,0 +1,21 @@
+{
+ "id": "monetization",
+ "title": "monetization",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/monetization",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 6,
+ "text_bytes": 151811,
+ "offenders": [],
+ "base": "monetization",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create monetization --namespace foundry-staging",
+  "FOUNDRY_SEED=monetization /Users/mohameddiomande/.config/foundry/bin/foundry-push monetization main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging monetization",
+  "registry: foundry_base=monetization; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -62,7 +62,7 @@ export function parseOwnerConfig(raw:unknown):Readonly<OwnerConfig> {
   v.id(c.ownerPrincipal);v.profile(c.profile);v.job(c.job);v.id(c.claimKey);v.digest(c.serverProfileHash);
   fields(c.localPolicy,['host','pids','tmpMib','minFreeBytes'],['cmakeConfigureArgs']);
   fields(c.localPolicy.host,['uid','gid','dedicatedBuildUser','allowActivation','inputBase','workBase','journalRoot'],['imageExecutables']);
-  if(c.localPolicy.host.imageExecutables)fields(c.localPolicy.host.imageExecutables,[],['npm','cargo','cmake']);
+  if(c.localPolicy.host.imageExecutables)fields(c.localPolicy.host.imageExecutables,[],['npm','cargo','cmake','python']);
   const binding=approveParentProfile(c.profile,c.serverProfileHash,c.localPolicy as LocalRecipePolicy);
   v.need(c.job.projectId===c.profile.projectId&&c.job.profileHash===binding.serverProfileHash,'job-profile-binding');
   fields(c.claimPolicy,['environment','authorityId','workerId','jobId','projectId','inputHash','serverProfileHash','localRecipeHash','epoch','generation','incarnation']);

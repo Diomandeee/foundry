@@ -1,0 +1,21 @@
+{
+ "id": "compcoremotion",
+ "title": "CompCoreMotion",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/CompCoreMotion",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 74,
+ "text_bytes": 820602,
+ "offenders": [],
+ "base": "compcoremotion",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create compcoremotion --namespace foundry-staging",
+  "FOUNDRY_SEED=compcoremotion /Users/mohameddiomande/.config/foundry/bin/foundry-push compcoremotion main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging compcoremotion",
+  "registry: foundry_base=compcoremotion; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

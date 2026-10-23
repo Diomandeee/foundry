@@ -1,0 +1,27 @@
+{
+ "id": "meridian",
+ "title": "Meridian",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Meridian",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 19,
+ "text_bytes": 26884,
+ "offenders": [
+  {
+   "path": "Meridian/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 5699,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "meridian",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create meridian --namespace foundry-staging",
+  "FOUNDRY_SEED=meridian /Users/mohameddiomande/.config/foundry/bin/foundry-push meridian main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging meridian",
+  "registry: foundry_base=meridian; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/meridian/",
+ "first_merge_fits_gate": true
+}

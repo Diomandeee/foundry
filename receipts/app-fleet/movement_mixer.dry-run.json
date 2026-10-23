@@ -1,0 +1,21 @@
+{
+ "id": "movement_mixer",
+ "title": "movement_mixer",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/movement_mixer",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 7,
+ "text_bytes": 32555,
+ "offenders": [],
+ "base": "movement_mixer",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create movement_mixer --namespace foundry-staging",
+  "FOUNDRY_SEED=movement_mixer /Users/mohameddiomande/.config/foundry/bin/foundry-push movement_mixer main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging movement_mixer",
+  "registry: foundry_base=movement_mixer; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,21 @@
+{
+ "id": "knowledge-fermentation",
+ "title": "knowledge-fermentation",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/knowledge-fermentation",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 4,
+ "text_bytes": 36702,
+ "offenders": [],
+ "base": "knowledge-fermentation",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create knowledge-fermentation --namespace foundry-staging",
+  "FOUNDRY_SEED=knowledge-fermentation /Users/mohameddiomande/.config/foundry/bin/foundry-push knowledge-fermentation main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging knowledge-fermentation",
+  "registry: foundry_base=knowledge-fermentation; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

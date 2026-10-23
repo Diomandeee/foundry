@@ -1,0 +1,413 @@
+{
+ "version": 1,
+ "attemptId": "a1-calibrate-001",
+ "profileHash": "123aca510510c22a6eaf5cb59b0cedf682a229e43670f7b37c019e3628513fa6",
+ "inputHash": "b3175b23c953630bd0d5b58da39b7bd1f04a89de1932d2846b355322bfbe8211",
+ "filesHash": "e60940aba8857ef9a90524f737913f605a7664720eaaf635d5282069f4a722a5",
+ "files": 60,
+ "bytes": 18548925,
+ "startedAt": "2026-10-21T02:43:21Z",
+ "timingsSec": {
+  "begin": 0.2,
+  "sealed": 1.36,
+  "started": 1.64,
+  "terminal": 70.77,
+  "captured": 70.86,
+  "fetched": 70.86
+ },
+ "manifest": [
+  {
+   "path": "._.",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 493
+  },
+  {
+   "path": "._calibrate_extrinsics",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 493
+  },
+  {
+   "path": "._wheels",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 493
+  },
+  {
+   "path": "calibrate_extrinsics/._README.md",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._SCHEMA.md",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/.___init__.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/.___pycache__",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 493
+  },
+  {
+   "path": "calibrate_extrinsics/._board.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._calibrate.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._capture.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._detect.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._geometry.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._multicam.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._rig-motionmix.example.json",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._synth.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/._tests",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 493
+  },
+  {
+   "path": "calibrate_extrinsics/README.md",
+   "sha256": "cf14d305fa8088e7e96ac5e9fa7b2b00566051fcb791fb202f938fe5006ba0d4",
+   "sizeBytes": 11323,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/SCHEMA.md",
+   "sha256": "01f2b6b080e3a8679421d56c0952ca3ddf31e261d691ca3b1d23ab5d2775f329",
+   "sizeBytes": 5943,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/__init__.py",
+   "sha256": "0b92138c657d6b3e194d613dddcac1c536972e6aab80eaa0e55ad72761610e29",
+   "sizeBytes": 654,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/board.py",
+   "sha256": "81f4b91342bba22d118fb371dfc7395d420b410055af0358ccfb99ad8d9489e0",
+   "sizeBytes": 8276,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/calibrate.py",
+   "sha256": "5d4bef8a85ab5d5adb2214d5a72b2439b380d2b3979e611c32073d080aec39fb",
+   "sizeBytes": 22460,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/capture.py",
+   "sha256": "8467a3aa22d7963911907313ddb1615b148a1d916815c3ff10cdb4f1bca29f16",
+   "sizeBytes": 7409,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/detect.py",
+   "sha256": "d0b6805409ec2c3a50152872da92fa73403f20c0eb1c21f1220b0341a108db96",
+   "sizeBytes": 8568,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/geometry.py",
+   "sha256": "322d5b1bdcdd3b0f723e4520c87500a2150d31373b2a3c0a34f67ff3f0ed9104",
+   "sizeBytes": 12208,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/multicam.py",
+   "sha256": "f74d246cbbdb270a4eb22e88d0a28ac969386e54428b87dc068d054d78e33008",
+   "sizeBytes": 23905,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/rig-motionmix.example.json",
+   "sha256": "8345a2dc9754228d80badbb8b8493399bcb465dadea085767cc9556d6fa27da2",
+   "sizeBytes": 994,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/synth.py",
+   "sha256": "784b55c60b8a5d8faac15deeacd74224ec609e876141cb17971a03f8e70265fb",
+   "sizeBytes": 14209,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/__pycache__/.___init__.cpython-314.pyc",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/__pycache__/._geometry.cpython-314.pyc",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/__pycache__/__init__.cpython-314.pyc",
+   "sha256": "0b799f6d356e7282bee565a71a86ff4ab61863c648172f38f0b79e0bed1835da",
+   "sizeBytes": 921,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/__pycache__/geometry.cpython-314.pyc",
+   "sha256": "2aa0502f5eaa11df55514b9725dba857796f938b244a91c51282b67db1f60b62",
+   "sizeBytes": 21101,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/.___init__.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/.___pycache__",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 493
+  },
+  {
+   "path": "calibrate_extrinsics/tests/._test_calibrate.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/._test_capture.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/._test_geometry.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/._test_multicam.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/._test_multicam_images.py",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/__init__.py",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "sizeBytes": 0,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/test_calibrate.py",
+   "sha256": "3d95f219440b147bd07aeaa3ae191b89a03f53cdaaf08ee52c66bb1219b4a612",
+   "sizeBytes": 7699,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/test_capture.py",
+   "sha256": "883b2a61b8d592ba3b2f0686dde6cc6485562a215f86c961d4db31f6ed6af37d",
+   "sizeBytes": 5192,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/test_geometry.py",
+   "sha256": "e895475ddf41329bd46f27934f80b9d1aee270f13dc95dac5096ea80e6937444",
+   "sizeBytes": 5792,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/test_multicam.py",
+   "sha256": "1353146ab33517f9d1a81f97f7cf4c0a98e67f9f405a96e16ca67f6f6111f7da",
+   "sizeBytes": 7595,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/test_multicam_images.py",
+   "sha256": "4cc8044000aad098b957b4f498e4a70ffeefb4f0008df99487398b54adb7bb2d",
+   "sizeBytes": 6940,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/__pycache__/.___init__.cpython-314.pyc",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/__pycache__/._test_geometry.cpython-314-pytest-9.0.2.pyc",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/__pycache__/__init__.cpython-314.pyc",
+   "sha256": "af5bced5240b8ab2af8d416a9108dceab84bf673f89ccf45ef2bece13f29c00a",
+   "sizeBytes": 252,
+   "mode": 420
+  },
+  {
+   "path": "calibrate_extrinsics/tests/__pycache__/test_geometry.cpython-314-pytest-9.0.2.pyc",
+   "sha256": "97d74d5584b62d8a98ec6042df20aaf7a82096c03c20a6c417c51c2a8efb5c70",
+   "sizeBytes": 43214,
+   "mode": 420
+  },
+  {
+   "path": "wheels/._iniconfig-2.3.1-py3-none-any.whl",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "wheels/._numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "wheels/._packaging-26.3-py3-none-any.whl",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "wheels/._pluggy-1.7.0-py3-none-any.whl",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "wheels/._pygments-2.21.0-py3-none-any.whl",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "wheels/._pytest-9.1.1-py3-none-any.whl",
+   "sha256": "71021393478ec1463275935da86db8ba09e118a09b56aafcfca1803de9a7208c",
+   "sizeBytes": 163,
+   "mode": 420
+  },
+  {
+   "path": "wheels/iniconfig-2.3.1-py3-none-any.whl",
+   "sha256": "9121e2c1fdb355232495be3194c8dfe87ccc2d5dee45947b78e68f499790d7a7",
+   "sizeBytes": 7552,
+   "mode": 420
+  },
+  {
+   "path": "wheels/numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "sha256": "fd83c01228a688733f1ded5201c678f0c53ecc1006ffbc404db9f7a899ac6249",
+   "sizeBytes": 16527618,
+   "mode": 420
+  },
+  {
+   "path": "wheels/packaging-26.3-py3-none-any.whl",
+   "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+   "sizeBytes": 129956,
+   "mode": 420
+  },
+  {
+   "path": "wheels/pluggy-1.7.0-py3-none-any.whl",
+   "sha256": "7dd7b0d8832ba3cb632c306926ded123429211b83641b35dc5c41ad2d34f9bec",
+   "sizeBytes": 27082,
+   "mode": 420
+  },
+  {
+   "path": "wheels/pygments-2.21.0-py3-none-any.whl",
+   "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+   "sizeBytes": 1250147,
+   "mode": 420
+  },
+  {
+   "path": "wheels/pytest-9.1.1-py3-none-any.whl",
+   "sha256": "37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c",
+   "sizeBytes": 386536,
+   "mode": 420
+  }
+ ],
+ "identity": "990b0aaa71c8b06b567d48cbe05565bc6ce34deb99fbe9bb49fa56a2defc8232",
+ "helperSha256": "5a77888a5a8a63a8ecae05ab430bc1466f5d65cab3ff0669bb6ec380fb1379e5",
+ "pythonSha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+ "final": {
+  "identity": "990b0aaa71c8b06b567d48cbe05565bc6ce34deb99fbe9bb49fa56a2defc8232",
+  "terminal": true,
+  "success": true,
+  "exitCode": 0,
+  "outputs": [],
+  "log": {
+   "sha256": "3e063371c4007bd735b9e676bca1bfb1e9d11dac1cfd0bbaec83fafd63106004",
+   "sizeBytes": 747
+  }
+ },
+ "captured": {
+  "identity": "990b0aaa71c8b06b567d48cbe05565bc6ce34deb99fbe9bb49fa56a2defc8232",
+  "terminal": true,
+  "success": true,
+  "exitCode": 0,
+  "outputs": [
+   {
+    "path": "out/junit.xml",
+    "sha256": "99b1e6bc5bfe69b2a4fde29850c93bc0569fca534441527c9f03a120cc1c17aa",
+    "sizeBytes": 5946
+   }
+  ],
+  "log": {
+   "sha256": "3e063371c4007bd735b9e676bca1bfb1e9d11dac1cfd0bbaec83fafd63106004",
+   "sizeBytes": 747
+  }
+ },
+ "result": "PASS",
+ "requests": 247
+}

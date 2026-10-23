@@ -1,0 +1,21 @@
+{
+ "id": "chain_works",
+ "title": "chain_works",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/chain_works",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 9,
+ "text_bytes": 34145,
+ "offenders": [],
+ "base": "chain_works",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create chain_works --namespace foundry-staging",
+  "FOUNDRY_SEED=chain_works /Users/mohameddiomande/.config/foundry/bin/foundry-push chain_works main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging chain_works",
+  "registry: foundry_base=chain_works; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

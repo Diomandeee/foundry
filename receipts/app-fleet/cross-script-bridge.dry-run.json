@@ -1,0 +1,37 @@
+{
+ "id": "cross-script-bridge",
+ "title": "cross-script-bridge",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/cross-script-bridge",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 186,
+ "text_bytes": 1886511,
+ "offenders": [
+  {
+   "path": "extension/icons/icon128.png",
+   "bytes": 274,
+   "why": "binary-ext"
+  },
+  {
+   "path": "extension/icons/icon16.png",
+   "bytes": 274,
+   "why": "binary-ext"
+  },
+  {
+   "path": "extension/icons/icon48.png",
+   "bytes": 274,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "cross-script-bridge",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cross-script-bridge --namespace foundry-staging",
+  "FOUNDRY_SEED=cross-script-bridge /Users/mohameddiomande/.config/foundry/bin/foundry-push cross-script-bridge main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cross-script-bridge",
+  "registry: foundry_base=cross-script-bridge; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cross-script-bridge/",
+ "first_merge_fits_gate": true
+}

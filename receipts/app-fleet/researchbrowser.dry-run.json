@@ -1,0 +1,27 @@
+{
+ "id": "researchbrowser",
+ "title": "ResearchBrowser",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/ResearchBrowser",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 30,
+ "text_bytes": 94617,
+ "offenders": [
+  {
+   "path": "ResearchBrowser/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 891368,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "researchbrowser",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create researchbrowser --namespace foundry-staging",
+  "FOUNDRY_SEED=researchbrowser /Users/mohameddiomande/.config/foundry/bin/foundry-push researchbrowser main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging researchbrowser",
+  "registry: foundry_base=researchbrowser; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/researchbrowser/",
+ "first_merge_fits_gate": true
+}

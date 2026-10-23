@@ -1,0 +1,21 @@
+{
+ "id": "comp-core",
+ "title": "Comp-Core",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/Comp-Core",
+ "default_branch": "/Users/mohameddiomande/Desktop/Comp-Core@17e34234",
+ "truncated_tree": false,
+ "files": 577,
+ "text_bytes": 10319876,
+ "offenders": [],
+ "base": "comp-core",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create comp-core --namespace foundry-staging",
+  "FOUNDRY_SEED=comp-core /Users/mohameddiomande/.config/foundry/bin/foundry-push comp-core /Users/mohameddiomande/Desktop/Comp-Core@17e34234:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging comp-core",
+  "registry: foundry_base=comp-core; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": false
+}

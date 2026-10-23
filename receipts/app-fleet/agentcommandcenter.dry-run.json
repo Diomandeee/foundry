@@ -1,0 +1,42 @@
+{
+ "id": "agentcommandcenter",
+ "title": "AgentCommandCenter",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/AgentCommandCenter",
+ "default_branch": "dev",
+ "truncated_tree": false,
+ "files": 149,
+ "text_bytes": 1475673,
+ "offenders": [
+  {
+   "path": "App/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 853846,
+   "why": "binary-ext"
+  },
+  {
+   "path": "App/Assets.xcassets/LaunchIcon.imageset/LaunchIcon.png",
+   "bytes": 6438,
+   "why": "binary-ext"
+  },
+  {
+   "path": "App/Assets.xcassets/LaunchIcon.imageset/LaunchIcon@2x.png",
+   "bytes": 30974,
+   "why": "binary-ext"
+  },
+  {
+   "path": "App/Assets.xcassets/LaunchIcon.imageset/LaunchIcon@3x.png",
+   "bytes": 62587,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "agentcommandcenter",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create agentcommandcenter --namespace foundry-staging",
+  "FOUNDRY_SEED=agentcommandcenter /Users/mohameddiomande/.config/foundry/bin/foundry-push agentcommandcenter dev:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging agentcommandcenter",
+  "registry: foundry_base=agentcommandcenter; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/agentcommandcenter/",
+ "first_merge_fits_gate": true
+}

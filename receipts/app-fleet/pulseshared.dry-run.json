@@ -1,0 +1,21 @@
+{
+ "id": "pulseshared",
+ "title": "pulseshared",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/pulseshared",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 16,
+ "text_bytes": 50474,
+ "offenders": [],
+ "base": "pulseshared",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create pulseshared --namespace foundry-staging",
+  "FOUNDRY_SEED=pulseshared /Users/mohameddiomande/.config/foundry/bin/foundry-push pulseshared main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging pulseshared",
+  "registry: foundry_base=pulseshared; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

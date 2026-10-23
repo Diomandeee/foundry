@@ -1,0 +1,21 @@
+{
+ "id": "linguistic-dna",
+ "title": "linguistic-dna",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/linguistic-dna",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 55,
+ "text_bytes": 2374331,
+ "offenders": [],
+ "base": "linguistic-dna",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create linguistic-dna --namespace foundry-staging",
+  "FOUNDRY_SEED=linguistic-dna /Users/mohameddiomande/.config/foundry/bin/foundry-push linguistic-dna main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging linguistic-dna",
+  "registry: foundry_base=linguistic-dna; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

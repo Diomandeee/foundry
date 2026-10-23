@@ -1,0 +1,21 @@
+{
+ "id": "buff-flow",
+ "title": "buff-flow",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/buff-flow",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 23449,
+ "offenders": [],
+ "base": "buff-flow",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create buff-flow --namespace foundry-staging",
+  "FOUNDRY_SEED=buff-flow /Users/mohameddiomande/.config/foundry/bin/foundry-push buff-flow main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging buff-flow",
+  "registry: foundry_base=buff-flow; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

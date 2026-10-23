@@ -1,0 +1,21 @@
+{
+ "id": "serenity-storefront",
+ "title": "serenity-storefront",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/serenity-storefront",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 49,
+ "text_bytes": 497894,
+ "offenders": [],
+ "base": "serenity-storefront",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create serenity-storefront --namespace foundry-staging",
+  "FOUNDRY_SEED=serenity-storefront /Users/mohameddiomande/.config/foundry/bin/foundry-push serenity-storefront main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging serenity-storefront",
+  "registry: foundry_base=serenity-storefront; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

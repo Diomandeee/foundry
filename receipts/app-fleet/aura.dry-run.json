@@ -1,0 +1,187 @@
+{
+ "id": "aura",
+ "title": "Aura",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/Aura",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 426,
+ "text_bytes": 8307486,
+ "offenders": [
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 906451,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_1024x1024.png",
+   "bytes": 17386,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_120x120.png",
+   "bytes": 1729,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_152x152.png",
+   "bytes": 2192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_167x167.png",
+   "bytes": 2413,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_180x180.png",
+   "bytes": 2580,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_40x40.png",
+   "bytes": 590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_58x58.png",
+   "bytes": 827,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_60x60.png",
+   "bytes": 857,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_76x76.png",
+   "bytes": 1063,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_80x80.png",
+   "bytes": 1178,
+   "why": "binary-ext"
+  },
+  {
+   "path": "Aura/Resources/Assets.xcassets/AppIcon.appiconset/icon_87x87.png",
+   "bytes": 1277,
+   "why": "binary-ext"
+  },
+  {
+   "path": "VisionClaw-Build9.xcarchive/Products/Applications/CameraAccess.app/AppIcon60x60@2x.png",
+   "bytes": 25536,
+   "why": "binary-ext"
+  },
+  {
+   "path": "VisionClaw-Build9.xcarchive/Products/Applications/CameraAccess.app/AppIcon76x76@2x~ipad.png",
+   "bytes": 42021,
+   "why": "binary-ext"
+  },
+  {
+   "path": "VisionClaw-Build9.xcarchive/Products/Applications/CameraAccess.app/Assets.car",
+   "bytes": 609144,
+   "why": "binary-ext"
+  },
+  {
+   "path": "VisionClaw-Build9.xcarchive/Products/Applications/CameraAccess.app/Frameworks/MWDATCore.framework/MWDATCore",
+   "bytes": 15186224,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "VisionClaw-Build9.xcarchive/Products/Applications/CameraAccess.app/Frameworks/WebRTC.framework/WebRTC",
+   "bytes": 11169808,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "VisionClaw-Build9.xcarchive/dSYMs/CameraAccess.app.dSYM/Contents/Resources/DWARF/CameraAccess",
+   "bytes": 6602984,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "assets/cover.png",
+   "bytes": 4654305,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/dev_mode.png",
+   "bytes": 501896,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/how.png",
+   "bytes": 837555,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/teaserimage.png",
+   "bytes": 307456,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/title.png",
+   "bytes": 298935,
+   "why": "binary-ext"
+  },
+  {
+   "path": "build-baseline-screenshot.png",
+   "bytes": 275262,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/AppIcon.appiconset/imagine_a_film_camera_in_the_style.jpeg",
+   "bytes": 268775,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/cameraAccessIcon.imageset/cameraAccessIcon.png",
+   "bytes": 20533,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/smartGlassesIcon.imageset/smartGlassesIcon.png",
+   "bytes": 813,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/soundIcon.imageset/soundIcon.png",
+   "bytes": 581,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/tapIcon.imageset/tapIcon.png",
+   "bytes": 1317,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/videoIcon.imageset/videoIcon.png",
+   "bytes": 795,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccess/Assets.xcassets/walkingIcon.imageset/walkingIcon.png",
+   "bytes": 1041,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccessTests/Assets/plant.mp4",
+   "bytes": 2231432,
+   "why": "binary-ext"
+  },
+  {
+   "path": "samples/CameraAccess/CameraAccessTests/Assets/plant.png",
+   "bytes": 2347789,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "aura",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create aura --namespace foundry-staging",
+  "FOUNDRY_SEED=aura /Users/mohameddiomande/.config/foundry/bin/foundry-push aura main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging aura",
+  "registry: foundry_base=aura; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/aura/",
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,42 @@
+{
+ "id": "cadence",
+ "title": "Cadence",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Cadence",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 37,
+ "text_bytes": 215152,
+ "offenders": [
+  {
+   "path": "Cadence/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 691501,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/01_playground.png",
+   "bytes": 261792,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02_schema_explorer.png",
+   "bytes": 301687,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/03_composer.png",
+   "bytes": 272806,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "cadence",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cadence --namespace foundry-staging",
+  "FOUNDRY_SEED=cadence /Users/mohameddiomande/.config/foundry/bin/foundry-push cadence main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cadence",
+  "registry: foundry_base=cadence; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/cadence/",
+ "first_merge_fits_gate": true
+}

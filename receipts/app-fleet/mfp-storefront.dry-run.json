@@ -1,0 +1,522 @@
+{
+ "id": "mfp-storefront",
+ "title": "mfp-storefront",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/mfp-storefront",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 143,
+ "text_bytes": 527195,
+ "offenders": [
+  {
+   "path": "public/bg.png",
+   "bytes": 12883,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/bg.webp",
+   "bytes": 3684,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/booster-pack.png",
+   "bytes": 734244,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/booster-pack.webp",
+   "bytes": 92590,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-001.png",
+   "bytes": 343417,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-001.webp",
+   "bytes": 32776,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-002.png",
+   "bytes": 362866,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-002.webp",
+   "bytes": 35062,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-003.png",
+   "bytes": 437720,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-003.webp",
+   "bytes": 51992,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-004.png",
+   "bytes": 350602,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-004.webp",
+   "bytes": 33056,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-005.png",
+   "bytes": 380887,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-005.webp",
+   "bytes": 41162,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-006.png",
+   "bytes": 435955,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-006.webp",
+   "bytes": 47300,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-007.png",
+   "bytes": 331704,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-007.webp",
+   "bytes": 31842,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-008.png",
+   "bytes": 324122,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-008.webp",
+   "bytes": 28242,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-009.png",
+   "bytes": 403716,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-009.webp",
+   "bytes": 45196,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-010.png",
+   "bytes": 415497,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-010.webp",
+   "bytes": 56710,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-011.png",
+   "bytes": 380493,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-011.webp",
+   "bytes": 46102,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-012.png",
+   "bytes": 359744,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-012.webp",
+   "bytes": 43448,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-013.png",
+   "bytes": 348657,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-013.webp",
+   "bytes": 43370,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-014.png",
+   "bytes": 402741,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-014.webp",
+   "bytes": 41180,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-015.png",
+   "bytes": 436040,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-015.webp",
+   "bytes": 51778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-016.png",
+   "bytes": 268546,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-016.webp",
+   "bytes": 19380,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-017.png",
+   "bytes": 306906,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-017.webp",
+   "bytes": 27500,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-018.png",
+   "bytes": 369241,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-018.webp",
+   "bytes": 36410,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-019.png",
+   "bytes": 362866,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-019.webp",
+   "bytes": 39330,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-020.png",
+   "bytes": 340717,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-020.webp",
+   "bytes": 34584,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-021.png",
+   "bytes": 363238,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-021.webp",
+   "bytes": 38052,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-022.png",
+   "bytes": 323857,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-022.webp",
+   "bytes": 33474,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-023.png",
+   "bytes": 349769,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-023.webp",
+   "bytes": 36666,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-024.png",
+   "bytes": 355948,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-024.webp",
+   "bytes": 41866,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-025.png",
+   "bytes": 347146,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-025.webp",
+   "bytes": 35856,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-026.png",
+   "bytes": 318367,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-026.webp",
+   "bytes": 31422,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-027.png",
+   "bytes": 446603,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-027.webp",
+   "bytes": 49518,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-028.png",
+   "bytes": 408701,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-028.webp",
+   "bytes": 52528,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-029.png",
+   "bytes": 325740,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-029.webp",
+   "bytes": 38730,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-030.png",
+   "bytes": 406814,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-030.webp",
+   "bytes": 57278,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-031.png",
+   "bytes": 314732,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-031.webp",
+   "bytes": 28816,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-032.png",
+   "bytes": 337551,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-032.webp",
+   "bytes": 32618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-033.png",
+   "bytes": 324778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-033.webp",
+   "bytes": 29804,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-034.png",
+   "bytes": 454459,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-034.webp",
+   "bytes": 49354,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-035.png",
+   "bytes": 390299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-035.webp",
+   "bytes": 39094,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-036.png",
+   "bytes": 373841,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-036.webp",
+   "bytes": 37858,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-037.png",
+   "bytes": 360762,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-037.webp",
+   "bytes": 39632,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-038.png",
+   "bytes": 333659,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-038.webp",
+   "bytes": 30042,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-039.png",
+   "bytes": 349605,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-039.webp",
+   "bytes": 37820,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-040.png",
+   "bytes": 316928,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-040.webp",
+   "bytes": 32510,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-041.png",
+   "bytes": 335527,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-041.webp",
+   "bytes": 35812,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-042.png",
+   "bytes": 428397,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-042.webp",
+   "bytes": 56232,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-043.png",
+   "bytes": 305107,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-043.webp",
+   "bytes": 28880,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-044.png",
+   "bytes": 326433,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-044.webp",
+   "bytes": 30098,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-045.png",
+   "bytes": 498899,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/cards/MFP-045.webp",
+   "bytes": 65804,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/chapter-pack.png",
+   "bytes": 820099,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/chapter-pack.webp",
+   "bytes": 116894,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/display-box.png",
+   "bytes": 673953,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/display-box.webp",
+   "bytes": 75016,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/oracle-deck.png",
+   "bytes": 723925,
+   "why": "binary-ext"
+  },
+  {
+   "path": "public/oracle-deck.webp",
+   "bytes": 89792,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "mfp-storefront",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create mfp-storefront --namespace foundry-staging",
+  "FOUNDRY_SEED=mfp-storefront /Users/mohameddiomande/.config/foundry/bin/foundry-push mfp-storefront main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging mfp-storefront",
+  "registry: foundry_base=mfp-storefront; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/mfp-storefront/",
+ "first_merge_fits_gate": true
+}

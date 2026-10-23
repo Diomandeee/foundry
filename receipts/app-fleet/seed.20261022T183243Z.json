@@ -1,0 +1,11 @@
+{
+ "approved_by": "all NEW code in the MotionMix family must go through Foundry, cloud first, the way it's meant to work, starting before he flies tomorrow (Mohamed direct, relayed by mohameddiomande-f7 2026-10-22T14:33Z); Comp-Core echelon-live scope from local pre-direction commit 17e34234",
+ "started": "20261022T183243Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "comp-core",
+   "error": "Command '['tar', '-x', '-C', '/var/folders/57/d047wvwx1l5dnyjn5hkqs0n40000gn/T/app-fleet-seed/comp-core.src']' returned non-zero exit status 1."
+  }
+ ]
+}

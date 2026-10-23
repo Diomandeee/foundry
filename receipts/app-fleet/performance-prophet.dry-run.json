@@ -1,0 +1,21 @@
+{
+ "id": "performance-prophet",
+ "title": "performance-prophet",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/performance-prophet",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 3,
+ "text_bytes": 34453,
+ "offenders": [],
+ "base": "performance-prophet",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create performance-prophet --namespace foundry-staging",
+  "FOUNDRY_SEED=performance-prophet /Users/mohameddiomande/.config/foundry/bin/foundry-push performance-prophet main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging performance-prophet",
+  "registry: foundry_base=performance-prophet; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

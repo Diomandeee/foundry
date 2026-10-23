@@ -1,0 +1,21 @@
+{
+ "id": "firstdate-landing",
+ "title": "firstdate-landing",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/firstdate-landing",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 22,
+ "text_bytes": 158573,
+ "offenders": [],
+ "base": "firstdate-landing",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create firstdate-landing --namespace foundry-staging",
+  "FOUNDRY_SEED=firstdate-landing /Users/mohameddiomande/.config/foundry/bin/foundry-push firstdate-landing main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging firstdate-landing",
+  "registry: foundry_base=firstdate-landing; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

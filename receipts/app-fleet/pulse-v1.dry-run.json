@@ -1,0 +1,21 @@
+{
+ "id": "pulse-v1",
+ "title": "PULSE-V1",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/PULSE-V1",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 57,
+ "text_bytes": 466175,
+ "offenders": [],
+ "base": "pulse-v1",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create pulse-v1 --namespace foundry-staging",
+  "FOUNDRY_SEED=pulse-v1 /Users/mohameddiomande/.config/foundry/bin/foundry-push pulse-v1 main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging pulse-v1",
+  "registry: foundry_base=pulse-v1; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

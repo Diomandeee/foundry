@@ -1,0 +1,47 @@
+{
+ "id": "glyph",
+ "title": "Glyph",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Glyph",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 31,
+ "text_bytes": 133641,
+ "offenders": [
+  {
+   "path": "Glyph/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 1051860,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/01_onboarding_welcome.png",
+   "bytes": 439240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02_home.png",
+   "bytes": 439240,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02_onboarding_feature.png",
+   "bytes": 250954,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/03_discover.png",
+   "bytes": 321316,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "glyph",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create glyph --namespace foundry-staging",
+  "FOUNDRY_SEED=glyph /Users/mohameddiomande/.config/foundry/bin/foundry-push glyph main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging glyph",
+  "registry: foundry_base=glyph; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/glyph/",
+ "first_merge_fits_gate": true
+}

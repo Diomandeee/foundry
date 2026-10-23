@@ -1,0 +1,172 @@
+{
+ "id": "mm-grade-match",
+ "title": "mm-grade-match",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/mm-grade-match",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1075,
+ "text_bytes": 159024817,
+ "offenders": [
+  {
+   "path": "target/release/deps/libbytemuck_derive-4fa42d705127039a.dylib",
+   "bytes": 2598800,
+   "why": "binary-ext"
+  },
+  {
+   "path": "target/release/deps/libfilmcraft_project-ec7f254cc9911a69.rlib",
+   "bytes": 10399440,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libfilmcraft_project-ec7f254cc9911a69.rmeta",
+   "bytes": 5969450,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libfilmcraft_render-8b3c497a5db31e19.rlib",
+   "bytes": 13894592,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libfilmcraft_text-ebc0d8325a220f76.rlib",
+   "bytes": 6971272,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libharfrust-2b97125e9cfa725c.rlib",
+   "bytes": 4276032,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libimage-df6dfbaa413cbd9e.rlib",
+   "bytes": 6887624,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libmoxcms-88e0902c41ab4514.rlib",
+   "bytes": 6662696,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libmoxcms-88e0902c41ab4514.rmeta",
+   "bytes": 5377459,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libmultiversion_no_op-238c58fa41a2e382.dylib",
+   "bytes": 422288,
+   "why": "binary-ext"
+  },
+  {
+   "path": "target/release/deps/librayon-b21ad4d44f47e64e.rlib",
+   "bytes": 4509656,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/librayon-b21ad4d44f47e64e.rmeta",
+   "bytes": 4470826,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libread_fonts-1a29320d860ecf74.rlib",
+   "bytes": 13748808,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libread_fonts-1a29320d860ecf74.rmeta",
+   "bytes": 11440691,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/librustversion-48556bfa8bcac0c1.dylib",
+   "bytes": 715184,
+   "why": "binary-ext"
+  },
+  {
+   "path": "target/release/deps/libserde_core-90f693765d066f02.rlib",
+   "bytes": 5444768,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libserde_core-90f693765d066f02.rmeta",
+   "bytes": 5390406,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libserde_derive-9f1a3141c6d26f36.dylib",
+   "bytes": 3517840,
+   "why": "binary-ext"
+  },
+  {
+   "path": "target/release/deps/libskrifa-6fdb18c38ff4c19f.rlib",
+   "bytes": 4502632,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libsyn-cb4e650af9a373b0.rlib",
+   "bytes": 7204000,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libsyn-f3c3a8a8a845119d.rlib",
+   "bytes": 5118344,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libthiserror_impl-b7654e2d1ef6f638.dylib",
+   "bytes": 2628000,
+   "why": "binary-ext"
+  },
+  {
+   "path": "target/release/deps/libzerocopy-2f2d966d9580e624.rlib",
+   "bytes": 16055032,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libzerocopy-2f2d966d9580e624.rmeta",
+   "bytes": 16053595,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/libzerocopy_derive-3ae0ee809b65e31b.dylib",
+   "bytes": 3943632,
+   "why": "binary-ext"
+  },
+  {
+   "path": "target/release/deps/mm_export-29e0d2ca78f92f19",
+   "bytes": 14438496,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/mm_export-c6cbc280adf2eca4",
+   "bytes": 20672144,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/deps/mm_grade_match-637053109e7ce1f3",
+   "bytes": 9941168,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/mm-export",
+   "bytes": 20672144,
+   "why": "over-4MiB"
+  },
+  {
+   "path": "target/release/mm-grade-match",
+   "bytes": 9941168,
+   "why": "over-4MiB"
+  }
+ ],
+ "base": "mm-grade-match",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create mm-grade-match --namespace foundry-staging",
+  "FOUNDRY_SEED=mm-grade-match /Users/mohameddiomande/.config/foundry/bin/foundry-push mm-grade-match main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging mm-grade-match",
+  "registry: foundry_base=mm-grade-match; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/mm-grade-match/",
+ "first_merge_fits_gate": false
+}

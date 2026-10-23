@@ -1,0 +1,21 @@
+{
+ "id": "thunder-train",
+ "title": "thunder-train",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/thunder-train",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 9,
+ "text_bytes": 43234,
+ "offenders": [],
+ "base": "thunder-train",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create thunder-train --namespace foundry-staging",
+  "FOUNDRY_SEED=thunder-train /Users/mohameddiomande/.config/foundry/bin/foundry-push thunder-train main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging thunder-train",
+  "registry: foundry_base=thunder-train; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

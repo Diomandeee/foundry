@@ -1,0 +1,32 @@
+{
+ "id": "lifeos",
+ "title": "LifeOS",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/LifeOS",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 93,
+ "text_bytes": 612290,
+ "offenders": [
+  {
+   "path": "LifeOS/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 891508,
+   "why": "binary-ext"
+  },
+  {
+   "path": "LifeOSWatch/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 5338,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "lifeos",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create lifeos --namespace foundry-staging",
+  "FOUNDRY_SEED=lifeos /Users/mohameddiomande/.config/foundry/bin/foundry-push lifeos main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging lifeos",
+  "registry: foundry_base=lifeos; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/lifeos/",
+ "first_merge_fits_gate": true
+}

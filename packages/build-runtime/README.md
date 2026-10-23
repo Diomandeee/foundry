@@ -94,8 +94,9 @@ old fresh census must not authorize a successor enrollment. This introduces no C
 wire fields. Census carries exact observed SDK identifiers and actual/unknown storage
 measurements; unknown is not zero. Cache admission above 20 GiB rejects, without eviction.
 
-Only Linux/digest-pinned offline npm/cargo/CMake recipes are supported by the Linux
-adapter. Owner-approved executable mappings are explicit. CMake configure/build phases
+Only Linux/digest-pinned offline npm/cargo/CMake/python recipes are supported by the Linux
+adapter. A python recipe may carry owner-approved `installArgs`, run first as
+`pip install --no-index --no-cache-dir --target /work/site <installArgs>` (wheels ship in the input). Owner-approved executable mappings are explicit. CMake configure/build phases
 share host-visible work storage. `NativeMacAdapter.prepare/start` and the ES client's
 `start` reject before any callback or process invocation. `reviewRecovery` still reads
 bounded historical signed journals; a process seal never establishes service closure.

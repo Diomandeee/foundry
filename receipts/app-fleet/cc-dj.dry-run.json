@@ -1,0 +1,21 @@
+{
+ "id": "cc-dj",
+ "title": "cc-dj",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/cc-dj",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 93,
+ "text_bytes": 717548,
+ "offenders": [],
+ "base": "cc-dj",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create cc-dj --namespace foundry-staging",
+  "FOUNDRY_SEED=cc-dj /Users/mohameddiomande/.config/foundry/bin/foundry-push cc-dj main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging cc-dj",
+  "registry: foundry_base=cc-dj; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

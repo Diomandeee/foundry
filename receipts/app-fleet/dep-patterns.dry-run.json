@@ -1,0 +1,21 @@
+{
+ "id": "dep-patterns",
+ "title": "dep-patterns",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/dep-patterns",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 8603,
+ "offenders": [],
+ "base": "dep-patterns",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create dep-patterns --namespace foundry-staging",
+  "FOUNDRY_SEED=dep-patterns /Users/mohameddiomande/.config/foundry/bin/foundry-push dep-patterns main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging dep-patterns",
+  "registry: foundry_base=dep-patterns; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

@@ -1,0 +1,27 @@
+{
+ "id": "thought-mesh",
+ "title": "thought-mesh",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/thought-mesh",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 22,
+ "text_bytes": 665880,
+ "offenders": [
+  {
+   "path": "thought_mesh_demo.wav",
+   "bytes": 2212080,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "thought-mesh",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create thought-mesh --namespace foundry-staging",
+  "FOUNDRY_SEED=thought-mesh /Users/mohameddiomande/.config/foundry/bin/foundry-push thought-mesh main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging thought-mesh",
+  "registry: foundry_base=thought-mesh; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/thought-mesh/",
+ "first_merge_fits_gate": true
+}

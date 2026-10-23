@@ -1,0 +1,21 @@
+{
+ "id": "word_weaver",
+ "title": "word_weaver",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/word_weaver",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 2,
+ "text_bytes": 3091,
+ "offenders": [],
+ "base": "word_weaver",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create word_weaver --namespace foundry-staging",
+  "FOUNDRY_SEED=word_weaver /Users/mohameddiomande/.config/foundry/bin/foundry-push word_weaver main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging word_weaver",
+  "registry: foundry_base=word_weaver; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

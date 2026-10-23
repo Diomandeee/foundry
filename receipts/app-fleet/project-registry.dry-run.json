@@ -1,0 +1,21 @@
+{
+ "id": "project-registry",
+ "title": "project-registry",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/project-registry",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 1,
+ "text_bytes": 13038,
+ "offenders": [],
+ "base": "project-registry",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create project-registry --namespace foundry-staging",
+  "FOUNDRY_SEED=project-registry /Users/mohameddiomande/.config/foundry/bin/foundry-push project-registry main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging project-registry",
+  "registry: foundry_base=project-registry; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

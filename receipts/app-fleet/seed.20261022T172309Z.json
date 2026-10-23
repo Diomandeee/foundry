@@ -1,0 +1,18 @@
+{
+ "approved_by": "Mohamed 2026-10-22: re-sent the three decisions; lane defaults: foundry-staging, scaffold portfolio first",
+ "started": "20261022T172309Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "dreamstudio",
+   "base": "dreamstudio",
+   "origin_commit": "beffdff104fa07163925acaf58e40c7191754b95",
+   "seed_commit": "f097660a7096506ae83243eb1bff9565fc04f1c1",
+   "files": 36,
+   "stripped": 1,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"baef481d47ae484e948b9ed8991f7abf\",\"created_at\":\"2026-10-22T17:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

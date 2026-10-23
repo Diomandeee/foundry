@@ -1,0 +1,21 @@
+{
+ "id": "audioengine",
+ "title": "AudioEngine",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/AudioEngine",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 30,
+ "text_bytes": 447725,
+ "offenders": [],
+ "base": "audioengine",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create audioengine --namespace foundry-staging",
+  "FOUNDRY_SEED=audioengine /Users/mohameddiomande/.config/foundry/bin/foundry-push audioengine main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging audioengine",
+  "registry: foundry_base=audioengine; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

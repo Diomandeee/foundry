@@ -1,0 +1,182 @@
+{
+ "id": "lightcraft",
+ "title": "lightcraft",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/lightcraft",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 799,
+ "text_bytes": 16719361,
+ "offenders": [
+  {
+   "path": "assets/app-icon/hicolor/128x128/apps/ai.storyteller.lightcraft.png",
+   "bytes": 16635,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/16x16/apps/ai.storyteller.lightcraft.png",
+   "bytes": 663,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/24x24/apps/ai.storyteller.lightcraft.png",
+   "bytes": 1113,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/256x256/apps/ai.storyteller.lightcraft.png",
+   "bytes": 55310,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/32x32/apps/ai.storyteller.lightcraft.png",
+   "bytes": 1813,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/48x48/apps/ai.storyteller.lightcraft.png",
+   "bytes": 3245,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/512x512/apps/ai.storyteller.lightcraft.png",
+   "bytes": 146129,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/hicolor/64x64/apps/ai.storyteller.lightcraft.png",
+   "bytes": 5189,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/lightcraft-1024.png",
+   "bytes": 344217,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/lightcraft-macos-512.png",
+   "bytes": 112295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/app-icon/lightcraft.icns",
+   "bytes": 680493,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Medium.ttf",
+   "bytes": 417300,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-Regular.ttf",
+   "bytes": 411640,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/fonts/Inter-SemiBold.ttf",
+   "bytes": 419744,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo-white.png",
+   "bytes": 32161,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-logo.png",
+   "bytes": 31302,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark-black.png",
+   "bytes": 26793,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/brand/artcraft-mark.png",
+   "bytes": 24715,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/ba-blue-marble.jpg",
+   "bytes": 1010710,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/ba-earthrise.jpg",
+   "bytes": 444722,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/ba-migrant-mother.jpg",
+   "bytes": 944972,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/ba-tetons.jpg",
+   "bytes": 786602,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/bw-split.jpg",
+   "bytes": 625105,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/crop-tetons.jpg",
+   "bytes": 703787,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/curve-tetons.jpg",
+   "bytes": 811446,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/grading-migrant-mother.jpg",
+   "bytes": 652145,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/grid-demo.jpg",
+   "bytes": 768359,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/grid-pd.jpg",
+   "bytes": 549485,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/hero-tetons.jpg",
+   "bytes": 847754,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/info-earthrise.jpg",
+   "bytes": 378557,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/masking.jpg",
+   "bytes": 618087,
+   "why": "binary-ext"
+  },
+  {
+   "path": "docs/images/presets-mixer.jpg",
+   "bytes": 527811,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "lightcraft",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create lightcraft --namespace foundry-staging",
+  "FOUNDRY_SEED=lightcraft /Users/mohameddiomande/.config/foundry/bin/foundry-push lightcraft main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging lightcraft",
+  "registry: foundry_base=lightcraft; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/lightcraft/",
+ "first_merge_fits_gate": false
+}

@@ -1,0 +1,42 @@
+{
+ "id": "loom",
+ "title": "Loom",
+ "tier": "cold",
+ "origin": "https://github.com/Diomandeee/Loom",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 32,
+ "text_bytes": 169006,
+ "offenders": [
+  {
+   "path": "Loom/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 637299,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/01_onboarding.png",
+   "bytes": 812862,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/02_threads.png",
+   "bytes": 852256,
+   "why": "binary-ext"
+  },
+  {
+   "path": "screenshots/03_canvas.png",
+   "bytes": 564337,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "loom",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create loom --namespace foundry-staging",
+  "FOUNDRY_SEED=loom /Users/mohameddiomande/.config/foundry/bin/foundry-push loom main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging loom",
+  "registry: foundry_base=loom; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/loom/",
+ "first_merge_fits_gate": true
+}

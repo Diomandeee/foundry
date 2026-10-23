@@ -1,0 +1,542 @@
+{
+ "id": "serenity-soother",
+ "title": "serenity-soother",
+ "tier": "warm",
+ "origin": "https://github.com/Diomandeee/serenity-soother",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 305,
+ "text_bytes": 3073287,
+ "offenders": [
+  {
+   "path": "SerenitySoother/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 25486,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Assets.xcassets/ThemeImage.imageset/theme_image.jpg",
+   "bytes": 107402,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/birds_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/fire_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/forest_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/night_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/ocean_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/rain_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/stream_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/thunder_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/tibetan_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/AmbientSounds/wind_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-1.jpg",
+   "bytes": 89509,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-10.jpg",
+   "bytes": 140544,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-11.jpg",
+   "bytes": 112558,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-12.jpg",
+   "bytes": 132973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-13.jpg",
+   "bytes": 154238,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-14.jpg",
+   "bytes": 181523,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-15.jpg",
+   "bytes": 116231,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-16.jpg",
+   "bytes": 110810,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-17.jpg",
+   "bytes": 98701,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-18.jpg",
+   "bytes": 163100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-19.jpg",
+   "bytes": 124781,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-2.jpg",
+   "bytes": 150738,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-20.jpg",
+   "bytes": 115758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-21.jpg",
+   "bytes": 128867,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-22.jpg",
+   "bytes": 87261,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-24.jpg",
+   "bytes": 151980,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-25.jpg",
+   "bytes": 134746,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-26.jpg",
+   "bytes": 86980,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-27.jpg",
+   "bytes": 148958,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-28.jpg",
+   "bytes": 105723,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-29.jpg",
+   "bytes": 117557,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-3.jpg",
+   "bytes": 90993,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-30.jpg",
+   "bytes": 55731,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-31.jpg",
+   "bytes": 114230,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-32.jpg",
+   "bytes": 116675,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-33.jpg",
+   "bytes": 149903,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-34.jpg",
+   "bytes": 128465,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-35.jpg",
+   "bytes": 122144,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-36.jpg",
+   "bytes": 100460,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-38.jpg",
+   "bytes": 167020,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-39.jpg",
+   "bytes": 131198,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-4.jpg",
+   "bytes": 131897,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-40.jpg",
+   "bytes": 93327,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-41.jpg",
+   "bytes": 75758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-42.jpg",
+   "bytes": 69926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-43.jpg",
+   "bytes": 124347,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-44.jpg",
+   "bytes": 125295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-45.jpg",
+   "bytes": 114259,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-46.jpg",
+   "bytes": 91778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-47.jpg",
+   "bytes": 93212,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-48.jpg",
+   "bytes": 114181,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-49.jpg",
+   "bytes": 102086,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-5.jpg",
+   "bytes": 120373,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-50.jpg",
+   "bytes": 78572,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-51.jpg",
+   "bytes": 152379,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-52.jpg",
+   "bytes": 73356,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-53.jpg",
+   "bytes": 123207,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-54.jpg",
+   "bytes": 123505,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-55.jpg",
+   "bytes": 136699,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-56.jpg",
+   "bytes": 156514,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-57.jpg",
+   "bytes": 172140,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-58.jpg",
+   "bytes": 144532,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-59.jpg",
+   "bytes": 158140,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-6.jpg",
+   "bytes": 150645,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-60.jpg",
+   "bytes": 219199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-61.jpg",
+   "bytes": 63543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-62.jpg",
+   "bytes": 107171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-63.jpg",
+   "bytes": 127105,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-64.jpg",
+   "bytes": 142309,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-65.jpg",
+   "bytes": 113301,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-66.jpg",
+   "bytes": 137967,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-67.jpg",
+   "bytes": 121836,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-68.jpg",
+   "bytes": 104451,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-69.jpg",
+   "bytes": 121573,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-7.jpg",
+   "bytes": 147806,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-70.jpg",
+   "bytes": 155337,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-71.jpg",
+   "bytes": 155056,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-72.jpg",
+   "bytes": 122100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-73.jpg",
+   "bytes": 200815,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-74.jpg",
+   "bytes": 129258,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-75.jpg",
+   "bytes": 190089,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-76.jpg",
+   "bytes": 73394,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-77.jpg",
+   "bytes": 167688,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-79.jpg",
+   "bytes": 126134,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-8.jpg",
+   "bytes": 124618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-80.jpg",
+   "bytes": 115499,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-81.jpg",
+   "bytes": 141170,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-82.jpg",
+   "bytes": 140257,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-83.jpg",
+   "bytes": 89601,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-84.jpg",
+   "bytes": 101089,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-85.jpg",
+   "bytes": 91361,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-86.jpg",
+   "bytes": 115595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-87.jpg",
+   "bytes": 145400,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-88.jpg",
+   "bytes": 188087,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-89.jpg",
+   "bytes": 125622,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-9.jpg",
+   "bytes": 124618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-90.jpg",
+   "bytes": 83079,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-91.jpg",
+   "bytes": 137362,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-92.jpg",
+   "bytes": 161535,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-93.jpg",
+   "bytes": 102288,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-94.jpg",
+   "bytes": 83122,
+   "why": "binary-ext"
+  },
+  {
+   "path": "SerenitySoother/Resources/SceneThumbnails/scene-95.jpg",
+   "bytes": 119941,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "serenity-soother",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create serenity-soother --namespace foundry-staging",
+  "FOUNDRY_SEED=serenity-soother /Users/mohameddiomande/.config/foundry/bin/foundry-push serenity-soother main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging serenity-soother",
+  "registry: foundry_base=serenity-soother; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/serenity-soother/",
+ "first_merge_fits_gate": true
+}
