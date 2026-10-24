@@ -53,3 +53,9 @@ cloudflared on Mac1 was 2026.10.0 (built 10-05, before the fix).
 ## What the forwarded post gets right for us
 
 The fleet is already mostly built the way the post recommends: the Macs expose only Tailscale-bound ports plus Screen Sharing and AirPlay on the LAN (macOS firewall is off on Mac1, Mac4 and Mac5; Mac1 is on cellular while travelling, so that is worth turning on there), the listen service is reached only through a Cloudflare Tunnel with a path allowlist, and the Workers live on Cloudflare. The one real VPS exception is foundry-node-01's public SSH, item 3 above.
+
+## Addendum 06:45Z: listen tunnel hardening
+
+cloudflared URL path normalization turned on for the listen tunnel (`--disable-path-normalization=false` in `com.motionmix.listen-tunnel.plist`, backup `.bak-20261024-normalize`; the agent was booted out and bootstrapped again so the new argument applies). Public probes after the reload: `/listen` 200, `/state` 404, `/listen/../state` 404, `/%6cisten` 404, so only the allowlisted paths reach the origin and the origin's open-read endpoints stay unreachable from the internet. `POST /ingest` on the origin requires a token (motion_state_service.py). Mac1 has no passwordless sudo, so the macOS firewall stays a tap for Mohamed.
+
+Mac2 is being moved from the App Store Tailscale to the standalone tailscaled by the UCTM Studio lane (mohameddiomande-71): Mac4's exact 1.104.1 binary, one-shot `tailscale up --hostname=mac2`, App Store node kept until the new node is signed. The security lane signs the new node from Mac1 when the lane relays the `tailscale lock sign` line. Mac3 has no owner for the same move yet.
