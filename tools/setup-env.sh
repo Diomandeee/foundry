@@ -34,10 +34,32 @@ say "event subscriptions: every repo in $NS -> $QUEUE"
 # repo — seed, base, and every task fork — gets its own subscription.
 # A repo without one silently drops its push events at the gate.
 ACCT="$(npx wrangler whoami 2>/dev/null | grep -oE '[0-9a-f]{32}' | head -1)"
-TOK="$(grep -i oauth_token ~/Library/Preferences/.wrangler/config/default.toml | head -1 | sed 's/.*= *//;s/"//g')"
+# Wrangler 4.15x keeps OAuth credentials in the OS keychain and refreshes them there,
+# so the oauth_token line in default.toml goes stale; ask wrangler for the live token.
+TOK="$(npx wrangler auth token --json 2>/dev/null | python3 -c 'import sys,json; print(json.load(sys.stdin)["token"])')"
 QID="$(npx wrangler queues info "$QUEUE" 2>/dev/null | grep -i 'queue id' | grep -oE '[0-9a-f]{32}' | head -1)"
-EXISTING="$(curl -s "https://api.cloudflare.com/client/v4/accounts/$ACCT/event_subscriptions/subscriptions" \
-  -H "Authorization: Bearer $TOK" | python3 -c "import sys,json; print('\n'.join(s['id']+chr(9)+s.get('name','') for s in json.load(sys.stdin).get('result',[])))")"
+# The list endpoint pages (20 per page by default; 450+ subscriptions by 2026-10-30), so walk every
+# page: reading only page 1 missed existing subscriptions and hid the missing ones.
+list_subs() {
+  TOK="$TOK" ACCT="$ACCT" python3 - <<'PY'
+import json, os, urllib.request
+acct, tok, page = os.environ["ACCT"], os.environ["TOK"], 1
+while True:
+    req = urllib.request.Request(
+        f"https://api.cloudflare.com/client/v4/accounts/{acct}/event_subscriptions/subscriptions?per_page=50&page={page}",
+        headers={"Authorization": f"Bearer {tok}"})
+    d = json.load(urllib.request.urlopen(req))
+    if not d.get("success"):
+        raise SystemExit(f"event_subscriptions list failed: {d.get('errors')}")
+    for s in d.get("result") or []:
+        print(s["id"] + "\t" + s.get("name", ""))
+    info = d.get("result_info") or {}
+    if page >= (info.get("total_pages") or 1):
+        break
+    page += 1
+PY
+}
+EXISTING="$(list_subs)"
 # Remove the legacy seed-only sub (bare "$QUEUE pushed" name).
 while IFS=$'\t' read -r SUBID SUBNAME; do
   [ "$SUBNAME" = "$QUEUE pushed" ] || continue
