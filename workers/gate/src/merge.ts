@@ -109,17 +109,8 @@ export class IsomorphicMerger implements Merger {
         );
       }
     }
-    // File modes travel with the proposal's immutable objects, not with the
-    // admitted text: read them from the pushed commit so an executable stays
-    // executable (the 2026-10-19 hotfix still wrote every file as 100644).
-    const proposalDir = `${dir}-proposal`;
-    await git.clone({
-      fs, http, dir: proposalDir, url: req.forkRemote,
-      ref: req.forkBranch ?? "main", singleBranch: true, depth: 1, noCheckout: true,
-      onAuth: () => ({ username: "x", password: tokenSecret(req.forkToken) }),
-    });
-    const proposalHead = await git.resolveRef({ fs, dir: proposalDir, ref: "HEAD" });
-    if (proposalHead !== req.forkHeadSha) throw new Error("merge: proposal moved");
+    // File modes travel with the proposal's immutable objects, not with the admitted
+    // text: read them from the proposal fetched above so an executable stays executable.
     const modes = await proposalModes(this.fs, proposalDir, proposalHead, req.files);
     let sha: string;
     try {
