@@ -18,6 +18,10 @@ database_id = "12e5a5e8-4e87-4ce6-8074-99e393ff9463"
 # a machine-local address here; Workers cannot reach tailnet IPs.
 # POST /tasks requires the TASK_TOKEN secret (Bearer); without it the
 # route fails closed with 503.
+# Auto-subscribe of new forks (src/subscribe.ts) is on only when all five are set:
+# secret SUBSCRIBE_API_TOKEN (account token, Event Subscriptions edit) and SUBSCRIBE_ACCOUNT_ID,
+# SUBSCRIBE_QUEUE_ID, SUBSCRIBE_QUEUE_NAME, SUBSCRIBE_NAMESPACE (put them as secrets too, so
+# no account id lands in this public file). Unset = the response carries subscribeCommands.
 
 [env.staging]
 [[env.staging.artifacts]]

@@ -14,4 +14,11 @@ interface Env {
   LKG_URL?: string;
   LKG_TOKEN?: string;
   PACT_URL?: string;
+  // Auto-subscribe each new fork to the gate's push queue (src/subscribe.ts). All five or none:
+  // SUBSCRIBE_API_TOKEN is a secret (account token with Event Subscriptions edit); the rest are vars.
+  SUBSCRIBE_API_TOKEN?: string;
+  SUBSCRIBE_ACCOUNT_ID?: string;
+  SUBSCRIBE_QUEUE_ID?: string;
+  SUBSCRIBE_QUEUE_NAME?: string;
+  SUBSCRIBE_NAMESPACE?: string;
 }
