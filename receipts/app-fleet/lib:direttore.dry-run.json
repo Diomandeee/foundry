@@ -1,0 +1,21 @@
+{
+ "id": "lib:direttore",
+ "title": "direttore",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/Direttore",
+ "default_branch": "main",
+ "truncated_tree": false,
+ "files": 52,
+ "text_bytes": 228663,
+ "offenders": [],
+ "base": "direttore",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create direttore --namespace foundry-staging",
+  "FOUNDRY_SEED=direttore /Users/mohameddiomande/.config/foundry/bin/foundry-push direttore main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging direttore",
+  "registry: foundry_base=direttore; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

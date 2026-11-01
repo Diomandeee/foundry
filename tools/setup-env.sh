@@ -34,7 +34,10 @@ say "event subscriptions: every repo in $NS -> $QUEUE"
 # repo — seed, base, and every task fork — gets its own subscription.
 # A repo without one silently drops its push events at the gate.
 ACCT="$(npx wrangler whoami 2>/dev/null | grep -oE '[0-9a-f]{32}' | head -1)"
-TOK="$(grep -i oauth_token ~/Library/Preferences/.wrangler/config/default.toml | head -1 | sed 's/.*= *//;s/"//g')"
+# wrangler refreshes its OAuth token in memory but not always on disk (the config's
+# token expired 2026-10-24 while wrangler kept working), so ask wrangler first.
+TOK="$(npx wrangler auth token 2>/dev/null | grep -vE '^\s*$|⛅|─' | tail -1)"
+[ -n "$TOK" ] || TOK="$(grep -i oauth_token ~/Library/Preferences/.wrangler/config/default.toml | head -1 | sed 's/.*= *//;s/"//g')"
 QID="$(npx wrangler queues info "$QUEUE" 2>/dev/null | grep -i 'queue id' | grep -oE '[0-9a-f]{32}' | head -1)"
 EXISTING="$(curl -s "https://api.cloudflare.com/client/v4/accounts/$ACCT/event_subscriptions/subscriptions" \
   -H "Authorization: Bearer $TOK" | python3 -c "import sys,json; print('\n'.join(s['id']+chr(9)+s.get('name','') for s in json.load(sys.stdin).get('result',[])))")"

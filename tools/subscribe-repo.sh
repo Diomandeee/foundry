@@ -13,7 +13,10 @@ if [ "$ENVN" = "production" ]; then SUF="prod"; else SUF="$ENVN"; fi
 NS="foundry-$SUF"
 QUEUE="foundry-push-events-$SUF"
 ACCT="$(npx wrangler whoami 2>/dev/null | grep -oE '[0-9a-f]{32}' | head -1)"
-TOK="$(grep -i oauth_token ~/Library/Preferences/.wrangler/config/default.toml | head -1 | sed 's/.*= *//;s/"//g')"
+# wrangler refreshes its OAuth token in memory but not always on disk (the config's
+# token expired 2026-10-24 while wrangler kept working), so ask wrangler first.
+TOK="$(npx wrangler auth token 2>/dev/null | grep -vE '^\s*$|⛅|─' | tail -1)"
+[ -n "$TOK" ] || TOK="$(grep -i oauth_token ~/Library/Preferences/.wrangler/config/default.toml | head -1 | sed 's/.*= *//;s/"//g')"
 QID="$(npx wrangler queues info "$QUEUE" 2>/dev/null | grep -i 'queue id' | grep -oE '[0-9a-f]{32}' | head -1)"
 NAME="$QUEUE $REPO pushed"
 HAVE="$(curl -s "https://api.cloudflare.com/client/v4/accounts/$ACCT/event_subscriptions/subscriptions" \

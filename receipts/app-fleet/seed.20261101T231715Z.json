@@ -1,0 +1,18 @@
+{
+ "approved_by": "Mohamed 2026-11-01: \"make sure that we fix our, we incorporate this within our Foundry fabric\"",
+ "started": "20261101T231715Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "lib:direttore",
+   "base": "direttore",
+   "origin_commit": "c6421c022b285074eebb9815d0f19d4dfb6ea5ba",
+   "seed_commit": "f374a446294e4044aad2b12a1fe7f09f8cd340a3",
+   "files": 54,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "",
+   "namespace": "foundry-staging"
+  }
+ ]
+}
