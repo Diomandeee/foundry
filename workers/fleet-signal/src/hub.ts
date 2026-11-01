@@ -12,7 +12,7 @@
 // The relay checks both signatures too (defense in depth), stores everything
 // append-only, and pushes notifications.
 
-import { canonical, requestSigningString, sha256Hex, verifyP256 } from './crypto';
+import { canonical, importSpki, requestSigningString, sha256Hex, verifyP256 } from './crypto';
 
 export interface SqlPort {
   exec(query: string, ...bindings: unknown[]): Iterable<Record<string, unknown>>;
@@ -43,6 +43,10 @@ export const SCHEMA = [
      kind TEXT NOT NULL, body TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS seen_signatures (sig_hash TEXT PRIMARY KEY, at INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS counters (name TEXT PRIMARY KEY, value INTEGER NOT NULL)`,
+  // Fabric bridges (Claude Code on a Mac) that may poll the tunnel. A bridge key is registered by an
+  // enrolled device (the phone learned it from the bridge over the tailnet) or by the owner.
+  `CREATE TABLE IF NOT EXISTS bridges (machine TEXT PRIMARY KEY, spki TEXT NOT NULL, registered_by TEXT NOT NULL,
+     registered_at INTEGER NOT NULL)`,
 ];
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
@@ -51,11 +55,15 @@ const MAX_SKEW_S = 120;
 const MAX_ISSUED_SKEW_S = 300;
 
 export interface SignedHeaders { keyId: string; ts: string; signature: string }
-export type Principal = { kind: 'node'; id: string; host: string } | { kind: 'device'; id: string };
+export type Principal = { kind: 'node'; id: string; host: string } | { kind: 'device'; id: string } | { kind: 'bridge'; id: string };
+
+/** A Claude ask from a bridge, pushed so a locked phone hears about it. */
+export interface Alert { title: string; body: string; data: Record<string, string> }
 
 export interface PushPort {
   notifyRequest(devices: { device_id: string; apns_token: string; apns_env: string }[],
     req: { host: string; request_id: string; tier: number; description: string }): Promise<void>;
+  notifyAlert?(devices: { device_id: string; apns_token: string; apns_env: string }[], alert: Alert): Promise<void>;
 }
 
 export class SignalHub {
@@ -113,9 +121,11 @@ export class SignalHub {
     const ts = Number(h.ts);
     if (!h.keyId || !h.signature || !Number.isInteger(ts)) throw new HubError(401, 'missing-signature');
     if (Math.abs(this.now() - ts) > MAX_SKEW_S) throw new HubError(401, 'stale-signature');
-    const node = this.one('SELECT node_id, host, spki FROM nodes WHERE node_id = ? AND revoked_at IS NULL', h.keyId);
-    const device = node ? undefined : this.one('SELECT device_id, spki FROM devices WHERE device_id = ? AND revoked_at IS NULL', h.keyId);
-    const spki = (node?.spki ?? device?.spki) as string | undefined;
+    const bridgeName = h.keyId.startsWith('bridge:') ? h.keyId.slice(7) : null;
+    const bridge = bridgeName === null ? undefined : this.one('SELECT machine, spki FROM bridges WHERE machine = ?', bridgeName);
+    const node = bridgeName !== null ? undefined : this.one('SELECT node_id, host, spki FROM nodes WHERE node_id = ? AND revoked_at IS NULL', h.keyId);
+    const device = bridgeName !== null || node ? undefined : this.one('SELECT device_id, spki FROM devices WHERE device_id = ? AND revoked_at IS NULL', h.keyId);
+    const spki = (bridge?.spki ?? node?.spki ?? device?.spki) as string | undefined;
     if (!spki) throw new HubError(401, 'unknown-key');
     const msg = await requestSigningString(method, pathWithQuery, h.ts, body);
     if (!(await verifyP256(spki, h.signature, msg))) throw new HubError(401, 'bad-signature');
@@ -123,7 +133,42 @@ export class SignalHub {
     this.sql.exec('DELETE FROM seen_signatures WHERE at < ?', this.now() - 2 * MAX_SKEW_S);
     if (this.one('SELECT 1 AS x FROM seen_signatures WHERE sig_hash = ?', sigHash)) throw new HubError(401, 'replayed-signature');
     this.sql.exec('INSERT INTO seen_signatures (sig_hash, at) VALUES (?, ?)', sigHash, this.now());
+    if (bridge) return { kind: 'bridge', id: String(bridge.machine) };
     return node ? { kind: 'node', id: String(node.node_id), host: String(node.host) } : { kind: 'device', id: String(device!.device_id) };
+  }
+
+  // ── Fabric bridges (tunnel for Claude Code when the phone is off the tailnet) ──
+  /** A device (or the owner, by = 'owner') registers or rotates the key a Mac's bridge polls with. */
+  async registerBridge(by: Principal | 'owner', machine: string, spki: string): Promise<void> {
+    if (by !== 'owner' && by.kind !== 'device') throw new HubError(403, 'device-only');
+    if (!ID.test(machine) || typeof spki !== 'string' || spki.length > 400) throw new HubError(400, 'invalid-bridge');
+    try { await importSpki(spki); } catch { throw new HubError(400, 'invalid-bridge-key'); }
+    const who = by === 'owner' ? 'owner' : by.id;
+    this.sql.exec(`INSERT INTO bridges (machine, spki, registered_by, registered_at) VALUES (?, ?, ?, ?)
+      ON CONFLICT(machine) DO UPDATE SET spki = excluded.spki, registered_by = excluded.registered_by, registered_at = excluded.registered_at`,
+      machine, spki, who, this.now());
+    this.event(who, 'bridge.registered', { machine });
+  }
+
+  bridges(p: Principal): { machine: string; spki: string }[] {
+    if (p.kind !== 'device') throw new HubError(403, 'device-only');
+    return this.all('SELECT machine, spki FROM bridges ORDER BY machine') as { machine: string; spki: string }[];
+  }
+
+  /** A bridge tells every device with push about a Claude ask. Text is shown, never trusted: tapping
+   * it opens the app, which reads the ask from the bridge itself. */
+  async alert(p: Principal, title: string, body: string, askId: string): Promise<void> {
+    if (p.kind !== 'bridge') throw new HubError(403, 'bridge-only');
+    if (!ID.test(askId)) throw new HubError(400, 'invalid-ask');
+    const alert: Alert = { title: String(title).slice(0, 120), body: String(body).slice(0, 240),
+                           data: { claude_ask: askId, bridge_machine: p.id } };
+    this.event(p.id, 'bridge.ask', { ask_id: askId, title: alert.title });
+    if (!this.push?.notifyAlert) return;
+    const devices = this.all(`SELECT device_id, apns_token, apns_env FROM devices
+      WHERE revoked_at IS NULL AND apns_token IS NOT NULL`) as { device_id: string; apns_token: string; apns_env: string }[];
+    if (!devices.length) return;
+    try { await this.push.notifyAlert(devices, alert); }
+    catch (e) { this.event('hub', 'push.failed', { ask_id: askId, error: String(e) }); }
   }
 
   // ── node: publish a staged request (node-signed payload, end-to-end) ─────────
