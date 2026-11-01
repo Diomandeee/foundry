@@ -2,7 +2,9 @@
 # Subscribe one Artifacts repo's pushes to the env queue.
 # The event-subscription API requires repo_name, so every task fork needs
 # its own subscription — a namespace-wide sub is rejected. Run this after
-# POST /tasks mints a fork (or use setup-env.sh, which covers all repos).
+# POST /tasks mints a fork (or use setup-env.sh, which covers all repos). The orchestrator does this itself
+# when its SUBSCRIBE_* settings are present (workers/orchestrator/src/subscribe.ts), and
+# tools/foundry-ops/foundry_ops.py land runs it for every fork it opens.
 # Usage: bash tools/subscribe-repo.sh staging|production <repo>
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

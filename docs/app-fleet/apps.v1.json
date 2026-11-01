@@ -3,7 +3,7 @@
  "built_at": "2026-10-22T16:06:24+00:00",
  "library_revision": "47c1a94efec4584c69f5aaec4856e40c3789e80de555eb878e12976d11e1f127",
  "summary": {
-  "records": 717,
+  "records": 720,
   "by_kind": {
    "repo": 222,
    "archived-repo": 31,
@@ -5501,7 +5501,8 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": null,
+   "foundry_pending": "seed after Diomandeee/foundry#2 lands lockfix + gate hotfix on main (fleet reset 2.1)"
   },
   {
    "id": "frameworks",
@@ -7537,11 +7538,11 @@
     }
    ],
    "tier": "hot",
-   "tier_reason": "keeper",
+   "tier_reason": "keeper; seed_paths: source only, build/ (690 MB) and output/ (35 MB) stay on GitHub (fleet reset 2.4)",
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null,
+   "foundry_base": "meshcontrol",
    "asc_app_id": "6761024589",
    "asc_name": "MeshControl",
    "asc_bundle_id": "com.diomande.meshcontrol",
@@ -7560,7 +7561,27 @@
     "state": "VALID",
     "expired": true
    },
-   "seed_hold": "needs seed_paths scope: 508 MB text exceeds the gate memfs guide (~40 MB); owner lane names the live subtrees"
+   "seed_hold": "needs seed_paths scope: 508 MB text exceeds the gate memfs guide (~40 MB); owner lane names the live subtrees",
+   "seed_paths": [
+    "MeshControl",
+    "MeshControl.xcodeproj",
+    "supabase",
+    "docs",
+    ".claude",
+    "project.yml",
+    "ExportOptions.plist",
+    "EVOLUTION.md"
+   ],
+   "foundry_seed": {
+    "base": "meshcontrol",
+    "origin_commit": "9f1dcfe7611e073194beba9cf927dc577c2e6b2f",
+    "seed_commit": "c1b055f05fc774764919f5075ba15fefa0572ef4",
+    "files": 110,
+    "stripped": 14,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"2b64ecb3c8034213a2abe75920460d64\",\"created_at\":\"2026-11-01T03:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "meshd",
@@ -11557,11 +11578,25 @@
     }
    ],
    "tier": "warm",
-   "tier_reason": "keeper-warm",
+   "tier_reason": "keeper-warm; GitHub repo empty, seeded from the 2026-10-18 Drive backup restored to ~/Developer/SkateForge (fleet reset 2.4)",
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": "skateforge",
+   "seed_local": {
+    "path": "/Users/mohameddiomande/Developer/SkateForge",
+    "rev": "main"
+   },
+   "foundry_seed": {
+    "base": "skateforge",
+    "origin_commit": "5a134a4cf8438ae1a83687fcecf94aedfd15a4f0",
+    "seed_commit": "d441a110e8a628a5b34d53a99e3b9fda4fb89888",
+    "files": 16,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"7a23a3f8df994c1582fdb1ecb4964b17\",\"created_at\":\"2026-11-01T03:",
+    "namespace": "foundry-staging"
+   }
   },
   {
    "id": "skill-entity-architecture",
@@ -13578,7 +13613,8 @@
    "allowed_roots": null,
    "binary_policy": null,
    "foundry_base": null,
-   "seed_hold": "needs seed_paths scope: 83 MB text exceeds the gate memfs guide (~40 MB); owner lane names the live subtrees"
+   "seed_hold": "needs seed_paths scope: 83 MB text exceeds the gate memfs guide (~40 MB); owner lane names the live subtrees",
+   "foundry_exempt": "plain openai/codex mirror: no commit of ours on any branch, UCTM uses only a prebuilt binary (~/.ao/uctm-studio/codex-fork). Nothing to gate. Fleet reset 2.4, 2026-10-31."
   },
   {
    "id": "uncertainty-embracer",
@@ -25195,6 +25231,104 @@
     "seeded_by": "lanetest"
    },
    "notes": "Seeded by hand from the foundry monorepo subtree, not by onboard.py. Base main 5709e09 on 2026-10-23 (4 gated merges). The monorepo subtree is retired (branch participation/retire-coordinator-subtree)."
+  },
+  {
+   "id": "mo-en-movimiento",
+   "title": "Mo-en-Movimiento",
+   "kind": "repo",
+   "origin": "https://github.com/Diomandeee/Mo-en-Movimiento",
+   "private": true,
+   "github_archived": false,
+   "github_kb": null,
+   "last_push": null,
+   "bundle_id": null,
+   "wave": null,
+   "library": [],
+   "archive": [],
+   "tier": "hot",
+   "tier_reason": "fleet reset step 2.4 (2026-10-31): active project with no base; repo made 2026-10-31",
+   "owner_lane": null,
+   "allowed_roots": null,
+   "binary_policy": null,
+   "foundry_base": "mo-en-movimiento",
+   "foundry_seed": {
+    "base": "mo-en-movimiento",
+    "origin_commit": "da9156d6a4a7141a8a213950d4596952c4900157",
+    "seed_commit": "9d57739a7df8775ab63400eaa140a1f6ef6718b0",
+    "files": 429,
+    "stripped": 39,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"d287d0aad9984014a3a85c1e8341e978\",\"created_at\":\"2026-11-01T03:",
+    "namespace": "foundry-staging"
+   }
+  },
+  {
+   "id": "bwb-shop-theme",
+   "title": "bwb-shop-theme",
+   "kind": "repo",
+   "origin": null,
+   "private": true,
+   "github_archived": false,
+   "github_kb": null,
+   "last_push": null,
+   "bundle_id": null,
+   "wave": null,
+   "library": [],
+   "archive": [],
+   "tier": "hot",
+   "tier_reason": "fleet reset step 2.4: Shopify theme for shop.brewswithbeats.com, never on GitHub",
+   "owner_lane": null,
+   "allowed_roots": null,
+   "binary_policy": null,
+   "foundry_base": "bwb-shop-theme",
+   "seed_local": {
+    "path": "/Users/mohameddiomande/Developer/bwb-shop-theme",
+    "rev": "main"
+   },
+   "foundry_seed": {
+    "base": "bwb-shop-theme",
+    "origin_commit": "5572985a4895e46233d95b2b5925bc1b2f25415e",
+    "seed_commit": "7725e70bcaa22fdd3f00b580498ca7267097f6e0",
+    "files": 357,
+    "stripped": 11,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"93ee94bfecfb4862becbd0fcfe7c6210\",\"created_at\":\"2026-11-01T03:",
+    "namespace": "foundry-staging"
+   }
+  },
+  {
+   "id": "uctm",
+   "title": "UCTM",
+   "kind": "repo",
+   "origin": null,
+   "private": true,
+   "github_archived": false,
+   "github_kb": null,
+   "last_push": null,
+   "bundle_id": null,
+   "wave": null,
+   "library": [],
+   "archive": [],
+   "tier": "hot",
+   "tier_reason": "fleet reset step 2.4: git init 2026-10-31 (5deffdf), never on GitHub",
+   "owner_lane": null,
+   "allowed_roots": null,
+   "binary_policy": null,
+   "foundry_base": "uctm",
+   "seed_local": {
+    "path": "/Users/mohameddiomande/Developer/UCTM",
+    "rev": "main"
+   },
+   "foundry_seed": {
+    "base": "uctm",
+    "origin_commit": "5deffdf79a4ec017638a09ee52958147071b9347",
+    "seed_commit": "a5e4de0781d83241a88e3e81bf68be8a91174456",
+    "files": 62,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"6980febdcd794e7998d4847dcfea8c9a\",\"created_at\":\"2026-11-01T03:",
+    "namespace": "foundry-staging"
+   }
   }
  ]
 }

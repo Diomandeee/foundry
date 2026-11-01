@@ -1,0 +1,77 @@
+{
+ "id": "bwb-shop-theme",
+ "title": "bwb-shop-theme",
+ "tier": "hot",
+ "origin": "local:/Users/mohameddiomande/Developer/bwb-shop-theme",
+ "default_branch": "/Users/mohameddiomande/Developer/bwb-shop-theme@main",
+ "truncated_tree": false,
+ "files": 366,
+ "text_bytes": 4255560,
+ "offenders": [
+  {
+   "path": "assets/bwb-bag-caramel.jpg",
+   "bytes": 156644,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-bag-hazelnut.jpg",
+   "bytes": 114398,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-bag-mocha.jpg",
+   "bytes": 107095,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-bag-pecan.jpg",
+   "bytes": 133128,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-bag-pumpkin.jpg",
+   "bytes": 140761,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-fraunces-italic.woff2",
+   "bytes": 149268,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-fraunces.woff2",
+   "bytes": 120724,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-logo-mark.png",
+   "bytes": 28860,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-logo.png",
+   "bytes": 30160,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/bwb-schibsted.woff2",
+   "bytes": 46864,
+   "why": "binary-ext"
+  },
+  {
+   "path": "assets/sparkle.gif",
+   "bytes": 179349,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "bwb-shop-theme",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create bwb-shop-theme --namespace foundry-staging",
+  "FOUNDRY_SEED=bwb-shop-theme /Users/mohameddiomande/.config/foundry/bin/foundry-push bwb-shop-theme /Users/mohameddiomande/Developer/bwb-shop-theme@main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging bwb-shop-theme",
+  "registry: foundry_base=bwb-shop-theme; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/bwb-shop-theme/",
+ "first_merge_fits_gate": true
+}

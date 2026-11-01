@@ -4,6 +4,7 @@ import { intakeTriples, KGClient } from "@foundry/lkg-client";
 import { PactServerPlanCheck, StubPlanCheck } from "@foundry/plan-check";
 import { D1TicketStore } from "@foundry/stores";
 import { createTask } from "./tasks.js";
+import { subscribeConfig, subscribeForks } from "./subscribe.js";
 
 // Env comes from ./env.d.ts (bindings mirror wrangler.toml; committed so
 // a clean clone typechecks without `wrangler types`).
@@ -36,6 +37,12 @@ app.post("/tasks", async (c) => {
       Date.now(),
       planCheck,
     );
+    // Subscribe each fork now, so the agent's first push reaches the gate. A failure does not undo the
+    // task: the response says which forks still need subscribeCommands run by hand.
+    const sub = subscribeConfig(c.env);
+    const subscriptions = sub
+      ? await subscribeForks(sub, result.dispatches.map((d) => d.forkRepo))
+      : null;
     // Best-effort KG registration; the task stands without it.
     try {
       if (c.env.LKG_URL) {
@@ -49,7 +56,7 @@ app.post("/tasks", async (c) => {
     } catch (e) {
       console.warn("lkg notify failed", e);
     }
-    return c.json(result, 201);
+    return c.json(subscriptions ? { ...result, subscriptions } : result, 201);
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     const status = message.startsWith("invalid") ? 400 : 500;
