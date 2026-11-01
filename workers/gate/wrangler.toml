@@ -23,6 +23,12 @@ ARTIFACTS_NS = "foundry-dev"
 # machine-local address here; Workers cannot reach tailnet IPs.
 
 [env.staging]
+# A large merge (hundreds of new files hashed and committed in memfs) ran past the 30 s default CPU limit,
+# failed three times and was dropped with no decision row (2026-10-22 23:50Z). 5 minutes is the Paid ceiling.
+[env.staging.limits]
+cpu_ms = 300000
+[env.staging.observability]
+enabled = true
 [env.staging.vars]
 ARTIFACTS_NS = "foundry-staging"
 [[env.staging.artifacts]]

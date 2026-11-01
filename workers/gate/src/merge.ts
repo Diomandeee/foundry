@@ -109,6 +109,18 @@ export class IsomorphicMerger implements Merger {
         );
       }
     }
+    // File modes travel with the proposal's immutable objects, not with the
+    // admitted text: read them from the pushed commit so an executable stays
+    // executable (the 2026-10-19 hotfix still wrote every file as 100644).
+    const proposalDir = `${dir}-proposal`;
+    await git.clone({
+      fs, http, dir: proposalDir, url: req.forkRemote,
+      ref: req.forkBranch ?? "main", singleBranch: true, depth: 1, noCheckout: true,
+      onAuth: () => ({ username: "x", password: tokenSecret(req.forkToken) }),
+    });
+    const proposalHead = await git.resolveRef({ fs, dir: proposalDir, ref: "HEAD" });
+    if (proposalHead !== req.forkHeadSha) throw new Error("merge: proposal moved");
+    const modes = await proposalModes(this.fs, proposalDir, proposalHead, req.files);
     let sha: string;
     try {
       sha = await commitForkFiles(
@@ -119,6 +131,7 @@ export class IsomorphicMerger implements Merger {
         req.author,
         req.forkHeadSha,
         req.deletedFiles ?? [],
+        modes,
       );
     } catch (e) {
       throw new Error(
@@ -170,11 +183,13 @@ export async function commitForkFiles(
   author: string,
   forkHeadSha: string,
   deletedFiles: string[] = [],
+  modes: Record<string, FileMode> = {},
 ): Promise<string> {
   const fs = fsInput as Parameters<typeof git.clone>[0]["fs"];
   const promises = (fs as unknown as { promises: {
     mkdir(p: string, o?: object): Promise<unknown>;
     writeFile(p: string, c: string): Promise<void>;
+    chmod(p: string, m: number): Promise<void>;
   } }).promises;
   for (const [name, content] of Object.entries(files)) {
     mergePath(name);
@@ -182,6 +197,8 @@ export async function commitForkFiles(
     const slash = fp.lastIndexOf("/");
     if (slash > 0) await promises.mkdir(fp.slice(0, slash), { recursive: true });
     await promises.writeFile(fp, content);
+    // Explicit either way: an edited file must not keep a stale bit from the base checkout.
+    await promises.chmod(fp, modes[name] === "100755" ? 0o755 : 0o644);
     await git.add({ fs, dir, filepath: name });
   }
   for (const name of deletedFiles) {
@@ -192,10 +209,26 @@ export async function commitForkFiles(
   }
   // Replay is proven by the caller against parents and whole-tree content.
   // An unchanged worktree alone is not replay evidence.
+  // statusMatrix compares content only, so a mode-only change (chmod +x) would read
+  // as clean. Compare each admitted path's mode too.
   const matrix = await git.statusMatrix({ fs, dir });
-  const dirty = matrix.some(
+  let dirty = matrix.some(
     ([, head, workdir, stage]) => !(head === 1 && workdir === 1 && stage === 1),
   );
+  if (!dirty && Object.keys(files).length) {
+    const head = await git.resolveRef({ fs, dir, ref: "HEAD" }).catch(() => null);
+    const headModes = new Map<string, string>();
+    if (head) {
+      await git.walk({ fs, dir, trees: [git.TREE({ ref: head })],
+        map: async (path, [e]) => {
+          if (e && Object.hasOwn(files, path) && (await e.type()) === "blob") {
+            headModes.set(path, ((await e.mode()) as number).toString(8));
+          }
+          return true;
+        } });
+    }
+    dirty = Object.keys(files).some((name) => headModes.get(name) !== (modes[name] ?? "100644"));
+  }
   if (!dirty) throw new Error("merge: no changed tree and no proven replay");
   return git.commit({
     fs,
@@ -203,4 +236,49 @@ export async function commitForkFiles(
     message: `${message}\n\nFork-Head: ${forkHeadSha}`,
     author: { name: author, email: "foundry@local" },
   });
+}
+
+export type FileMode = "100644" | "100755";
+
+/**
+ * Mode of every admitted path in the proposal commit. The admitted text must be
+ * exactly the proposal's blob; symlinks, submodules and anything else the text
+ * transport cannot carry are refused rather than landed as regular files.
+ */
+export async function proposalModes(
+  fsInput: unknown,
+  dir: string,
+  commitSha: string,
+  files: Record<string, string>,
+): Promise<Record<string, FileMode>> {
+  const fs = fsInput as Parameters<typeof git.clone>[0]["fs"];
+  const { commit } = await git.readCommit({ fs, dir, oid: commitSha });
+  const trees = new Map<string, Map<string, { mode: string; oid: string; type: string }>>();
+  async function entries(path: string) {
+    const hit = trees.get(path);
+    if (hit) return hit;
+    let oid = commit.tree;
+    if (path) {
+      const parent = await entries(path.slice(0, Math.max(0, path.lastIndexOf("/"))));
+      const e = parent.get(path.slice(path.lastIndexOf("/") + 1));
+      if (!e || e.type !== "tree") throw new Error(`merge: proposal has no directory ${path}`);
+      oid = e.oid;
+    }
+    const { tree } = await git.readTree({ fs, dir, oid });
+    const m = new Map(tree.map((e) => [e.path, { mode: e.mode, oid: e.oid, type: e.type }]));
+    trees.set(path, m);
+    return m;
+  }
+  const out: Record<string, FileMode> = {};
+  for (const [path, content] of Object.entries(files)) {
+    const slash = path.lastIndexOf("/");
+    const e = (await entries(slash < 0 ? "" : path.slice(0, slash))).get(path.slice(slash + 1));
+    if (!e || e.type !== "blob" || (e.mode !== "100644" && e.mode !== "100755")) {
+      throw new Error(`merge: unsupported proposal entry ${path} (${e ? e.mode : "absent"})`);
+    }
+    const { oid } = await git.hashBlob({ object: new TextEncoder().encode(content) });
+    if (oid !== e.oid) throw new Error(`merge: admitted text differs from proposal blob ${path}`);
+    out[path] = e.mode;
+  }
+  return out;
 }
