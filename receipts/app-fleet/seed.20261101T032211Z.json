@@ -1,0 +1,51 @@
+{
+ "approved_by": "Mohamed 2026-10-31: \"start step 2 while the copies run\"; \"put the registry in homebase, drop homebase from 2.4\"; \"just keep going ... autopilot and take over\"",
+ "started": "20261101T032211Z",
+ "namespace": "foundry-staging",
+ "results": [
+  {
+   "id": "meshcontrol",
+   "base": "meshcontrol",
+   "origin_commit": "9f1dcfe7611e073194beba9cf927dc577c2e6b2f",
+   "seed_commit": "c1b055f05fc774764919f5075ba15fefa0572ef4",
+   "files": 110,
+   "stripped": 14,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"2b64ecb3c8034213a2abe75920460d64\",\"created_at\":\"2026-11-01T03:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "mo-en-movimiento",
+   "base": "mo-en-movimiento",
+   "origin_commit": "da9156d6a4a7141a8a213950d4596952c4900157",
+   "seed_commit": "9d57739a7df8775ab63400eaa140a1f6ef6718b0",
+   "files": 429,
+   "stripped": 39,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"d287d0aad9984014a3a85c1e8341e978\",\"created_at\":\"2026-11-01T03:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "bwb-shop-theme",
+   "base": "bwb-shop-theme",
+   "origin_commit": "5572985a4895e46233d95b2b5925bc1b2f25415e",
+   "seed_commit": "7725e70bcaa22fdd3f00b580498ca7267097f6e0",
+   "files": 357,
+   "stripped": 11,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"93ee94bfecfb4862becbd0fcfe7c6210\",\"created_at\":\"2026-11-01T03:",
+   "namespace": "foundry-staging"
+  },
+  {
+   "id": "uctm",
+   "base": "uctm",
+   "origin_commit": "5deffdf79a4ec017638a09ee52958147071b9347",
+   "seed_commit": "a5e4de0781d83241a88e3e81bf68be8a91174456",
+   "files": 62,
+   "stripped": 0,
+   "created": true,
+   "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"6980febdcd794e7998d4847dcfea8c9a\",\"created_at\":\"2026-11-01T03:",
+   "namespace": "foundry-staging"
+  }
+ ]
+}

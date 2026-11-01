@@ -1,0 +1,21 @@
+{
+ "id": "uctm",
+ "title": "UCTM",
+ "tier": "hot",
+ "origin": "local:/Users/mohameddiomande/Developer/UCTM",
+ "default_branch": "/Users/mohameddiomande/Developer/UCTM@main",
+ "truncated_tree": false,
+ "files": 60,
+ "text_bytes": 346526,
+ "offenders": [],
+ "base": "uctm",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create uctm --namespace foundry-staging",
+  "FOUNDRY_SEED=uctm /Users/mohameddiomande/.config/foundry/bin/foundry-push uctm /Users/mohameddiomande/Developer/UCTM@main:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging uctm",
+  "registry: foundry_base=uctm; audit list reads registry"
+ ],
+ "bundle": null,
+ "first_merge_fits_gate": true
+}

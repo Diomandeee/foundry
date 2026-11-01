@@ -1,38 +1,408 @@
 {
- "built_at": "2026-10-22T18:35:28+00:00",
+ "built_at": "2026-11-01T03:21:59+00:00",
  "namespace": "foundry-staging",
- "selected": 1,
+ "selected": 4,
  "plans": [
   {
-   "id": "lume-commerce",
-   "title": "lume-commerce",
+   "id": "meshcontrol",
+   "title": "MeshControl",
    "tier": "hot",
-   "origin": "https://github.com/Diomandeee/lume-commerce",
+   "origin": "https://github.com/Diomandeee/MeshControl",
    "default_branch": "main",
    "truncated_tree": false,
-   "files": 472,
-   "text_bytes": 4518808,
+   "files": 122,
+   "text_bytes": 1375068,
    "offenders": [
     {
-     "path": "stage/mac4/femto/lume-real-femto-snapshot.png",
-     "bytes": 509286,
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+     "bytes": 114543,
      "why": "binary-ext"
     },
     {
-     "path": "tools/research/pinto/hand_compare-20261019-upright.jpg",
-     "bytes": 149584,
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-120.png",
+     "bytes": 7861,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-152.png",
+     "bytes": 10588,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-167.png",
+     "bytes": 11731,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-180.png",
+     "bytes": 13040,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-20.png",
+     "bytes": 827,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-29.png",
+     "bytes": 1345,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-40.png",
+     "bytes": 2029,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-58.png",
+     "bytes": 3285,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-60.png",
+     "bytes": 3390,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-76.png",
+     "bytes": 4602,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-80.png",
+     "bytes": 4830,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon-87.png",
+     "bytes": 5415,
+     "why": "binary-ext"
+    },
+    {
+     "path": "MeshControl/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+     "bytes": 114543,
      "why": "binary-ext"
     }
    ],
-   "base": "lume-commerce",
+   "base": "meshcontrol",
    "namespace": "foundry-staging",
    "steps": [
-    "npx wrangler artifacts repos create lume-commerce --namespace foundry-staging",
-    "FOUNDRY_SEED=lume-commerce /Users/mohameddiomande/.config/foundry/bin/foundry-push lume-commerce main:main   (from a clean clone minus offenders)",
-    "bash tools/subscribe-repo.sh staging lume-commerce",
-    "registry: foundry_base=lume-commerce; audit list reads registry"
+    "npx wrangler artifacts repos create meshcontrol --namespace foundry-staging",
+    "FOUNDRY_SEED=meshcontrol /Users/mohameddiomande/.config/foundry/bin/foundry-push meshcontrol main:main   (from a clean clone minus offenders)",
+    "bash tools/subscribe-repo.sh staging meshcontrol",
+    "registry: foundry_base=meshcontrol; audit list reads registry"
    ],
-   "bundle": "gdrive:Assets/app-fleet/lume-commerce/",
+   "bundle": "gdrive:Assets/app-fleet/meshcontrol/",
+   "first_merge_fits_gate": true
+  },
+  {
+   "id": "mo-en-movimiento",
+   "title": "Mo-en-Movimiento",
+   "tier": "hot",
+   "origin": "https://github.com/Diomandeee/Mo-en-Movimiento",
+   "default_branch": "main",
+   "truncated_tree": false,
+   "files": 466,
+   "text_bytes": 9830835,
+   "offenders": [
+    {
+     "path": "App/MoEnMovimiento/Resources/LongformContent/grounded-longform-season-01.json",
+     "bytes": 7228112,
+     "why": "over-4MiB"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/LongformContent/learning-text-sidecar-season-01.json",
+     "bytes": 12769459,
+     "why": "over-4MiB"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e01-p01.mp3",
+     "bytes": 190633,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e01-p02.mp3",
+     "bytes": 210695,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e01-p03.mp3",
+     "bytes": 231593,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e02-p01.mp3",
+     "bytes": 211531,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e02-p02.mp3",
+     "bytes": 176422,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e02-p03.mp3",
+     "bytes": 226159,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e03-p01.mp3",
+     "bytes": 218218,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e03-p02.mp3",
+     "bytes": 217382,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e03-p03.mp3",
+     "bytes": 222398,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e04-p01.mp3",
+     "bytes": 202336,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e04-p02.mp3",
+     "bytes": 217382,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e04-p03.mp3",
+     "bytes": 183946,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e05-p01.mp3",
+     "bytes": 186035,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e05-p02.mp3",
+     "bytes": 217382,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e05-p03.mp3",
+     "bytes": 244968,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e06-p01.mp3",
+     "bytes": 184782,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e06-p02.mp3",
+     "bytes": 232011,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e06-p03.mp3",
+     "bytes": 184782,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e07-p01.mp3",
+     "bytes": 198574,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e07-p02.mp3",
+     "bytes": 191887,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e07-p03.mp3",
+     "bytes": 181020,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e08-p01.mp3",
+     "bytes": 218218,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e08-p02.mp3",
+     "bytes": 148001,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e08-p03.mp3",
+     "bytes": 211531,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e09-p01.mp3",
+     "bytes": 156360,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e09-p02.mp3",
+     "bytes": 163048,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e09-p03.mp3",
+     "bytes": 226159,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e10-p01.mp3",
+     "bytes": 217382,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e10-p02.mp3",
+     "bytes": 183946,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e10-p03.mp3",
+     "bytes": 191469,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e11-p01.mp3",
+     "bytes": 223234,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e11-p02.mp3",
+     "bytes": 179348,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e11-p03.mp3",
+     "bytes": 208187,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e12-p01.mp3",
+     "bytes": 234519,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e12-p02.mp3",
+     "bytes": 172661,
+     "why": "binary-ext"
+    },
+    {
+     "path": "App/MoEnMovimiento/Resources/Narration/season-01/audio/s01e12-p03.mp3",
+     "bytes": 214457,
+     "why": "binary-ext"
+    }
+   ],
+   "base": "mo-en-movimiento",
+   "namespace": "foundry-staging",
+   "steps": [
+    "npx wrangler artifacts repos create mo-en-movimiento --namespace foundry-staging",
+    "FOUNDRY_SEED=mo-en-movimiento /Users/mohameddiomande/.config/foundry/bin/foundry-push mo-en-movimiento main:main   (from a clean clone minus offenders)",
+    "bash tools/subscribe-repo.sh staging mo-en-movimiento",
+    "registry: foundry_base=mo-en-movimiento; audit list reads registry"
+   ],
+   "bundle": "gdrive:Assets/app-fleet/mo-en-movimiento/",
+   "first_merge_fits_gate": false
+  },
+  {
+   "id": "bwb-shop-theme",
+   "title": "bwb-shop-theme",
+   "tier": "hot",
+   "origin": "local:/Users/mohameddiomande/Developer/bwb-shop-theme",
+   "default_branch": "/Users/mohameddiomande/Developer/bwb-shop-theme@main",
+   "truncated_tree": false,
+   "files": 366,
+   "text_bytes": 4255560,
+   "offenders": [
+    {
+     "path": "assets/bwb-bag-caramel.jpg",
+     "bytes": 156644,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-bag-hazelnut.jpg",
+     "bytes": 114398,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-bag-mocha.jpg",
+     "bytes": 107095,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-bag-pecan.jpg",
+     "bytes": 133128,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-bag-pumpkin.jpg",
+     "bytes": 140761,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-fraunces-italic.woff2",
+     "bytes": 149268,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-fraunces.woff2",
+     "bytes": 120724,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-logo-mark.png",
+     "bytes": 28860,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-logo.png",
+     "bytes": 30160,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/bwb-schibsted.woff2",
+     "bytes": 46864,
+     "why": "binary-ext"
+    },
+    {
+     "path": "assets/sparkle.gif",
+     "bytes": 179349,
+     "why": "binary-ext"
+    }
+   ],
+   "base": "bwb-shop-theme",
+   "namespace": "foundry-staging",
+   "steps": [
+    "npx wrangler artifacts repos create bwb-shop-theme --namespace foundry-staging",
+    "FOUNDRY_SEED=bwb-shop-theme /Users/mohameddiomande/.config/foundry/bin/foundry-push bwb-shop-theme /Users/mohameddiomande/Developer/bwb-shop-theme@main:main   (from a clean clone minus offenders)",
+    "bash tools/subscribe-repo.sh staging bwb-shop-theme",
+    "registry: foundry_base=bwb-shop-theme; audit list reads registry"
+   ],
+   "bundle": "gdrive:Assets/app-fleet/bwb-shop-theme/",
+   "first_merge_fits_gate": true
+  },
+  {
+   "id": "uctm",
+   "title": "UCTM",
+   "tier": "hot",
+   "origin": "local:/Users/mohameddiomande/Developer/UCTM",
+   "default_branch": "/Users/mohameddiomande/Developer/UCTM@main",
+   "truncated_tree": false,
+   "files": 60,
+   "text_bytes": 346526,
+   "offenders": [],
+   "base": "uctm",
+   "namespace": "foundry-staging",
+   "steps": [
+    "npx wrangler artifacts repos create uctm --namespace foundry-staging",
+    "FOUNDRY_SEED=uctm /Users/mohameddiomande/.config/foundry/bin/foundry-push uctm /Users/mohameddiomande/Developer/UCTM@main:main   (from a clean clone minus offenders)",
+    "bash tools/subscribe-repo.sh staging uctm",
+    "registry: foundry_base=uctm; audit list reads registry"
+   ],
+   "bundle": null,
    "first_merge_fits_gate": true
   }
  ]

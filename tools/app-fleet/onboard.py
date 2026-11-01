@@ -64,7 +64,7 @@ def secret_rule(rel, data):
             return "jwt-" + str(payload.get("role"))[:20]
     return None
 FOUNDRY_BIN = pathlib.Path.home() / ".config/foundry/bin"
-LOCKFIX = pathlib.Path(__file__).resolve().parents[2]
+ROOT = pathlib.Path(__file__).resolve().parents[2]  # this foundry checkout
 
 
 def gh_json(args):
@@ -104,8 +104,11 @@ def lint(entries):
 
 def plan_record(rec, namespace):
     origin = rec.get("origin")
+    if not origin and rec.get("seed_local"):
+        # A project that has never been on GitHub (bwb-shop-theme, UCTM) seeds from its local commit.
+        origin = f"local:{rec['seed_local']['path']}"
     if not origin:
-        return {"id": rec["id"], "skip": "no GitHub origin"}
+        return {"id": rec["id"], "skip": "no GitHub origin and no seed_local"}
     owner_repo = re.sub(r"^https://github.com/", "", origin).rstrip("/")
     base = re.sub(r"[^A-Za-z0-9._-]", "-", rec["title"]).lower()[:64]
     if rec.get("seed_local"):
@@ -142,7 +145,6 @@ def plan_record(rec, namespace):
     }
 
 
-SOURCE = LOCKFIX.parent / "source"
 
 
 def sh(cmd, cwd=None, check=True, env=None):
@@ -205,9 +207,9 @@ def seed_one(rec, plan, a):
             dst = snap / rel; dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(full, dst); shutil.copymode(full, dst)
     (snap / ".foundry").mkdir(exist_ok=True)
-    (snap / ".foundry/assets.json").write_text(json.dumps({"format": "foundry.assets.v1", "origin": rec["origin"],
+    (snap / ".foundry/assets.json").write_text(json.dumps({"format": "foundry.assets.v1", "origin": plan["origin"],
         "origin_commit": origin_sha, "origin_branch": branch, "scope": scope or None, "stripped": assets}, indent=1))
-    (snap / "FOUNDRY-SEED.md").write_text(f"# Foundry seed\n\nSeeded from {rec['origin']} at `{origin_sha}` ({branch}) on "
+    (snap / "FOUNDRY-SEED.md").write_text(f"# Foundry seed\n\nSeeded from {plan['origin']} at `{origin_sha}` ({branch}) on "
         f"{datetime.datetime.now(datetime.timezone.utc).date()} by the app-fleet lane. One text-only commit; "
         f"{len(assets)} binary, oversized, symlinked or withheld files are listed in `.foundry/assets.json` and stay on the origin commit.\n"
         + (f"\nPath-scoped seed. Only these subtrees are in this base: {', '.join(scope)}.\n" if scope else ""))
@@ -215,16 +217,16 @@ def seed_one(rec, plan, a):
            "GIT_COMMITTER_NAME": "app-fleet seed", "GIT_COMMITTER_EMAIL": "fleet@local"}
     sh(["git", "init", "--quiet", "-b", "main"], cwd=snap, env=env)
     sh(["git", "add", "-A"], cwd=snap, env=env)
-    sh(["git", "commit", "--quiet", "-m", f"seed {base} from {rec['origin']}@{origin_sha[:12]}"], cwd=snap, env=env)
+    sh(["git", "commit", "--quiet", "-m", f"seed {base} from {plan['origin']}@{origin_sha[:12]}"], cwd=snap, env=env)
     seed_sha = sh(["git", "rev-parse", "HEAD"], cwd=snap).stdout.strip()
     n_files = int(sh(["git", "ls-files"], cwd=snap).stdout.count("\n"))
-    cr = sh(["npx", "wrangler", "artifacts", "repos", "create", base, "--namespace", a.namespace], cwd=SOURCE, check=False)
+    cr = sh(["npx", "wrangler", "artifacts", "repos", "create", base, "--namespace", a.namespace], cwd=ROOT, check=False)
     created = cr.returncode == 0
     if not created:
         # Never push a seed onto a base someone else created: that would be a second ungated commit.
         raise RuntimeError(f"repos create {base} refused (exists or error), not seeding: {(cr.stderr or cr.stdout).strip()[:160]}")
     sh([str(FOUNDRY_BIN / "foundry-push"), base, "main:main"], cwd=snap, env={**env, "FOUNDRY_SEED": base})
-    sub = sh(["bash", "tools/subscribe-repo.sh", "staging", base], cwd=LOCKFIX, check=False)
+    sub = sh(["bash", "tools/subscribe-repo.sh", "staging", base], cwd=ROOT, check=False)
     shutil.rmtree(src, ignore_errors=True)
     return {"base": base, "origin_commit": origin_sha, "seed_commit": seed_sha, "files": n_files,
             "stripped": len(assets), "created": created, "subscribed": sub.stdout.strip()[:120], "namespace": a.namespace}
@@ -273,13 +275,13 @@ def apply(sel, a):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--registry", default=str(LOCKFIX / "docs/app-fleet/apps.v1.json"))
+    ap.add_argument("--registry", default=str(ROOT / "docs/app-fleet/apps.v1.json"))
     ap.add_argument("--tiers", default="hot,warm")
     ap.add_argument("--ids", default=None, help="comma list of registry ids (overrides --tiers)")
     ap.add_argument("--namespace", default="foundry-staging")
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--approved-by", default=None, help="literal words from Mohamed authorising --apply")
-    ap.add_argument("--receipts", default=str(LOCKFIX / "receipts/app-fleet"))
+    ap.add_argument("--receipts", default=str(ROOT / "receipts/app-fleet"))
     ap.add_argument("--skip", default="", help="comma list of registry ids to leave to another lane")
     ap.add_argument("--max-files", type=int, default=20000, help="tree size the seeder accepts; the gate diffs by object id since 2ebf8fa (M7), so this only bounds the seed itself")
     ap.add_argument("--work", default=str(pathlib.Path(os.environ.get("TMPDIR", "/tmp")) / "app-fleet-seed"))
