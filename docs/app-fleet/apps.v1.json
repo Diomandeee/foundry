@@ -3,9 +3,9 @@
  "built_at": "2026-10-22T16:06:24+00:00",
  "library_revision": "47c1a94efec4584c69f5aaec4856e40c3789e80de555eb878e12976d11e1f127",
  "summary": {
-  "records": 717,
+  "records": 718,
   "by_kind": {
-   "repo": 222,
+   "repo": 223,
    "archived-repo": 31,
    "ios": 51,
    "library-only": 358,
@@ -14,11 +14,11 @@
   "by_tier": {
    "excluded": 2,
    "cold": 666,
-   "hot": 37,
+   "hot": 38,
    "warm": 12
   },
   "ios_apps": 51,
-  "github_repos": 304,
+  "github_repos": 305,
   "library_entries": 585,
   "archive_ok_rows": 435,
   "asc_matched": 85,
@@ -11095,7 +11095,8 @@
     "created": true,
     "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"cb98fa53542d42849c5f56dd2d25af88\",\"created_at\":\"2026-10-22T18:",
     "namespace": "foundry-staging"
-   }
+   },
+   "superseded_by": "serenity-soother-studio"
   },
   {
    "id": "serenity-soother",
@@ -11179,7 +11180,8 @@
     "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
     "namespace": "foundry-staging"
    },
-   "purged": "secrets in seed, 2026-10-22"
+   "purged": "secrets in seed, 2026-10-22",
+   "superseded_by": "serenity-soother-studio"
   },
   {
    "id": "serenity-soother-app",
@@ -11229,7 +11231,8 @@
     "created": true,
     "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"cf68c4ed1e194618ad1f7ef79ec55239\",\"created_at\":\"2026-10-22T18:",
     "namespace": "foundry-staging"
-   }
+   },
+   "superseded_by": "serenity-soother-studio"
   },
   {
    "id": "serenity-soother-v2",
@@ -11289,7 +11292,8 @@
     "created": true,
     "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"97202273900b48759fe694000965adab\",\"created_at\":\"2026-10-22T18:",
     "namespace": "foundry-staging"
-   }
+   },
+   "superseded_by": "serenity-soother-studio"
   },
   {
    "id": "serenitysoother",
@@ -25211,6 +25215,77 @@
     "seeded_by": "lanetest"
    },
    "notes": "Seeded by hand from the foundry monorepo subtree, not by onboard.py. Base main 5709e09 on 2026-10-23 (4 gated merges). The monorepo subtree is retired (branch participation/retire-coordinator-subtree)."
+  },
+  {
+   "id": "serenity-soother-studio",
+   "title": "serenity-soother-studio",
+   "kind": "repo",
+   "origin": "https://github.com/Diomandeee/serenity-soother-studio",
+   "private": true,
+   "github_archived": false,
+   "last_push": "2026-11-01",
+   "bundle_id": "Buf-Barista.SerenitySoother",
+   "wave": null,
+   "library": [],
+   "archive": [
+    {
+     "root": "Desktop",
+     "name": "Frameworks",
+     "backend": "gcs",
+     "path": "gs://fleet-backup-648527652351/mac4/2026-10-18/Desktop/Frameworks.tar.zst"
+    },
+    {
+     "root": "Desktop",
+     "name": "Serenity-Consolidation",
+     "backend": "gcs",
+     "md5": "aa94df8efb77b7cc1fee3427732cf268",
+     "path": "gs://fleet-backup-648527652351/mac4/2026-10-18/Desktop/Serenity-Consolidation.tar.zst"
+    }
+   ],
+   "tier": "hot",
+   "tier_reason": "2026-11-01 monorepo of the Serenity line (ios, storefront, hydrogen store, engine, studio); Mohamed: elevate this and put it onto our Foundry Fabric track, closest to monetization",
+   "owner_lane": "claude-serenity",
+   "allowed_roots": null,
+   "binary_policy": null,
+   "foundry_base": "serenity-soother-studio",
+   "asc_app_id": "6758968124",
+   "asc_name": "Serenity Soother",
+   "asc_bundle_id": "Buf-Barista.SerenitySoother",
+   "asc_sku": "serenitySoother1",
+   "asc_store_versions": [
+    {
+     "v": "1.0",
+     "state": "PREPARE_FOR_SUBMISSION",
+     "platform": "IOS",
+     "created": "2026-02-09"
+    }
+   ],
+   "asc_latest_build": {
+    "build": "7",
+    "uploaded": "2026-03-15",
+    "state": "VALID",
+    "expired": true
+   },
+   "seed_local": {
+    "path": "/Users/mohameddiomande/Developer/serenity-soother-studio",
+    "rev": "39c8b89"
+   },
+   "supersedes": [
+    "serenity-soother",
+    "serenity-storefront",
+    "serenity-soother-app",
+    "serenity-scribe"
+   ],
+   "foundry_seed": {
+    "base": "serenity-soother-studio",
+    "origin_commit": "39c8b8997fb33e58864b9cb318843f7740ba3786",
+    "seed_commit": "5dd064dea57d9ce51530b1b418a4be32d1ab02a2",
+    "files": 787,
+    "stripped": 248,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"250740b77f2c4724b462602a4f04e7bf\",\"created_at\":\"2026-11-01T23:",
+    "namespace": "foundry-staging"
+   }
   }
  ]
 }

@@ -1,0 +1,1247 @@
+{
+ "id": "serenity-soother-studio",
+ "title": "serenity-soother-studio",
+ "tier": "hot",
+ "origin": "https://github.com/Diomandeee/serenity-soother-studio",
+ "default_branch": "/Users/mohameddiomande/Developer/serenity-soother-studio@667e3210",
+ "truncated_tree": false,
+ "files": 1035,
+ "text_bytes": 10076186,
+ "offenders": [
+  {
+   "path": "apps/hydrogen-store/app/styles/fonts/IBMPlexSerif-Text.woff2",
+   "bytes": 52927,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/app/styles/fonts/IBMPlexSerif-TextItalic.woff2",
+   "bytes": 57707,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/ambient-soundscapes.png",
+   "bytes": 1440033,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/calm-candle-set.png",
+   "bytes": 664059,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/complete-calm-bundle.png",
+   "bytes": 1751846,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/deep-sleep-sessions.png",
+   "bytes": 510869,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/focus-flow-sessions.png",
+   "bytes": 1219471,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/framed-meditation-print.png",
+   "bytes": 742215,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/meditation-art-print.png",
+   "bytes": 739969,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/metal-meditation-print.png",
+   "bytes": 708117,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/products/reflection-journal.png",
+   "bytes": 709661,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-1.jpg",
+   "bytes": 89509,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-10.jpg",
+   "bytes": 140544,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-11.jpg",
+   "bytes": 112558,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-12.jpg",
+   "bytes": 132973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-13.jpg",
+   "bytes": 154238,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-14.jpg",
+   "bytes": 181523,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-15.jpg",
+   "bytes": 116231,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-16.jpg",
+   "bytes": 110810,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-17.jpg",
+   "bytes": 98701,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-18.jpg",
+   "bytes": 163100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-19.jpg",
+   "bytes": 124781,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-2.jpg",
+   "bytes": 150738,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-20.jpg",
+   "bytes": 115758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-21.jpg",
+   "bytes": 128867,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-22.jpg",
+   "bytes": 87261,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-24.jpg",
+   "bytes": 151980,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-25.jpg",
+   "bytes": 134746,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-26.jpg",
+   "bytes": 86980,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-27.jpg",
+   "bytes": 148958,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-28.jpg",
+   "bytes": 105723,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-29.jpg",
+   "bytes": 117557,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-3.jpg",
+   "bytes": 90993,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-30.jpg",
+   "bytes": 55731,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-31.jpg",
+   "bytes": 114230,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-32.jpg",
+   "bytes": 116675,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-33.jpg",
+   "bytes": 149903,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-34.jpg",
+   "bytes": 128465,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-35.jpg",
+   "bytes": 122144,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-36.jpg",
+   "bytes": 100460,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-38.jpg",
+   "bytes": 167020,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-39.jpg",
+   "bytes": 131198,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-4.jpg",
+   "bytes": 131897,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-40.jpg",
+   "bytes": 93327,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-41.jpg",
+   "bytes": 75758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-42.jpg",
+   "bytes": 69926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-43.jpg",
+   "bytes": 124347,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-44.jpg",
+   "bytes": 125295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-45.jpg",
+   "bytes": 114259,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-46.jpg",
+   "bytes": 91778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-47.jpg",
+   "bytes": 93212,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-48.jpg",
+   "bytes": 114181,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-49.jpg",
+   "bytes": 102086,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-5.jpg",
+   "bytes": 120373,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-50.jpg",
+   "bytes": 78572,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-51.jpg",
+   "bytes": 152379,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-52.jpg",
+   "bytes": 73356,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-53.jpg",
+   "bytes": 123207,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-54.jpg",
+   "bytes": 123505,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-55.jpg",
+   "bytes": 136699,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-56.jpg",
+   "bytes": 156514,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-57.jpg",
+   "bytes": 172140,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-58.jpg",
+   "bytes": 144532,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-59.jpg",
+   "bytes": 158140,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-6.jpg",
+   "bytes": 150645,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-60.jpg",
+   "bytes": 219199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-61.jpg",
+   "bytes": 63543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-62.jpg",
+   "bytes": 107171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-63.jpg",
+   "bytes": 127105,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-64.jpg",
+   "bytes": 142309,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-65.jpg",
+   "bytes": 113301,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-66.jpg",
+   "bytes": 137967,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-67.jpg",
+   "bytes": 121836,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-68.jpg",
+   "bytes": 104451,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-69.jpg",
+   "bytes": 121573,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-7.jpg",
+   "bytes": 147806,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-70.jpg",
+   "bytes": 155337,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-71.jpg",
+   "bytes": 155056,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-72.jpg",
+   "bytes": 122100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-73.jpg",
+   "bytes": 200815,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-74.jpg",
+   "bytes": 129258,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-75.jpg",
+   "bytes": 190089,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-76.jpg",
+   "bytes": 73394,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-77.jpg",
+   "bytes": 167688,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-79.jpg",
+   "bytes": 126134,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-8.jpg",
+   "bytes": 124618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-80.jpg",
+   "bytes": 115499,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-81.jpg",
+   "bytes": 141170,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-82.jpg",
+   "bytes": 140257,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-83.jpg",
+   "bytes": 89601,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-84.jpg",
+   "bytes": 101089,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-85.jpg",
+   "bytes": 91361,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-86.jpg",
+   "bytes": 115595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-87.jpg",
+   "bytes": 145400,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-88.jpg",
+   "bytes": 188087,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-89.jpg",
+   "bytes": 125622,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-9.jpg",
+   "bytes": 124618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-90.jpg",
+   "bytes": 83079,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-91.jpg",
+   "bytes": 137362,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-92.jpg",
+   "bytes": 161535,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-93.jpg",
+   "bytes": 102288,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-94.jpg",
+   "bytes": 83122,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/hydrogen-store/public/images/scenes/scene-95.jpg",
+   "bytes": 119941,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+   "bytes": 723685,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Assets.xcassets/ThemeImage.imageset/theme_image.jpg",
+   "bytes": 107402,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/birds_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/fire_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/forest_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/night_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/ocean_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/rain_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/stream_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/thunder_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/tibetan_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/AmbientSounds/wind_ambient.mp3",
+   "bytes": 480192,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-1.jpg",
+   "bytes": 89509,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-10.jpg",
+   "bytes": 140544,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-11.jpg",
+   "bytes": 112558,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-12.jpg",
+   "bytes": 132973,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-13.jpg",
+   "bytes": 154238,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-14.jpg",
+   "bytes": 181523,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-15.jpg",
+   "bytes": 116231,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-16.jpg",
+   "bytes": 110810,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-17.jpg",
+   "bytes": 98701,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-18.jpg",
+   "bytes": 163100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-19.jpg",
+   "bytes": 124781,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-2.jpg",
+   "bytes": 150738,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-20.jpg",
+   "bytes": 115758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-21.jpg",
+   "bytes": 128867,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-22.jpg",
+   "bytes": 87261,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-24.jpg",
+   "bytes": 151980,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-25.jpg",
+   "bytes": 134746,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-26.jpg",
+   "bytes": 86980,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-27.jpg",
+   "bytes": 148958,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-28.jpg",
+   "bytes": 105723,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-29.jpg",
+   "bytes": 117557,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-3.jpg",
+   "bytes": 90993,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-30.jpg",
+   "bytes": 55731,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-31.jpg",
+   "bytes": 114230,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-32.jpg",
+   "bytes": 116675,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-33.jpg",
+   "bytes": 149903,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-34.jpg",
+   "bytes": 128465,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-35.jpg",
+   "bytes": 122144,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-36.jpg",
+   "bytes": 100460,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-38.jpg",
+   "bytes": 167020,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-39.jpg",
+   "bytes": 131198,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-4.jpg",
+   "bytes": 131897,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-40.jpg",
+   "bytes": 93327,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-41.jpg",
+   "bytes": 75758,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-42.jpg",
+   "bytes": 69926,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-43.jpg",
+   "bytes": 124347,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-44.jpg",
+   "bytes": 125295,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-45.jpg",
+   "bytes": 114259,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-46.jpg",
+   "bytes": 91778,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-47.jpg",
+   "bytes": 93212,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-48.jpg",
+   "bytes": 114181,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-49.jpg",
+   "bytes": 102086,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-5.jpg",
+   "bytes": 120373,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-50.jpg",
+   "bytes": 78572,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-51.jpg",
+   "bytes": 152379,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-52.jpg",
+   "bytes": 73356,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-53.jpg",
+   "bytes": 123207,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-54.jpg",
+   "bytes": 123505,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-55.jpg",
+   "bytes": 136699,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-56.jpg",
+   "bytes": 156514,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-57.jpg",
+   "bytes": 172140,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-58.jpg",
+   "bytes": 144532,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-59.jpg",
+   "bytes": 158140,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-6.jpg",
+   "bytes": 150645,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-60.jpg",
+   "bytes": 219199,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-61.jpg",
+   "bytes": 63543,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-62.jpg",
+   "bytes": 107171,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-63.jpg",
+   "bytes": 127105,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-64.jpg",
+   "bytes": 142309,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-65.jpg",
+   "bytes": 113301,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-66.jpg",
+   "bytes": 137967,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-67.jpg",
+   "bytes": 121836,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-68.jpg",
+   "bytes": 104451,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-69.jpg",
+   "bytes": 121573,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-7.jpg",
+   "bytes": 147806,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-70.jpg",
+   "bytes": 155337,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-71.jpg",
+   "bytes": 155056,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-72.jpg",
+   "bytes": 122100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-73.jpg",
+   "bytes": 200815,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-74.jpg",
+   "bytes": 129258,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-75.jpg",
+   "bytes": 190089,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-76.jpg",
+   "bytes": 73394,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-77.jpg",
+   "bytes": 167688,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-79.jpg",
+   "bytes": 126134,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-8.jpg",
+   "bytes": 124618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-80.jpg",
+   "bytes": 115499,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-81.jpg",
+   "bytes": 141170,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-82.jpg",
+   "bytes": 140257,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-83.jpg",
+   "bytes": 89601,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-84.jpg",
+   "bytes": 101089,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-85.jpg",
+   "bytes": 91361,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-86.jpg",
+   "bytes": 115595,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-87.jpg",
+   "bytes": 145400,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-88.jpg",
+   "bytes": 188087,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-89.jpg",
+   "bytes": 125622,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-9.jpg",
+   "bytes": 124618,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-90.jpg",
+   "bytes": 83079,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-91.jpg",
+   "bytes": 137362,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-92.jpg",
+   "bytes": 161535,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-93.jpg",
+   "bytes": 102288,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-94.jpg",
+   "bytes": 83122,
+   "why": "binary-ext"
+  },
+  {
+   "path": "apps/ios/SerenitySoother/Resources/SceneThumbnails/scene-95.jpg",
+   "bytes": 119941,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-1-source.webp",
+   "bytes": 244138,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-11-source.webp",
+   "bytes": 225022,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-12-source.webp",
+   "bytes": 397394,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-13-source.webp",
+   "bytes": 286238,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-14-source.webp",
+   "bytes": 457126,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-2-source.webp",
+   "bytes": 333032,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-21-source.webp",
+   "bytes": 253444,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-22-source.webp",
+   "bytes": 309100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-24-source.webp",
+   "bytes": 261330,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-25-source.webp",
+   "bytes": 433350,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-3-source.webp",
+   "bytes": 326170,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-32-source.webp",
+   "bytes": 184524,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-33-source.webp",
+   "bytes": 300230,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-34-source.webp",
+   "bytes": 335608,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-35-source.webp",
+   "bytes": 351710,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-4-source.webp",
+   "bytes": 341984,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-43-source.webp",
+   "bytes": 261850,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-44-source.webp",
+   "bytes": 201972,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-45-source.webp",
+   "bytes": 347100,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-46-source.webp",
+   "bytes": 282850,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-5-source.webp",
+   "bytes": 143214,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-53-source.webp",
+   "bytes": 284920,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-54-source.webp",
+   "bytes": 264414,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-55-source.webp",
+   "bytes": 180954,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-56-source.webp",
+   "bytes": 406326,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-63-source.webp",
+   "bytes": 254486,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-64-source.webp",
+   "bytes": 263682,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-65-source.webp",
+   "bytes": 198860,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-66-source.webp",
+   "bytes": 236940,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-73-source.webp",
+   "bytes": 511266,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-74-source.webp",
+   "bytes": 323044,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-75-source.webp",
+   "bytes": 319856,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-76-source.webp",
+   "bytes": 251728,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-85-source.webp",
+   "bytes": 282156,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-86-source.webp",
+   "bytes": 352982,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-87-source.webp",
+   "bytes": 216400,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-88-source.webp",
+   "bytes": 341862,
+   "why": "binary-ext"
+  },
+  {
+   "path": "studio/veo-dashboard/enhanced-images/scene-95-source.webp",
+   "bytes": 296732,
+   "why": "binary-ext"
+  }
+ ],
+ "base": "serenity-soother-studio",
+ "namespace": "foundry-staging",
+ "steps": [
+  "npx wrangler artifacts repos create serenity-soother-studio --namespace foundry-staging",
+  "FOUNDRY_SEED=serenity-soother-studio /Users/mohameddiomande/.config/foundry/bin/foundry-push serenity-soother-studio /Users/mohameddiomande/Developer/serenity-soother-studio@667e3210:main   (from a clean clone minus offenders)",
+  "bash tools/subscribe-repo.sh staging serenity-soother-studio",
+  "registry: foundry_base=serenity-soother-studio; audit list reads registry"
+ ],
+ "bundle": "gdrive:Assets/app-fleet/serenity-soother-studio/",
+ "first_merge_fits_gate": false
+}
