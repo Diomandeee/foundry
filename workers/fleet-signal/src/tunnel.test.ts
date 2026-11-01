@@ -56,6 +56,16 @@ describe('fabric bridge tunnel', () => {
       'GET', '/v1/bridge-tunnel/poll?x', '')).rejects.toThrow('bad-signature');
   });
 
+  it('the owner can revoke a bridge key', async () => {
+    const s = await setup();
+    await s.hub.registerBridge('owner', 'mac4', s.bridge.spki);
+    await s.hub.authenticate(await headers(s.bridge, 'bridge:mac4', 'GET', '/v1/bridge-tunnel/poll', '', s.t), 'GET', '/v1/bridge-tunnel/poll', '');
+    s.hub.revoke('bridge', 'mac4');
+    await expect(s.hub.authenticate(await headers(s.bridge, 'bridge:mac4', 'GET', '/v1/bridge-tunnel/poll?again', '', s.t),
+      'GET', '/v1/bridge-tunnel/poll?again', '')).rejects.toThrow('unknown-key');
+    expect(s.hub.bridges(s.dev).map((b) => b.machine)).not.toContain('mac4');
+  });
+
   it('a bridge cannot register bridges, read the list, or decide; bad keys are refused', async () => {
     const s = await setup();
     await s.hub.registerBridge(s.dev, 'mac1', s.bridge.spki);

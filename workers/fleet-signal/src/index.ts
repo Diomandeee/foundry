@@ -11,7 +11,7 @@
 //  POST /v1/admin/nodes      {node_id, host, spki}                     owner
 //  POST /v1/admin/devices    {device_id, spki, decision_spki?, label?, apns_token?, apns_env?}  owner
 //  POST /v1/devices/push     {token, env}                              device
-//  POST /v1/admin/revoke     {kind: node|device, id}                   owner
+//  POST /v1/admin/revoke     {kind: node|device|bridge, id}            owner
 //  GET  /v1/admin/receipts?host=H&limit=N                              owner
 //  POST /v1/events           {kind, body}                              owner or node
 //  POST /v1/requests         {payload, signature}                      node

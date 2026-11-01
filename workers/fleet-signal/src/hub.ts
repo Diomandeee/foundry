@@ -109,7 +109,13 @@ export class SignalHub {
       deviceId, spki, label, apnsToken, apnsEnv, this.now(), decisionSpki);
     this.event('owner', 'device.enrolled', { deviceId, label });
   }
-  revoke(kind: 'node' | 'device', id: string): void {
+  revoke(kind: 'node' | 'device' | 'bridge', id: string): void {
+    if (kind === 'bridge') {
+      // A bridge key has no history worth keeping: drop it, and that Mac's tunnel is refused from now on.
+      this.sql.exec('DELETE FROM bridges WHERE machine = ?', id);
+      this.event('owner', 'bridge.revoked', { id });
+      return;
+    }
     const table = kind === 'node' ? 'nodes' : 'devices';
     const col = kind === 'node' ? 'node_id' : 'device_id';
     this.sql.exec(`UPDATE ${table} SET revoked_at = ? WHERE ${col} = ? AND revoked_at IS NULL`, this.now(), id);
