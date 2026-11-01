@@ -5501,7 +5501,8 @@
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
-   "foundry_base": null
+   "foundry_base": null,
+   "foundry_pending": "seed after Diomandeee/foundry#2 lands lockfix + gate hotfix on main (fleet reset 2.1)"
   },
   {
    "id": "frameworks",
@@ -13612,7 +13613,8 @@
    "allowed_roots": null,
    "binary_policy": null,
    "foundry_base": null,
-   "seed_hold": "needs seed_paths scope: 83 MB text exceeds the gate memfs guide (~40 MB); owner lane names the live subtrees"
+   "seed_hold": "needs seed_paths scope: 83 MB text exceeds the gate memfs guide (~40 MB); owner lane names the live subtrees",
+   "foundry_exempt": "plain openai/codex mirror: no commit of ours on any branch, UCTM uses only a prebuilt binary (~/.ao/uctm-studio/codex-fork). Nothing to gate. Fleet reset 2.4, 2026-10-31."
   },
   {
    "id": "uncertainty-embracer",
