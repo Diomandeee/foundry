@@ -139,9 +139,11 @@ Open from the review and the rotation, in the order they should close:
 
 **Mohamed's batch (console or spend, needs him present):** Supabase account for `wovknbcvxjvayfdflxkn` (disable legacy JWT keys), Gemini key delete at AI Studio, Google key `#8e4ac6` delete at Cloud console, the row 5 provider deletions, Vast key + instance 56197013, BWB Prisma string, `vercel login`, Hugging Face re-login (unblocks deleting the 48 GB of HF caches on Mac4/Mac5), the Mac5 reboot test (SonoBus reconnect), and the data-dir deletions listed in `docs/STORAGE-2026-10-22.md` (now reproducible from GCS: Mac4 30 GB, Mac5 33 GB, HD2 69 GB when its job verifies).
 
-## 6. State at 2026-10-22 22:50Z and what happens next
+## 6. State at 2026-10-23 00:45Z (lane closed) and what happens next
 
-Done: registry (290 records with a Foundry base), every seedable repo seeded into `foundry-staging` on the secret-withholding seeder and scanned clean, OpenClaw removed where Apple and GitHub allow, caches cleared on all three Macs, 78 GB of cleared data verified in the cold bucket (MotionMixLanding 54 GB still uploading), ledgers and receipts committed on fix/lockfile-sync-20261020.
+Done: registry (290 records with a Foundry base), every seedable repo seeded into `foundry-staging` on the secret-withholding seeder and scanned clean, OpenClaw removed where Apple and GitHub allow, caches cleared on all three Macs, every archive job verified in the cold bucket (Mac4 30 GB, Mac5 33 GB, HD2 69 GB, MotionMixData batch 2 ~9 GB on all three Macs, sa3_motionmix recipes on Mac4 and Mac5), ledgers and receipts committed on fix/lockfile-sync-20261020. Nothing but caches and temp was deleted.
+
+Lane closed 2026-10-23 00:45Z by session 6c with Mohamed away. Every deletion in `docs/STORAGE-2026-10-22.md` waits for his own words: first the sa3 audio (118 GB, `~/.fleet-backup/sa3_delete_audio.sh` on Mac4 and Mac5, refuses without `APPROVED=`), then the archived local copies (132 GB + batch 2). Disks at close: Mac1 33 GB free, Mac4 12 GB (its Developer tree grew 55 to 71 GB during the evening, owner unknown to this lane), Mac5 45 GB. `docs/app-fleet/apps.v1.json` carries an uncommitted write-back for participation-coordinator from the lanetest lane; left for that lane to commit.
 
 Next, in order:
 1. Mohamed's batch (§5): the live service_role key for `wovknbcvxjvayfdflxkn`, Gemini and Google key deletes, the exo AWS key id, provider leftovers, Hugging Face re-login, then the data-dir deletions in `docs/STORAGE-2026-10-22.md` (Mac4 30 GB, Mac5 33 GB, HD2 69 GB once verified).

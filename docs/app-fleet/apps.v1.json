@@ -3,9 +3,9 @@
  "built_at": "2026-10-22T16:06:24+00:00",
  "library_revision": "47c1a94efec4584c69f5aaec4856e40c3789e80de555eb878e12976d11e1f127",
  "summary": {
-  "records": 716,
+  "records": 717,
   "by_kind": {
-   "repo": 221,
+   "repo": 222,
    "archived-repo": 31,
    "ios": 51,
    "library-only": 358,
@@ -14,11 +14,11 @@
   "by_tier": {
    "excluded": 2,
    "cold": 666,
-   "hot": 36,
+   "hot": 37,
    "warm": 12
   },
   "ios_apps": 51,
-  "github_repos": 303,
+  "github_repos": 304,
   "library_entries": 585,
   "archive_ok_rows": 435,
   "asc_matched": 85,
@@ -25148,6 +25148,53 @@
    "tier_reason": "archive only, no remote",
    "owner_lane": null,
    "foundry_base": null
+  },
+  {
+   "id": "participation-coordinator",
+   "title": "participation-coordinator",
+   "kind": "repo",
+   "origin": "https://github.com/Diomandeee/participation-coordinator",
+   "private": true,
+   "github_archived": false,
+   "github_kb": null,
+   "last_push": "2026-10-23",
+   "bundle_id": null,
+   "wave": null,
+   "library": [],
+   "archive": [],
+   "tier": "hot",
+   "tier_reason": "live Cloudflare Worker (MotionMix participation network, protocol v2); deploys only from this base",
+   "owner_lane": "lanetest",
+   "allowed_roots": [
+    "src",
+    "test",
+    "tools",
+    "migrations",
+    "receipts",
+    "schema.sql",
+    "wrangler.toml",
+    "README.md",
+    "WIRING.md",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json"
+   ],
+   "binary_policy": "text-only",
+   "foundry_base": "participation-coordinator",
+   "foundry_seed": {
+    "base": "participation-coordinator",
+    "origin": "https://github.com/Diomandeee/foundry (workers/participation-coordinator @ 509f72db1e0f20deb7e7455acb961a232aac8926)",
+    "origin_commit": "509f72db1e0f20deb7e7455acb961a232aac8926",
+    "seed_commit": "3814388fb50774448cb7ec38e295c9f6230f441a",
+    "files": 52,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "d90b44fb03c54edc948507920399a6a7",
+    "namespace": "foundry-staging",
+    "seeded_at": "2026-10-22T22:1xZ",
+    "seeded_by": "lanetest"
+   },
+   "notes": "Seeded by hand from the foundry monorepo subtree, not by onboard.py. Base main 5709e09 on 2026-10-23 (4 gated merges). The monorepo subtree is retired (branch participation/retire-coordinator-subtree)."
   }
  ]
 }
