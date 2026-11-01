@@ -132,8 +132,10 @@ describe("file modes", () => {
     const sha = await commitForkFiles(fs, dir, { "app.txt": "v1\n" }, "M", "foundry", "d".repeat(40), [], { "app.txt": "100755" });
     expect(sha).not.toBe(before);
     expect(await modeOf("app.txt")).toBe(0o100755);
-    // Redelivery of the same decision is still idempotent.
-    expect(await commitForkFiles(fs, dir, { "app.txt": "v1\n" }, "M", "foundry", "d".repeat(40), [], { "app.txt": "100755" })).toBe(sha);
+    // Landed, the mode no longer differs: a redelivery is refused here like any unchanged tree.
+    // merge() proves the replay against the base's Fork-Head first (see "commitForkFiles replay boundary").
+    await expect(commitForkFiles(fs, dir, { "app.txt": "v1\n" }, "M", "foundry", "d".repeat(40), [], { "app.txt": "100755" }))
+      .rejects.toThrow("no changed tree and no proven replay");
   });
 
   it("reads modes from the proposal commit and refuses symlinks and substituted text", async () => {
