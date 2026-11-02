@@ -25323,6 +25323,41 @@
     "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"90705ff3f6824c35a9d5697304b51f5b\",\"created_at\":\"2026-11-02T00:",
     "namespace": "foundry-staging"
    }
+  },
+  {
+   "id": "epoch-live",
+   "title": "epoch-live",
+   "kind": "repo",
+   "origin": "file:///Users/mohameddiomande/Documents/Codex/2026-11-01/our-gp-crypto-fund-i-want/work/epoch-live",
+   "private": true,
+   "github_archived": false,
+   "github_kb": null,
+   "last_push": null,
+   "bundle_id": null,
+   "wave": null,
+   "library": [],
+   "archive": [],
+   "tier": "hot",
+   "tier_reason": "2026-11-01 live EPOCH service (Stacks mainnet settlement, K11 reports, Foundry payment summaries) + codex-agent wallet vault; Mohamed: take this and integrate it into Foundry",
+   "owner_lane": "claude-78212c10",
+   "allowed_roots": null,
+   "binary_policy": "text-only",
+   "foundry_base": "epoch-live",
+   "seed_local": {
+    "path": "/Users/mohameddiomande/Documents/Codex/2026-11-01/our-gp-crypto-fund-i-want/work/epoch-live",
+    "rev": "8a66cef"
+   },
+   "notes": "Local-only repo (no GitHub mirror yet). Running service copy = this checkout on Mac1 (launchd com.epoch.live/com.epoch.tunnel). Private state (data/, foundry/private/, work/codex-agent/private/) is gitignored and never seeded.",
+   "foundry_seed": {
+    "base": "epoch-live",
+    "origin_commit": "8a66cefa36ad9e3a1594b27bddca152b24f05bf6",
+    "seed_commit": "fa80ff1f1f1d49e8eb147b4c64f9c9186eb76d5e",
+    "files": 67,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"c46be49ae16b4c1aac12ae6b62e3a360\",\"created_at\":\"2026-11-02T04:",
+    "namespace": "foundry-staging"
+   }
   }
  ]
 }
