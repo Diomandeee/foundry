@@ -25,11 +25,26 @@
          "github": {"remote": "origin", "history": true},   (optional: task/<task> = the merge, history/<task> = the push)
          "deleteFork": true}                                  (default true)
 
+      Before the task is opened, a preflight scans every worktree of the repo and refuses when another active
+      lane has unlanded edits, with different bytes, to a file this landing changes (--ack-overlap or
+      "ackOverlap": true lands anyway). If the base has .foundry/generated.json, its generator must first
+      reproduce the base byte for byte in the scratch worktree; then cherry-pick conflicts confined to generated
+      files are resolved by regenerating, and generated files are refreshed after the last pick. After a merge,
+      the source worktree is reset onto the merged commit when nothing would be lost (HEAD is the last landed
+      commit, no tracked edits, every commit beyond main has landed); otherwise the result carries the command.
+        .foundry/generated.json: {"format": "foundry.generated.v1", "files": [...], "run": ["xcodegen", "generate"],
+                                  "links": {"../Sibling": "~/Developer/Sibling"}, "assets": ".foundry/assets.json"}
+
+  foundry_ops.py scan REPO BASE [--fetch] [--cache] [--json] [--active-days N]
+      Every worktree of REPO against refs/foundry/BASE/main: landed (via the land log, since the gate squashes),
+      pending files, hunk-level conflicts with main (git merge-tree), and files two active lanes both have
+      pending. --cache writes ~/.config/foundry/lanes/BASE.json for the SessionStart lanes hook.
+
 Credentials never reach output: the Cloudflare token comes from `wrangler auth token` and stays in memory,
 the task token is read from its 0600 file, saved task responses are written 0600 and only allowlisted fields
 are ever read back. Git pushes go through foundry-push / foundry-fetch, which hand tokens to git via askpass.
 """
-import argparse, datetime, json, os, pathlib, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
+import argparse, datetime, json, os, pathlib, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]  # the foundry checkout: wrangler + tools/subscribe-repo.sh
 CONF = pathlib.Path.home() / ".config/foundry"
@@ -195,6 +210,309 @@ def cmd_forks(a):
             log(f"deleted {r['fork']} ({r['state']})")
 
 
+# ---------------------------------------------------------------- lanes
+
+# Lanes are worktrees. Nothing registers them, so the scan reads git: every worktree of the repo against the
+# base's Foundry main. The gate squash-merges (one commit on main, parent main only), so a landed branch never
+# becomes an ancestor of main; the land log maps each landed source commit to its merged sha instead.
+ACTIVE_DAYS = 3.0
+GENERATED_SPEC = ".foundry/generated.json"
+LANES_CACHE = CONF / "lanes"
+
+
+def git(*args, cwd, check=False):
+    return sh(["git", *args], cwd=cwd, check=check, quiet=True)
+
+
+def _lines(out):
+    return [l for l in out.splitlines() if l]
+
+
+def landed_commits(base):
+    """Source commit -> merged main sha for every landed change on `base`."""
+    out = {}
+    try:
+        with open(CONF / "land-log.jsonl") as f:
+            for l in f:
+                try:
+                    r = json.loads(l)
+                except ValueError:
+                    continue
+                if r.get("base") == base and r.get("verdict") == "merge" and r.get("decision"):
+                    for c in r.get("commits") or []:
+                        out[c] = r["decision"]["merged_sha"]
+    except FileNotFoundError:
+        pass
+    return out
+
+
+def worktrees(repo):
+    out, cur = [], {}
+    for l in git("worktree", "list", "--porcelain", cwd=repo, check=True).stdout.splitlines() + [""]:
+        if not l:
+            if cur:
+                out.append(cur)
+            cur = {}
+        elif l.startswith("worktree "):
+            cur["path"] = l[9:]
+        elif l.startswith("HEAD "):
+            cur["head"] = l[5:]
+        elif l.startswith("branch "):
+            cur["branch"] = l[7:].removeprefix("refs/heads/")
+        elif l == "detached":
+            cur["branch"] = "(detached)"
+    # Skip land scratch worktrees, missing directories and unborn branches (HEAD all zeros).
+    return [w for w in out if os.path.isdir(w["path"]) and not os.path.basename(os.path.dirname(w["path"])).startswith("land-")
+            and w.get("head", "").strip("0")]
+
+
+def generated_spec(repo, ref):
+    """The base's regeneration recipe (.foundry/generated.json at `ref`), or None."""
+    p = git("show", f"{ref}:{GENERATED_SPEC}", cwd=repo)
+    if p.returncode != 0:
+        return None
+    spec = json.loads(p.stdout)
+    if spec.get("format") != "foundry.generated.v1" or not spec.get("files") or not spec.get("run"):
+        raise SystemExit(f"{GENERATED_SPEC} at {ref[:12]}: need format foundry.generated.v1, files and run")
+    return spec
+
+
+def file_version(wt, rev, path, dirty):
+    """The blob a lane has for `path`: its working file when edited, else its commit's."""
+    if path in dirty:
+        full = os.path.join(wt, path)
+        return git("hash-object", path, cwd=wt).stdout.strip() if os.path.exists(full) else ""
+    return git("rev-parse", f"{rev}:{path}", cwd=wt).stdout.strip()
+
+
+def scan(repo, base, active_days=ACTIVE_DAYS):
+    """Every worktree of `repo` against refs/foundry/<base>/main. Read-only."""
+    main_ref = f"refs/foundry/{base}/main"
+    main_sha = git("rev-parse", "--verify", main_ref, cwd=repo, check=True).stdout.strip()
+    landed = landed_commits(base)
+    spec = generated_spec(repo, main_ref)
+    generated = set((spec or {}).get("files", []))
+    now = time.time()
+    lanes = []
+    for w in worktrees(repo):
+        wt, head = w["path"], w["head"]
+        lane = {"path": wt, "branch": w.get("branch"), "head": head}
+        lane["last_commit_age_d"] = round((now - int(git("log", "-1", "--format=%ct", head, cwd=repo).stdout or now)) / 86400, 1)
+        st = git("status", "--porcelain", "--untracked-files=no", cwd=wt)
+        dirty = {l[3:].split(" -> ")[-1] for l in st.stdout.splitlines() if l}
+        mtimes = [os.path.getmtime(os.path.join(wt, f)) for f in dirty if os.path.exists(os.path.join(wt, f))]
+        lane["dirty_age_d"] = round((now - max(mtimes)) / 86400, 1) if mtimes else None
+        fork = git("merge-base", head, main_ref, cwd=repo).stdout.strip()
+        if not fork:
+            lane.update(state="unrelated-history", pending=[], dirty=sorted(dirty), active=False)
+            lanes.append(lane)
+            continue
+        # Only commits after the newest landed one are new work; its merge is the real fork point.
+        src_from = fork
+        for c in _lines(git("rev-list", f"{fork}..{head}", cwd=repo).stdout):
+            if c in landed:
+                src_from, fork = c, landed[c]
+                lane["landed_as"] = fork
+                break
+        committed = set(_lines(git("diff", "--name-only", src_from, head, cwd=repo).stdout))
+        pending = sorted(f for f in committed | dirty
+                         if file_version(wt, head, f, dirty) != git("rev-parse", f"{main_ref}:{f}", cwd=repo).stdout.strip())
+        main_since = set(_lines(git("diff", "--name-only", fork, main_ref, cwd=repo).stdout))
+        conflicts = []
+        if committed:
+            mt = git("merge-tree", "--write-tree", "--name-only", "--no-messages", f"--merge-base={src_from}",
+                     main_ref, head, cwd=repo)
+            conflicts = sorted(set(_lines(mt.stdout)[1:])) if mt.returncode == 1 else []
+        dirty_moved = sorted(dirty & set(pending) & main_since)
+        ages = [x for x in (lane["last_commit_age_d"], lane["dirty_age_d"]) if x is not None]
+        lane.update(fork=fork, main_moved_by=int(git("rev-list", "--count", "--first-parent", f"{fork}..{main_ref}", cwd=repo).stdout or 0),
+                    pending=pending, dirty=sorted(dirty & set(pending)), merge_conflicts=conflicts,
+                    dirty_on_moved_files=dirty_moved, active=bool(pending) and min(ages) <= active_days,
+                    state="landed" if not pending else "conflicts-with-main" if conflicts or dirty_moved else "clean-pending")
+        lanes.append(lane)
+    active = [l for l in lanes if l["active"]]
+    overlaps = []
+    for i, a in enumerate(active):
+        for b in active[i + 1:]:
+            shared = sorted(set(a["pending"]) & set(b["pending"]))
+            if shared:
+                overlaps.append({"a": a["path"], "b": b["path"], "files": shared,
+                                 "generated_only": set(shared) <= generated})
+    return {"repo": repo, "base": base, "main": main_sha, "scanned_at": int(now), "generated": sorted(generated),
+            "lanes": lanes, "overlaps": overlaps}
+
+
+def repo_top(path):
+    return os.path.realpath(git("rev-parse", "--show-toplevel", cwd=path, check=True).stdout.strip())
+
+
+def preflight(repo, base, picks, ack=False, active_days=ACTIVE_DAYS):
+    """Refuse a landing whose files another active lane is also changing, with different bytes.
+    Generated files are left out: the cherry-pick regenerates them (see regenerate)."""
+    r = scan(repo, base, active_days)
+    me = repo_top(repo)
+    mine = set()
+    for c in picks:
+        mine |= set(_lines(git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", c, cwd=repo).stdout))
+    contested = []
+    for lane in r["lanes"]:
+        if not lane["active"] or os.path.realpath(lane["path"]) == me or lane["head"] in picks:
+            continue
+        files = sorted(f for f in (set(lane["pending"]) & mine) - set(r["generated"])
+                       if file_version(lane["path"], lane["head"], f, set(lane["dirty"]))
+                       != git("rev-parse", f"{picks[-1]}:{f}", cwd=repo).stdout.strip())
+        if files:
+            contested.append({"lane": lane["path"], "branch": lane["branch"], "files": files})
+    for c in contested:
+        log(f"  overlap: {c['branch']} ({c['lane']}) is also changing {', '.join(c['files'][:6])}"
+            + (f" and {len(c['files']) - 6} more" if len(c["files"]) > 6 else ""))
+    if contested and not ack:
+        raise SystemExit("preflight: another active lane has unlanded edits to these files. Agree on an order with "
+                         "that lane (its worktree is named above), or pass --ack-overlap to land anyway; the second "
+                         "lane to land will then have to rebase onto yours.")
+    return contested
+
+
+def regenerate(wt, spec, sources=()):
+    """Run the base's generator in `wt`. Links named in the recipe are made next to the worktree (relative
+    paths such as ../MotionMix resolve there), and files the seed stripped (assets.json) are linked in from
+    `sources` so folder-scanning generators see the same tree a lane builds from."""
+    parent = os.path.dirname(wt)
+    for rel, target in (spec.get("links") or {}).items():
+        dst = os.path.normpath(os.path.join(wt, rel))
+        if not dst.startswith(parent + os.sep) or os.path.dirname(dst) != parent:
+            raise SystemExit(f"{GENERATED_SPEC}: link {rel} must name a sibling of the worktree")
+        if not os.path.lexists(dst):
+            os.symlink(os.path.expanduser(target), dst)
+    manifest = spec.get("assets")
+    if manifest and os.path.exists(os.path.join(wt, manifest)):
+        for a in json.load(open(os.path.join(wt, manifest))).get("stripped", []):
+            dst = os.path.join(wt, a["path"])
+            if os.path.lexists(dst):
+                continue
+            for src in sources:
+                cand = os.path.join(src, a["path"])
+                if os.path.exists(cand):
+                    os.makedirs(os.path.dirname(dst), exist_ok=True)
+                    os.symlink(os.path.realpath(cand), dst)
+                    break
+    p = sh([os.path.expanduser(x) for x in spec["run"]], cwd=wt, check=False, quiet=True)
+    if p.returncode != 0:
+        return f"generator failed: {(p.stderr or p.stdout).strip()[-300:]}"
+    return None
+
+
+def generated_drift(wt, spec):
+    """Generated files whose bytes differ from the index (empty = the generator reproduces them)."""
+    git("add", "--intent-to-add", "--", *spec["files"], cwd=wt)
+    return _lines(git("diff", "--name-only", "--", *spec["files"], cwd=wt).stdout)
+
+
+def apply_picks(wt, picks, spec=None, sources=()):
+    """Cherry-pick `picks` in `wt`. With a regeneration recipe that reproduces the base byte for byte, conflicts
+    confined to generated files are resolved by regenerating, and the generated files are refreshed after the
+    last pick. Returns (ok, detail dict)."""
+    detail = {}
+    trusted = False
+    if spec:
+        err = regenerate(wt, spec, sources)
+        drift = [] if err else generated_drift(wt, spec)
+        trusted = not err and not drift
+        detail["regenerate"] = "verified" if trusted else (err or f"base not reproduced: {', '.join(drift)}")
+        if not trusted:
+            git("checkout", "--", *spec["files"], cwd=wt)
+            log(f"  regenerate: not used ({detail['regenerate']})")
+    p = git("cherry-pick", "--allow-empty", *picks, cwd=wt)
+    resolved = []
+    while p.returncode != 0:
+        unmerged = set(_lines(git("diff", "--name-only", "--diff-filter=U", cwd=wt).stdout))
+        if not (trusted and unmerged and unmerged <= set(spec["files"])):
+            git("cherry-pick", "--abort", cwd=wt)
+            detail["conflicts"] = sorted(unmerged)
+            detail["detail"] = (p.stderr or p.stdout).strip()[-400:]
+            return False, detail
+        err = regenerate(wt, spec, sources)
+        if err:
+            git("cherry-pick", "--abort", cwd=wt)
+            detail.update(conflicts=sorted(unmerged), detail=err)
+            return False, detail
+        git("add", "--", *spec["files"], cwd=wt, check=True)
+        resolved += sorted(unmerged)
+        log(f"  regenerated {', '.join(sorted(unmerged))} to resolve a generated-file conflict")
+        p = subprocess.run(["git", "cherry-pick", "--continue"], cwd=wt, capture_output=True, text=True,
+                           env={**os.environ, "GIT_EDITOR": "true"})
+    if resolved:
+        detail["regenerated_conflicts"] = resolved
+    if trusted:
+        err = regenerate(wt, spec, sources)
+        drift = [] if err else generated_drift(wt, spec)
+        if err:
+            detail["regenerate_after"] = err
+        elif drift:
+            # A clean textual merge of a generated file can still be wrong; the generator's output is the truth.
+            git("add", "--", *drift, cwd=wt, check=True)
+            detail["regenerated_after"] = drift
+            log(f"  regenerated {', '.join(drift)} after the cherry-pick")
+    return True, detail
+
+
+def post_land_reset(src, picks, merged, base):
+    """Move the source worktree onto the merged commit when that loses nothing: HEAD is the last landed commit,
+    no tracked file is edited, and every commit HEAD has beyond main has landed. Otherwise say how."""
+    if not src or not os.path.isdir(src):
+        return {"reset": "skipped", "why": "no source worktree"}
+    head = git("rev-parse", "HEAD", cwd=src).stdout.strip()
+    hint = f"git -C {src} reset --keep {merged[:12]}"
+    if head != picks[-1]:
+        return {"reset": "skipped", "why": "HEAD is not the last landed commit", "hint": hint}
+    if git("status", "--porcelain", "--untracked-files=no", cwd=src).stdout.strip():
+        return {"reset": "skipped", "why": "tracked edits in the worktree", "hint": hint}
+    landed = set(landed_commits(base)) | set(picks)
+    own = _lines(git("rev-list", "--max-count=500", head, "--not", merged, cwd=src).stdout)
+    if len(own) >= 500 or not set(own) <= landed:
+        return {"reset": "skipped", "why": "the branch has commits that did not land", "hint": hint}
+    p = git("reset", "--keep", merged, cwd=src)
+    if p.returncode != 0:
+        return {"reset": "failed", "why": p.stderr.strip()[-200:], "hint": hint}
+    log(f"  reset {src} onto the merged commit {merged[:8]} (was {head[:8]})")
+    return {"reset": "done", "from": head, "to": merged}
+
+
+def write_scan_cache(r):
+    LANES_CACHE.mkdir(parents=True, exist_ok=True)
+    tmp = LANES_CACHE / f".{r['base']}.json.tmp"
+    tmp.write_text(json.dumps(r))
+    os.replace(tmp, LANES_CACHE / f"{r['base']}.json")
+
+
+def cmd_scan(a):
+    repo = os.path.expanduser(a.repo)
+    if a.fetch:
+        sh([str(BIN / "foundry-fetch"), a.base, f"+refs/heads/main:refs/foundry/{a.base}/main"], cwd=repo, check=False)
+    r = scan(repo, a.base, a.active_days)
+    if a.cache:
+        write_scan_cache(r)
+    if a.json:
+        json.dump(r, sys.stdout, indent=1)
+        print()
+        return
+    if a.cache:
+        return
+    log(f"{r['base']} main {r['main'][:8]}, {len(r['lanes'])} worktrees")
+    for l in sorted(r["lanes"], key=lambda l: (not l["active"], l["last_commit_age_d"])):
+        extra = ""
+        if l.get("merge_conflicts"):
+            extra += f"  merge-conflicts: {', '.join(l['merge_conflicts'][:4])}"
+        if l.get("dirty_on_moved_files"):
+            extra += f"  edited files main also moved: {', '.join(l['dirty_on_moved_files'][:4])}"
+        print(f"{'ACTIVE ' if l['active'] else '       '}{l['state']:<20} {str(l['branch'])[:56]:<56} "
+              f"{l['last_commit_age_d']:>6}d  pending {len(l['pending']):<4} edited {len(l['dirty']):<4}{extra}")
+    if not r["overlaps"]:
+        print("no overlap between active lanes")
+    for o in r["overlaps"]:
+        print(f"overlap {o['a']} x {o['b']}: {', '.join(o['files'][:6])}{' (generated only)' if o['generated_only'] else ''}")
+
+
 # ---------------------------------------------------------------- land
 
 def task_file(task):
@@ -269,7 +587,7 @@ def wait_decision(cf, fork, sha, timeout):
     return None
 
 
-def land_one(cf, env, spec, dry):
+def land_one(cf, env, spec, dry, ack_overlap=False):
     spec = {"deleteFork": True, **spec}
     repo = str(pathlib.Path(spec["repo"]).expanduser())
     for k in ("base", "task", "agent", "allowedRoots"):
@@ -277,26 +595,33 @@ def land_one(cf, env, spec, dry):
             raise SystemExit(f"spec missing {k}: {spec}")
     picks = commits_of(spec, repo)
     log(f"== {spec['task']}: {len(picks)} commit(s) onto {spec['base']}")
+    base_ref = f"refs/foundry/{spec['base']}/main"
+    sh([str(BIN / "foundry-fetch"), spec["base"], f"+refs/heads/main:{base_ref}"], cwd=repo)
+    # Before the task exists: a landing that another active lane would collide with stops here.
+    contested = preflight(repo, spec["base"], picks, ack=ack_overlap or bool(spec.get("ackOverlap")))
     t = open_task(env, spec, dry)
     fork = t["forks"][0]
     if dry:
         log(f"  dry run: would open task, subscribe {fork}, cherry-pick {', '.join(c[:8] for c in picks)}, push, wait")
-        return {"task": spec["task"], "fork": fork, "dry_run": True}
+        return {"task": spec["task"], "fork": fork, "dry_run": True, "overlap": contested}
     if subscribe(env, fork, t["subscribed"].get(fork)):
         time.sleep(SETTLE_S)
     elif t["new"] and t["subscribed"].get(fork):
         time.sleep(SETTLE_S)  # the orchestrator subscribed it a moment ago
-    base_ref = f"refs/foundry/{spec['base']}/main"
-    sh([str(BIN / "foundry-fetch"), spec["base"], f"+refs/heads/main:{base_ref}"], cwd=repo)
-    wt = tempfile.mkdtemp(prefix=f"land-{spec['task']}-")
+    # The scratch worktree gets its own parent directory, so a recipe's ../sibling links resolve there.
+    tmp = tempfile.mkdtemp(prefix=f"land-{spec['task']}-")
+    wt = os.path.join(tmp, os.path.basename(repo_top(repo)))
     result = {"task": spec["task"], "fork": fork, "base": spec["base"], "commits": picks}
+    if contested:
+        result["overlap"] = contested
     try:
-        sh(["git", "worktree", "add", "--detach", wt, t["baseSha"] or base_ref], cwd=repo)
-        p = sh(["git", "cherry-pick", "--allow-empty", *picks], cwd=wt, check=False, quiet=True)
-        if p.returncode != 0:
-            sh(["git", "cherry-pick", "--abort"], cwd=wt, check=False)
+        onto = t["baseSha"] or base_ref
+        sh(["git", "worktree", "add", "--detach", wt, onto], cwd=repo)
+        sources = [repo] + [w["path"] for w in worktrees(repo)[:1]]
+        ok, detail = apply_picks(wt, picks, generated_spec(repo, onto), sources)
+        result.update(detail)
+        if not ok:
             result["verdict"] = "local-conflict"
-            result["detail"] = p.stderr.strip()[-400:]
             return result
         for attempt in (1, 2):
             sh(["git", "commit", "--amend", "--no-edit", "--date=now"], cwd=wt)
@@ -329,9 +654,12 @@ def land_one(cf, env, spec, dry):
         if spec["deleteFork"]:
             cf.delete_repo(fork)
             result["fork_deleted"] = True
+        # A squash merge never makes the lane's branch an ancestor of main; move it onto the merge.
+        result["source"] = post_land_reset(repo, picks, merged, spec["base"])
         return result
     finally:
         sh(["git", "worktree", "remove", "--force", wt], cwd=repo, check=False)
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def cmd_land(a):
@@ -340,7 +668,7 @@ def cmd_land(a):
     cf = None if a.dry_run else Cloudflare(a.env)
     results = []
     for s in specs:
-        r = land_one(cf, a.env, s, a.dry_run)
+        r = land_one(cf, a.env, s, a.dry_run, a.ack_overlap)
         results.append(r)
         with open(CONF / "land-log.jsonl", "a") as f:
             f.write(json.dumps({"at": datetime.datetime.now().isoformat(timespec="seconds"), **r}) + "\n")
@@ -348,6 +676,12 @@ def cmd_land(a):
         if not a.dry_run and r.get("verdict") != "merge" and not a.keep_going:
             log("stopping: the next item would land on a base this one did not move (use --keep-going to continue)")
             break
+    # Main moved: refresh what the SessionStart lanes hook shows.
+    for repo, base in {(str(pathlib.Path(s["repo"]).expanduser()), s["base"]) for s in specs[:len(results)]}:
+        try:
+            write_scan_cache(scan(repo, base))
+        except (Exception, SystemExit) as e:
+            log(f"  lane scan cache not refreshed for {base}: {e}")
     json.dump(results, sys.stdout, indent=1)
     print()
     if any(r.get("verdict") not in ("merge", None) for r in results):
@@ -365,7 +699,12 @@ def main():
     f.add_argument("--include-unused", action="store_true"); f.add_argument("--json", action="store_true")
     f.set_defaults(fn=cmd_forks)
     l = sub.add_parser("land"); l.add_argument("spec"); l.add_argument("--dry-run", action="store_true")
-    l.add_argument("--keep-going", action="store_true"); l.set_defaults(fn=cmd_land)
+    l.add_argument("--keep-going", action="store_true"); l.add_argument("--ack-overlap", action="store_true")
+    l.set_defaults(fn=cmd_land)
+    sc = sub.add_parser("scan"); sc.add_argument("repo"); sc.add_argument("base")
+    sc.add_argument("--active-days", type=float, default=ACTIVE_DAYS); sc.add_argument("--fetch", action="store_true")
+    sc.add_argument("--cache", action="store_true"); sc.add_argument("--json", action="store_true")
+    sc.set_defaults(fn=cmd_scan)
     a = ap.parse_args()
     a.fn(a)
 

@@ -55,6 +55,43 @@ The gate diffs trees by object id since hotfix 2ebf8fa and lands file modes, inc
    Mohamed retired for this family on 2026-10-22.
 6. Keep the fork's history and delete the fork: step 7 of nko-speech `docs/ONBOARDING.md`.
 
+## Parallel lanes (foundry_ops, 2026-11-02)
+
+`tools/foundry-ops/foundry_ops.py land` does steps 1 to 6. Since 2026-11-02 it also coordinates lanes, because nothing
+else does: the gate only sees a lane when it lands, compares whole files, and squash-merges.
+
+- **`foundry_ops.py scan REPO BASE`** reads every worktree of the repo against `refs/foundry/<base>/main`.
+  - It reports which lanes are landed. It reads the land log, because a squash merge never makes the lane's branch an ancestor of main.
+  - It lists which files each lane still has pending, including uncommitted edits.
+  - It runs a hunk-level `git merge-tree` against main.
+  - It reports which active lanes (activity within 3 days) share pending files.
+  - `--cache` writes `~/.config/foundry/lanes/<base>.json`. The SessionStart hook `~/.claude/hooks/mesh-lanes/session_lanes.py` reads it and refreshes it in the background, so a session that starts inside a lane's worktree sees its own state and the other active lanes.
+- **Preflight.** Before a task is opened, `land` refuses when another active lane has unlanded edits, with different bytes, to a file this landing changes.
+  - The message names the other lane's branch and worktree.
+  - Agree on an order with that lane, or pass `--ack-overlap` (or `"ackOverlap": true` in the spec) to land anyway.
+  - Generated files never block.
+- **Generated files.** A base can declare its generator in `.foundry/generated.json`:
+
+  ```json
+  {"format": "foundry.generated.v1",
+   "files": ["MotionMixApp.xcodeproj/project.pbxproj", "MotionMixApp/Info.plist"],
+   "run": ["xcodegen", "generate", "--quiet"],
+   "links": {"../MotionMix": "~/Developer/MotionMix"},
+   "assets": ".foundry/assets.json"}
+  ```
+
+  `land` builds the scratch worktree inside its own directory, so `links` (siblings only) resolve there. The files listed in `assets` (stripped binaries) are linked in from the lane's worktree or the main checkout.
+  - **The generator must earn trust.** On the untouched base it must reproduce `files` byte for byte. If it does not, it is not used, and conflicts are reported as before. On motionmixapp it reproduces all five files only once the stripped assets are linked in.
+  - **Once trusted:** a cherry-pick conflict confined to generated files is resolved by regenerating. After the last pick the generated files are regenerated again, because a clean textual merge of a generated file can still be wrong.
+  - **A real source conflict** still stops the landing.
+- **After a merge.** `land` moves the source worktree onto the merged commit with `git reset --keep`, never `--hard`, and only when that loses nothing. All three must hold:
+  - HEAD is the last landed commit.
+  - No tracked file is edited.
+  - Every commit HEAD has beyond main has landed.
+
+  Otherwise the result carries the command to run. Without this, a lane that keeps working on its branch conflicts with its own landed code.
+- **Tests:** `python3 -m unittest tools/foundry-ops/test_foundry_ops.py`. They build throwaway repos and need no network.
+
 ## Lessons from the first day (2026-10-22/23)
 
 - **No decision row within 2 minutes:** re-run `tools/subscribe-repo.sh staging '<fork>'`, amend the date and push again.
