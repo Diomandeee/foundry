@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { ArtifactsPort } from "@foundry/artifacts-port";
 import { GitAdapter, GitTestKit } from "@foundry/artifacts-port/node";
 import {
+  allowsPath,
   cheapCost,
   checkAdmissibility,
   InMemoryLedger,
@@ -195,6 +196,22 @@ describe("createTask", () => {
     }
   });
 
+  it("accepts Xcode-style roots with inner spaces", async () => {
+    await kit.seedBase("base", { "app.ts": "v1\n" }, join(root, "w-base"));
+    const roots = ["Meaning Full Power", "Meaning Full Power/Views", "AGENTS.md", ".project_control"];
+    const res = await createTask(port, tickets, {
+      baseRepo: "base",
+      taskId: "t6s",
+      agents: ["a"],
+      allowedRoots: roots,
+    });
+    expect(res.allowedRoots).toEqual(roots);
+    const t = await tickets.getTicketByFork(res.dispatches[0].forkRepo);
+    expect(t?.scope.allowed_roots).toEqual(roots);
+    expect(allowsPath(t!.scope, "Meaning Full Power/Views/OracleView.swift")).toBe(true);
+    expect(allowsPath(t!.scope, "Meaning Full Powerless/x.swift")).toBe(false);
+  });
+
   it("refuses a task that declares no roots (review H4)", async () => {
     await kit.seedBase("base", { "app.ts": "v1\n" }, join(root, "w-base"));
     await expect(createTask(port, tickets, { baseRepo: "base", taskId: "t7x", agents: ["a"] }))
@@ -227,6 +244,13 @@ describe("createTask", () => {
       "src//x",
       "src\\x",
       "",
+      " x",
+      "x ",
+      "a/ b",
+      "a /b",
+      "../x",
+      "My App/../../etc",
+      "a\tb",
       7,
     ]) {
       await expect(

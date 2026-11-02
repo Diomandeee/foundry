@@ -61,9 +61,12 @@ export interface CreateTaskResult {
 
 const NAME = /^[A-Za-z0-9._-]{1,64}$/;
 const CHAIN = /^[A-Za-z0-9._:-]{1,80}$/;
-// Repo-relative, slash-separated, no leading slash, no empty segment. Dot
-// segments are rejected separately: `..` would match this pattern otherwise.
-const ROOT = /^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/;
+// Repo-relative, slash-separated, no leading slash, no empty segment. A
+// segment may hold inner spaces (Xcode's default "My App/" folder) but must
+// not start or end with one. Dot segments are rejected separately: `..` would
+// match this pattern otherwise.
+const SEGMENT = "[A-Za-z0-9._-](?:[A-Za-z0-9._ -]*[A-Za-z0-9._-])?";
+const ROOT = new RegExp(`^${SEGMENT}(\\/${SEGMENT})*$`);
 
 function validate(input: CreateTaskInput): void {
   if (!input || typeof input !== "object") throw new Error("invalid body");
@@ -109,7 +112,7 @@ function validate(input: CreateTaskInput): void {
     for (const r of input.allowedRoots) {
       if (typeof r !== "string" || !ROOT.test(r)) {
         throw new Error(
-          `invalid allowed root: ${String(r)} (repo-relative, e.g. "src/allowed"; no leading slash, no "..", no trailing slash)`,
+          `invalid allowed root: ${String(r)} (repo-relative, e.g. "src/allowed"; no leading slash, no "..", no trailing slash, no space at either end of a segment)`,
         );
       }
       // `..` and `.` satisfy ROOT (dots are legal in a name), so they need
