@@ -7341,9 +7341,9 @@
    ],
    "tier": "hot",
    "tier_reason": "pushed 3d ago",
-   "owner_lane": null,
+   "owner_lane": "claude-mfp",
    "allowed_roots": null,
-   "binary_policy": null,
+   "binary_policy": "media-tier",
    "foundry_base": "meaning-full-power",
    "asc_app_id": "6758981968",
    "asc_name": "Meaning Full Power",
@@ -7373,7 +7373,10 @@
     "subscribed": "{\"success\":false,\"errors\":[{\"message\":\"We currently do not support multiple subscriptions on the same resource.\"}],\"mess",
     "namespace": "foundry-staging"
    },
-   "purged": "secrets in seed, 2026-10-22"
+   "purged": "secrets in seed, 2026-10-22",
+   "supersedes": [
+    "mfp"
+   ]
   },
   {
    "id": "mediapipecreative",
@@ -7654,8 +7657,8 @@
    "wave": null,
    "library": [],
    "archive": [],
-   "tier": "warm",
-   "tier_reason": "keeper-warm",
+   "tier": "cold",
+   "tier_reason": "2026-11-01 retired: 2023 archived repo, mfp-eight.vercel.app returns 404; superseded by meaning-full-power. Foundry base kept as history",
    "owner_lane": null,
    "allowed_roots": null,
    "binary_policy": null,
@@ -7669,7 +7672,8 @@
     "created": true,
     "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"7519ce9564814a28b5bbdd26abb740e7\",\"created_at\":\"2026-10-22T17:",
     "namespace": "foundry-staging"
-   }
+   },
+   "superseded_by": "meaning-full-power"
   },
   {
    "id": "mfp-storefront",
@@ -7684,9 +7688,9 @@
    "wave": null,
    "library": [],
    "archive": [],
-   "tier": "cold",
-   "tier_reason": "dormant",
-   "owner_lane": null,
+   "tier": "hot",
+   "tier_reason": "2026-11-01 the live meaningfullpower.com storefront, on the Foundry Fabric track with the MFP app",
+   "owner_lane": "claude-mfp",
    "allowed_roots": null,
    "binary_policy": null,
    "foundry_base": "mfp-storefront",
@@ -7699,6 +7703,9 @@
     "created": true,
     "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"3fb5e7094ab24135ac0670890358955c\",\"created_at\":\"2026-10-22T18:",
     "namespace": "foundry-staging"
+   },
+   "external": {
+    "vercel": "diomandeees-projects/mfp-storefront"
    }
   },
   {
