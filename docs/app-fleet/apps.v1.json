@@ -25286,6 +25286,36 @@
     "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"250740b77f2c4724b462602a4f04e7bf\",\"created_at\":\"2026-11-01T23:",
     "namespace": "foundry-staging"
    }
+  },
+  {
+   "id": "fleet",
+   "title": "Fleet",
+   "kind": "repo",
+   "origin": "https://github.com/Diomandeee/fleet",
+   "private": true,
+   "github_archived": false,
+   "github_kb": null,
+   "last_push": "2026-11-01",
+   "bundle_id": null,
+   "wave": null,
+   "library": [],
+   "archive": [],
+   "tier": "hot",
+   "tier_reason": "keeper: fabric CLI + fleet registry (projects.v1 = canonical project model)",
+   "owner_lane": "claude-383064e1",
+   "allowed_roots": null,
+   "binary_policy": "text-only",
+   "foundry_base": "fleet",
+   "foundry_seed": {
+    "base": "fleet",
+    "origin_commit": "11ae60b483651b0ba71df3ea7fd2e93653c1722e",
+    "seed_commit": "4b861499c5801a02c833561ed09ca0b542eee08f",
+    "files": 24,
+    "stripped": 0,
+    "created": true,
+    "subscribed": "{\"success\":true,\"errors\":[],\"messages\":[],\"result\":{\"id\":\"90705ff3f6824c35a9d5697304b51f5b\",\"created_at\":\"2026-11-02T00:",
+    "namespace": "foundry-staging"
+   }
   }
  ]
 }
