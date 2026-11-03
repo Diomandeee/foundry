@@ -128,17 +128,45 @@ def sha256(path):
     return h.hexdigest()
 
 
-def ensure_assets(repo, main_ref, sources):
-    """Copy in the binaries the seed stripped (APFS clones, so no extra disk), matched by sha256.
-    Returns (copied, unmatched): an unmatched asset means the build used a different binary than main declares."""
+def blob_at(commit, path, repos, origin, cache):
+    """(bytes, mode) of path at commit, read from a local clone (objects only, nothing checked out) or,
+    failing that, from a blob-less cache of the manifest's origin that fetches the one blob it needs."""
+    spec = f"{commit}:{path}"
+    for r in repos:
+        r = os.path.expanduser(r)
+        if subprocess.run(["git", "-C", r, "cat-file", "-e", spec], capture_output=True).returncode == 0:
+            break
+    else:
+        if not origin:
+            return None
+        if not os.path.isdir(cache):
+            subprocess.run(["git", "init", "-q", "--bare", cache], capture_output=True)
+        r = cache
+        if subprocess.run(["git", "-C", r, "cat-file", "-e", commit + "^{commit}"], capture_output=True).returncode:
+            subprocess.run(["git", "-C", r, "fetch", "-q", "--filter=blob:none", "--depth=1", origin, commit],
+                           capture_output=True, timeout=120)
+    ls = subprocess.run(["git", "-C", r, "ls-tree", commit, "--", path], capture_output=True, text=True).stdout.split()
+    data = subprocess.run(["git", "-C", r, "cat-file", "blob", spec], capture_output=True, timeout=120)
+    if data.returncode or not ls:
+        return None
+    return data.stdout, ls[0]
+
+
+def ensure_assets(repo, main_ref, sources, cache=None):
+    """Put in the binaries the seed stripped, each matched by sha256. Returns (placed, unmatched).
+
+    Every manifest entry is materialized, so each merge proves the manifest complete: first an APFS clone
+    of a source checkout's file (no extra disk), else the blob at the entry's origin_commit (or the
+    manifest's). An unmatched asset means the build used a different binary than main declares."""
     try:
         manifest = json.loads(git(repo, "show", f"{main_ref}:.foundry/assets.json"))
     except (Unjudged, ValueError):
         return 0, []
+    cache = cache or os.path.join(os.path.dirname(repo), "origin.git")
     exclude = os.path.join(repo, git(repo, "rev-parse", "--git-path", "info/exclude").strip())
     os.makedirs(os.path.dirname(exclude), exist_ok=True)
     have = set(open(exclude).read().splitlines()) if os.path.exists(exclude) else set()
-    copied, unmatched, new_excludes = 0, [], []
+    placed, unmatched, new_excludes = 0, [], []
     for item in manifest.get("stripped", []):
         rel, want = item["path"], item.get("sha256")
         if "/" + rel not in have:
@@ -146,23 +174,32 @@ def ensure_assets(repo, main_ref, sources):
         dst = os.path.join(repo, rel)
         if os.path.exists(dst) and (not want or sha256(dst) == want):
             continue
-        src = next((os.path.join(os.path.expanduser(s), rel) for s in sources
-                    if os.path.exists(os.path.join(os.path.expanduser(s), rel))), None)
-        if not src:
-            unmatched.append(rel)
-            continue
-        if want and sha256(src) != want:
-            unmatched.append(rel)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
-        if os.path.exists(dst):
+        if os.path.lexists(dst):
             os.remove(dst)
-        if subprocess.run(["cp", "-c", src, dst], capture_output=True).returncode:
-            shutil.copy2(src, dst)
-        copied += 1
+        src = next((os.path.join(os.path.expanduser(s), rel) for s in sources
+                    if os.path.isfile(os.path.join(os.path.expanduser(s), rel))), None)
+        if src and (not want or sha256(src) == want):
+            if subprocess.run(["cp", "-c", src, dst], capture_output=True).returncode:
+                shutil.copy2(src, dst)
+            placed += 1
+            continue
+        commit = item.get("origin_commit") or manifest.get("origin_commit")
+        blob = blob_at(commit, rel, sources, manifest.get("origin"), cache) if commit else None
+        if blob and (not want or hashlib.sha256(blob[0]).hexdigest() == want):
+            with open(dst, "wb") as f:
+                f.write(blob[0])
+            os.chmod(dst, 0o755 if blob[1] == "100755" else 0o644)
+            placed += 1
+            continue
+        unmatched.append(rel)
+        if src:  # the build gets the local binary, flagged, rather than none
+            if subprocess.run(["cp", "-c", src, dst], capture_output=True).returncode:
+                shutil.copy2(src, dst)
     if new_excludes:
         with open(exclude, "a") as f:
             f.write("\n".join(new_excludes) + "\n")
-    return copied, unmatched
+    return placed, unmatched
 
 
 # ---- running the recipe on a worker ----
@@ -342,7 +379,7 @@ def verify(req, cfg=None, now=None):
         if unmatched:
             summary += f"; {len(unmatched)} asset(s) not as main declares"
         log("verdict", base=base, repo=repo_name, head=head, main=main_sha, ok=ok, summary=summary,
-            secs=int(time.time() - started), assets_copied=copied)
+            secs=int(time.time() - started), assets_copied=copied, assets_unmatched=unmatched[:20])
         return {"runs": [{"name": recipe.get("name", "build+test"), "ok": ok, "output": summary}]}
 
 

@@ -143,6 +143,48 @@ class Tree(unittest.TestCase):
         self.assertEqual(open(os.path.join(self.repo, "Frameworks", "lib.a"), "rb").read(), b"binary")
 
 
+    def origin_with_tool(self):
+        """A separate origin repo holding an executable tool, as the seed's origin does; returns (url, sha)."""
+        origin = os.path.join(self.tmp, "origin")
+        os.makedirs(os.path.join(origin, "tools"))
+        sh(origin, "git", "init", "-q", "-b", "main")
+        sh(origin, "git", "config", "uploadpack.allowFilter", "true")
+        with open(os.path.join(origin, "tools", "bin"), "wb") as f:
+            f.write(b"tool-bytes")
+        os.chmod(os.path.join(origin, "tools", "bin"), 0o755)
+        sha = commit(origin, {}, "tool")
+        return "file://" + origin, sha
+
+    def manifest(self, entries, **top):
+        sh(self.repo, "git", "checkout", "-q", "main")
+        commit(self.repo, {".foundry/assets.json": json.dumps({"stripped": entries, **top})}, "assets")
+
+    def test_asset_missing_locally_is_fetched_at_its_origin_commit(self):
+        url, sha = self.origin_with_tool()
+        want = hashlib.sha256(b"tool-bytes").hexdigest()
+        self.manifest([{"path": "tools/bin", "sha256": want, "origin_commit": sha}], origin=url)
+        cache = os.path.join(self.tmp, "cache.git")
+        self.assertEqual(vs.ensure_assets(self.repo, "main", [os.path.join(self.tmp, "nowhere")], cache), (1, []))
+        dst = os.path.join(self.repo, "tools", "bin")
+        self.assertEqual(open(dst, "rb").read(), b"tool-bytes")
+        self.assertTrue(os.access(dst, os.X_OK))
+        self.assertEqual(sh(self.repo, "git", "status", "--porcelain"), "")  # excluded, not untracked work
+
+    def test_a_local_clone_serves_the_blob_without_a_fetch(self):
+        url, sha = self.origin_with_tool()
+        want = hashlib.sha256(b"tool-bytes").hexdigest()
+        self.manifest([{"path": "tools/bin", "sha256": want, "origin_commit": sha}], origin="file:///no/such/origin")
+        clone = os.path.join(self.tmp, "clone")
+        sh(self.tmp, "git", "clone", "-q", url, clone)
+        os.remove(os.path.join(clone, "tools", "bin"))  # objects only: the file need not be checked out
+        self.assertEqual(vs.ensure_assets(self.repo, "main", [clone], os.path.join(self.tmp, "c.git")), (1, []))
+
+    def test_blob_with_the_wrong_sha_is_unmatched(self):
+        url, sha = self.origin_with_tool()
+        self.manifest([{"path": "tools/bin", "sha256": "0" * 64, "origin_commit": sha}], origin=url)
+        self.assertEqual(vs.ensure_assets(self.repo, "main", [], os.path.join(self.tmp, "c.git")), (0, ["tools/bin"]))
+        self.assertFalse(os.path.exists(os.path.join(self.repo, "tools", "bin")))
+
 class Http(unittest.TestCase):
     def setUp(self):
         self.token = "t" * 40
