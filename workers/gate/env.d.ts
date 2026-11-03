@@ -18,5 +18,7 @@ interface Env {
   /** When "1", a failed required check blocks the merge. Default advisory. */
   VERIFY_ENFORCE?: string;
   VERIFY_REQUIRE_CHECKED?: string;
+  /** How long to wait for the verifier, in ms (default 120000, capped at 840000). */
+  VERIFY_TIMEOUT_MS?: string;
   DEBUG?: string;
 }

@@ -71,6 +71,21 @@ export interface HttpVerifierOpts {
   timeoutMs?: number;
 }
 
+/** The default wait for a verdict, and the ceiling: a queue consumer has 15 minutes of wall time. */
+export const DEFAULT_VERIFY_TIMEOUT_MS = 120_000;
+export const MAX_VERIFY_TIMEOUT_MS = 840_000;
+
+/**
+ * VERIFY_TIMEOUT_MS from the environment. A build-and-test verifier needs minutes, not the
+ * 120 s default; anything unparseable or non-positive keeps the default, and anything above
+ * the queue's wall-time budget is capped so a slow verifier cannot get the message killed.
+ */
+export function verifyTimeoutMs(raw: string | undefined): number {
+  const n = Number(raw);
+  if (!raw || !Number.isFinite(n) || n <= 0) return DEFAULT_VERIFY_TIMEOUT_MS;
+  return Math.min(Math.floor(n), MAX_VERIFY_TIMEOUT_MS);
+}
+
 /**
  * Server contract:
  *   POST <baseUrl>/api/verify
@@ -92,7 +107,7 @@ export class HttpVerifier implements Verifier {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(req),
-        signal: AbortSignal.timeout(this.opts.timeoutMs ?? 120_000),
+        signal: AbortSignal.timeout(this.opts.timeoutMs ?? DEFAULT_VERIFY_TIMEOUT_MS),
       });
       if (!res.ok) {
         return {
