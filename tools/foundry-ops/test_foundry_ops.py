@@ -354,5 +354,39 @@ class ResetTest(LaneTest):
         self.assertEqual(fo.post_land_reset(wt, [pick], merged, BASE)["reset"], "skipped")
 
 
+
+class WaitDecisionTest(unittest.TestCase):
+    """An `error` row is the gate retrying (e.g. the verifier asked for one), not its verdict."""
+
+    def setUp(self):
+        self.sleep = fo.time.sleep
+        fo.time.sleep = lambda s: None
+
+    def tearDown(self):
+        fo.time.sleep = self.sleep
+
+    def cf(self, *rows):
+        seq = iter(rows)
+
+        class CF:
+            def d1(self, sql, params):
+                row = next(seq, rows[-1])
+                return [row] if row else []
+        return CF()
+
+    def test_waits_past_error_rows_for_the_verdict(self):
+        cf = self.cf(None, {"verdict": "error"}, {"verdict": "error"}, {"verdict": "merge", "merged_sha": "m"})
+        self.assertEqual(fo.wait_decision(cf, "f", "s", 60)["verdict"], "merge")
+
+    def test_returns_the_error_if_nothing_better_comes(self):
+        clock = iter(range(0, 1000, 10))
+        real = fo.time.time
+        fo.time.time = lambda: next(clock)
+        try:
+            self.assertEqual(fo.wait_decision(self.cf({"verdict": "error"}), "f", "s", 50)["verdict"], "error")
+        finally:
+            fo.time.time = real
+
+
 if __name__ == "__main__":
     unittest.main()

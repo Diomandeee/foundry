@@ -59,6 +59,9 @@ ENVS = {
 API = "https://api.cloudflare.com/client/v4"
 SETTLE_S = 30        # a push made seconds after a new subscription can be dropped (2026-10-27)
 DECISION_WAIT_S = 120
+# A base whose main carries .foundry/verify.json is built and tested before the gate decides
+# (tools/foundry-verify): minutes, plus up to 3 queue retries if the verifier asks for one.
+VERIFIED_DECISION_WAIT_S = 1800
 MAX_AUTHOR_AGE_S = 300
 
 
@@ -716,13 +719,17 @@ def decision_for(cf, fork, sha):
 
 
 def wait_decision(cf, fork, sha, timeout):
-    end = time.time() + timeout
+    """The gate's verdict for this push. An `error` row is the gate saying it will retry (its queue
+    redelivers, e.g. when the verifier asked for one), not a verdict: keep waiting, and return it only
+    if nothing better arrives in time."""
+    end, last_error = time.time() + timeout, None
     while time.time() < end:
         d = decision_for(cf, fork, sha)
-        if d:
+        if d and d["verdict"] != "error":
             return d
+        last_error = d or last_error
         time.sleep(10)
-    return None
+    return last_error
 
 
 def land_one(cf, env, spec, dry, ack_overlap=False):
@@ -761,12 +768,17 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
         if not ok:
             result["verdict"] = "local-conflict"
             return result
+        verified = subprocess.run(["git", "cat-file", "-e", f"{base_ref}:.foundry/verify.json"], cwd=repo,
+                                  capture_output=True).returncode == 0
+        wait_s = VERIFIED_DECISION_WAIT_S if verified else DECISION_WAIT_S
+        if verified:
+            log(f"  {spec['base']} verifies merges (.foundry/verify.json): waiting up to {wait_s // 60} min")
         for attempt in (1, 2):
             sh(["git", "commit", "--amend", "--no-edit", "--date=now"], cwd=wt)
             head = sh(["git", "rev-parse", "HEAD"], cwd=wt).strip()
             sh([str(BIN / "foundry-push"), fork, "HEAD:refs/heads/main", "--force"], cwd=wt)
             log(f"  pushed {head[:8]} to {fork} (attempt {attempt}); waiting for the gate")
-            d = wait_decision(cf, fork, head, DECISION_WAIT_S)
+            d = wait_decision(cf, fork, head, wait_s)
             if d:
                 break
             log("  no decision row: the push was likely dropped; re-stamping and pushing once more")
