@@ -68,6 +68,11 @@ export class StubVerifier implements Verifier {
 
 export interface HttpVerifierOpts {
   timeoutMs?: number;
+  /**
+   * How to reach the server. Default: the global fetch. A Worker passes a binding's fetch
+   * (a Workers VPC service) so the verifier can sit on a private host with no public address.
+   */
+  fetcher?: (url: string, init: RequestInit) => Promise<Response>;
 }
 
 /** The default wait for a verdict, and the ceiling: a queue consumer has 15 minutes of wall time. */
@@ -102,7 +107,8 @@ export class HttpVerifier implements Verifier {
 
   async run(req: VerifyRequest): Promise<VerifyVerdict> {
     try {
-      const res = await fetch(`${this.baseUrl}/api/verify`, {
+      const send = this.opts.fetcher ?? fetch;
+      const res = await send(`${this.baseUrl}/api/verify`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(req),
