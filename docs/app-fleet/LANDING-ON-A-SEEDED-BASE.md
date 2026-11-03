@@ -112,7 +112,8 @@ The staging gate now builds and tests a merge before it lands, for any base that
 - **How it is wired.**
   - Gate: `VERIFY_URL` is a secret holding the token path, `VERIFY_ENFORCE=1`, `VERIFY_TIMEOUT_MS=840000`, and the `VERIFY_SERVICE` Workers VPC binding. The VPC service is `foundry-verify` (01a19f18).
   - Tunnel: Cloudflare Tunnel `foundry-verify` (fb73dc27), run by `com.foundry.verify-tunnel`. It has no public hostname.
-  - The deployed gate source is `gate-hotfix` branch `hotfix/gate-diff-mode-20261019`, not this branch. Port the verify changes before deploying the gate from anywhere else.
+  - The deployed gate source is `gate-hotfix` branch `hotfix/gate-diff-mode-20261019`. Its verify changes (VERIFY_TIMEOUT_MS, the VERIFY_SERVICE binding, VERIFY_ENFORCE=1, VerifierBusy) are ported to this branch, beside this branch's own VERIFY_REQUIRE_CHECKED and verification receipts, which stay unset or off on staging.
+  - Before deploying the gate from this branch instead, check two things. First, it needs this branch's D1 schema for verification receipts (`workers/gate/schema.sql`). Second, check `gate-hotfix` for gate fixes made after the port: `git log 312485a..hotfix/gate-diff-mode-20261019 -- workers packages`.
   - Verifier config is in `~/.config/foundry/verify.json` (which bases) and `verify-token` (0600); its log is `~/.fleet/verify/verify.log`.
 - **Proved on 2026-11-02.**
   - A docs change skipped and merged.
