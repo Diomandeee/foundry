@@ -6,6 +6,7 @@ import {
   StubVerifier,
   summarize,
   truncateOutput,
+  verifyTimeoutMs,
   type VerifyRequest,
 } from "./index.js";
 
@@ -150,5 +151,20 @@ describe("summarize", () => {
 describe("truncateOutput", () => {
   it("leaves short output alone", () => {
     expect(truncateOutput("ok")).toBe("ok");
+  });
+});
+
+describe("verifyTimeoutMs", () => {
+  it("keeps the 120 s default when unset or unparseable", () => {
+    expect(verifyTimeoutMs(undefined)).toBe(120_000);
+    expect(verifyTimeoutMs("")).toBe(120_000);
+    expect(verifyTimeoutMs("soon")).toBe(120_000);
+    expect(verifyTimeoutMs("-5")).toBe(120_000);
+  });
+  it("takes a build-sized wait", () => {
+    expect(verifyTimeoutMs("600000")).toBe(600_000);
+  });
+  it("caps at the queue consumer's wall-time budget", () => {
+    expect(verifyTimeoutMs("3600000")).toBe(840_000);
   });
 });

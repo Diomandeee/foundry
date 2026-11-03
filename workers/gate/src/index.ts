@@ -10,7 +10,7 @@ import {
   verdictTriples,
 } from "@foundry/lkg-client";
 import { PactServerPlanCheck } from "@foundry/plan-check";
-import { HttpVerifier } from "@foundry/verify";
+import { HttpVerifier, verifyTimeoutMs } from "@foundry/verify";
 import { IsomorphicMerger } from "./merge.js";
 import { handlePush, type PipelineDeps } from "./pipeline.js";
 import { D1DecisionStore, D1TicketStore } from "@foundry/stores";
@@ -38,7 +38,9 @@ function depsFromEnv(env: Env): PipelineDeps {
   // checked" and can never block — the same posture as PACT above, so a
   // deployment without a verifier behaves exactly as it did before.
   if (env.VERIFY_URL) {
-    deps.verifier = new HttpVerifier(env.VERIFY_URL);
+    deps.verifier = new HttpVerifier(env.VERIFY_URL, {
+      timeoutMs: verifyTimeoutMs(env.VERIFY_TIMEOUT_MS),
+    });
     deps.verifyEnforce = env.VERIFY_ENFORCE === "1";
   }
   if (env.DEBUG === "1") deps.debug = true;
