@@ -272,12 +272,41 @@ describe("gate parity: what a lane's push gets back", () => {
     expect(o.reason).toContain("proposal_not_found");
   });
 
+  // P15, P16, P21: content the text transport cannot carry. Both gates once recorded `infra_failure` and
+  // retried until the queue dropped the push; now a single reject names the path, before any verifier run.
+  const UNSUPPORTED = /unsupported content: .*the gate lands regular and executable UTF-8 text files up to 8 MiB/;
+
   it("P15 a symlink in the proposal", async () => {
     const l = await lane({ "app.txt": "v1\n" });
     const sha = l.commit({}, { symlink: { "link": "app.txt" } });
     l.push();
     const o = record("P15", await l.run(l.baseSha, sha));
-    expect(o.verdict).not.toBe("merge");
+    expect(o.attempts).toHaveLength(1);
+    expect(o.verdict).toBe("reject");
+    expect(o.reason).toMatch(UNSUPPORTED);
+    expect(o.reason).toContain("link is a symlink");
+    expect(o.verify).toHaveLength(0);
+    expect(o.landed).toBe("base unchanged");
+  });
+
+  it("P15b a symlink an earlier commit added and a later one made a file merges as the file", async () => {
+    const l = await lane({ "app.txt": "v1\n" });
+    l.commit({}, { symlink: { "link": "app.txt" } });
+    const sha = l.commit({ "link": "now a file\n" }, { rm: ["link"] });
+    l.push();
+    const o = record("P15b", await l.run(l.baseSha, sha));
+    expect(o.verdict).toBe("merge");
+    expect(o.landed).toBe("new commit, base tree == proposal tree");
+  });
+
+  it("P15c a file a later commit turned into a symlink is refused", async () => {
+    const l = await lane({ "app.txt": "v1\n" });
+    l.commit({ "link": "a file first\n" });
+    const sha = l.commit({}, { rm: ["link"], symlink: { "link": "app.txt" } });
+    l.push();
+    const o = record("P15c", await l.run(l.baseSha, sha));
+    expect(o.verdict).toBe("reject");
+    expect(o.reason).toContain("link is a symlink");
   });
 
   it("P16 a file that is not UTF-8 text", async () => {
@@ -285,7 +314,22 @@ describe("gate parity: what a lane's push gets back", () => {
     const sha = l.commit({ "blob.bin": Buffer.from([0xff, 0xfe, 0x00, 0x62]) });
     l.push();
     const o = record("P16", await l.run(l.baseSha, sha));
-    expect(o.verdict).not.toBe("merge");
+    expect(o.attempts).toHaveLength(1);
+    expect(o.verdict).toBe("reject");
+    expect(o.reason).toMatch(UNSUPPORTED);
+    expect(o.reason).toContain("blob.bin is not UTF-8 text");
+    expect(o.verify).toHaveLength(0);
+  });
+
+  it("P21 a text file over 8 MiB", async () => {
+    const l = await lane({ "app.txt": "v1\n" });
+    const sha = l.commit({ "big.txt": "x".repeat(9 * 1048576) });
+    l.push();
+    const o = record("P21", await l.run(l.baseSha, sha));
+    expect(o.attempts).toHaveLength(1);
+    expect(o.verdict).toBe("reject");
+    expect(o.reason).toContain("big.txt is 9.0 MiB, over the 8 MiB cap");
+    expect(o.verify).toHaveLength(0);
   });
 
   it("P17 the first merge onto an empty base", async () => {

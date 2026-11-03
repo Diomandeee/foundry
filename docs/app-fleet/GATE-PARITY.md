@@ -1,6 +1,6 @@
 ---
 status: current
-describes: [workers/gate/src/decide.ts, workers/gate/src/merge.ts, workers/gate/src/pipeline.ts, workers/gate/src/gate-parity.test.ts]
+describes: [workers/gate/src/decide.ts, workers/gate/src/merge.ts, workers/gate/src/pipeline.ts, workers/gate/src/gate-parity.test.ts, packages/artifacts-port/src/cloudflare.ts]
 verified: 2026-11-03 (gate-parity.test.ts run against this tree and against gate-hotfix 9fe6444, the gate deployed until 06:50Z)
 ---
 
@@ -40,10 +40,23 @@ P10 another lane merged a different file, P11 a real conflict, P12 another lane 
 unknown sha (`proposal_not_found`), P17 the first merge onto an empty base. In every merge the landed tree equals
 base plus the change.
 
-## Defects both gates share (not parity, not fixed here)
+## Content the transport cannot carry (fixed after parity, both gates had it)
 
-- P15 a symlink and P16 a file that is not UTF-8: both record `infra_failure` and retry until the queue drops the
-  push. The refusal is deterministic, so it should be a reject the lane can read.
+The admission path carries file contents as UTF-8 text, so a symlink, a submodule, bytes that are not UTF-8 or a
+file over 8 MiB cannot land. Both gates recorded `infra_failure` for these and the queue retried until it dropped
+the push, so the lane saw `error` rows and then silence. Since 2026-11-03 the gate rejects them at once, before the
+verifier runs, with `invalid_args` and a reason that names the path, for example
+"unsupported content: link is a symlink; the gate lands regular and executable UTF-8 text files up to 8 MiB".
+
+- Symlinks and submodules come from the port's tree diff (`CommitInfo.unsupported`). The newest fork-side commit
+  that touches a path decides what it is, so a symlink a later commit turned back into a file merges (P15b).
+- Bytes that are not UTF-8 and files over 8 MiB come from the port's `readFile`, which throws
+  `UnsupportedContentError` instead of a plain error. An outage is still an error and still retried.
+- Tests: P15, P15b, P15c, P16, P21 in `gate-parity.test.ts`; the port's typed error and modes in
+  `cloudflare.test.ts` and `git.test.ts`.
+
+## Not fixed
+
 - A base over 20,000 files errors in one-foundry's merger (`completeTree` budget); the deployed gate has no such
   cap. The largest base on 2026-11-03 is motionmix with 2,810 files (comp-core 579, motionmixapp 554, airdeck 839).
 
