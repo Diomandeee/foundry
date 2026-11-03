@@ -95,6 +95,10 @@ export class IsomorphicMerger implements Merger {
     const proposal=await completeTree(fs,proposalDir,proposalHead);
     const base=await completeTree(fs,dir,req.expectedBaseSha);
     const expected=await admissionOverlay(base,proposal,req);
+    // The base already holds exactly base + change: a lane re-pushed a change that merged under an
+    // earlier sha (foundry_ops land amends and pushes again when no verdict arrives in time). Nothing
+    // to land, and the base head is truthfully where the change is; erroring here retried forever (643).
+    if(req.expectedBaseSha&&equalTrees(base,expected))return req.expectedBaseSha;
     if(req.expectedBaseSha){
       const prior=await git.readCommit({fs,dir,oid:req.expectedBaseSha});
       if(prior.commit.parent.length<=1&&prior.commit.message.split('\n').includes(`Fork-Head: ${req.forkHeadSha}`)){
