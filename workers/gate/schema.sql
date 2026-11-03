@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS tickets (
   scope_json TEXT NOT NULL
 );
 
--- Local source preparation only. Apply only with separate migration approval.
+-- Applied to foundry-decisions-staging 2026-11-03 (with decisions.verification) before gate 33a0b98c.
 CREATE TABLE IF NOT EXISTS verification_receipts (
   sha256 TEXT PRIMARY KEY CHECK(length(sha256)=64),
   receipt TEXT NOT NULL

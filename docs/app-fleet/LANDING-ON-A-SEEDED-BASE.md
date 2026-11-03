@@ -112,8 +112,11 @@ The staging gate now builds and tests a merge before it lands, for any base that
 - **How it is wired.**
   - Gate: `VERIFY_URL` is a secret holding the token path, `VERIFY_ENFORCE=1`, `VERIFY_TIMEOUT_MS=840000`, and the `VERIFY_SERVICE` Workers VPC binding. The VPC service is `foundry-verify` (01a19f18).
   - Tunnel: Cloudflare Tunnel `foundry-verify` (fb73dc27), run by `com.foundry.verify-tunnel`. It has no public hostname.
-  - The deployed gate source is `gate-hotfix` branch `hotfix/gate-diff-mode-20261019`. Its verify changes (VERIFY_TIMEOUT_MS, the VERIFY_SERVICE binding, VERIFY_ENFORCE=1, VerifierBusy) are ported to this branch, beside this branch's own VERIFY_REQUIRE_CHECKED and verification receipts, which stay unset or off on staging.
-  - Before deploying the gate from this branch instead, check two things. First, it needs this branch's D1 schema for verification receipts (`workers/gate/schema.sql`). Second, check `gate-hotfix` for gate fixes made after the port: `git log 312485a..hotfix/gate-diff-mode-20261019 -- workers packages`.
+  - Since 2026-11-03 05:00Z the staging gate is deployed from this repository (version 33a0b98c, commit b4d5c8c). It has the verify changes, VERIFY_REQUIRE_CHECKED (unset on staging), verification receipts, and gate-hotfix 9fe6444 merged in. `gate-hotfix` is no longer the deploy source; a gate fix made there must be merged here before the next deploy.
+  - Staging D1 got the receipt schema first: `decisions.verification` and the immutable `verification_receipts` table (both additive, so an older gate version still runs on it). Every decision that reaches the verifier now writes a receipt, including "not checked" ones.
+  - This repository's merger checks that the landed tree equals base plus the admitted change (`admissionOverlay`), file by file and mode by mode. Before the deploy it refused executables and file to directory changes; b4d5c8c admits both, and three tests compare the overlay with what `commitForkFiles` lands.
+  - Live proof: scratch base `gate-repro2-20261103` (allowlist .gitignore), decision 639. One merge edited and added executables, added nested files, turned a file into a directory and deleted a file; the landed tree equals the proposal (`git diff --raw` empty). Rollback: `npx wrangler rollback 20789530-9f24-4e17-be5b-bf226472e251 --env staging` from `workers/gate`.
+  - `node_modules` in a checkout can be empty: run `npm ci` before `npm test` or a deploy.
   - Verifier config is in `~/.config/foundry/verify.json` (which bases) and `verify-token` (0600); its log is `~/.fleet/verify/verify.log`.
 - **Proved on 2026-11-02.**
   - A docs change skipped and merged.
