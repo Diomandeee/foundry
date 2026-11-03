@@ -3,7 +3,7 @@
 
   python3 -m unittest tools/foundry-ops/test_foundry_ops.py
 """
-import json, os, pathlib, subprocess, sys, tempfile, unittest
+import hashlib, json, os, pathlib, subprocess, sys, tempfile, unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import foundry_ops as fo  # noqa: E402
@@ -162,6 +162,33 @@ class ScanTest(LaneTest):
         self.assertEqual(lane["untracked"], ["New.swift"])
         self.assertEqual(lane["pending"], [])
         self.assertEqual(s["overlaps"], [])  # preflight and overlaps still see committed and edited files only
+
+    def test_stripped_assets_are_not_untracked_work(self):
+        # motionmixapp 2026-11-02: every landed lane read untracked-only over the same 38 binaries from assets.json.
+        seeded = b"linked in by land\n"
+        tmp = self.r.lane("recipe")
+        self.r.set_main(self.r.commit(tmp, {
+            ".foundry/generated.json": json.dumps({"format": "foundry.generated.v1", "files": ["gen.txt"],
+                                                   "run": ["python3", "gen.py"], "assets": ".foundry/assets.json"}),
+            ".foundry/assets.json": json.dumps({"format": "foundry.assets.v1", "stripped": [
+                {"path": p, "bytes": len(seeded), "sha256": hashlib.sha256(seeded).hexdigest()}
+                for p in ("Frameworks/lib.a", "Frameworks/Echelon.xcframework/Info.plist")]})}))
+        wt = self.r.lane("lane")
+        c = self.r.commit(wt, {"app.txt": "a\nlanded\n"})
+        self.r.squash_land(self.conf, c, {"app.txt": "a\nlanded\n"})
+        self.r.write(wt, "Frameworks/lib.a", "linked in by land\n")
+        self.r.write(wt, "Frameworks/Echelon.xcframework/Info.plist", "linked in by land\n")
+        lane = self.lane_by_branch(fo.scan(self.r.path, BASE), "lane")
+        self.assertEqual((lane["state"], lane["untracked"]), ("landed", []))
+        self.r.write(wt, "analysis/study.json", "real untracked work\n")
+        lane = self.lane_by_branch(fo.scan(self.r.path, BASE), "lane")
+        self.assertEqual((lane["state"], lane["untracked"]), ("untracked-only", ["analysis/study.json"]))
+        self.r.write(wt, "Frameworks/lib.a", "rebuilt in the lane\n")  # a changed asset is work again
+        lane = self.lane_by_branch(fo.scan(self.r.path, BASE), "lane")
+        self.assertEqual(lane["untracked"], ["Frameworks/lib.a", "analysis/study.json"])
+        run("git", "update-ref", "-d", "refs/heads/lane", cwd=self.r.path)
+        self.assertEqual(self.lane_by_branch(fo.scan(self.r.path, BASE), "lane")["pending"],
+                         ["Frameworks/lib.a", "analysis/study.json"])
 
     def test_landing_the_land_log_does_not_know_is_matched_by_patch_id(self):
         # participation/build-139: landed as 5271c2a from another host, so Mac1's land log had none of its shas.

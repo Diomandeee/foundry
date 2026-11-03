@@ -46,7 +46,7 @@ Credentials never reach output: the Cloudflare token comes from `wrangler auth t
 the task token is read from its 0600 file, saved task responses are written 0600 and only allowlisted fields
 are ever read back. Git pushes go through foundry-push / foundry-fetch, which hand tokens to git via askpass.
 """
-import argparse, datetime, json, os, pathlib, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
+import argparse, datetime, hashlib, json, os, pathlib, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]  # the foundry checkout: wrangler + tools/subscribe-repo.sh
 CONF = pathlib.Path.home() / ".config/foundry"
@@ -301,6 +301,38 @@ def generated_spec(repo, ref):
     return spec
 
 
+def stripped_assets(repo, ref, spec):
+    """Files the seed stripped and land links back in (the recipe's "assets" manifest at `ref`), as
+    {path: (bytes, sha256)}. Every lane holds them untracked on purpose."""
+    manifest = (spec or {}).get("assets")
+    p = git("show", f"{ref}:{manifest}", cwd=repo) if manifest else None
+    if not p or p.returncode != 0:
+        return {}
+    return {a["path"]: (a.get("bytes"), a.get("sha256")) for a in json.loads(p.stdout).get("stripped", [])
+            if a.get("path")}
+
+
+def not_assets(wt, paths, assets):
+    """`paths` less the stripped assets whose disk bytes still match the manifest. A rebuilt one stays: it is
+    work, and land would link the manifest's copy over it."""
+    def same(path):
+        size, sha = assets[path]
+        full = os.path.join(wt, path)
+        try:
+            if size is not None and os.path.getsize(full) != size:
+                return False
+            if not sha:
+                return True
+            h = hashlib.sha256()
+            with open(full, "rb") as f:
+                for block in iter(lambda: f.read(1 << 20), b""):
+                    h.update(block)
+            return h.hexdigest() == sha
+        except OSError:
+            return False
+    return [p for p in paths if p not in assets or not same(p)]
+
+
 def file_version(wt, rev, path, dirty):
     """The blob a lane has for `path`: its working file when edited, else its commit's."""
     if path in dirty:
@@ -351,12 +383,12 @@ def landed_by_content(repo, main_ref, fork, lane_commits, memo):
     return None
 
 
-def orphan_lane(repo, main_ref, lane, wt, now):
+def orphan_lane(repo, main_ref, lane, wt, now, assets):
     """A worktree whose branch ref is gone: no commit to compare, so every file it holds that main lacks (or has
-    with other bytes) is work that exists only on disk."""
+    with other bytes) is work that exists only on disk, stripped assets aside."""
     files = _paths(git("ls-files", "-z", cwd=wt).stdout) + _paths(git("ls-files", "--others", "--exclude-standard",
                                                                       "-z", cwd=wt).stdout)
-    only_here = not_on(repo, main_ref, wt, files)
+    only_here = not_on(repo, main_ref, wt, not_assets(wt, files, assets))
     mtimes = [os.path.getmtime(os.path.join(wt, f)) for f in only_here]
     lane.update(state="orphan", last_commit_age_d=None, pending=only_here, dirty=only_here, untracked=[],
                 dirty_age_d=round((now - max(mtimes)) / 86400, 1) if mtimes else None, active=False)
@@ -369,12 +401,15 @@ def scan(repo, base, active_days=ACTIVE_DAYS):
     States: landed, clean-pending, conflicts-with-main, untracked-only (everything committed has landed, but the
     worktree holds new files main does not have), unrelated-history (no common commit with main) and orphan
     (branch ref gone). `untracked` lists untracked, non-ignored files whose bytes main does not have; they never
-    count as pending, so preflight and overlaps are decided by committed and edited files only."""
+    count as pending, so preflight and overlaps are decided by committed and edited files only. Paths in the
+    base's stripped-assets manifest are left out of both while their bytes match it: every lane has them
+    untracked by design."""
     main_ref = f"refs/foundry/{base}/main"
     main_sha = git("rev-parse", "--verify", main_ref, cwd=repo, check=True).stdout.strip()
     landed = landed_commits(base)
     spec = generated_spec(repo, main_ref)
     generated = set((spec or {}).get("files", []))
+    assets = stripped_assets(repo, main_ref, spec)
     now = time.time()
     memo = {}
     lanes = []
@@ -382,7 +417,7 @@ def scan(repo, base, active_days=ACTIVE_DAYS):
         wt, head = w["path"], w["head"]
         lane = {"path": wt, "branch": w.get("branch"), "head": head}
         if w.get("unborn"):
-            lane = orphan_lane(repo, main_ref, lane, wt, now)
+            lane = orphan_lane(repo, main_ref, lane, wt, now, assets)
             if lane["pending"]:
                 lanes.append(lane)
             continue
@@ -391,7 +426,8 @@ def scan(repo, base, active_days=ACTIVE_DAYS):
         dirty = {l[3:].split(" -> ")[-1] for l in st.stdout.splitlines() if l}
         mtimes = [os.path.getmtime(os.path.join(wt, f)) for f in dirty if os.path.exists(os.path.join(wt, f))]
         lane["dirty_age_d"] = round((now - max(mtimes)) / 86400, 1) if mtimes else None
-        untracked = not_on(repo, main_ref, wt, _paths(git("ls-files", "--others", "--exclude-standard", "-z", cwd=wt).stdout))
+        untracked = not_on(repo, main_ref, wt, not_assets(wt, _paths(git("ls-files", "--others", "--exclude-standard",
+                                                                         "-z", cwd=wt).stdout), assets))
         lane["untracked"] = untracked
         fork = git("merge-base", head, main_ref, cwd=repo).stdout.strip()
         if not fork:
