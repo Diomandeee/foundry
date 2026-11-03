@@ -388,6 +388,75 @@ class WaitDecisionTest(unittest.TestCase):
             fo.time.time = real
 
 
+class PushUntilDecidedTest(unittest.TestCase):
+    """2026-11-03: land stopped waiting for its first push 8 s before the gate merged it (decision 638), then
+    pushed the same change again as a new event (643) and reported no-decision for a change that had landed."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.wt = self.tmp.name
+        run("git", "init", "-q", cwd=self.wt)
+        run("git", "config", "user.email", "t@t", cwd=self.wt)
+        run("git", "config", "user.name", "t", cwd=self.wt)
+        pathlib.Path(self.wt, "app.txt").write_text("v2\n")
+        run("git", "add", "-A", cwd=self.wt)
+        run("git", "commit", "-q", "-m", "c", cwd=self.wt)
+        self.env = os.environ.get("GIT_COMMITTER_DATE")
+        self.patched = (fo.time.sleep, fo.time.time, fo.log)
+        self.now = 0
+        fo.time.sleep = lambda s: setattr(self, "now", self.now + s)
+        fo.time.time = lambda: self.now
+        fo.log = lambda *a: None
+        self.pushed, self.rows = [], {}  # rows: sha -> (visible from time, row)
+
+    def tearDown(self):
+        fo.time.sleep, fo.time.time, fo.log = self.patched
+        if self.env is None:
+            os.environ.pop("GIT_COMMITTER_DATE", None)
+        else:
+            os.environ["GIT_COMMITTER_DATE"] = self.env
+        self.tmp.cleanup()
+
+    def cf(self):
+        test = self
+
+        class CF:
+            def d1(self, sql, params):
+                hits = [r for sha, (at, r) in test.rows.items() if sha in params[1:] and test.now >= at]
+                return hits[-1:] if hits else []
+        return CF()
+
+    def push(self, head):
+        self.pushed.append(head)
+        # Real attempts are minutes apart; here the next amend must not land in the same second.
+        os.environ["GIT_COMMITTER_DATE"] = f"{1_800_000_000 + len(self.pushed)} +0000"
+
+    def test_a_first_push_decided_after_the_wait_is_the_verdict_with_no_second_push(self):
+        def push(head):
+            self.push(head)
+            # 638's timing: decided 2 minutes after the push, just past the old 120 s wait.
+            self.rows[head] = (self.now + 125, {"verdict": "merge", "merged_sha": "m", "after_sha": head})
+        d, heads = fo.push_until_decided(self.cf(), "fork", self.wt, fo.DECISION_WAIT_S, push=push)
+        self.assertEqual(d["verdict"], "merge")
+        self.assertEqual(len(self.pushed), 1, "the first push was decided; no new event")
+
+    def test_after_a_re_push_the_first_push_s_verdict_still_counts(self):
+        def push(head):
+            self.push(head)
+            if len(self.pushed) == 1:
+                # Decided while the second wait runs, never for the second head.
+                self.rows[head] = (self.now + 200, {"verdict": "merge", "merged_sha": "m", "after_sha": head})
+        d, heads = fo.push_until_decided(self.cf(), "fork", self.wt, 120, push=push)
+        self.assertEqual(len(self.pushed), 2)
+        self.assertEqual(d["after_sha"], self.pushed[0])
+        self.assertEqual(heads, self.pushed)
+
+    def test_a_push_with_no_row_at_all_is_pushed_once_more_under_a_new_sha(self):
+        d, heads = fo.push_until_decided(self.cf(), "fork", self.wt, 120, push=self.push)
+        self.assertIsNone(d)
+        self.assertEqual(len(set(self.pushed)), 2)
+
+
 class VerifierVerdictTest(unittest.TestCase):
     """A refused lander is told which tests failed, from the verifier's log."""
 

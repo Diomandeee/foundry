@@ -58,7 +58,9 @@ ENVS = {
 }
 API = "https://api.cloudflare.com/client/v4"
 SETTLE_S = 30        # a push made seconds after a new subscription can be dropped (2026-10-27)
-DECISION_WAIT_S = 120
+# Long enough for a gate under load: decision 638 (2026-11-03) came 2 minutes after its push, just past the
+# old 120 s wait, and land re-pushed the change as a second event. A re-push is for a dropped push only.
+DECISION_WAIT_S = 300
 # A base whose main carries .foundry/verify.json is built and tested before the gate decides
 # (tools/foundry-verify): minutes, plus up to 3 queue retries if the verifier asks for one.
 VERIFIED_DECISION_WAIT_S = 1800
@@ -715,24 +717,53 @@ def commits_of(spec, repo):
     raise SystemExit(f"{spec['task']}: give commits or range")
 
 
-def decision_for(cf, fork, sha):
-    rows = cf.d1("select id, verdict, reason, merged_sha, decided_at from decisions where repo = ? and after_sha = ? "
-                 "order by id desc limit 1", (fork, sha))
+def decision_for(cf, fork, shas):
+    """The newest decision row for any of `shas` pushed to `fork`."""
+    shas = [shas] if isinstance(shas, str) else list(shas)
+    rows = cf.d1("select id, verdict, reason, merged_sha, decided_at, after_sha from decisions where repo = ? and "
+                 f"after_sha in ({', '.join('?' * len(shas))}) order by id desc limit 1", (fork, *shas))
     return rows[0] if rows else None
 
 
-def wait_decision(cf, fork, sha, timeout):
-    """The gate's verdict for this push. An `error` row is the gate saying it will retry (its queue
-    redelivers, e.g. when the verifier asked for one), not a verdict: keep waiting, and return it only
-    if nothing better arrives in time."""
+def wait_decision(cf, fork, shas, timeout):
+    """The gate's verdict for any of `shas` (the heads this landing pushed). An `error` row is the gate saying
+    it will retry (its queue redelivers, e.g. when the verifier asked for one), not a verdict: keep waiting,
+    and return it only if nothing better arrives in time."""
     end, last_error = time.time() + timeout, None
     while time.time() < end:
-        d = decision_for(cf, fork, sha)
+        d = decision_for(cf, fork, shas)
         if d and d["verdict"] != "error":
             return d
         last_error = d or last_error
         time.sleep(10)
     return last_error
+
+
+def push_until_decided(cf, fork, wt, wait_s, push=None, attempts=2):
+    """Push HEAD to the fork and wait for the gate's verdict; returns (decision, heads pushed).
+
+    A push that leaves no row at all is re-stamped and pushed once more (a push made seconds after a new
+    subscription can be dropped), and from then on every head pushed is waited on, not just the newest:
+    the gate can still decide the first one. On 2026-11-03 it merged a first push (decision 638) 8 s after
+    land stopped waiting for it, and the re-push of the same change became a second event (643)."""
+    push = push or (lambda head: sh([str(BIN / "foundry-push"), fork, "HEAD:refs/heads/main", "--force"], cwd=wt))
+    heads, d = [], None
+    for attempt in range(1, attempts + 1):
+        if heads:
+            # One last look before making a new event: the verdict may have landed since the wait ended.
+            d = decision_for(cf, fork, heads)
+            if d:
+                break
+            log("  no decision row: the push was likely dropped; re-stamping and pushing once more")
+        sh(["git", "commit", "--amend", "--no-edit", "--date=now"], cwd=wt)
+        head = sh(["git", "rev-parse", "HEAD"], cwd=wt).strip()
+        push(head)
+        heads.append(head)
+        log(f"  pushed {head[:8]} to {fork} (attempt {attempt}); waiting for the gate")
+        d = wait_decision(cf, fork, heads, wait_s)
+        if d:
+            break
+    return d, heads
 
 
 def verifier_verdict(head, log_path=None):
@@ -794,16 +825,12 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
         wait_s = VERIFIED_DECISION_WAIT_S if verified else DECISION_WAIT_S
         if verified:
             log(f"  {spec['base']} verifies merges (.foundry/verify.json): waiting up to {wait_s // 60} min")
-        for attempt in (1, 2):
-            sh(["git", "commit", "--amend", "--no-edit", "--date=now"], cwd=wt)
-            head = sh(["git", "rev-parse", "HEAD"], cwd=wt).strip()
-            sh([str(BIN / "foundry-push"), fork, "HEAD:refs/heads/main", "--force"], cwd=wt)
-            log(f"  pushed {head[:8]} to {fork} (attempt {attempt}); waiting for the gate")
-            d = wait_decision(cf, fork, head, wait_s)
-            if d:
-                break
-            log("  no decision row: the push was likely dropped; re-stamping and pushing once more")
+        d, heads = push_until_decided(cf, fork, wt, wait_s)
+        # The head the verdict is about, which is not always the last one pushed.
+        head = (d or {}).get("after_sha") or heads[-1]
         result.update(pushed=head, decision=d)
+        if len(heads) > 1:
+            result["pushes"] = heads
         if not d:
             result["verdict"] = "no-decision"
             return result
@@ -828,6 +855,11 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
             sh(["git", "push", remote, *refs], cwd=repo)
             result["github"] = refs
         if spec["deleteFork"]:
+            later = [h for h in heads if h != head]
+            if later:
+                # Let the gate finish the duplicate push before its fork goes; a missing fork is an error it retries.
+                log(f"  waiting for the gate to settle {', '.join(h[:8] for h in later)} before deleting the fork")
+                wait_decision(cf, fork, later, DECISION_WAIT_S)
             cf.delete_repo(fork)
             result["fork_deleted"] = True
         # A squash merge never makes the lane's branch an ancestor of main; move it onto the merge.
