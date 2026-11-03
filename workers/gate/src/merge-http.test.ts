@@ -2,59 +2,25 @@
 // smart-HTTP remotes (git http-backend behind a local server), on the fs the tests use for the rest.
 // 2026-11-03: the first deploy from one-foundry errored a lane's second push of content its first push
 // had already merged (decision 643); the gate it replaced answered that with the base head.
-import { execFileSync, spawn } from "node:child_process";
 import * as fs from "node:fs";
-import { createServer, type Server } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { git as sh, serveGit } from "./git-http.testkit.js";
 import { IsomorphicMerger } from "./merge.js";
 
-const BACKEND = join(execFileSync("git", ["--exec-path"], { encoding: "utf8" }).trim(), "git-http-backend");
 let root: string;
-let server: Server;
+let server: { url: string; close(): Promise<void> };
 let url: string;
-
-function sh(cwd: string, ...args: string[]): string {
-  return execFileSync("git", args, {
-    cwd, encoding: "utf8",
-    env: { ...process.env, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@t", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@t" },
-  }).trim();
-}
 
 beforeAll(async () => {
   root = fs.mkdtempSync(join(tmpdir(), "foundry-merge-http-"));
-  server = createServer((req, res) => {
-    const u = new URL(req.url ?? "/", "http://x");
-    const cgi = spawn(BACKEND, [], { env: {
-      ...process.env, GIT_PROJECT_ROOT: root, GIT_HTTP_EXPORT_ALL: "1", REMOTE_USER: "x",
-      PATH_INFO: u.pathname, QUERY_STRING: u.search.slice(1), REQUEST_METHOD: req.method ?? "GET",
-      CONTENT_TYPE: req.headers["content-type"] ?? "", GIT_PROTOCOL: String(req.headers["git-protocol"] ?? ""),
-    } });
-    req.pipe(cgi.stdin);
-    const out: Buffer[] = [];
-    cgi.stdout.on("data", (b: Buffer) => out.push(b));
-    cgi.on("close", () => {
-      const all = Buffer.concat(out);
-      const split = all.indexOf("\r\n\r\n");
-      const headers = all.subarray(0, split).toString().split("\r\n");
-      let status = 200;
-      for (const h of headers) {
-        const [k, v] = [h.slice(0, h.indexOf(":")), h.slice(h.indexOf(":") + 1).trim()];
-        if (k.toLowerCase() === "status") status = parseInt(v, 10);
-        else res.setHeader(k, v);
-      }
-      res.writeHead(status);
-      res.end(all.subarray(split + 4));
-    });
-  });
-  await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
-  const addr = server.address();
-  url = `http://127.0.0.1:${typeof addr === "object" && addr ? addr.port : 0}`;
+  server = await serveGit(root);
+  url = server.url;
 });
 
 afterAll(async () => {
-  await new Promise((r) => server.close(r));
+  await server.close();
   fs.rmSync(root, { recursive: true, force: true });
 });
 

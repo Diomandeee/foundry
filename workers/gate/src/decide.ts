@@ -232,7 +232,10 @@ export async function decidePush(
           verdict: "reject",
           reason: {
             reason: "invalid_args",
-            message: `branch ${push.ref} is not in fork history at ${push.after.slice(0, 8)}`,
+            // Usually a newer push moved the branch; that push is its own event and is decided on its own.
+            message: refHead
+              ? `${push.ref} moved past ${push.after.slice(0, 8)} (now ${refHead.slice(0, 8)}); the newer push is decided on its own`
+              : `${push.ref} does not exist on the fork`,
           },
         };
       }
@@ -303,7 +306,9 @@ export async function decidePush(
         reason: { reason: "path_not_allowed", path: badPath },
       };
     }
-    if(forkPaths.size>2000||[...forkPaths].some(p=>p.length>1024))return {verdict:'conflict',ticket,files:['admission-path-budget'],planAdvisory};
+    // The port's tree diff already gives up past 5,000 paths (unknown files, a conflict above). A lower
+    // cap here sent a 2,100-file import to the resolver that the deployed gate merges (gate parity P19).
+    if(forkPaths.size>5000||[...forkPaths].some(p=>p.length>1024))return {verdict:'conflict',ticket,files:['admission-path-budget'],planAdvisory};
     const overlapping = [...forkPaths].filter((p) => basePaths.has(p));
     const realConflicts: string[] = [];
     for (const p of overlapping) {
@@ -345,15 +350,12 @@ export async function decidePush(
     // 3. Clean: collect fork-side file contents for the merger.
     // Paths absent on the fork side are deletions the merger must apply.
     const files: Record<string, string> = Object.create(null);
-    let admittedBytes=0;
     const deletedFiles: string[] = [];
     for (const p of forkPaths) {
       const content = await fork.readFile(push.after, p);
-      if (content !== null) {
-        admittedBytes+=new TextEncoder().encode(content).byteLength;
-        if(admittedBytes>8*1048576)throw new Error('admission text-byte budget');
-        files[p]=content;
-      }
+      // No total-size cap: the port refuses a file over 8 MiB, and a cap thrown here was an error the queue
+      // retried until it dropped the push, where the deployed gate merges it (gate parity P20).
+      if (content !== null) files[p] = content;
       else deletedFiles.push(p);
     }
     return {

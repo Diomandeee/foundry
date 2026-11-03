@@ -553,6 +553,6 @@ describe("decidePush branch resolution", () => {
     expect(res.reason.reason).toBe("invalid_args");
     expect(
       res.reason.reason === "invalid_args" ? res.reason.message : "",
-    ).toMatch(/fork point|not in fork history/);
+    ).toMatch(/fork point|does not exist on the fork/);
   });
 });

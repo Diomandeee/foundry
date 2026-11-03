@@ -39,7 +39,10 @@ export interface VerifyVerdict {
 export interface VerifyRequest {
   /** The fork the proposal came from. */
   repo: string;
-  /** The branch the result would land on. */
+  /**
+   * The branch the push moved on `repo`, where the verifier fetches `headSha` (the name is historical: the
+   * deployed gate and tools/foundry-verify have always used it this way; the base branch is the base's main).
+   */
   baseBranch: string;
   /** Paths the proposal changes, so a checker can scope its work. */
   files: readonly string[];
