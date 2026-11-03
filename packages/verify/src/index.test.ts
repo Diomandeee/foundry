@@ -168,3 +168,22 @@ describe("verifyTimeoutMs", () => {
     expect(verifyTimeoutMs("3600000")).toBe(840_000);
   });
 });
+
+describe("HttpVerifier fetcher", () => {
+  it("sends through the given fetcher instead of the global fetch", async () => {
+    const calls: string[] = [];
+    const global = vi.fn();
+    vi.stubGlobal("fetch", global);
+    const v = new HttpVerifier("http://verify.internal/tok", {
+      fetcher: async (url) => {
+        calls.push(url);
+        return new Response(JSON.stringify({ runs: [{ name: "t", ok: true }] }), { status: 200 });
+      },
+    });
+    const out = await v.run(req);
+    expect(calls).toEqual(["http://verify.internal/tok/api/verify"]);
+    expect(global).not.toHaveBeenCalled();
+    expect(out).toMatchObject({ checked: true, ok: true });
+    vi.unstubAllGlobals();
+  });
+});

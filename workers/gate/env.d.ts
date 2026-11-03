@@ -20,5 +20,7 @@ interface Env {
   VERIFY_REQUIRE_CHECKED?: string;
   /** How long to wait for the verifier, in ms (default 120000, capped at 840000). */
   VERIFY_TIMEOUT_MS?: string;
+  /** Workers VPC binding to a private verifier; VERIFY_URL is then fetched through it. */
+  VERIFY_SERVICE?: Fetcher;
   DEBUG?: string;
 }

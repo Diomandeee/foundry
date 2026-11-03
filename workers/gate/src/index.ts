@@ -38,8 +38,13 @@ function depsFromEnv(env: Env): PipelineDeps {
   // checked". It blocks only when VERIFY_REQUIRE_CHECKED is explicitly selected. A
   // deployment without a verifier behaves exactly as it did before.
   if (env.VERIFY_URL) {
+    // VERIFY_SERVICE is a Workers VPC binding: the verifier runs on a private fleet host
+    // with no public address, reached through a Cloudflare Tunnel. Without it, VERIFY_URL
+    // is fetched directly.
+    const service = env.VERIFY_SERVICE;
     deps.verifier = new HttpVerifier(env.VERIFY_URL, {
       timeoutMs: verifyTimeoutMs(env.VERIFY_TIMEOUT_MS),
+      ...(service ? { fetcher: (url: string, init: RequestInit) => service.fetch(url, init) } : {}),
     });
     deps.verifyEnforce = env.VERIFY_ENFORCE === "1";
   }

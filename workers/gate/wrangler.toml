@@ -33,6 +33,11 @@ enabled = true
 ARTIFACTS_NS = "foundry-staging"
 # The verifier (VERIFY_URL, a secret) builds and tests on a fleet worker, which takes minutes.
 VERIFY_TIMEOUT_MS = "840000"
+# The verifier listens on Mac1 127.0.0.1:8803 with no public address. This Workers VPC service
+# reaches it through Cloudflare Tunnel foundry-verify (fb73dc27); VERIFY_URL (secret) carries its token.
+[[env.staging.vpc_services]]
+binding = "VERIFY_SERVICE"
+service_id = "01a19f18-d997-7732-9826-c1bc7a8ba73a"
 [[env.staging.artifacts]]
 binding = "ARTIFACTS"
 namespace = "foundry-staging"
