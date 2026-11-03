@@ -11,7 +11,8 @@ lane pushing an already merged change a second time, errored where the deployed 
 version 20789530) answers with the base head. This page records every behavior where the two gates differ, as
 observed, not as read from the code. Since 06:50Z the staging gate runs this repository's 9900737 (version 30780716);
 the "gate-hotfix" column is the gate it replaced and the rollback target (20789530). P6 was proved live as decisions
-663 and 664 (`LANDING-ON-A-SEEDED-BASE.md`).
+663 and 664 (`LANDING-ON-A-SEEDED-BASE.md`). Since 14:44Z it runs 3437371 (version 51e1dd00), which adds the reject described under
+"Content the transport cannot carry".
 
 `workers/gate/src/gate-parity.test.ts` runs `handlePush` with the production port (`cloudflarePort` over a fake
 Artifacts binding that reads bare repos with git) and the production merger (`IsomorphicMerger` over git smart
@@ -54,6 +55,9 @@ verifier runs, with `invalid_args` and a reason that names the path, for example
   `UnsupportedContentError` instead of a plain error. An outage is still an error and still retried.
 - Tests: P15, P15b, P15c, P16, P21 in `gate-parity.test.ts`; the port's typed error and modes in
   `cloudflare.test.ts` and `git.test.ts`.
+- Live on version 51e1dd00 (2026-11-03): decision 674, a symlink, and 675, bytes that are not UTF-8, were rejected
+  with one decision row each and no receipt. The real Artifacts binding reports a symlink in a form `unsupportedKind`
+  recognizes; a submodule and the 8 MiB cap were not tried live.
 
 ## Not fixed
 
