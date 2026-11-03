@@ -38,6 +38,8 @@ def commit(repo, files, msg, delete=()):
 XCODE_PASS = "Test Suite 'All tests' passed\n\t Executed 12 tests, with 0 failures (0 unexpected) in 1.0 (1.0) seconds\n** TEST SUCCEEDED **\n"
 XCODE_FAIL = ("\t Executed 12 tests, with 2 failures (0 unexpected) in 1.0 (1.0) seconds\nFailing tests:\n"
               "\tATests.testOne()\n\tBTests.testTwo()\n\n** TEST FAILED **\n")
+XCODE_FAIL_CASES = ("Test Case '-[AppTests.ATests testOne]' failed (0.1 seconds).\n"
+                    "Test Case '-[AppTests.CTests testPassed]' passed (0.1 seconds).\n" + XCODE_FAIL)
 XCODE_BUILD_FAIL = "error: cannot find 'x' in scope\n** BUILD FAILED **\n\nThe following build commands failed:\n"
 
 
@@ -50,6 +52,9 @@ class Parse(unittest.TestCase):
         r = vs.parse_xcodebuild(XCODE_FAIL)
         self.assertEqual(r["failing"], {"ATests.testOne()", "BTests.testTwo()"})
         self.assertFalse(r["build_failed"])
+
+    def test_failing_test_ids_for_a_rerun(self):
+        self.assertEqual(vs.parse_xcodebuild(XCODE_FAIL_CASES)["ids"], {"ATests.testOne()": "AppTests/ATests/testOne"})
 
     def test_build_failure(self):
         self.assertTrue(vs.parse_xcodebuild(XCODE_BUILD_FAIL)["build_failed"])
@@ -75,6 +80,12 @@ class Judge(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("C.t()", why)
         self.assertNotIn("A.t()", why)
+
+    def test_flaky_failures_pass_and_are_named(self):
+        ok, why = vs.judge(self.res(["A.t()", "F.t()"]), self.res(["A.t()"]), {"F.t()"})
+        self.assertTrue(ok)
+        self.assertIn("1 flaky", why)
+        self.assertIn("F.t()", why)
 
     def test_build_failure_refuses_unless_main_also_fails(self):
         self.assertFalse(vs.judge(self.res(build_failed=True), self.res())[0])
@@ -184,7 +195,7 @@ class EndToEnd(unittest.TestCase):
         self.origin = os.path.join(self.tmp, "origin")
         os.makedirs(self.origin)
         sh(self.origin, "git", "init", "-q", "-b", "main")
-        recipe = {"name": "xcodebuild test (mac5)", "host": "mac5", "command": ["true"], "skip": ["*.md", "docs/*"]}
+        recipe = {"name": "xcodebuild test (mac5)", "host": "mac5", "command": ["xcodebuild", "test"], "skip": ["*.md", "docs/*"]}
         commit(self.origin, {".foundry/verify.json": json.dumps(recipe), "app.swift": "1\n", "README.md": "r\n"}, "base")
         sh(self.origin, "git", "checkout", "-q", "-b", "fork")
         self.code_head = commit(self.origin, {"app.swift": "2\n"}, "code")
@@ -203,7 +214,7 @@ class EndToEnd(unittest.TestCase):
                 json.dump({"baseRepo": "app"}, f)
         self.saved = (vs.FETCH, vs.TASKS, vs.ROOT, vs.run_job)
         vs.FETCH, vs.TASKS, vs.ROOT = self.fetch, tasks, os.path.join(self.tmp, "verify")
-        self.jobs = []
+        self.jobs, self.commands = [], []
         self.cfg = {"bases": {"app": {"sources": []}}}
 
     def tearDown(self):
@@ -214,6 +225,7 @@ class EndToEnd(unittest.TestCase):
 
         def run_job(repo, recipe, name, deadline):
             self.jobs.append((name, open(os.path.join(repo, "app.swift")).read()))
+            self.commands.append(recipe["command"])
             return {**next(it), "job": f"job-{len(self.jobs)}"}
         vs.run_job = run_job
 
@@ -237,6 +249,28 @@ class EndToEnd(unittest.TestCase):
         self.assertFalse(out["runs"][0]["ok"])
         self.assertIn("B.t()", out["runs"][0]["output"])
         self.assertEqual([j[1] for j in self.jobs], ["2\n", "1\n"])  # candidate, then main itself
+
+    def flaky_case(self, rerun):
+        cand = {"executed": 5, "failing": {"B.t()"}, "build_failed": False, "ids": {"B.t()": "AppTests/B/t"}}
+        self.stub_jobs(cand, {"executed": 5, "failing": set(), "build_failed": False}, rerun)
+        return vs.verify({"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}, self.cfg)
+
+    def test_new_failure_that_passes_on_rerun_is_flaky(self):
+        out = self.flaky_case({"executed": 1, "failing": set(), "build_failed": False})
+        self.assertTrue(out["runs"][0]["ok"])
+        self.assertIn("flaky", out["runs"][0]["output"])
+        # Candidate, main, then the candidate again (not main's tree) with only the new failure selected.
+        self.assertEqual([j[1] for j in self.jobs], ["2\n", "1\n", "2\n"])
+        self.assertEqual(self.jobs[2][0], "verify-app-rerun")
+        self.assertIn("-only-testing:AppTests/B/t", self.commands[2])
+
+    def test_new_failure_that_fails_again_is_refused(self):
+        out = self.flaky_case({"executed": 1, "failing": {"B.t()"}, "build_failed": False})
+        self.assertFalse(out["runs"][0]["ok"])
+        self.assertIn("1 new failing: B.t()", out["runs"][0]["output"])
+
+    def test_a_rerun_that_ran_nothing_proves_nothing(self):
+        self.assertFalse(self.flaky_case({"executed": 0, "failing": set(), "build_failed": False})["runs"][0]["ok"])
 
     def test_main_baseline_is_cached_per_sha(self):
         fail = {"executed": 5, "failing": {"A.t()"}, "build_failed": False}

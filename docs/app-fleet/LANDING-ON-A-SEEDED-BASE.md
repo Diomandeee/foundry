@@ -92,6 +92,34 @@ else does: the gate only sees a lane when it lands, compares whole files, and sq
   Otherwise the result carries the command to run. Without this, a lane that keeps working on its branch conflicts with its own landed code.
 - **Tests:** `python3 -m unittest tools/foundry-ops/test_foundry_ops.py`. They build throwaway repos and need no network.
 
+## Verified merges (staging gate, 2026-11-02)
+
+The staging gate now builds and tests a merge before it lands, for any base that opts in. motionmixapp is the first.
+
+- **What runs.** After admission, the gate POSTs to its verifier, `tools/foundry-verify/verify_server.py` on Mac1 (`com.foundry.verify`, 127.0.0.1:8803).
+  - The verifier rebuilds the tree the gate would write: base main plus the fork's own changes since its fork point.
+  - It runs the base's `.foundry/verify.json`, read from main, so a proposal cannot change its own check. The job goes to the recipe's worker (Mac5 for motionmixapp) through `fabric job run --sync/--link`.
+- **What it refuses.** A merge that adds a failing test that main does not have, or that stops building, gets `verification_failed` naming the tests.
+  - Main's own failures are measured once per main sha, so a red main never blocks the fix for it.
+  - Changes confined to the recipe's `skip` globs (docs) pass as a labelled skip.
+  - A new failure is rerun once, alone (`-only-testing`), on the candidate tree. If the rerun executes it and it passes, it counts as flaky: the merge passes and the summary names it. A test that breaks every time fails twice and is refused. Main has at least one such test (`DiffusionServiceModelLoadTests.testGenerateWhileModelsLoadUsesRuleBasedPath`), which passed at d75efd6 and failed at 5de805b.
+- **When it cannot judge.** A busy worker is waited on for 3 minutes, then forced.
+  - Anything else (fetch failure, deadline, crash) returns 503 `{"retry": true}`. The gate records an `error` row and the queue retries, up to 3 times, then the dead-letter queue. A guarded base fails closed.
+  - If the verifier cannot be reached at all, the gate records "not checked" and merges, so other bases are never held up by Mac1.
+- **`land`.** It waits up to 30 minutes for a base with `.foundry/verify.json`, and treats `error` rows as a retry in progress.
+  - The gate keeps check output out of its ledger, so its reason reads only `failed xcodebuild test (mac5)`. On that refusal, `land` looks up the verifier's verdict for the pushed sha in `~/.fleet/verify/verify.log` and prints which tests failed (`"verification"` in its result). Off Mac1, it prints where to look.
+- **How it is wired.**
+  - Gate: `VERIFY_URL` is a secret holding the token path, `VERIFY_ENFORCE=1`, `VERIFY_TIMEOUT_MS=840000`, and the `VERIFY_SERVICE` Workers VPC binding. The VPC service is `foundry-verify` (01a19f18).
+  - Tunnel: Cloudflare Tunnel `foundry-verify` (fb73dc27), run by `com.foundry.verify-tunnel`. It has no public hostname.
+  - The deployed gate source is `gate-hotfix` branch `hotfix/gate-diff-mode-20261019`, not this branch. Port the verify changes before deploying the gate from anywhere else.
+  - Verifier config is in `~/.config/foundry/verify.json` (which bases) and `verify-token` (0600); its log is `~/.fleet/verify/verify.log`.
+- **Proved on 2026-11-02.**
+  - A docs change skipped and merged.
+  - A real recipe run gave 363 tests, 0 failing, in 3.5 minutes cold.
+  - A first canary that broke a test merged anyway: Mac5 was too loaded to start the job, and "not checked" did not block. It was reverted within 2 minutes, which is why the wait, force and retry rules above exist.
+  - Canary 2 (a commit adding one `XCTFail`) was refused: decision 592, `verification_failed`. The verifier's summary read "363 tests, 1 new failing: ToneHouseHubProbeTests.testServerErrorIsUnreachable()", after waiting out a busy Mac5 for the baseline. 6 minutes from push to refusal. Main did not move.
+- **To stop guarding a base in an emergency,** remove it from `~/.config/foundry/verify.json`. The verifier then answers "nothing checked" and the gate merges as before. To turn the whole check off, `wrangler secret delete VERIFY_URL --env staging` in the gate checkout.
+
 ## Lessons from the first day (2026-10-22/23)
 
 - **No decision row within 2 minutes:** re-run `tools/subscribe-repo.sh staging '<fork>'`, amend the date and push again.

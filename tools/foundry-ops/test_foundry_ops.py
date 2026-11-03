@@ -388,5 +388,30 @@ class WaitDecisionTest(unittest.TestCase):
             fo.time.time = real
 
 
+class VerifierVerdictTest(unittest.TestCase):
+    """A refused lander is told which tests failed, from the verifier's log."""
+
+    def write(self, *rows):
+        d = tempfile.mkdtemp()
+        p = os.path.join(d, "verify.log")
+        with open(p, "w") as f:
+            for r in rows:
+                f.write((r if isinstance(r, str) else json.dumps(r)) + "\n")
+        return p
+
+    def test_latest_verdict_for_the_head(self):
+        p = self.write({"event": "unjudged", "head": "abc", "error": "busy"},
+                       "not json abc",
+                       {"event": "verdict", "head": "other", "summary": "no"},
+                       {"event": "verdict", "head": "abc", "summary": "1 new failing: T.test()"})
+        self.assertEqual(fo.verifier_verdict("abc", p)["summary"], "1 new failing: T.test()")
+
+    def test_missing_log_is_none(self):
+        self.assertIsNone(fo.verifier_verdict("abc", "/nonexistent/verify.log"))
+
+    def test_unknown_head_is_none(self):
+        self.assertIsNone(fo.verifier_verdict("abc", self.write({"event": "verdict", "head": "zzz"})))
+
+
 if __name__ == "__main__":
     unittest.main()

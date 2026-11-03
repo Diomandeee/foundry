@@ -62,6 +62,9 @@ DECISION_WAIT_S = 120
 # A base whose main carries .foundry/verify.json is built and tested before the gate decides
 # (tools/foundry-verify): minutes, plus up to 3 queue retries if the verifier asks for one.
 VERIFIED_DECISION_WAIT_S = 1800
+# The gate keeps check output out of its ledger, so a refusal reads "failed <check>". The verifier
+# runs on Mac1 and logs what failed by head sha; land reads it from there.
+VERIFY_LOG = pathlib.Path.home() / ".fleet/verify/verify.log"
 MAX_AUTHOR_AGE_S = 300
 
 
@@ -732,6 +735,24 @@ def wait_decision(cf, fork, sha, timeout):
     return last_error
 
 
+def verifier_verdict(head, log_path=None):
+    """The verifier's own account of this push (which tests failed), or None off Mac1."""
+    found = None
+    try:
+        with open(log_path or VERIFY_LOG) as f:
+            for line in f:
+                if head in line:
+                    try:
+                        row = json.loads(line)
+                    except ValueError:
+                        continue
+                    if row.get("head") == head and row.get("event") in ("verdict", "skip", "unjudged"):
+                        found = row
+    except OSError:
+        return None
+    return found
+
+
 def land_one(cf, env, spec, dry, ack_overlap=False):
     spec = {"deleteFork": True, **spec}
     repo = str(pathlib.Path(spec["repo"]).expanduser())
@@ -788,6 +809,11 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
             return result
         result["verdict"] = d["verdict"]
         if d["verdict"] != "merge":
+            if "verification_failed" in str(d.get("reason")):
+                v = verifier_verdict(head)
+                result["verification"] = (v.get("summary") or v.get("error")) if v else \
+                    f"see {VERIFY_LOG} on Mac1 for head {head[:12]}"
+                log(f"  verification failed: {result['verification']}")
             return result
         merged = d["merged_sha"]
         sh([str(BIN / "foundry-fetch"), spec["base"], f"+refs/heads/main:{base_ref}"], cwd=repo)

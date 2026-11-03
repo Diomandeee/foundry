@@ -168,8 +168,11 @@ def ensure_assets(repo, main_ref, sources):
 # ---- running the recipe on a worker ----
 
 def parse_xcodebuild(text):
-    """{'executed': int|None, 'failing': set, 'build_failed': bool} from an xcodebuild test log."""
+    """{'executed': int|None, 'failing': set, 'build_failed': bool, 'ids': {name: id}} from an xcodebuild
+    test log. `ids` maps a failing test's summary name ("Class.test()") to its -only-testing identifier."""
     executed = None
+    ids = {m.group(2) + "." + m.group(3) + "()": f"{m.group(1)}/{m.group(2)}/{m.group(3)}"
+           for m in re.finditer(r"Test Case '-\[(\w+)\.(\w+) (\w+)\]' failed", text)}
     for m in re.finditer(r"Executed (\d+) tests?, with \d+ failures?", text):
         executed = int(m.group(1))
     failing, in_block = set(), False
@@ -186,7 +189,8 @@ def parse_xcodebuild(text):
     build_failed = "** BUILD FAILED **" in text or (executed is None and "** TEST FAILED **" in text)
     if executed is None and "** TEST SUCCEEDED **" not in text:
         build_failed = True
-    return {"executed": executed, "failing": failing, "build_failed": build_failed}
+    return {"executed": executed, "failing": failing, "build_failed": build_failed,
+            "ids": {k: v for k, v in ids.items() if k in failing}}
 
 
 FORCE_AFTER_S = 180  # a busy worker gets this long to make room; then the gate's check runs anyway
@@ -250,14 +254,33 @@ def baseline(repo, base, main_sha, recipe, deadline, cache_dir):
     return res
 
 
-def judge(cand, base_res):
-    """(ok, summary). New failures are what the change adds over main."""
+def rerun(repo, recipe, base, cand, new, deadline):
+    """The new failures that pass when run again on their own: flaky, not the change's doing.
+
+    A test counts only if the rerun executed it; one the rerun could not name or select stays a failure."""
+    ids = {t: cand.get("ids", {}).get(t) for t in new}
+    ids = {t: i for t, i in ids.items() if i}
+    cmd = list(recipe["command"])
+    if not ids or "test" not in cmd:
+        return set()
+    at = cmd.index("test") + 1
+    cmd[at:at] = [f"-only-testing:{i}" for i in sorted(ids.values())]
+    res = run_job(repo, {**recipe, "command": cmd}, f"verify-{base}-rerun", deadline)
+    if res["build_failed"] or (res["executed"] or 0) < len(ids):
+        return set()
+    return set(ids) - res["failing"]
+
+
+def judge(cand, base_res, flaky=frozenset()):
+    """(ok, summary). New failures are what the change adds over main, less the ones a rerun passed."""
     if cand["build_failed"]:
         if base_res is not None and base_res["build_failed"]:
             return True, "does not build, and neither does base main"
         return False, "does not build (" + cand["job"] + ")"
-    new = sorted(cand["failing"] - (base_res["failing"] if base_res else set()))
+    new = sorted(cand["failing"] - (base_res["failing"] if base_res else set()) - set(flaky))
     tested = f"{cand['executed']} tests"
+    if flaky:
+        tested += f", {len(flaky)} flaky (failed, then passed on rerun): " + ", ".join(sorted(flaky))
     if not new:
         known = len(cand["failing"])
         return True, tested + (f", {known} failing as on main" if known else ", 0 failing") + f" ({cand['job']})"
@@ -310,7 +333,12 @@ def verify(req, cfg=None, now=None):
         base_res = None
         if cand["build_failed"] or cand["failing"]:
             base_res = baseline(repo, base, main_sha, recipe, deadline, work)
-        ok, summary = judge(cand, base_res)
+        flaky = set()
+        new = cand["failing"] - (base_res["failing"] if base_res else set())
+        if new and not cand["build_failed"]:
+            build_tree(repo, "refs/verify/main", head)  # the baseline may have left main checked out
+            flaky = rerun(repo, recipe, base, cand, new, deadline)
+        ok, summary = judge(cand, base_res, flaky)
         if unmatched:
             summary += f"; {len(unmatched)} asset(s) not as main declares"
         log("verdict", base=base, repo=repo_name, head=head, main=main_sha, ok=ok, summary=summary,
