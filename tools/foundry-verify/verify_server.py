@@ -13,6 +13,10 @@ This server answers that call:
      (the gate squashes whole files, and it has already refused any path both sides changed). Copy in the
      stripped assets listed in .foundry/assets.json, checked against their sha256.
   4. Run the recipe on a worker: ~/fleet/bin/fabric job run --sync <tree> --link ... -- <command>.
+     A link is a local directory ("../SharedServices": "~/Developer/SharedServices") or another base's
+     merged tree ("../MotionMix/x": {"base": "motionmix", "path": "x"}): that base's main is fetched and
+     `path` exported from it, so the app is checked against what its sibling has merged, never against a
+     working tree another lane is editing. The linked shas key main's cached baseline with main's own.
   5. Pass when no test fails that does not also fail on base main. Main's failures are measured once per
      main sha (cached), and only when the candidate has failures, so a red main never blocks the fix for it.
 
@@ -274,9 +278,45 @@ def run_job(repo, recipe, name, deadline):
     return res
 
 
-def baseline(repo, base, main_sha, recipe, deadline, cache_dir):
-    """Main's own failures at this sha, measured once."""
-    path = os.path.join(cache_dir, f"baseline-{main_sha[:12]}.json")
+def resolve_links(repo, recipe, work):
+    """The recipe with every base link exported to a local directory, and the shas those links were read at.
+
+    {"base": B, "path": P} fetches B's main into refs/verify/link/B and exports P at that commit to
+    <work>/links/B-<sha12>/P, once per sha. Anything that keeps a link from resolving is Unjudged: a build
+    against a missing sibling would fail for a reason that is not the change's."""
+    links, pinned = {}, {}
+    for rel, src in (recipe.get("links") or {}).items():
+        if isinstance(src, str):
+            links[rel] = src
+            continue
+        lbase, lpath = str(src.get("base", "")), str(src.get("path", "")).strip("/")
+        if not re.fullmatch(r"[A-Za-z0-9._-]+", lbase) or not lpath or ".." in lpath.split("/"):
+            raise Unjudged(f"link {rel}: wants {{base, path}}, got {src!r}")
+        ref = f"refs/verify/link/{lbase}"
+        r = subprocess.run([FETCH, lbase, "-q", f"+refs/heads/main:{ref}"], cwd=repo, capture_output=True, text=True)
+        if r.returncode:
+            raise Unjudged(f"fetch link {lbase}: {(r.stderr or r.stdout).strip()[-160:]}")
+        sha = git(repo, "rev-parse", ref).strip()
+        dest = os.path.join(work, "links", f"{lbase}-{sha[:12]}")
+        if not os.path.isdir(os.path.join(dest, lpath)):
+            tmp = dest + ".part"
+            shutil.rmtree(tmp, ignore_errors=True)
+            os.makedirs(tmp)
+            archive = subprocess.run(["git", "-C", repo, "archive", "--format=tar", sha, "--", lpath], capture_output=True)
+            if archive.returncode:
+                raise Unjudged(f"link {lbase}:{lpath}: {archive.stderr.decode(errors='replace').strip()[-160:]}")
+            subprocess.run(["tar", "-x", "-C", tmp], input=archive.stdout, check=True, capture_output=True)
+            shutil.rmtree(dest, ignore_errors=True)
+            os.rename(tmp, dest)
+        links[rel] = os.path.join(dest, lpath)
+        pinned[lbase] = sha
+    return {**recipe, "links": links}, pinned
+
+
+def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None):
+    """Main's own failures at this sha (and at these linked shas), measured once."""
+    key = main_sha[:12] + "".join(f"-{b}{sha[:12]}" for b, sha in sorted((pinned or {}).items()))
+    path = os.path.join(cache_dir, f"baseline-{key}.json")
     try:
         with open(path) as f:
             d = json.load(f)
@@ -366,10 +406,11 @@ def verify(req, cfg=None, now=None):
             return {"runs": [{"name": recipe.get("name", "build+test"), "ok": True,
                               "output": f"skipped: {len(paths)} path(s), all docs ({', '.join(paths[:3])})"}]}
         copied, unmatched = ensure_assets(repo, "refs/verify/main", bcfg.get("sources", []))
+        recipe, pinned = resolve_links(repo, recipe, work)
         cand = run_job(repo, recipe, f"verify-{base}", deadline)
         base_res = None
         if cand["build_failed"] or cand["failing"]:
-            base_res = baseline(repo, base, main_sha, recipe, deadline, work)
+            base_res = baseline(repo, base, main_sha, recipe, deadline, work, pinned)
         flaky = set()
         new = cand["failing"] - (base_res["failing"] if base_res else set())
         if new and not cand["build_failed"]:
@@ -378,7 +419,7 @@ def verify(req, cfg=None, now=None):
         ok, summary = judge(cand, base_res, flaky)
         if unmatched:
             summary += f"; {len(unmatched)} asset(s) not as main declares"
-        log("verdict", base=base, repo=repo_name, head=head, main=main_sha, ok=ok, summary=summary,
+        log("verdict", base=base, repo=repo_name, head=head, main=main_sha, links=pinned, ok=ok, summary=summary,
             secs=int(time.time() - started), assets_copied=copied, assets_unmatched=unmatched[:20])
         return {"runs": [{"name": recipe.get("name", "build+test"), "ok": ok, "output": summary}]}
 

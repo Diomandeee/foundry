@@ -322,6 +322,44 @@ class EndToEnd(unittest.TestCase):
         self.assertTrue(vs.verify(req, self.cfg)["runs"][0]["ok"])
         self.assertEqual([j[0] for j in self.jobs], ["verify-app", "verify-app-main", "verify-app"])
 
+    def test_a_base_link_is_the_siblings_merged_tree(self):
+        # The sibling base: its main has lib/core.swift; a working-tree edit there must not be what is built.
+        sib = os.path.join(self.tmp, "sibling")
+        os.makedirs(sib)
+        sh(sib, "git", "init", "-q", "-b", "main")
+        sib_sha = commit(sib, {"lib/core.swift": "merged\n", "other/x": "x\n"}, "sib")
+        with open(os.path.join(sib, "lib/core.swift"), "w") as f:
+            f.write("dirty\n")
+        with open(self.fetch, "w") as f:
+            f.write(f'#!/bin/sh\nremote=$1; shift\n[ "$remote" = sib ] && exec git fetch "{sib}" "$@"\n'
+                    f'exec git fetch "{self.origin}" "$@"\n')
+        recipe = {"name": "t", "command": ["xcodebuild", "test"], "links": {
+            "../Sib/lib": {"base": "sib", "path": "lib"}, "../Shared": "/somewhere/Shared"}}
+        sh(self.origin, "git", "checkout", "-q", "main")
+        commit(self.origin, {".foundry/verify.json": json.dumps(recipe)}, "recipe with a base link")
+        sh(self.origin, "git", "checkout", "-q", "fork")
+        sh(self.origin, "git", "merge", "-q", "--no-edit", "main")
+        head = commit(self.origin, {"app.swift": "3\n"}, "code again")
+        seen = []
+
+        def run_job(repo, recipe, name, deadline):
+            seen.append(recipe["links"])
+            return {"executed": 1, "failing": {"A.t()"} if name == "verify-app" else set(), "build_failed": False}
+        vs.run_job = run_job
+        out = vs.verify({"repo": "app-code-1--claude-x", "headSha": head, "baseBranch": "fork"}, self.cfg)
+        self.assertFalse(out["runs"][0]["ok"])
+        links = seen[0]
+        self.assertEqual(links["../Shared"], "/somewhere/Shared")
+        self.assertEqual(open(os.path.join(links["../Sib/lib"], "core.swift")).read(), "merged\n")
+        self.assertFalse(os.path.exists(os.path.join(os.path.dirname(links["../Sib/lib"]), "other")))
+        self.assertIn(sib_sha[:12], links["../Sib/lib"])
+        cached = [n for n in os.listdir(os.path.join(self.tmp, "verify", "app")) if n.startswith("baseline-")]
+        self.assertEqual(cached, [f"baseline-{sh(self.origin, 'git', 'rev-parse', 'main')[:12]}-sib{sib_sha[:12]}.json"])
+
+    def test_a_malformed_base_link_is_unjudged(self):
+        with self.assertRaises(vs.Unjudged):
+            vs.resolve_links(self.origin, {"links": {"../x": {"base": "sib", "path": "../etc"}}}, self.tmp)
+
     def test_base_without_a_recipe_checks_nothing(self):
         self.stub_jobs()
         self.assertEqual(vs.verify({"repo": "other-1--claude-x", "headSha": self.code_head}, self.cfg), {"runs": []})
