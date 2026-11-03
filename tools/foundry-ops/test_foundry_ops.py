@@ -52,16 +52,18 @@ class Repo:
         run("git", "worktree", "add", "-q", "-b", name, wt, start, cwd=self.path)
         return wt
 
-    def squash_land(self, conf, source_commit, files):
-        """What the gate does: the lane's files as one new commit on main, parent main only."""
+    def squash_land(self, conf, source_commit, files, log=True):
+        """What the gate does: the lane's files as one new commit on main, parent main only. `log=False` is a
+        landing this host's land log never saw (made from another Mac)."""
         tmp = os.path.join(self.root, "squash")
         run("git", "worktree", "add", "-q", "--detach", tmp, MAIN, cwd=self.path)
         merged = self.commit(tmp, files, "Merge task")
         run("git", "worktree", "remove", "--force", tmp, cwd=self.path)
         self.set_main(merged)
-        with open(conf / "land-log.jsonl", "a") as f:
-            f.write(json.dumps({"base": BASE, "verdict": "merge", "commits": [source_commit],
-                                "decision": {"merged_sha": merged}}) + "\n")
+        if log:
+            with open(conf / "land-log.jsonl", "a") as f:
+                f.write(json.dumps({"base": BASE, "verdict": "merge", "commits": [source_commit],
+                                    "decision": {"merged_sha": merged}}) + "\n")
         return merged
 
 
@@ -132,6 +134,63 @@ class ScanTest(LaneTest):
         run("git", "checkout", "-q", "--orphan", "orphan", cwd=wt)
         self.r.commit(wt, {"x": "x"})
         self.assertEqual(self.lane_by_branch(fo.scan(self.r.path, BASE), "orphan")["state"], "unrelated-history")
+
+    def test_worktree_whose_branch_ref_is_gone_is_an_orphan_with_its_files(self):
+        # MotionMix 2026-11-02: 29 worktrees with deleted branch refs held the only copy of 5,742 files.
+        wt = self.r.lane("gone")
+        self.r.commit(wt, {"committed.txt": "c\n"})
+        self.r.write(wt, "staged.txt", "s\n")
+        run("git", "add", "staged.txt", cwd=wt)
+        self.r.write(wt, "loose.txt", "l\n")
+        run("git", "update-ref", "-d", "refs/heads/gone", cwd=self.r.path)
+        lane = self.lane_by_branch(fo.scan(self.r.path, BASE), "gone")
+        self.assertEqual(lane["state"], "orphan")
+        self.assertEqual(lane["pending"], ["committed.txt", "loose.txt", "staged.txt"])  # app.txt matches main
+        self.assertFalse(lane["active"])
+        self.assertNotIn(wt, [w["path"] for w in fo.worktrees(self.r.path)])  # land's view is unchanged
+
+    def test_untracked_new_files_are_reported_but_never_pending(self):
+        wt = self.r.lane("lane")
+        c = self.r.commit(wt, {"app.txt": "a\nlanded\n"})
+        self.r.squash_land(self.conf, c, {"app.txt": "a\nlanded\n"})
+        self.r.write(wt, "New.swift", "never added\n")
+        other = self.r.lane("other")
+        self.r.commit(other, {"New.swift": "committed elsewhere\n"})
+        s = fo.scan(self.r.path, BASE)
+        lane = self.lane_by_branch(s, "lane")
+        self.assertEqual(lane["state"], "untracked-only")
+        self.assertEqual(lane["untracked"], ["New.swift"])
+        self.assertEqual(lane["pending"], [])
+        self.assertEqual(s["overlaps"], [])  # preflight and overlaps still see committed and edited files only
+
+    def test_landing_the_land_log_does_not_know_is_matched_by_patch_id(self):
+        # participation/build-139: landed as 5271c2a from another host, so Mac1's land log had none of its shas.
+        wt = self.r.lane("lane")
+        self.r.commit(wt, {"app.txt": "a\nfix\n"})
+        self.r.commit(wt, {"other.txt": "o\nbump\n"})
+        mover = self.r.lane("mover")
+        self.r.set_main(self.r.commit(mover, {"src/b": ""}))  # main moves first, so no main tree equals the lane's
+        merged = self.r.squash_land(self.conf, None, {"app.txt": "a\nfix\n", "other.txt": "o\nbump\n"}, log=False)
+        lane = self.lane_by_branch(fo.scan(self.r.path, BASE), "lane")
+        self.assertEqual((lane["state"], lane["landed_as"], lane["landed_by"]), ("landed", merged, "content"))
+        self.r.commit(wt, {"later.txt": "new work\n"})
+        self.assertEqual(self.lane_by_branch(fo.scan(self.r.path, BASE), "lane")["pending"], ["later.txt"])
+
+    def test_recommitted_lane_is_matched_by_content_not_sha(self):
+        wt = self.r.lane("lane")
+        old = self.r.commit(wt, {"app.txt": "a\nx\n"}, "first wording")
+        merged = self.r.squash_land(self.conf, old, {"app.txt": "a\nx\n"})
+        run("git", "commit", "-q", "--amend", "-m", "reworded after landing", cwd=wt)  # new sha, same change
+        lane = self.lane_by_branch(fo.scan(self.r.path, BASE), "lane")
+        self.assertEqual((lane["state"], lane["landed_as"]), ("landed", merged))
+
+    def test_different_change_is_not_matched_by_content(self):
+        wt = self.r.lane("lane")
+        self.r.commit(wt, {"app.txt": "a\nmine\n"})
+        self.r.squash_land(self.conf, None, {"app.txt": "a\nsomeone else's\n"}, log=False)
+        lane = self.lane_by_branch(fo.scan(self.r.path, BASE), "lane")
+        self.assertNotIn("landed_as", lane)
+        self.assertEqual(lane["pending"], ["app.txt"])
 
 
 class PreflightTest(LaneTest):

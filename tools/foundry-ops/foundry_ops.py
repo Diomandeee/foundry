@@ -36,9 +36,11 @@
                                   "links": {"../Sibling": "~/Developer/Sibling"}, "assets": ".foundry/assets.json"}
 
   foundry_ops.py scan REPO BASE [--fetch] [--cache] [--json] [--active-days N]
-      Every worktree of REPO against refs/foundry/BASE/main: landed (via the land log, since the gate squashes),
-      pending files, hunk-level conflicts with main (git merge-tree), and files two active lanes both have
-      pending. --cache writes ~/.config/foundry/lanes/BASE.json for the SessionStart lanes hook.
+      Every worktree of REPO against refs/foundry/BASE/main: landed (via the land log, since the gate squashes,
+      or by patch-id when the log does not know the landing), pending files, untracked files main does not have,
+      hunk-level conflicts with main (git merge-tree), and files two active lanes both have pending. Worktrees
+      whose branch ref is gone (HEAD unborn) are listed as orphans with the files only they hold.
+      --cache writes ~/.config/foundry/lanes/BASE.json for the SessionStart lanes hook.
 
 Credentials never reach output: the Cloudflare token comes from `wrangler auth token` and stays in memory,
 the task token is read from its 0600 file, saved task responses are written 0600 and only allowlisted fields
@@ -214,18 +216,30 @@ def cmd_forks(a):
 
 # Lanes are worktrees. Nothing registers them, so the scan reads git: every worktree of the repo against the
 # base's Foundry main. The gate squash-merges (one commit on main, parent main only), so a landed branch never
-# becomes an ancestor of main; the land log maps each landed source commit to its merged sha instead.
+# becomes an ancestor of main; the land log maps each landed source commit to its merged sha instead. The log is
+# per host and keyed by sha, so a landing made from another Mac, or a lane re-committed after it landed, is
+# matched by content: the lane's change since its fork has the patch-id (or the tree) of a main commit.
 ACTIVE_DAYS = 3.0
 GENERATED_SPEC = ".foundry/generated.json"
 LANES_CACHE = CONF / "lanes"
+CONTENT_MATCH_MAX = 200  # main commits since the fork, and lane commits, compared by patch-id per lane
 
 
 def git(*args, cwd, check=False):
     return sh(["git", *args], cwd=cwd, check=check, quiet=True)
 
 
+def git_in(args, cwd, text):
+    """git with `text` on stdin (patch-id, hash-object --stdin-paths, cat-file --batch-check)."""
+    return subprocess.run(["git", *args], cwd=cwd, input=text, capture_output=True, text=True).stdout
+
+
 def _lines(out):
     return [l for l in out.splitlines() if l]
+
+
+def _paths(out):
+    return [p for p in out.split("\0") if p]
 
 
 def landed_commits(base):
@@ -246,7 +260,9 @@ def landed_commits(base):
     return out
 
 
-def worktrees(repo):
+def worktrees(repo, unborn=False):
+    """Worktrees of `repo`, main checkout first. With `unborn`, also those whose branch ref no longer exists
+    (HEAD all zeros, `unborn: True`): their files are on disk only, so the scan has to see them."""
     out, cur = [], {}
     for l in git("worktree", "list", "--porcelain", cwd=repo, check=True).stdout.splitlines() + [""]:
         if not l:
@@ -261,9 +277,17 @@ def worktrees(repo):
             cur["branch"] = l[7:].removeprefix("refs/heads/")
         elif l == "detached":
             cur["branch"] = "(detached)"
-    # Skip land scratch worktrees, missing directories and unborn branches (HEAD all zeros).
-    return [w for w in out if os.path.isdir(w["path"]) and not os.path.basename(os.path.dirname(w["path"])).startswith("land-")
-            and w.get("head", "").strip("0")]
+    # Skip land scratch worktrees, missing directories and (unless asked for) unborn branches.
+    keep = []
+    for w in out:
+        if not os.path.isdir(w["path"]) or os.path.basename(os.path.dirname(w["path"])).startswith("land-"):
+            continue
+        if not w.get("head", "").strip("0"):
+            if not unborn:
+                continue
+            w["unborn"] = True
+        keep.append(w)
+    return keep
 
 
 def generated_spec(repo, ref):
@@ -285,23 +309,90 @@ def file_version(wt, rev, path, dirty):
     return git("rev-parse", f"{rev}:{path}", cwd=wt).stdout.strip()
 
 
+def not_on(repo, ref, wt, paths):
+    """The `paths` (relative to worktree `wt`) whose bytes on disk differ from `ref`'s, or that `ref` lacks."""
+    paths = [p for p in paths if os.path.isfile(os.path.join(wt, p))]
+    if not paths:
+        return []
+    disk = git_in(["hash-object", "--stdin-paths"], wt, "".join(p + "\n" for p in paths)).split()
+    at = git_in(["cat-file", "--batch-check=%(objectname)"], repo, "".join(f"{ref}:{p}\n" for p in paths)).splitlines()
+    return sorted(p for p, d, a in zip(paths, disk, at) if d != a.split(" ")[0])
+
+
+def patch_id(repo, a, b, memo):
+    """Stable patch-id (line numbers and whitespace ignored) of the change a..b, memoized; '' when empty."""
+    if (a, b) not in memo:
+        d = git("diff", a, b, cwd=repo).stdout
+        memo[(a, b)] = git_in(["patch-id", "--stable"], repo, d).split(" ")[0] if d else ""
+    return memo[(a, b)]
+
+
+def landed_by_content(repo, main_ref, fork, lane_commits, memo):
+    """(lane commit, main commit) for the newest lane commit whose whole change since `fork` is one main commit's
+    own change (same patch-id) or whose tree is a main commit's tree. That is a landing the land log does not
+    know: made from another host, or the lane was re-committed after it landed. None when nothing matches."""
+    mains = [l.split() for l in _lines(git("log", "--first-parent", f"--max-count={CONTENT_MATCH_MAX}", "--format=%H %T",
+                                           f"{fork}..{main_ref}", cwd=repo).stdout)]
+    if not mains:
+        return None
+    by_tree, by_patch = {}, {}  # oldest main commit wins: that is the landing, later ones only repeat it
+    for m, t in reversed(mains):
+        by_tree.setdefault(t, m)
+        pid = patch_id(repo, f"{m}^1", m, memo)
+        if pid:
+            by_patch.setdefault(pid, m)
+    for c in lane_commits[:CONTENT_MATCH_MAX]:
+        t = git("rev-parse", f"{c}^{{tree}}", cwd=repo).stdout.strip()
+        if t in by_tree:
+            return c, by_tree[t]
+        pid = patch_id(repo, fork, c, memo)
+        if pid in by_patch:
+            return c, by_patch[pid]
+    return None
+
+
+def orphan_lane(repo, main_ref, lane, wt, now):
+    """A worktree whose branch ref is gone: no commit to compare, so every file it holds that main lacks (or has
+    with other bytes) is work that exists only on disk."""
+    files = _paths(git("ls-files", "-z", cwd=wt).stdout) + _paths(git("ls-files", "--others", "--exclude-standard",
+                                                                      "-z", cwd=wt).stdout)
+    only_here = not_on(repo, main_ref, wt, files)
+    mtimes = [os.path.getmtime(os.path.join(wt, f)) for f in only_here]
+    lane.update(state="orphan", last_commit_age_d=None, pending=only_here, dirty=only_here, untracked=[],
+                dirty_age_d=round((now - max(mtimes)) / 86400, 1) if mtimes else None, active=False)
+    return lane
+
+
 def scan(repo, base, active_days=ACTIVE_DAYS):
-    """Every worktree of `repo` against refs/foundry/<base>/main. Read-only."""
+    """Every worktree of `repo` against refs/foundry/<base>/main. Read-only.
+
+    States: landed, clean-pending, conflicts-with-main, untracked-only (everything committed has landed, but the
+    worktree holds new files main does not have), unrelated-history (no common commit with main) and orphan
+    (branch ref gone). `untracked` lists untracked, non-ignored files whose bytes main does not have; they never
+    count as pending, so preflight and overlaps are decided by committed and edited files only."""
     main_ref = f"refs/foundry/{base}/main"
     main_sha = git("rev-parse", "--verify", main_ref, cwd=repo, check=True).stdout.strip()
     landed = landed_commits(base)
     spec = generated_spec(repo, main_ref)
     generated = set((spec or {}).get("files", []))
     now = time.time()
+    memo = {}
     lanes = []
-    for w in worktrees(repo):
+    for w in worktrees(repo, unborn=True):
         wt, head = w["path"], w["head"]
         lane = {"path": wt, "branch": w.get("branch"), "head": head}
+        if w.get("unborn"):
+            lane = orphan_lane(repo, main_ref, lane, wt, now)
+            if lane["pending"]:
+                lanes.append(lane)
+            continue
         lane["last_commit_age_d"] = round((now - int(git("log", "-1", "--format=%ct", head, cwd=repo).stdout or now)) / 86400, 1)
         st = git("status", "--porcelain", "--untracked-files=no", cwd=wt)
         dirty = {l[3:].split(" -> ")[-1] for l in st.stdout.splitlines() if l}
         mtimes = [os.path.getmtime(os.path.join(wt, f)) for f in dirty if os.path.exists(os.path.join(wt, f))]
         lane["dirty_age_d"] = round((now - max(mtimes)) / 86400, 1) if mtimes else None
+        untracked = not_on(repo, main_ref, wt, _paths(git("ls-files", "--others", "--exclude-standard", "-z", cwd=wt).stdout))
+        lane["untracked"] = untracked
         fork = git("merge-base", head, main_ref, cwd=repo).stdout.strip()
         if not fork:
             lane.update(state="unrelated-history", pending=[], dirty=sorted(dirty), active=False)
@@ -309,11 +400,17 @@ def scan(repo, base, active_days=ACTIVE_DAYS):
             continue
         # Only commits after the newest landed one are new work; its merge is the real fork point.
         src_from = fork
-        for c in _lines(git("rev-list", f"{fork}..{head}", cwd=repo).stdout):
+        own = _lines(git("rev-list", f"{fork}..{head}", cwd=repo).stdout)
+        for c in own:
             if c in landed:
                 src_from, fork = c, landed[c]
                 lane["landed_as"] = fork
                 break
+        else:
+            hit = landed_by_content(repo, main_ref, fork, own, memo) if own else None
+            if hit:
+                src_from, fork = hit
+                lane.update(landed_as=fork, landed_by="content")
         committed = set(_lines(git("diff", "--name-only", src_from, head, cwd=repo).stdout))
         pending = sorted(f for f in committed | dirty
                          if file_version(wt, head, f, dirty) != git("rev-parse", f"{main_ref}:{f}", cwd=repo).stdout.strip())
@@ -328,7 +425,8 @@ def scan(repo, base, active_days=ACTIVE_DAYS):
         lane.update(fork=fork, main_moved_by=int(git("rev-list", "--count", "--first-parent", f"{fork}..{main_ref}", cwd=repo).stdout or 0),
                     pending=pending, dirty=sorted(dirty & set(pending)), merge_conflicts=conflicts,
                     dirty_on_moved_files=dirty_moved, active=bool(pending) and min(ages) <= active_days,
-                    state="landed" if not pending else "conflicts-with-main" if conflicts or dirty_moved else "clean-pending")
+                    state=("untracked-only" if untracked else "landed") if not pending
+                    else "conflicts-with-main" if conflicts or dirty_moved else "clean-pending")
         lanes.append(lane)
     active = [l for l in lanes if l["active"]]
     overlaps = []
@@ -499,14 +597,18 @@ def cmd_scan(a):
     if a.cache:
         return
     log(f"{r['base']} main {r['main'][:8]}, {len(r['lanes'])} worktrees")
-    for l in sorted(r["lanes"], key=lambda l: (not l["active"], l["last_commit_age_d"])):
+    for l in sorted(r["lanes"], key=lambda l: (not l["active"], l["last_commit_age_d"] is None, l["last_commit_age_d"] or 0)):
         extra = ""
         if l.get("merge_conflicts"):
             extra += f"  merge-conflicts: {', '.join(l['merge_conflicts'][:4])}"
         if l.get("dirty_on_moved_files"):
             extra += f"  edited files main also moved: {', '.join(l['dirty_on_moved_files'][:4])}"
+        if l.get("landed_by") == "content":
+            extra += f"  landed as {l['landed_as'][:8]} (matched by content)"
+        age = "-" if l["last_commit_age_d"] is None else l["last_commit_age_d"]
         print(f"{'ACTIVE ' if l['active'] else '       '}{l['state']:<20} {str(l['branch'])[:56]:<56} "
-              f"{l['last_commit_age_d']:>6}d  pending {len(l['pending']):<4} edited {len(l['dirty']):<4}{extra}")
+              f"{age:>6}d  pending {len(l['pending']):<4} edited {len(l['dirty']):<4} "
+              f"untracked {len(l.get('untracked', [])):<4}{extra}")
     if not r["overlaps"]:
         print("no overlap between active lanes")
     for o in r["overlaps"]:
