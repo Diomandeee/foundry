@@ -66,6 +66,14 @@ export class StubVerifier implements Verifier {
   }
 }
 
+/** Thrown when a reachable verifier guards the base but could not judge this change yet. */
+export class VerifierBusy extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "VerifierBusy";
+  }
+}
+
 export interface HttpVerifierOpts {
   timeoutMs?: number;
   /**
@@ -98,6 +106,8 @@ export function verifyTimeoutMs(raw: string | undefined): number {
  *
  * A non-2xx response or a transport failure is an outage (`checked: false`),
  * never a failed check: a verifier that is down has not judged the change.
+ * The exception is a 503 carrying {"retry": true}: the verifier is up and guards
+ * this base, so it throws VerifierBusy and the gate retries instead of merging.
  */
 export class HttpVerifier implements Verifier {
   constructor(
@@ -114,6 +124,15 @@ export class HttpVerifier implements Verifier {
         body: JSON.stringify(req),
         signal: AbortSignal.timeout(this.opts.timeoutMs ?? DEFAULT_VERIFY_TIMEOUT_MS),
       });
+      if (res.status === 503) {
+        // A verifier that is up but cannot judge a change on a base it guards says so with
+        // {"retry": true}. That is not "nothing checked": it throws, the pipeline records an
+        // `error` row, and the queue retries the push, so the change never merges unjudged.
+        const body = (await res.json().catch(() => ({}))) as { retry?: boolean; error?: string };
+        if (body.retry === true) {
+          throw new VerifierBusy(body.error ?? "verifier asked for a retry");
+        }
+      }
       if (!res.ok) {
         return {
           checked: false,
@@ -138,6 +157,7 @@ export class HttpVerifier implements Verifier {
       }
       return { checked: true, ok: runs.every((r) => r.ok), runs };
     } catch (e) {
+      if (e instanceof VerifierBusy) throw e;
       return {
         checked: false,
         ok: true,

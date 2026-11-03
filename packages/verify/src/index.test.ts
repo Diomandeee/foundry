@@ -6,6 +6,7 @@ import {
   StubVerifier,
   summarize,
   truncateOutput,
+  VerifierBusy,
   verifyTimeoutMs,
   type VerifyRequest,
 } from "./index.js";
@@ -185,5 +186,20 @@ describe("HttpVerifier fetcher", () => {
     expect(global).not.toHaveBeenCalled();
     expect(out).toMatchObject({ checked: true, ok: true });
     vi.unstubAllGlobals();
+  });
+});
+
+describe("HttpVerifier retry", () => {
+  const reply = (status: number, body: unknown) =>
+    new HttpVerifier("http://v/t", {
+      fetcher: async () => new Response(JSON.stringify(body), { status }),
+    });
+
+  it("throws VerifierBusy on 503 {retry: true}, so the gate retries instead of merging", async () => {
+    await expect(reply(503, { retry: true, error: "worker busy" }).run(req)).rejects.toBeInstanceOf(VerifierBusy);
+  });
+
+  it("keeps a plain 503 an outage: not checked, never blocking", async () => {
+    await expect(reply(503, { error: "down" }).run(req)).resolves.toMatchObject({ checked: false, ok: true });
   });
 });
