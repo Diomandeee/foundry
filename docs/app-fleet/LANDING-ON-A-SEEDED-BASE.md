@@ -121,6 +121,7 @@ The staging gate now builds and tests a merge before it lands, for any base that
     - Decision 664: the same change amended under a new sha (9e5498fd) and force-pushed to the same fork, as land's retry did for 643. Verdict `merge`, answering 4b568750; main did not move and no commit was made.
     - Decision 665, a normal land (a new file plus an edit to an executable), merged as 6ce39fdc; the landed tree equals the proposal's (b022d445) and the mode stays 100755.
     - All three wrote receipts (`policy` enforce, requireChecked false).
+  - First real motionmixapp land on 30780716: decision 666 (lane a367b1c9, `docs/SHIP-READINESS.md` only) merged as d2d5977b. The verifier took the docs skip path, so a full Mac5 build and test under this version is still to be seen.
   - Earlier proof on 33a0b98c: decision 639 on the same base. One merge edited and added executables, added nested files, turned a file into a directory and deleted a file; the landed tree equals the proposal (`git diff --raw` empty).
   - Rollback (to `gate-hotfix` 9fe6444): `cd ~/Developer/foundry-integration/one-foundry/workers/gate && npx wrangler rollback 20789530-9f24-4e17-be5b-bf226472e251 --env staging`. Wrangler reads the Worker name and environments from `workers/gate/wrangler.toml`, so it fails with "No environment found ... staging" anywhere else.
   - `node_modules` in a checkout can be empty: run `npm ci` before `npm test` or a deploy.
