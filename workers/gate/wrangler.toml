@@ -33,6 +33,9 @@ enabled = true
 ARTIFACTS_NS = "foundry-staging"
 # The verifier (VERIFY_URL, a secret) builds and tests on a fleet worker, which takes minutes.
 VERIFY_TIMEOUT_MS = "840000"
+# A check that ran and failed refuses the merge (verification_failed). An unreachable verifier
+# is "not checked" and never blocks: VERIFY_REQUIRE_CHECKED stays unset.
+VERIFY_ENFORCE = "1"
 # The verifier listens on Mac1 127.0.0.1:8803 with no public address. This Workers VPC service
 # reaches it through Cloudflare Tunnel foundry-verify (fb73dc27); VERIFY_URL (secret) carries its token.
 [[env.staging.vpc_services]]
