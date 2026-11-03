@@ -1,7 +1,7 @@
 ---
 status: current
 describes: [workers/gate/src/decide.ts, workers/gate/src/merge.ts, workers/gate/src/pipeline.ts, workers/gate/src/gate-parity.test.ts]
-verified: 2026-11-03 (gate-parity.test.ts run against this tree and against gate-hotfix 9fe6444, the deployed gate)
+verified: 2026-11-03 (gate-parity.test.ts run against this tree and against gate-hotfix 9fe6444, the gate deployed until 06:50Z)
 ---
 
 # Gate parity: one-foundry vs the deployed gate
@@ -9,7 +9,9 @@ verified: 2026-11-03 (gate-parity.test.ts run against this tree and against gate
 On 2026-11-03 the staging gate was deployed from this repository for 5 minutes and rolled back. Decision 643, a
 lane pushing an already merged change a second time, errored where the deployed gate (`gate-hotfix` 9fe6444,
 version 20789530) answers with the base head. This page records every behavior where the two gates differ, as
-observed, not as read from the code.
+observed, not as read from the code. Since 06:50Z the staging gate runs this repository's 9900737 (version 30780716);
+the "gate-hotfix" column is the gate it replaced and the rollback target (20789530). P6 was proved live as decisions
+663 and 664 (`LANDING-ON-A-SEEDED-BASE.md`).
 
 `workers/gate/src/gate-parity.test.ts` runs `handlePush` with the production port (`cloudflarePort` over a fake
 Artifacts binding that reads bare repos with git) and the production merger (`IsomorphicMerger` over git smart
@@ -19,7 +21,7 @@ redelivered up to 3 times, as the queue does), whether the base moved, and what 
 
 ## Rows where the gates differ
 
-| # | Push | gate-hotfix (deployed) | one-foundry | Call |
+| # | Push | gate-hotfix (deployed until 06:50Z) | one-foundry | Call |
 |---|---|---|---|---|
 | P6 | Same change pushed again under a new sha after it merged (643) | merge, no new commit | was: error, retried until dropped. Now: merge, no new commit | **Regression, fixed** (93c27fe): `merge()` returns the base head when the base already equals base plus the change |
 | P19 | A change touching 2,100 files | merge | was: conflict `admission-path-budget` (cap 2,000). Now: merge | **Regression, fixed**: the cap is 5,000, the port's own diff budget, so it never fires before the port gives up |
