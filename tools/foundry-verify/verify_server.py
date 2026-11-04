@@ -209,13 +209,14 @@ def ensure_assets(repo, main_ref, sources, cache=None):
 # ---- running the recipe on a worker ----
 
 def parse_xcodebuild(text):
-    """{'executed': int|None, 'failing': set, 'build_failed': bool, 'ids': {name: id}} from an xcodebuild
-    test log. `ids` maps a failing test's summary name ("Class.test()") to its -only-testing identifier."""
-    executed = None
+    """{'executed': int|None, 'skipped': int, 'failing': set, 'build_failed': bool, 'ids': {name: id}} from an
+    xcodebuild test log. `ids` maps a failing test's summary name ("Class.test()") to its -only-testing identifier.
+    `executed` counts skipped tests too, as xcodebuild does ("Executed 3 tests, with 3 tests skipped and 0 failures")."""
+    executed, skipped = None, 0
     ids = {m.group(2) + "." + m.group(3) + "()": f"{m.group(1)}/{m.group(2)}/{m.group(3)}"
            for m in re.finditer(r"Test Case '-\[(\w+)\.(\w+) (\w+)\]' failed", text)}
-    for m in re.finditer(r"Executed (\d+) tests?, with \d+ failures?", text):
-        executed = int(m.group(1))
+    for m in re.finditer(r"Executed (\d+) tests?, with (?:(\d+) tests? skipped and )?\d+ failures?", text):
+        executed, skipped = int(m.group(1)), int(m.group(2) or 0)
     failing, in_block = set(), False
     for line in text.splitlines():
         if line.startswith("Failing tests:"):
@@ -230,7 +231,7 @@ def parse_xcodebuild(text):
     build_failed = "** BUILD FAILED **" in text or (executed is None and "** TEST FAILED **" in text)
     if executed is None and "** TEST SUCCEEDED **" not in text:
         build_failed = True
-    return {"executed": executed, "failing": failing, "build_failed": build_failed,
+    return {"executed": executed, "skipped": skipped, "failing": failing, "build_failed": build_failed,
             "ids": {k: v for k, v in ids.items() if k in failing}}
 
 
@@ -355,7 +356,7 @@ def judge(cand, base_res, flaky=frozenset()):
             return True, "does not build, and neither does base main"
         return False, "does not build (" + cand["job"] + ")"
     new = sorted(cand["failing"] - (base_res["failing"] if base_res else set()) - set(flaky))
-    tested = f"{cand['executed']} tests"
+    tested = f"{cand['executed']} tests" + (f" ({cand['skipped']} skipped)" if cand.get("skipped") else "")
     if flaky:
         tested += f", {len(flaky)} flaky (failed, then passed on rerun): " + ", ".join(sorted(flaky))
     if not new:

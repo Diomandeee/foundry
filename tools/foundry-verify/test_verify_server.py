@@ -62,6 +62,15 @@ class Parse(unittest.TestCase):
     def test_truncated_log_is_a_build_failure(self):
         self.assertTrue(vs.parse_xcodebuild("Compiling...\n")["build_failed"])
 
+    def test_skipped_tests_are_counted(self):
+        # Fabric's UI tests skip without a live bridge (job-verify-fabric-proof-1103-205315 parsed to executed=None)
+        log = ("\t Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.345 (0.346) seconds\n"
+               "\t Executed 3 tests, with 3 tests skipped and 0 failures (0 unexpected) in 0.453 (0.455) seconds\n"
+               "** TEST SUCCEEDED **\n")
+        r = vs.parse_xcodebuild(log)
+        self.assertEqual((r["executed"], r["skipped"], r["failing"], r["build_failed"]), (3, 3, set(), False))
+        self.assertEqual(vs.judge({**r, "job": "job-x"}, None), (True, "3 tests (3 skipped), 0 failing (job-x)"))
+
 
 class Judge(unittest.TestCase):
     def res(self, failing=(), build_failed=False):
