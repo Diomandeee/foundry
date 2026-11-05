@@ -39,7 +39,10 @@ export interface VerifyVerdict {
 export interface VerifyRequest {
   /** The fork the proposal came from. */
   repo: string;
-  /** The branch the result would land on. */
+  /**
+   * The branch the push moved on `repo`, where the verifier fetches `headSha` (the name is historical: the
+   * deployed gate and tools/foundry-verify have always used it this way; the base branch is the base's main).
+   */
   baseBranch: string;
   /** Paths the proposal changes, so a checker can scope its work. */
   files: readonly string[];
@@ -67,8 +70,36 @@ export class StubVerifier implements Verifier {
   }
 }
 
+/** Thrown when a reachable verifier guards the base but could not judge this change yet. */
+export class VerifierBusy extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "VerifierBusy";
+  }
+}
+
 export interface HttpVerifierOpts {
   timeoutMs?: number;
+  /**
+   * How to reach the server. Default: the global fetch. A Worker passes a binding's fetch
+   * (a Workers VPC service) so the verifier can sit on a private host with no public address.
+   */
+  fetcher?: (url: string, init: RequestInit) => Promise<Response>;
+}
+
+/** The default wait for a verdict, and the ceiling: a queue consumer has 15 minutes of wall time. */
+export const DEFAULT_VERIFY_TIMEOUT_MS = 120_000;
+export const MAX_VERIFY_TIMEOUT_MS = 840_000;
+
+/**
+ * VERIFY_TIMEOUT_MS from the environment. A build-and-test verifier needs minutes, not the
+ * 120 s default; anything unparseable or non-positive keeps the default, and anything above
+ * the queue's wall-time budget is capped so a slow verifier cannot get the message killed.
+ */
+export function verifyTimeoutMs(raw: string | undefined): number {
+  const n = Number(raw);
+  if (!raw || !Number.isFinite(n) || n <= 0) return DEFAULT_VERIFY_TIMEOUT_MS;
+  return Math.min(Math.floor(n), MAX_VERIFY_TIMEOUT_MS);
 }
 
 /**
@@ -79,6 +110,8 @@ export interface HttpVerifierOpts {
  *
  * A non-2xx response or a transport failure is an outage (`checked: false`),
  * never a failed check: a verifier that is down has not judged the change.
+ * The exception is a 503 carrying {"retry": true}: the verifier is up and guards
+ * this base, so it throws VerifierBusy and the gate retries instead of merging.
  */
 export class HttpVerifier implements Verifier {
   constructor(
@@ -88,12 +121,22 @@ export class HttpVerifier implements Verifier {
 
   async run(req: VerifyRequest): Promise<VerifyVerdict> {
     try {
-      const res = await fetch(`${this.baseUrl}/api/verify`, {
+      const send = this.opts.fetcher ?? fetch;
+      const res = await send(`${this.baseUrl}/api/verify`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(req),
-        signal: AbortSignal.timeout(this.opts.timeoutMs ?? 120_000),
+        signal: AbortSignal.timeout(this.opts.timeoutMs ?? DEFAULT_VERIFY_TIMEOUT_MS),
       });
+      if (res.status === 503) {
+        // A verifier that is up but cannot judge a change on a base it guards says so with
+        // {"retry": true}. That is not "nothing checked": it throws, the pipeline records an
+        // `error` row, and the queue retries the push, so the change never merges unjudged.
+        const body = (await res.json().catch(() => ({}))) as { retry?: boolean; error?: string };
+        if (body.retry === true) {
+          throw new VerifierBusy(body.error ?? "verifier asked for a retry");
+        }
+      }
       if (!res.ok) {
         return {
           checked: false,
@@ -118,6 +161,7 @@ export class HttpVerifier implements Verifier {
       }
       return { checked: true, ok: runs.every((r) => r.ok), runs };
     } catch (e) {
+      if (e instanceof VerifierBusy) throw e;
       return {
         checked: false,
         ok: true,

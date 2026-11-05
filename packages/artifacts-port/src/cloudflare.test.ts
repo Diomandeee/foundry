@@ -2,6 +2,7 @@
 // whether a ref is missing or the repository itself is unavailable.
 import { describe, expect, it } from "vitest";
 import { cloudflarePort } from "./cloudflare.js";
+import { UnsupportedContentError } from "./port.js";
 
 function repoWith(over: Record<string, unknown> = {}) {
   return {
@@ -61,6 +62,17 @@ describe("cloudflarePort missing refs", () => {
     await expect(unavailable.readFile("main", "app.ts")).rejects.toThrow("file unavailable");
     const invalid = await port({ readFile: async () => new Blob([new Uint8Array([0xff])]) }).get("task-1");
     await expect(invalid.readFile("main", "app.ts")).rejects.toThrow();
+  });
+
+  it("names content the transport cannot carry with a typed error, unlike an outage", async () => {
+    const invalid = await port({ readFile: async () => new Blob([new Uint8Array([0xff, 0xfe])]) }).get("task-1");
+    const bad = await invalid.readFile("main", "img.bin").catch((e) => e);
+    expect(bad).toBeInstanceOf(UnsupportedContentError);
+    expect(bad).toMatchObject({ path: "img.bin", why: "is not UTF-8 text" });
+    const big = await port({ readFile: async () => new Blob([new Uint8Array(9 * 1048576)]) }).get("task-1");
+    await expect(big.readFile("main", "big.txt")).rejects.toMatchObject({ path: "big.txt", why: "is 9.0 MiB, over the 8 MiB cap" });
+    const down = await port({ readFile: async () => undefined }).get("task-1");
+    expect(await down.readFile("main", "app.ts").catch((e) => e)).not.toBeInstanceOf(UnsupportedContentError);
   });
 
   it("preserves exact text bytes including BOM and surrounding whitespace", async () => {
@@ -137,6 +149,25 @@ describe("cloudflarePort tree diff by object id", () => {
     const r = fakeRepo(trees, { [h(90)]: { treeHash: h(1), parents: [] }, [h(91)]: { treeHash: h(3), parents: [h(90)] } });
     const hist = await (await port(r.over).get("t")).history("main", 1);
     expect(hist[0].files).toEqual(["gone.txt", "lib", "lib/a.ts", "lib/b.ts", "x", "x/y.ts"]);
+  });
+
+  it("marks symlinks and submodules however the binding spells their mode", async () => {
+    const trees = {
+      [h(1)]: [blob("keep.txt", 70)],
+      [h(2)]: [blob("keep.txt", 70), { name: "a", hash: h(71), type: "blob", mode: "120000" },
+        { name: "b", hash: h(72), type: "symlink", mode: 0o120000 }, { name: "c", hash: h(73), type: "commit", mode: "160000" },
+        { name: "d", hash: h(74), type: "blob", mode: 0o100755 }, { name: "e", hash: h(75), type: "exec", mode: "100755" }],
+    };
+    const r = fakeRepo(trees as never, { [h(90)]: { treeHash: h(1), parents: [] }, [h(91)]: { treeHash: h(2), parents: [h(90)] } });
+    const [c] = await (await port(r.over).get("t")).history("main", 1);
+    expect(c.files).toEqual(["a", "b", "c", "d", "e"]);
+    expect(c.unsupported).toEqual({ a: "symlink", b: "symlink", c: "submodule" });
+  });
+
+  it("leaves `unsupported` off a commit of plain files", async () => {
+    const trees = { [h(1)]: [], [h(2)]: [blob("x.txt", 80)] };
+    const r = fakeRepo(trees, { [h(90)]: { treeHash: h(1), parents: [] }, [h(91)]: { treeHash: h(2), parents: [h(90)] } });
+    expect((await (await port(r.over).get("t")).history("main", 1))[0].unsupported).toBeUndefined();
   });
 
   it("lists every file of a root commit", async () => {

@@ -1,0 +1,57 @@
+{
+ "format": "foundry.build-recipes.v1",
+ "note": "One owner-approved BuildProfile per Foundry base. tools/foundry-job validates each profile with the compute authority's own validator and prints the profileHash the authority will store. A recipe here is a proposal until the owner runs approveProfile with it; nothing in this file is sent anywhere by itself.",
+ "records": [
+  {
+   "base": "airdeck",
+   "status": "proposed",
+   "worker": "mac5-vm",
+   "evidence": "docs/cloud-workspaces/mac-worker-2026-10-21/request17-cap-v5-build-mo-airdeck-mac5.sh (attempt airdeck-b12322a-b, guest image macos-27.0.1-xcode-27.1-r4); step 3.2 re-proves it on the macOS 27.2 host",
+   "input": {"roots": ["."], "requiredInputs": ["AirDeck.xcodeproj/project.pbxproj"]},
+   "profile": {
+    "version": 1,
+    "projectId": "airdeck",
+    "kind": "xcode-build-v1",
+    "limits": {"cpu": 4, "ramMib": 8192, "estimatedAdditionalBytes": 2147483648, "timeoutMs": 1800000, "maxOutputBytes": 7340032},
+    "recipe": {
+     "projectPath": "AirDeck.xcodeproj",
+     "workspace": false,
+     "scheme": "AirDeck",
+     "configuration": "Debug",
+     "sdk": "iphoneos27.1",
+     "destination": "generic/platform=iOS",
+     "developerDir": "/Applications/Xcode.app/Contents/Developer",
+     "xcodeBuild": "27A9275",
+     "macos": "27.0.1"
+    },
+    "outputPaths": ["DerivedData/Build/Products/Debug-iphoneos/AirDeck.app"],
+    "trustedProject": true,
+    "workerOptInRequired": true
+   }
+  },
+  {
+   "base": "comp-core",
+   "status": "proposed",
+   "worker": "gcp-linux",
+   "evidence": "docs/cloud-workspaces/linux-pilot-2026-10-21 (attempt a1-calibrate-001: 42 passed, 2 skipped); profile copied from recipe-python-calibrate.json",
+   "input": {"roots": ["cc-echelon/tools/calibrate_extrinsics"], "requiredInputs": [], "vendored": "6 offline wheels (numpy 2.2.6, pytest 9.1.1 and deps) under source/wheels; network is none, so they ride in the input"},
+   "profile": {
+    "version": 1,
+    "projectId": "comp-core",
+    "kind": "linux-build-v1",
+    "limits": {"cpu": 2, "ramMib": 3072, "estimatedAdditionalBytes": 2147483648, "timeoutMs": 900000, "maxOutputBytes": 1048576},
+    "recipe": {
+     "image": "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+     "architecture": "x64",
+     "tool": "python",
+     "args": ["-m", "pytest", "-q", "-p", "no:cacheprovider", "--junitxml=/work/out/junit.xml", "/work/source/calibrate_extrinsics"],
+     "network": "none",
+     "installArgs": ["--find-links", "/work/source/wheels", "numpy", "pytest"]
+    },
+    "outputPaths": ["out/junit.xml"],
+    "trustedProject": true,
+    "workerOptInRequired": true
+   }
+  }
+ ]
+}

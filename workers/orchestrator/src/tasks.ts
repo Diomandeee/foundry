@@ -2,7 +2,7 @@
 // Pure over ArtifactsPort + TicketStore; the Hono route adds HTTP + KG notify.
 import type { ArtifactsPort } from "@foundry/artifacts-port";
 import { newScopeToken } from "@foundry/gate-ts";
-import { StubPlanCheck, type PlanCheck, type PlanVerdict } from "@foundry/plan-check";
+import { StubPlanCheck, usable, type PlanCheck, type PlanVerdict } from "@foundry/plan-check";
 import type { TicketStore } from "@foundry/stores";
 
 export interface CreateTaskInput {
@@ -140,7 +140,7 @@ export async function createTask(
   if (!verdict.ok && input.planCheckEnforce) {
     const bad = new Set<string>();
     for (const r of verdict.results) {
-      if (!r.found || (r.missing?.length ?? 0) > 0 || r.typechecks === false) bad.add(r.name);
+      if (!usable(r)) bad.add(r.name);
     }
     for (const c of chains) {
       if (!verdict.results.some((r) => r.name === c)) bad.add(c);
@@ -180,6 +180,8 @@ export async function createTask(
         forkRepo,
         agentId,
         scope,
+        // The gate re-checks these at merge time (decide.ts step 1b).
+        ...(chains.length > 0 ? { chains: [...chains] } : {}),
       });
       dispatches.push({
         agentId,

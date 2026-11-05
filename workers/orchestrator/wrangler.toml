@@ -15,7 +15,8 @@ database_id = "12e5a5e8-4e87-4ce6-8074-99e393ff9463"
 # K11 Graph Kernel + PACT validation are OPTIONAL integrations: set
 # LKG_URL / LKG_TOKEN / PACT_URL via `wrangler secret put` (or [vars] for
 # a non-secret URL). Empty PACT_URL = stub (advisory pass). Never commit
-# a machine-local address here; Workers cannot reach tailnet IPs.
+# a machine-local address here: a private fleet host is reached only
+# through a Workers VPC binding (PACT_SERVICE below).
 # POST /tasks requires the TASK_TOKEN secret (Bearer); without it the
 # route fails closed with 503.
 # Auto-subscribe of new forks (src/subscribe.ts) is on only when all five are set:
@@ -31,6 +32,10 @@ namespace = "foundry-staging"
 binding = "DB"
 database_name = "foundry-decisions-staging"
 database_id = "4dfb279c-4e61-4954-a13a-3e8ef8181484"
+# pact-server (Mac5 :8731) through Workers VPC service foundry-pact on tunnel foundry-verify (fb73dc27).
+[[env.staging.vpc_services]]
+binding = "PACT_SERVICE"
+service_id = "01a1a95c-fdeb-7703-b56c-7bfcaaa6c7c3"
 
 [env.production]
 [[env.production.artifacts]]
