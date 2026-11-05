@@ -20,7 +20,8 @@ ARTIFACTS_NS = "foundry-dev"
 # K11 Graph Kernel (overlap oracle, verdict triples, plan check) is an
 # OPTIONAL integration: set LKG_URL / LKG_TOKEN / PACT_URL via
 # `wrangler secret put` (or [vars] for a non-secret URL). Never commit a
-# machine-local address here; Workers cannot reach tailnet IPs.
+# machine-local address here: a Worker reaches a private fleet host only
+# through a Workers VPC binding (VERIFY_SERVICE, PACT_SERVICE below).
 
 [env.staging]
 # A large merge (hundreds of new files hashed and committed in memfs) ran past the 30 s default CPU limit,
@@ -36,11 +37,19 @@ VERIFY_TIMEOUT_MS = "840000"
 # A check that ran and failed refuses the merge (verification_failed). An unreachable verifier
 # is "not checked" and never blocks: VERIFY_REQUIRE_CHECKED stays unset.
 VERIFY_ENFORCE = "1"
+# An unknown or non-composing declared chain refuses the merge (invalid_args, "pact: unusable chains"). PACT unreachable
+# is "not checked" and never blocks.
+PACT_ENFORCE = "1"
 # The verifier listens on Mac1 127.0.0.1:8803 with no public address. This Workers VPC service
 # reaches it through Cloudflare Tunnel foundry-verify (fb73dc27); VERIFY_URL (secret) carries its token.
 [[env.staging.vpc_services]]
 binding = "VERIFY_SERVICE"
 service_id = "01a19f18-d997-7732-9826-c1bc7a8ba73a"
+# PACT's plan check: a merge whose ticket declared chains is checked again against pact-server
+# (Mac5 :8731) through Workers VPC service foundry-pact on the same tunnel. PACT_URL is a secret.
+[[env.staging.vpc_services]]
+binding = "PACT_SERVICE"
+service_id = "01a1a95c-fdeb-7703-b56c-7bfcaaa6c7c3"
 [[env.staging.artifacts]]
 binding = "ARTIFACTS"
 namespace = "foundry-staging"

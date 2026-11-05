@@ -24,13 +24,14 @@ Per-claim evidence boundaries. Match every status report to `safe_claim`.
 - forbidden_claims: ["durable/HA", "backed up", "auth-protected"]
 
 ## PACT intake check
-- domain: protocol hook (operator preflight live; hosted fetch built, not deployed)
-- status: ready_provisional
+- domain: protocol hook (operator preflight live; staging orchestrator and gate live 2026-11-05)
+- status: ready (staging)
 - evidence: `check_chains_reports_found_and_missing_in_place` (Rust); pact-server live on Mac5 `100.72.126.88:8731` (launchd `com.pact.server`); `foundry_ops.py land` asks it for a spec's `chains` before the task opens, proved live 2026-11-05 (chain:deep-research 0/4 and chain:generational 4/4 pass, chain:nope refused `plan-refused`, nothing created); plan-check, tickets (real SQLite), gate and orchestrator tests 126/126 and foundry_ops 36/36 on Mac5 at 5539187
 - rule change 2026-11-05: usable = found and typechecks. Missing canonical stages no longer refuse (PACT finding 0009: a pipeline rooted at Subject cannot close; the old rule refused 12 of 13 corpus chains)
-- remaining uncertainty: verdicts are corpus-dependent; the Worker path (orchestrator intake, gate step 1b) has never run against the hosted server
-- blockers (Mohamed's yes, all three are deploys): `ALTER TABLE tickets ADD COLUMN chains_json TEXT;` on foundry-decisions-staging (before the code: a ticket with chains needs the column); a Workers VPC service to `100.72.126.88:8731` on tunnel foundry-verify (fb73dc27), bound as `PACT_SERVICE` with `PACT_URL` (and `PACT_ENFORCE = "1"` on the gate) in both staging wrangler files; then deploy orchestrator and gate
-- safe_claim: "landings that declare chains are checked against the live corpus before a task exists; the hosted gate check is built and tested, not deployed"
+- deployed 2026-11-05 on Mohamed's yes: `tickets.chains_json` on foundry-decisions-staging (452 tickets intact); Workers VPC service foundry-pact (01a1a95c) to `100.72.126.88:8731` on tunnel foundry-verify (fb73dc27), bound as `PACT_SERVICE` on both staging workers, `PACT_URL` a secret, gate `PACT_ENFORCE = "1"`; orchestrator 9a07752e, gate d9662821 (rollback: orchestrator 59ff3cb9, gate 51e1dd00)
+- proved live 2026-11-05: POST /tasks with chain:no-such-chain-probe and planCheckEnforce refused 400 before any fork (an outage answers ok, so the refusal is pact-server's answer through the VPC route); fleet landing with chain:generational merged, decision 917, ticket chains_json `["chain:generational"]`; a ticket opened advisory with a bogus chain was refused by the gate itself, decision 921 `invalid_args` "pact: unusable chains: chain:no-such-chain-probe"
+- remaining uncertainty: verdicts are corpus-dependent; the Worker route depends on Mac1's tunnel (com.foundry.verify-tunnel) and Mac5's server, and either down means not checked (fails open); orchestrator enforcement is per request (`planCheckEnforce`), foundry_ops refuses client-side instead; production has no PACT binding
+- safe_claim: "landings that declare chains are checked against the live corpus before a task exists, and the staging gate refuses a merge whose declared chains PACT calls unusable"
 - forbidden_claims: ["enforced in production", "all chains pass"]
 
 ## Gateway K11 flip

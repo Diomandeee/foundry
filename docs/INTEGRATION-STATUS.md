@@ -102,7 +102,7 @@ Production verified · Advisory · Planned/incomplete.
 | `packages/evidence` (trajectory companion) | **Locally verified, unwired** | `packages/evidence/src/index.ts` + `index.test.ts`; no import outside the package |
 | `substrate/trajectory-memory-ledger` | Reference + **CI-verified as of 2026-10-15** | schema `examples/trajectory-card.schema-v2.json`; **16 tests local and green**, and now run by CI (they were not, until this pass). No runtime import — Foundry writes no trajectory events (§8 item 6). |
 | `substrate/spatial-git` | Reference + **Integrated** (feed adapter) | viewer + CLI vendored; `workers/api` now serves `/git-history.json` in the viewer's shape — see §7 |
-| `packages/plan-check` (PACT) | Integrated but **advisory by default** | `decide.ts` step 1b; rejects only when `enforce` is set; outages fail open (`checked=false, ok=true`) |
+| `packages/plan-check` (PACT) | Integrated but **advisory by default**; staging gate enforces (`PACT_ENFORCE=1`, 2026-11-05) | `decide.ts` step 1b; rejects only when `enforce` is set; outages fail open (`checked=false, ok=true`); staging reaches pact-server through Workers VPC service foundry-pact |
 | `workers/participation-coordinator` | Retired from this repo 2026-10-23 | Own Foundry base `participation-coordinator` (deploys only from a gated MERGE); mirror `Diomandeee/participation-coordinator`; same Cloudflare account, own D1 |
 
 `substrate/README.md` states nothing under `substrate/` is imported by Foundry's
