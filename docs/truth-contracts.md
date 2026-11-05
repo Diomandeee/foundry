@@ -31,7 +31,7 @@ Per-claim evidence boundaries. Match every status report to `safe_claim`.
 - remaining uncertainty: verdicts are corpus-dependent; the Worker path (orchestrator intake, gate step 1b) has never run against the hosted server
 - blockers (Mohamed's yes, all three are deploys): `ALTER TABLE tickets ADD COLUMN chains_json TEXT;` on foundry-decisions-staging (before the code: a ticket with chains needs the column); a Workers VPC service to `100.72.126.88:8731` on tunnel foundry-verify (fb73dc27), bound as `PACT_SERVICE` with `PACT_URL` (and `PACT_ENFORCE = "1"` on the gate) in both staging wrangler files; then deploy orchestrator and gate
 - safe_claim: "landings that declare chains are checked against the live corpus before a task exists; the hosted gate check is built and tested, not deployed"
-forbidden_claims: ["enforced in production", "all chains pass"]
+- forbidden_claims: ["enforced in production", "all chains pass"]
 
 ## Gateway K11 flip
 - domain: local service config
