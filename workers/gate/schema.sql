@@ -35,7 +35,13 @@ CREATE TABLE IF NOT EXISTS tickets (
   base_sha TEXT NOT NULL,
   fork_repo TEXT NOT NULL PRIMARY KEY,
   agent_id TEXT NOT NULL,
-  scope_json TEXT NOT NULL
+  scope_json TEXT NOT NULL,
+  -- JSON string[] of the PACT chains the task declared (POST /tasks `chains`); null when none.
+  -- The gate's plan check (decide.ts step 1b) reads it. Databases lacking this column need a
+  -- separately approved migration: `ALTER TABLE tickets ADD COLUMN chains_json TEXT;`
+  -- D1TicketStore writes it only for a ticket with chains, so an unmigrated ledger keeps
+  -- taking every task that declares none.
+  chains_json TEXT
 );
 
 -- Applied to foundry-decisions-staging 2026-11-03 (with decisions.verification) before gate 33a0b98c.

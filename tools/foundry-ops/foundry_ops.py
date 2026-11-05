@@ -23,7 +23,14 @@
          "repo": "~/Developer/MotionMix", "commits": ["<sha>", ...] or "range": "a..b",
          "allowedRoots": ["path/prefix", ...],
          "github": {"remote": "origin", "history": true},   (optional: task/<task> = the merge, history/<task> = the push)
+         "chains": ["chain:pact-pulse", ...],                 (optional: the skill chains the change came from)
          "deleteFork": true}                                  (default true)
+
+      Declared chains are checked against PACT (pact-server POST /api/check-chains, URL from $FOUNDRY_PACT_URL or
+      ~/.config/foundry/pact-url) before the task is opened: a chain PACT does not know, or one whose stages do not
+      compose, refuses the landing (verdict plan-refused) with nothing created. Missing canonical stages are shown,
+      not refused (a pipeline lacks them by design, PACT finding 0009). An unreachable PACT is "not checked" and the
+      landing goes on. The chains also go to POST /tasks, so the orchestrator and the gate record and re-check them.
 
       Before the task is opened, a preflight scans every worktree of the repo and refuses when another active
       lane has unlanded edits, with different bytes, to a file this landing changes (--ack-overlap or
@@ -674,6 +681,8 @@ def open_task(env, spec, dry):
         token = ENVS[env]["task_token"].read_text().strip()
         body = {"baseRepo": spec["base"], "taskId": spec["task"], "agents": [spec["agent"]],
                 "allowedRoots": spec["allowedRoots"]}
+        if spec.get("chains"):
+            body["chains"] = list(spec["chains"])
         req = urllib.request.Request(ENVS[env]["orchestrator"] + "/tasks", method="POST", data=json.dumps(body).encode(),
                                      headers={"Authorization": f"Bearer {token}", "content-type": "application/json",
                                               # The workers.dev edge refuses urllib's default agent (error 1010).
@@ -707,6 +716,52 @@ def subscribe(env, fork, already):
     created = not out.startswith("exists:")
     log(f"  subscription {'created' if created else 'exists'} for {fork}")
     return created
+
+
+def pact_url():
+    f = CONF / "pact-url"
+    return os.environ.get("FOUNDRY_PACT_URL") or (f.read_text().strip() if f.exists() else "")
+
+
+def chain_usable(r):
+    """packages/plan-check `usable`: found and typechecking; missing canonical stages describe, never refuse."""
+    return bool(r and r.get("found")) and r.get("typechecks") is not False
+
+
+def plan_check(chains, url=None, post=None):
+    """The orchestrator's intake question, asked from the operator side over the tailnet: do the declared chains
+    exist and compose? Same verdict shape as packages/plan-check; an outage fails open (checked False, ok True)."""
+    if not chains:
+        return None
+    url = pact_url() if url is None else url
+    if not url:
+        return {"checked": False, "ok": True, "results": [], "error": "no PACT url ($FOUNDRY_PACT_URL or ~/.config/foundry/pact-url)"}
+    def http_post(u, body):
+        req = urllib.request.Request(u, method="POST", data=json.dumps(body).encode(),
+                                     headers={"content-type": "application/json", "User-Agent": "foundry-ops/1"})
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return json.loads(r.read())
+    try:
+        got = (post or http_post)(url.rstrip("/") + "/api/check-chains", {"chains": list(chains)})
+    except Exception as e:  # noqa: BLE001 - any failure to ask is "not checked"
+        return {"checked": False, "ok": True, "results": [], "error": str(e)[:200]}
+    by = {r.get("name"): r for r in (got or {}).get("results") or [] if isinstance(r, dict)}
+    results = [by.get(c) or {"name": c, "found": False} for c in chains]
+    return {"checked": True, "ok": all(chain_usable(r) for r in results), "results": results}
+
+
+def plan_lines(plan):
+    if not plan["checked"]:
+        return [f"  pact: not checked ({plan.get('error')}), landing anyway"]
+    out = []
+    for r in plan["results"]:
+        if not r.get("found"):
+            out.append(f"  pact: {r['name']} REFUSED: no such chain in the corpus")
+        elif r.get("typechecks") is False:
+            out.append(f"  pact: {r['name']} REFUSED: its stages do not compose ({r.get('word', '')})")
+        else:
+            out.append(f"  pact: {r['name']} ok, {r.get('present', '?')}/4 stages ({r.get('word', '')})")
+    return out
 
 
 def commits_of(spec, repo):
@@ -792,6 +847,13 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
             raise SystemExit(f"spec missing {k}: {spec}")
     picks = commits_of(spec, repo)
     log(f"== {spec['task']}: {len(picks)} commit(s) onto {spec['base']}")
+    # PACT before anything is created: a declared chain that does not exist or does not compose stops here.
+    plan = plan_check(spec.get("chains") or [])
+    if plan:
+        for line in plan_lines(plan):
+            log(line)
+        if plan["checked"] and not plan["ok"]:
+            return {"task": spec["task"], "base": spec["base"], "verdict": "plan-refused", "planCheck": plan}
     base_ref = f"refs/foundry/{spec['base']}/main"
     sh([str(BIN / "foundry-fetch"), spec["base"], f"+refs/heads/main:{base_ref}"], cwd=repo)
     # Before the task exists: a landing that another active lane would collide with stops here.
@@ -800,7 +862,8 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
     fork = t["forks"][0]
     if dry:
         log(f"  dry run: would open task, subscribe {fork}, cherry-pick {', '.join(c[:8] for c in picks)}, push, wait")
-        return {"task": spec["task"], "fork": fork, "dry_run": True, "overlap": contested}
+        return {"task": spec["task"], "fork": fork, "dry_run": True, "overlap": contested,
+                **({"planCheck": plan} if plan else {})}
     if subscribe(env, fork, t["subscribed"].get(fork)):
         time.sleep(SETTLE_S)
     elif t["new"] and t["subscribed"].get(fork):
@@ -809,6 +872,8 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
     tmp = tempfile.mkdtemp(prefix=f"land-{spec['task']}-")
     wt = os.path.join(tmp, os.path.basename(repo_top(repo)))
     result = {"task": spec["task"], "fork": fork, "base": spec["base"], "commits": picks}
+    if plan:
+        result["planCheck"] = plan
     if contested:
         result["overlap"] = contested
     try:

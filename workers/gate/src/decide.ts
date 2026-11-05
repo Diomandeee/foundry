@@ -25,7 +25,7 @@ import {
 
 import type { TaskTicket, TicketStore } from "@foundry/stores";
 import type { OverlapOracle } from "@foundry/lkg-client";
-import type { PlanCheck, PlanVerdict } from "@foundry/plan-check";
+import { usable, type PlanCheck, type PlanVerdict } from "@foundry/plan-check";
 
 export interface PlanCheckOpts {
   check: PlanCheck;
@@ -292,12 +292,7 @@ export async function decidePush(
     if (planCheck && chains.length > 0) {
       planAdvisory = await planCheck.check.check(chains);
       if (planCheck.enforce && planAdvisory.checked && !planAdvisory.ok) {
-        const bad = planAdvisory.results
-          .filter(
-            (r) =>
-              !r.found || (r.missing?.length ?? 0) > 0 || r.typechecks === false,
-          )
-          .map((r) => r.name);
+        const bad = planAdvisory.results.filter((r) => !usable(r)).map((r) => r.name);
         return {
           verdict: "reject",
           reason: {

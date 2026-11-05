@@ -29,10 +29,16 @@ function depsFromEnv(env: Env): PipelineDeps {
   if (env.LKG_URL) {
     deps.overlap = new KgOverlapOracle(new KGClient(env.LKG_URL, env.LKG_TOKEN));
   }
-  // PACT chain check, previously constructible only in tests. Advisory
-  // unless a deployment opts into enforcement out-of-band.
+  // PACT chain check over the ticket's declared chains. PACT_SERVICE is a Workers VPC binding: pact-server
+  // runs on a private fleet host (Mac5's tailnet address), reached through the foundry-verify tunnel. Advisory
+  // unless PACT_ENFORCE is "1"; an unreachable server is "not checked" and never blocks.
   if (env.PACT_URL) {
-    deps.planCheck = new PactServerPlanCheck(env.PACT_URL);
+    const pact = env.PACT_SERVICE;
+    deps.planCheck = new PactServerPlanCheck(
+      env.PACT_URL,
+      pact ? { fetcher: (url: string, init: RequestInit) => pact.fetch(url, init) } : {},
+    );
+    deps.planCheckEnforce = env.PACT_ENFORCE === "1";
   }
   // Required checks. Unset means the stub, which records "nothing was
   // checked". It blocks only when VERIFY_REQUIRE_CHECKED is explicitly selected. A

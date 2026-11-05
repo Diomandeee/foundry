@@ -14,6 +14,8 @@ interface Env {
   LKG_URL?: string;
   LKG_TOKEN?: string;
   PACT_URL?: string;
+  /** Workers VPC binding to the private pact-server; PACT_URL is then fetched through it. */
+  PACT_SERVICE?: Fetcher;
   // Auto-subscribe each new fork to the gate's push queue (src/subscribe.ts). All five or none:
   // SUBSCRIBE_API_TOKEN is a secret (account token with Event Subscriptions edit); the rest are vars.
   SUBSCRIBE_API_TOKEN?: string;

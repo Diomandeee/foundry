@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { PactServerPlanCheck, StubPlanCheck } from "./index.js";
+import { PactServerPlanCheck, StubPlanCheck, usable } from "./index.js";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -26,7 +26,7 @@ describe("PactServerPlanCheck", () => {
 
   const full = { name: "c:a", found: true, present: 4, missing: [], typechecks: true, word: "w" };
 
-  it("passes when every chain is found, complete, and typechecking", async () => {
+  it("passes when every chain is found and typechecking", async () => {
     const calls = stub(200, { results: [full, { ...full, name: "c:b" }] });
     const v = await new PactServerPlanCheck("http://pact:8730").check(["c:a", "c:b"]);
     expect(v).toMatchObject({ checked: true, ok: true });
@@ -34,10 +34,9 @@ describe("PactServerPlanCheck", () => {
     expect(JSON.parse(String(calls[0].init?.body ?? "{}"))).toEqual({ chains: ["c:a", "c:b"] });
   });
 
-  it("fails on missing, incomplete, or non-typechecking chains", async () => {
+  it("fails on unknown or non-typechecking chains", async () => {
     const cases = [
       [{ ...full, found: false }],
-      [{ ...full, missing: ["* execute"], present: 3 }],
       [{ ...full, typechecks: false }],
     ];
     for (const results of cases) {
@@ -47,6 +46,30 @@ describe("PactServerPlanCheck", () => {
       expect(v.checked).toBe(true);
       vi.unstubAllGlobals();
     }
+  });
+
+  it("passes a pipeline that lacks canonical stages (finding 0009)", async () => {
+    // chain:deep-research as pact-server answered it on 2026-11-05: 0/4 stages, typechecks.
+    const pipeline = { name: "c:a", found: true, present: 0, typechecks: true, word: "▸ ▸",
+                       missing: ["⊗ expand", "* execute", "⊕ select", "↺ repeat"] };
+    stub(200, { results: [pipeline] });
+    const v = await new PactServerPlanCheck("http://p").check(["c:a"]);
+    expect(v).toMatchObject({ checked: true, ok: true });
+    expect(usable(pipeline)).toBe(true);
+    expect(usable(undefined)).toBe(false);
+  });
+
+  it("routes through a supplied fetcher instead of global fetch", async () => {
+    const globalCalls = stub(500, {});
+    const routed: string[] = [];
+    const fetcher = async (url: string) => {
+      routed.push(url);
+      return new Response(JSON.stringify({ results: [full] }), { status: 200 });
+    };
+    const v = await new PactServerPlanCheck("http://pact.internal", { fetcher }).check(["c:a"]);
+    expect(v).toMatchObject({ checked: true, ok: true });
+    expect(routed).toEqual(["http://pact.internal/api/check-chains"]);
+    expect(globalCalls.length).toBe(0);
   });
 
   it("fails closed when the server drops a requested name", async () => {

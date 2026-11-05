@@ -3,7 +3,7 @@
 
   python3 -m unittest tools/foundry-ops/test_foundry_ops.py
 """
-import hashlib, json, os, pathlib, subprocess, sys, tempfile, unittest
+import hashlib, json, os, pathlib, shutil, subprocess, sys, tempfile, unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import foundry_ops as fo  # noqa: E402
@@ -480,6 +480,89 @@ class VerifierVerdictTest(unittest.TestCase):
 
     def test_unknown_head_is_none(self):
         self.assertIsNone(fo.verifier_verdict("abc", self.write({"event": "verdict", "head": "zzz"})))
+
+
+class PlanCheckTest(unittest.TestCase):
+    """Declared chains are asked of PACT before a task exists; answers are pact-server's, as it gave them 2026-11-05."""
+
+    GENERATIONAL = {"name": "chain:generational", "found": True, "present": 4, "missing": [], "typechecks": True,
+                    "word": "▸ ⊗ ▸ ▸ ▸ ▸ ⊕ * ↺"}
+    PIPELINE = {"name": "chain:deep-research", "found": True, "present": 0, "typechecks": True, "word": "▸ ▸",
+                "missing": ["⊗ expand", "* execute", "⊕ select", "↺ repeat"]}
+
+    def answer(self, *results):
+        self.asked = []
+        def post(url, body):
+            self.asked.append((url, body))
+            return {"results": list(results)}
+        return post
+
+    def test_no_chains_asks_nothing(self):
+        self.assertIsNone(fo.plan_check([], url="http://p", post=self.answer()))
+        self.assertEqual(self.asked, [])
+
+    def test_a_pipeline_without_canonical_stages_passes(self):
+        v = fo.plan_check(["chain:generational", "chain:deep-research"], url="http://p/",
+                          post=self.answer(self.GENERATIONAL, self.PIPELINE))
+        self.assertEqual((v["checked"], v["ok"]), (True, True))
+        self.assertEqual(self.asked[0], ("http://p/api/check-chains", {"chains": ["chain:generational", "chain:deep-research"]}))
+        self.assertIn("0/4 stages", fo.plan_lines(v)[1])
+
+    def test_unknown_non_composing_or_dropped_chains_refuse(self):
+        for results, names in [([{"name": "chain:nope", "found": False}], ["chain:nope"]),
+                               ([{**self.GENERATIONAL, "typechecks": False}], ["chain:generational"]),
+                               ([self.GENERATIONAL], ["chain:generational", "chain:gone"])]:
+            v = fo.plan_check(names, url="http://p", post=self.answer(*results))
+            self.assertEqual((v["checked"], v["ok"]), (True, False), names)
+            self.assertTrue(any("REFUSED" in line for line in fo.plan_lines(v)))
+
+    def test_an_outage_or_no_url_is_not_checked_and_does_not_block(self):
+        def down(url, body):
+            raise OSError("connection refused")
+        v = fo.plan_check(["chain:generational"], url="http://p", post=down)
+        self.assertEqual((v["checked"], v["ok"]), (False, True))
+        self.assertIn("connection refused", v["error"])
+        os.environ.pop("FOUNDRY_PACT_URL", None)
+        v = fo.plan_check(["chain:generational"], url="")
+        self.assertEqual((v["checked"], v["ok"]), (False, True))
+
+    def test_land_refuses_before_any_task_exists(self):
+        import http.server, threading
+
+        class Pact(http.server.BaseHTTPRequestHandler):
+            def do_POST(self):
+                self.rfile.read(int(self.headers["content-length"]))
+                body = json.dumps({"results": [{"name": "chain:nope", "found": False}]}).encode()
+                self.send_response(200)
+                self.send_header("content-type", "application/json")
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, *a):
+                pass
+
+        srv = http.server.HTTPServer(("127.0.0.1", 0), Pact)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        root = tempfile.mkdtemp()
+        try:
+            r = Repo(root)
+            sha = r.commit(r.path, {"src/a.txt": "a\n"})
+            os.environ["FOUNDRY_PACT_URL"] = f"http://127.0.0.1:{srv.server_address[1]}"
+            opened = []
+            real_open, fo.open_task = fo.open_task, lambda *a, **k: opened.append(a)
+            try:
+                res = fo.land_one(None, "staging", {"base": BASE, "task": "t-plan", "agent": "a", "repo": r.path,
+                                                    "commits": [sha], "allowedRoots": ["src"], "chains": ["chain:nope"]},
+                                  dry=False)
+            finally:
+                fo.open_task = real_open
+            self.assertEqual(res["verdict"], "plan-refused")
+            self.assertEqual(res["planCheck"]["results"], [{"name": "chain:nope", "found": False}])
+            self.assertEqual(opened, [])
+        finally:
+            os.environ.pop("FOUNDRY_PACT_URL", None)
+            srv.shutdown()
+            shutil.rmtree(root, ignore_errors=True)
 
 
 if __name__ == "__main__":

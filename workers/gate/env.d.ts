@@ -13,6 +13,10 @@ interface Env {
   LKG_URL?: string;
   LKG_TOKEN?: string;
   PACT_URL?: string;
+  /** Workers VPC binding to the private pact-server; PACT_URL is then fetched through it. */
+  PACT_SERVICE?: Fetcher;
+  /** When "1", a declared chain that is unknown or does not typecheck rejects the merge. */
+  PACT_ENFORCE?: string;
   /** Required-check server (`packages/verify`, POST /api/verify). */
   VERIFY_URL?: string;
   /** When "1", a failed required check blocks the merge. Default advisory. */

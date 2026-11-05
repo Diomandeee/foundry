@@ -286,7 +286,7 @@ describe("decidePush", () => {
           checked: true,
           ok: false,
           results: [
-            { name: "chain:broken", found: true, missing: ["ghost-skill"] },
+            { name: "chain:broken", found: true, typechecks: false },
           ],
         }),
       },
@@ -326,7 +326,7 @@ describe("decidePush", () => {
           checked: true,
           ok: false,
           results: [
-            { name: "chain:broken", found: true, missing: ["ghost-skill"] },
+            { name: "chain:broken", found: true, typechecks: false },
           ],
         }),
       },
