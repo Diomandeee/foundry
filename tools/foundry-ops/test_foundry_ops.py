@@ -482,6 +482,12 @@ class VerifierVerdictTest(unittest.TestCase):
         self.assertIsNone(fo.verifier_verdict("abc", self.write({"event": "verdict", "head": "zzz"})))
 
 
+class SettleTest(unittest.TestCase):
+    def test_a_new_fork_waits_past_the_window_where_pushes_vanish(self):
+        # Pushes 49 s after subscribing were lost and pushes 62 s after arrived (2026-11-10). Lowering this brings the losses back.
+        self.assertGreater(fo.SETTLE_S, 62)
+
+
 class SessionChainsTest(unittest.TestCase):
     """A landing's chains are read off what its session ran, from the transcript shapes Claude Code writes."""
 

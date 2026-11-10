@@ -67,7 +67,11 @@ ENVS = {
                 "task_token": CONF / "staging-task-token"},
 }
 API = "https://api.cloudflare.com/client/v4"
-SETTLE_S = 30        # a push made seconds after a new subscription can be dropped (2026-10-27)
+# Artifacts usually starts delivering a new repo's pushes about a minute after the repo appears. Measured 2026-11-10 on
+# throwaway repos and forks: 23 of 23 pushes up to 49 s after subscribing were lost, 22 of 22 from 62 s on arrived,
+# and every later push on the same repos arrived. 30 s put the push right at the edge of that window, so some landed
+# and some vanished. The push follows the sleep by a few seconds more.
+SETTLE_S = 75
 # Long enough for a gate under load: decision 638 (2026-11-03) came 2 minutes after its push, just past the
 # old 120 s wait, and land re-pushed the change as a second event. A re-push is for a dropped push only.
 DECISION_WAIT_S = 300
@@ -861,8 +865,8 @@ def wait_decision(cf, fork, shas, timeout):
 def push_until_decided(cf, fork, wt, wait_s, push=None, attempts=2):
     """Push HEAD to the fork and wait for the gate's verdict; returns (decision, heads pushed).
 
-    A push that leaves no row at all is re-stamped and pushed once more (a push made seconds after a new
-    subscription can be dropped), and from then on every head pushed is waited on, not just the newest:
+    A push that leaves no row at all is re-stamped and pushed once more (see SETTLE_S for why one can vanish; the
+    second push is later, past that window), and from then on every head pushed is waited on, not just the newest:
     the gate can still decide the first one. On 2026-11-03 it merged a first push (decision 638) 8 s after
     land stopped waiting for it, and the re-push of the same change became a second event (643)."""
     push = push or (lambda head: sh([str(BIN / "foundry-push"), fork, "HEAD:refs/heads/main", "--force"], cwd=wt))
