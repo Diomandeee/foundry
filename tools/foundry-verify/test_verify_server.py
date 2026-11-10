@@ -41,6 +41,18 @@ XCODE_FAIL = ("\t Executed 12 tests, with 2 failures (0 unexpected) in 1.0 (1.0)
 XCODE_FAIL_CASES = ("Test Case '-[AppTests.ATests testOne]' failed (0.1 seconds).\n"
                     "Test Case '-[AppTests.CTests testPassed]' passed (0.1 seconds).\n" + XCODE_FAIL)
 XCODE_BUILD_FAIL = "error: cannot find 'x' in scope\n** BUILD FAILED **\n\nThe following build commands failed:\n"
+# The shapes below are cut from real Mac5 job logs.
+XCODE_TEST_COMPILE_FAIL = ("App.swift:1:1: error: cannot find 'x' in scope\nTesting failed:\n\tCannot find 'x' in scope\n"
+                           "\tTesting cancelled because the build failed.\n\n** TEST FAILED **\n\n\n"
+                           "The following build commands failed:\n\tSwiftCompile normal arm64 App.swift\n(1 failure)\n")
+XCODE_NO_SIMULATOR = ("Resolved source packages:\n  SharedServices: /x/SharedServices\n\n"
+                      "xcodebuild: error: Unable to find a device matching the provided destination specifier:\n"
+                      "\t\t{ platform:iOS Simulator, id:AB9E8270-AF9B-4404-8125-DE25DCDF53AF }\n\n"
+                      "\tThe requested device could not be found because no available devices matched the request.\n")
+XCODE_RUNNER_NEVER_STARTED = "Testing failed:\n\tEarly unexpected exit, operation never finished bootstrapping\n\n** TEST FAILED **\n"
+XCODE_ZERO_TESTS = "\t Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds\n** TEST SUCCEEDED **\n"
+BRIDGE_UNITTEST_FAIL = "Ran 12 tests in 0.1s\n\nFAILED (failures=1)\n"
+XCODE_PARALLEL_FAIL = "** TEST FAILED **\n\nTesting started\nTest case 'Suite.test_a()' failed on 'Clone 1 of iPhone (1)' (1.0 seconds)\n"
 
 
 class Parse(unittest.TestCase):
@@ -61,6 +73,26 @@ class Parse(unittest.TestCase):
 
     def test_truncated_log_is_a_build_failure(self):
         self.assertTrue(vs.parse_xcodebuild("Compiling...\n")["build_failed"])
+
+    def test_a_missing_simulator_never_reached_the_code(self):
+        r = vs.parse_xcodebuild(XCODE_NO_SIMULATOR)
+        self.assertIn("Unable to find a device", r["unreached"])
+        self.assertIsNone(r["executed"])
+
+    def test_nothing_that_ran_reads_as_unreached(self):
+        for log in (XCODE_PASS, XCODE_FAIL, XCODE_BUILD_FAIL, XCODE_TEST_COMPILE_FAIL, BRIDGE_UNITTEST_FAIL, XCODE_PARALLEL_FAIL):
+            self.assertIsNone(vs.parse_xcodebuild(log)["unreached"], log)
+
+    def test_a_compile_failure_under_xcodebuild_test_is_a_build_failure(self):
+        r = vs.parse_xcodebuild(XCODE_TEST_COMPILE_FAIL)
+        self.assertEqual((r["build_failed"], r["executed"]), (True, None))
+
+    def test_a_runner_that_never_started_is_unreached_and_says_why(self):
+        self.assertIn("never finished bootstrapping", vs.parse_xcodebuild(XCODE_RUNNER_NEVER_STARTED)["unreached"])
+
+    def test_zero_tests_and_empty_logs_are_unreached(self):
+        self.assertTrue(vs.parse_xcodebuild(XCODE_ZERO_TESTS)["unreached"])
+        self.assertTrue(vs.parse_xcodebuild("")["unreached"])
 
     def test_skipped_tests_are_counted(self):
         # Fabric's UI tests skip without a live bridge (job-verify-fabric-proof-1103-205315 parsed to executed=None)
@@ -99,6 +131,11 @@ class Judge(unittest.TestCase):
     def test_build_failure_refuses_unless_main_also_fails(self):
         self.assertFalse(vs.judge(self.res(build_failed=True), self.res())[0])
         self.assertTrue(vs.judge(self.res(build_failed=True), self.res(build_failed=True))[0])
+
+    def test_a_real_compile_failure_main_shares_still_passes(self):
+        res = {**vs.parse_xcodebuild(XCODE_TEST_COMPILE_FAIL), "job": "job-x"}
+        self.assertEqual(vs.reached(res, "x"), res)
+        self.assertEqual(vs.judge(res, res), (True, "does not build, and neither does base main"))
 
 
 class Tree(unittest.TestCase):
@@ -330,6 +367,64 @@ class EndToEnd(unittest.TestCase):
         self.assertTrue(vs.verify(req, self.cfg)["runs"][0]["ok"])
         self.assertTrue(vs.verify(req, self.cfg)["runs"][0]["ok"])
         self.assertEqual([j[0] for j in self.jobs], ["verify-app", "verify-app-main", "verify-app"])
+
+    def parsed(self, log):
+        return vs.parse_xcodebuild(log)
+
+    def req(self):
+        return {"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}
+
+    def baselines(self):
+        return [n for n in os.listdir(os.path.join(self.tmp, "verify", "app")) if n.startswith("baseline-")]
+
+    def test_the_2026_11_09_hole_a_dead_simulator_on_both_sides_is_unjudged(self):
+        # gate merge a5dfd73: exit 70 on the candidate and on main read as "neither builds" and merged.
+        self.stub_jobs(self.parsed(XCODE_NO_SIMULATOR), self.parsed(XCODE_NO_SIMULATOR))
+        with self.assertRaises(vs.Unjudged) as e:
+            vs.verify(self.req(), self.cfg)
+        self.assertIn("Unable to find a device", str(e.exception))
+        self.assertEqual([j[0] for j in self.jobs], ["verify-app"])  # main is not measured for a run that told us nothing
+
+    def test_main_unreached_is_unjudged_and_not_cached(self):
+        self.stub_jobs(self.parsed(XCODE_TEST_COMPILE_FAIL), self.parsed(XCODE_NO_SIMULATOR))
+        with self.assertRaises(vs.Unjudged):
+            vs.verify(self.req(), self.cfg)
+        self.assertEqual(self.baselines(), [])
+
+    def test_compile_failure_main_shares_passes_end_to_end(self):
+        self.stub_jobs(self.parsed(XCODE_TEST_COMPILE_FAIL), self.parsed(XCODE_TEST_COMPILE_FAIL))
+        out = vs.verify(self.req(), self.cfg)
+        self.assertEqual(out["runs"][0], {"name": "xcodebuild test (mac5)", "ok": True,
+                                          "output": "does not build, and neither does base main"})
+
+    def test_compile_failure_on_a_green_main_is_refused(self):
+        self.stub_jobs(self.parsed(XCODE_TEST_COMPILE_FAIL), self.parsed(XCODE_PASS))
+        self.assertFalse(vs.verify(self.req(), self.cfg)["runs"][0]["ok"])
+
+    def recipe_proposal(self, old, new):
+        """A main whose recipe is `old` and a fork whose recipe is `new`; the fork's head."""
+        sh(self.origin, "git", "checkout", "-q", "main")
+        commit(self.origin, {".foundry/verify.json": json.dumps(old)}, "recipe")
+        sh(self.origin, "git", "checkout", "-q", "fork")
+        sh(self.origin, "git", "merge", "-q", "--no-edit", "main")
+        return commit(self.origin, {".foundry/verify.json": json.dumps(new, indent=1)}, "proposal")
+
+    def test_a_proposal_that_only_swaps_the_simulator_is_run_on_the_new_one(self):
+        dead, alive = "AB9E8270-AF9B-4404-8125-DE25DCDF53AF", "C1AB6BF6-049B-4C64-B707-73E33F42E371"
+        cmd = lambda sim: ["xcodebuild", "test", "-destination", f"platform=iOS Simulator,id={sim}"]
+        head = self.recipe_proposal({"name": "t", "command": cmd(dead)}, {"name": "t", "command": cmd(alive)})
+        self.stub_jobs(self.parsed(XCODE_PASS))
+        self.assertTrue(vs.verify({**self.req(), "headSha": head}, self.cfg)["runs"][0]["ok"])
+        self.assertEqual(self.commands, [cmd(alive)])
+
+    def test_a_proposal_that_changes_anything_else_is_judged_by_mains_recipe(self):
+        dead = "AB9E8270-AF9B-4404-8125-DE25DCDF53AF"
+        real = ["xcodebuild", "test", "-destination", f"id={dead}"]
+        head = self.recipe_proposal({"name": "t", "command": real},
+                                    {"name": "t", "command": ["sh", "-c", "echo ** TEST SUCCEEDED **"]})
+        self.stub_jobs(self.parsed(XCODE_PASS))
+        vs.verify({**self.req(), "headSha": head}, self.cfg)
+        self.assertEqual(self.commands, [real])
 
     def test_a_base_link_is_the_siblings_merged_tree(self):
         # The sibling base: its main has lib/core.swift; a working-tree edit there must not be what is built.

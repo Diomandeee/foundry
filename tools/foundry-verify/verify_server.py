@@ -8,7 +8,8 @@ This server answers that call:
   1. Map the fork to its base: ~/.config/foundry/task-<task>.json (written by foundry_ops land) names it.
      A base not listed in ~/.config/foundry/verify.json gets {"runs": []}: "nothing checked", never a pass.
   2. Fetch the base main and the fork head. Read the recipe, .foundry/verify.json, from the BASE main, so a
-     proposal cannot rewrite the check that judges it.
+     proposal cannot rewrite the check that judges it. The one exception is a proposal that only moves the
+     recipe to another simulator: otherwise a simulator that is gone would block the change that replaces it.
   3. Rebuild the tree the gate would write: base main with the fork's changes since its fork point overlaid
      (the gate squashes whole files, and it has already refused any path both sides changed). Copy in the
      stripped assets listed in .foundry/assets.json, checked against their sha256.
@@ -19,10 +20,13 @@ This server answers that call:
      working tree another lane is editing. The linked shas key main's cached baseline with main's own.
   5. Pass when no test fails that does not also fail on base main. Main's failures are measured once per
      main sha (cached), and only when the candidate has failures, so a red main never blocks the fix for it.
+     A real compile failure main shares passes for the same reason. A run that never got as far as the code
+     (no such simulator, unresolved packages, a test runner that never started, zero tests) says nothing
+     about the change, on either side, so it is unjudged and never cached.
 
 A change confined to the recipe's `skip` globs (docs) is reported as a passing "skipped" check, with that
 word in its output. A guarded base never merges unjudged: anything that keeps the server from judging
-(fetch failure, worker outage, deadline, a crash) is a 503 with {"retry": true}, which the gate turns into
+(fetch failure, worker outage, deadline, a run that never reached the code, a crash) is a 503 with {"retry": true}, which the gate turns into
 an `error` row and a queue retry. Only a verifier that cannot be reached at all reads as "not checked".
 A busy worker is waited on for FORCE_AFTER_S, then the job runs with --force.
 
@@ -208,10 +212,29 @@ def ensure_assets(repo, main_ref, sources, cache=None):
 
 # ---- running the recipe on a worker ----
 
+# xcodebuild prints these only when the build itself ran and failed.
+COMPILE_FAILED = ("** BUILD FAILED **", "The following build commands failed:",
+                  "Testing cancelled because the build failed")
+
+
+def unreached(text, executed):
+    """Why this log says nothing about the code, or None when it does.
+
+    It has to show tests running, a compile failing, or a recipe's own test step failing before xcodebuild
+    (Fabric runs the bridge's unittest first). Anything else never got that far: a destination that does not
+    exist exits 70 with none of xcodebuild's result markers, and both sides of the comparison fail alike."""
+    if executed or any(m in text for m in COMPILE_FAILED) or re.search(
+            r"^(?:FAILED \((?:failures|errors)=|Test case '.*' (?:passed|failed) on )", text, re.M):  # parallel runs print no "Executed"
+        return None
+    m = re.search(r"^(?:xcodebuild: error: |Testing failed:\n\s*)(.+)$", text, re.M)
+    return m.group(1).strip() if m else "no compile failure and no tests in the log"
+
+
 def parse_xcodebuild(text):
-    """{'executed': int|None, 'skipped': int, 'failing': set, 'build_failed': bool, 'ids': {name: id}} from an
-    xcodebuild test log. `ids` maps a failing test's summary name ("Class.test()") to its -only-testing identifier.
-    `executed` counts skipped tests too, as xcodebuild does ("Executed 3 tests, with 3 tests skipped and 0 failures")."""
+    """{'executed': int|None, 'skipped': int, 'failing': set, 'build_failed': bool, 'unreached': str|None,
+    'ids': {name: id}} from an xcodebuild test log. `ids` maps a failing test's summary name ("Class.test()") to its
+    -only-testing identifier. `executed` counts skipped tests too, as xcodebuild does ("Executed 3 tests, with 3 tests
+    skipped and 0 failures"). `unreached` is set when the run never got as far as the code, and says why."""
     executed, skipped = None, 0
     ids = {m.group(2) + "." + m.group(3) + "()": f"{m.group(1)}/{m.group(2)}/{m.group(3)}"
            for m in re.finditer(r"Test Case '-\[(\w+)\.(\w+) (\w+)\]' failed", text)}
@@ -232,7 +255,7 @@ def parse_xcodebuild(text):
     if executed is None and "** TEST SUCCEEDED **" not in text:
         build_failed = True
     return {"executed": executed, "skipped": skipped, "failing": failing, "build_failed": build_failed,
-            "ids": {k: v for k, v in ids.items() if k in failing}}
+            "unreached": unreached(text, executed), "ids": {k: v for k, v in ids.items() if k in failing}}
 
 
 FORCE_AFTER_S = 180  # a busy worker gets this long to make room; then the gate's check runs anyway
@@ -276,6 +299,14 @@ def run_job(repo, recipe, name, deadline):
     text = subprocess.run([FABRIC, "job", "log", jid, "--lines", "200000"], capture_output=True, text=True).stdout
     res = parse_xcodebuild(text)
     res["job"] = jid
+    return res
+
+
+def reached(res, what):
+    """res, or Unjudged when it never got as far as the code: a retry may find the worker healthy, and a verdict
+    would blame the change for the machine (or, when main failed alike, wave it through unbuilt)."""
+    if res.get("unreached"):
+        raise Unjudged(f"{what} never reached the build or the tests ({res['job']}): {res['unreached']}")
     return res
 
 
@@ -326,7 +357,7 @@ def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None):
         pass
     git(repo, "checkout", "-q", "-f", "--detach", main_sha)
     git(repo, "clean", "-q", "-ffd")
-    res = run_job(repo, recipe, f"verify-{base}-main", deadline)
+    res = reached(run_job(repo, recipe, f"verify-{base}-main", deadline), "base main")
     with open(path, "w") as f:
         json.dump({**res, "failing": sorted(res["failing"])}, f)
     return res
@@ -349,8 +380,27 @@ def rerun(repo, recipe, base, cand, new, deadline):
     return set(ids) - res["failing"]
 
 
+SIMULATOR_ID = re.compile(r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}")
+
+
+def repointed(repo, head, recipe, paths):
+    """The proposal's recipe when all it changes is a simulator id, else main's.
+
+    Main's recipe judges every proposal, so with its simulator gone nothing could land, the replacement
+    included (each run is unjudged). Swapping an id cannot weaken the check, and running it proves the new id."""
+    if ".foundry/verify.json" not in paths:
+        return recipe
+    try:
+        proposed = json.loads(git(repo, "show", f"{head}:.foundry/verify.json"))
+    except (Unjudged, ValueError):
+        return recipe
+    same = SIMULATOR_ID.sub("", json.dumps(proposed, sort_keys=True)) == SIMULATOR_ID.sub("", json.dumps(recipe, sort_keys=True))
+    return proposed if same else recipe
+
+
 def judge(cand, base_res, flaky=frozenset()):
-    """(ok, summary). New failures are what the change adds over main, less the ones a rerun passed."""
+    """(ok, summary). New failures are what the change adds over main, less the ones a rerun passed.
+    Both results have reached the code: reached() turns a run that did not into Unjudged before this."""
     if cand["build_failed"]:
         if base_res is not None and base_res["build_failed"]:
             return True, "does not build, and neither does base main"
@@ -407,8 +457,8 @@ def verify(req, cfg=None, now=None):
             return {"runs": [{"name": recipe.get("name", "build+test"), "ok": True,
                               "output": f"skipped: {len(paths)} path(s), all docs ({', '.join(paths[:3])})"}]}
         copied, unmatched = ensure_assets(repo, "refs/verify/main", bcfg.get("sources", []))
-        recipe, pinned = resolve_links(repo, recipe, work)
-        cand = run_job(repo, recipe, f"verify-{base}", deadline)
+        recipe, pinned = resolve_links(repo, repointed(repo, head, recipe, paths), work)
+        cand = reached(run_job(repo, recipe, f"verify-{base}", deadline), "the candidate")
         base_res = None
         if cand["build_failed"] or cand["failing"]:
             base_res = baseline(repo, base, main_sha, recipe, deadline, work, pinned)
