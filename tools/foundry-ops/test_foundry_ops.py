@@ -482,6 +482,108 @@ class VerifierVerdictTest(unittest.TestCase):
         self.assertIsNone(fo.verifier_verdict("abc", self.write({"event": "verdict", "head": "zzz"})))
 
 
+class SessionChainsTest(unittest.TestCase):
+    """A landing's chains are read off what its session ran, from the transcript shapes Claude Code writes."""
+
+    SID = "aaaa1111-0000-0000-0000-000000000000"
+    DEEP = {"name": "chain:deep-research", "members": ["explore", "sys:research", "meta:amr"]}
+    PULSE = {"name": "chain:pact-pulse", "members": ["pulse", "compact", "divergent-rail"]}
+
+    def setUp(self):
+        self.root = pathlib.Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.clock = 0
+
+    def line(self, type_, content):
+        self.clock += 1
+        return json.dumps({"type": type_, "timestamp": f"2026-11-10T00:00:{self.clock:02d}Z", "message": {"content": content}})
+
+    def tool(self, skill, **extra):
+        return self.line("assistant", [{"type": "tool_use", "name": "Skill", "input": {"skill": skill, **extra}}])
+
+    def typed(self, name):
+        return self.line("user", f"<command-message>{name}</command-message>\n<command-name>/{name}</command-name>")
+
+    def write(self, *lines, sub=None):
+        d = self.root / "proj"
+        f = d / self.SID / "subagents" / f"{sub}.jsonl" if sub else d / f"{self.SID}.jsonl"
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text("\n".join(lines) + "\n")
+
+    def ran(self, *corpus):
+        return fo.session_chains(self.SID, self.root, url="http://p", get=lambda u: {"chains": list(corpus)})
+
+    def test_named_by_tool_or_typed_once_each_in_order(self):
+        self.write(self.typed("chain:leverage"), self.tool("chain:genesis"), self.tool("chain:leverage"))
+        self.assertEqual(self.ran(), ["chain:leverage", "chain:genesis"])
+
+    def test_a_quotation_is_not_a_run(self):
+        quoted = '<command-name>/chain:quoted</command-name> and "name":"Skill" chain:quoted'
+        self.write(self.line("user", f"see this: {quoted}"),
+                   self.line("user", [{"type": "tool_result", "content": quoted}]),
+                   self.line("assistant", [{"type": "text", "text": quoted}]),
+                   self.tool("pulse", args="Step 1 (chain: chain:quoted)"),
+                   "not json at all \"Skill\"")
+        self.assertEqual(self.ran(), [])
+
+    def test_a_chain_walked_by_hand_needs_every_member_in_order(self):
+        self.write(self.tool("explore"), self.tool("absorb"), self.tool("sys:research"), self.tool("meta:amr"))
+        self.assertEqual(self.ran(self.DEEP), ["chain:deep-research"])
+        self.write(self.tool("sys:research"), self.tool("explore"), self.tool("meta:amr"))
+        self.assertEqual(self.ran(self.DEEP), [])
+        self.write(self.tool("explore"), self.tool("sys:research"))
+        self.assertEqual(self.ran(self.DEEP), [])
+
+    def test_the_harness_compact_is_not_the_compact_skill(self):
+        self.write(self.tool("pulse"), self.typed("compact"), self.tool("divergent-rail"))
+        self.assertEqual(self.ran(self.PULSE), [])
+        self.write(self.tool("pulse"), self.tool("compact"), self.tool("divergent-rail"))
+        self.assertEqual(self.ran(self.PULSE), ["chain:pact-pulse"])
+
+    def test_subagents_count_and_interleave_by_time(self):
+        first, second = self.tool("explore"), self.tool("sys:research")
+        third = self.tool("meta:amr")
+        self.write(first, third)
+        self.write(second, sub="agent-1")
+        self.assertEqual(self.ran(self.DEEP), ["chain:deep-research"])
+
+    def test_no_session_or_no_pact_never_stops_a_landing(self):
+        os.environ.pop("CLAUDE_CODE_SESSION_ID", None)
+        self.assertEqual(fo.session_chains(None, self.root), [])
+        self.assertEqual(fo.session_chains("no-such-session", self.root), [])
+        self.write(self.tool("chain:genesis"), self.tool("explore"))
+        def down(url):
+            raise OSError("refused")
+        self.assertEqual(fo.session_chains(self.SID, self.root, url="http://p", get=down), ["chain:genesis"])
+
+    def land(self, spec):
+        """land_one up to the PACT refusal, recording which chains it asked about."""
+        root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, root)
+        r = Repo(root)
+        sha = r.commit(r.path, {"src/a.txt": "a\n"})
+        asked = []
+        def refuse(chains):
+            asked.append(list(chains))
+            return {"checked": True, "ok": False, "results": []}
+        real, fo.plan_check = fo.plan_check, refuse
+        self.addCleanup(setattr, fo, "plan_check", real)
+        res = fo.land_one(None, "staging", {"base": BASE, "task": "t", "agent": "a", "repo": r.path, "commits": [sha],
+                                            "allowedRoots": ["src"], **spec}, dry=False)
+        return res, asked[0]
+
+    def test_land_uses_the_session_only_when_the_spec_says_nothing(self):
+        real, fo.session_chains = fo.session_chains, lambda: ["chain:genesis"]
+        self.addCleanup(setattr, fo, "session_chains", real)
+        res, asked = self.land({})
+        self.assertEqual((asked, res["chainsFrom"]), (["chain:genesis"], "session"))
+        res, asked = self.land({"chains": ["chain:generational"]})
+        self.assertEqual(asked, ["chain:generational"])
+        self.assertNotIn("chainsFrom", res)
+        res, asked = self.land({"chains": []})
+        self.assertEqual(asked, [])
+
+
 class PlanCheckTest(unittest.TestCase):
     """Declared chains are asked of PACT before a task exists; answers are pact-server's, as it gave them 2026-11-05."""
 

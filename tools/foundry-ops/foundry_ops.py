@@ -23,7 +23,7 @@
          "repo": "~/Developer/MotionMix", "commits": ["<sha>", ...] or "range": "a..b",
          "allowedRoots": ["path/prefix", ...],
          "github": {"remote": "origin", "history": true},   (optional: task/<task> = the merge, history/<task> = the push)
-         "chains": ["chain:pact-pulse", ...],                 (optional: the skill chains the change came from)
+         "chains": ["chain:pact-pulse", ...],                 (optional: read off the session when absent, [] for none)
          "deleteFork": true}                                  (default true)
 
       Declared chains are checked against PACT (pact-server POST /api/check-chains, URL from $FOUNDRY_PACT_URL or
@@ -31,6 +31,9 @@
       compose, refuses the landing (verdict plan-refused) with nothing created. Missing canonical stages are shown,
       not refused (a pipeline lacks them by design, PACT finding 0009). An unreachable PACT is "not checked" and the
       landing goes on. The chains also go to POST /tasks, so the orchestrator and the gate record and re-check them.
+      A spec with no "chains" key takes the chains this Claude session ran ($CLAUDE_CODE_SESSION_ID): named with the
+      Skill tool or typed as /chain:x, or walked by hand with every member in order (members from PACT). Quoted
+      mentions do not count. A session that ran none lands with none; nothing is ever inferred from the diff.
 
       Before the task is opened, a preflight scans every worktree of the repo and refuses when another active
       lane has unlanded edits, with different bytes, to a file this landing changes (--ack-overlap or
@@ -53,7 +56,7 @@ Credentials never reach output: the Cloudflare token comes from `wrangler auth t
 the task token is read from its 0600 file, saved task responses are written 0600 and only allowlisted fields
 are ever read back. Git pushes go through foundry-push / foundry-fetch, which hand tokens to git via askpass.
 """
-import argparse, datetime, hashlib, json, os, pathlib, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
+import argparse, datetime, hashlib, json, os, pathlib, re, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]  # the foundry checkout: wrangler + tools/subscribe-repo.sh
 CONF = pathlib.Path.home() / ".config/foundry"
@@ -764,6 +767,67 @@ def plan_lines(plan):
     return out
 
 
+# A skill the user typed, as the transcript opens that message. Anywhere later in a message it is only a quotation.
+TYPED_SKILL = re.compile(r"\s*(?:<command-message>[^<]*</command-message>\s*)?<command-name>/?([^<\s]+)</command-name>")
+# Typed, these are the harness's own commands; `compact` is also a skill, and a chain member.
+HARNESS_COMMANDS = {"compact"}
+
+
+def session_skills(sid, root=None):
+    """The skills a Claude session ran, oldest first, its subagents' included. Only structure counts: a Skill tool
+    call, or a user message that is a command. Transcripts quote chain names constantly, so text never does."""
+    root = pathlib.Path.home() / ".claude/projects" if root is None else pathlib.Path(root)
+    runs = []
+    for f in [*root.glob(f"*/{sid}.jsonl"), *root.glob(f"*/{sid}/subagents/*.jsonl")]:
+        with open(f, errors="ignore") as lines:
+            for line in lines:
+                if '"Skill"' not in line and "<command-name>" not in line:
+                    continue
+                try:
+                    d = json.loads(line)
+                except ValueError:
+                    continue
+                content = (d.get("message") or {}).get("content")
+                if d.get("type") == "assistant" and isinstance(content, list):
+                    runs += [(d.get("timestamp") or "", b["input"]["skill"]) for b in content
+                             if isinstance(b, dict) and b.get("type") == "tool_use" and b.get("name") == "Skill"
+                             and isinstance(b.get("input"), dict) and b["input"].get("skill")]
+                elif d.get("type") == "user" and isinstance(content, str):
+                    m = TYPED_SKILL.match(content)
+                    if m and m[1] not in HARNESS_COMMANDS:
+                        runs.append((d.get("timestamp") or "", m[1]))
+    return [name for _, name in sorted(runs, key=lambda r: r[0])]
+
+
+def corpus_chains(url=None, get=None):
+    """PACT's chains with their members; [] when it cannot be asked, which only loses the walked-by-hand reading."""
+    url = pact_url() if url is None else url
+    if not url:
+        return []
+    def http_get(u):
+        with urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "foundry-ops/1"}), timeout=5) as r:
+            return json.loads(r.read())
+    try:
+        return (get or http_get)(url.rstrip("/") + "/api/chains").get("chains") or []
+    except Exception:  # noqa: BLE001 - same as plan_check: PACT down never stops a landing
+        return []
+
+
+def chains_ran(skills, corpus):
+    """Chains named outright, then chains whose every member ran in order: agents often walk one skill by skill."""
+    def in_order(members):
+        run = iter(skills)
+        return len(members) >= 2 and all(m in run for m in members)
+    named = [s for s in skills if s.startswith("chain:")]
+    return list(dict.fromkeys(named + [c["name"] for c in corpus if in_order(c.get("members") or [])]))
+
+
+def session_chains(sid=None, root=None, url=None, get=None):
+    sid = sid or os.environ.get("CLAUDE_CODE_SESSION_ID")
+    skills = session_skills(sid, root) if sid else []
+    return chains_ran(skills, corpus_chains(url, get)) if skills else []
+
+
 def commits_of(spec, repo):
     if spec.get("commits"):
         return [sh(["git", "rev-parse", "--verify", c + "^{commit}"], cwd=repo).strip() for c in spec["commits"]]
@@ -847,13 +911,21 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
             raise SystemExit(f"spec missing {k}: {spec}")
     picks = commits_of(spec, repo)
     log(f"== {spec['task']}: {len(picks)} commit(s) onto {spec['base']}")
+    detected = {}
+    if "chains" not in spec:
+        ran = session_chains()
+        if ran:
+            spec["chains"], detected = ran, {"chainsFrom": "session"}
+            log(f"  chains this session ran: {', '.join(ran)}")
     # PACT before anything is created: a declared chain that does not exist or does not compose stops here.
     plan = plan_check(spec.get("chains") or [])
     if plan:
         for line in plan_lines(plan):
             log(line)
         if plan["checked"] and not plan["ok"]:
-            return {"task": spec["task"], "base": spec["base"], "verdict": "plan-refused", "planCheck": plan}
+            if detected:
+                log('  read off this session, not written in the spec; "chains": [] lands without them')
+            return {"task": spec["task"], "base": spec["base"], "verdict": "plan-refused", "planCheck": plan, **detected}
     base_ref = f"refs/foundry/{spec['base']}/main"
     sh([str(BIN / "foundry-fetch"), spec["base"], f"+refs/heads/main:{base_ref}"], cwd=repo)
     # Before the task exists: a landing that another active lane would collide with stops here.
@@ -871,7 +943,7 @@ def land_one(cf, env, spec, dry, ack_overlap=False):
     # The scratch worktree gets its own parent directory, so a recipe's ../sibling links resolve there.
     tmp = tempfile.mkdtemp(prefix=f"land-{spec['task']}-")
     wt = os.path.join(tmp, os.path.basename(repo_top(repo)))
-    result = {"task": spec["task"], "fork": fork, "base": spec["base"], "commits": picks}
+    result = {"task": spec["task"], "fork": fork, "base": spec["base"], "commits": picks, **detected}
     if plan:
         result["planCheck"] = plan
     if contested:
