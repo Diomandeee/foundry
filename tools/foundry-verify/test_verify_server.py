@@ -137,6 +137,9 @@ PYTEST_FAIL = ("FAILED tests/test_a.py::CaseA::test_one - AssertionError: 1 != 2
                "ERROR tests/test_gone.py - ModuleNotFoundError: No module named 'cv2'\n"
                "===== 1 failed, 40 passed, 3 skipped, 1 error in 12.34s =====\n")
 PYTEST_QUIET_PASS = "1870 passed, 30 skipped in 80.05s (0:01:20)\n"
+# MotionMix main on Mac5, 11-10: pytest-subtests adds a two-word count to the closing line.
+PYTEST_SUBTESTS = ("ERROR tests/test_motionmix_anchor_color.py - NameError: name 'Mapping' is not...\n"
+                   "137 failed, 2067 passed, 34 skipped, 13 warnings, 39 errors, 47 subtests passed in 148.14s (0:02:28)\n")
 TSC_FAIL = "src/app/page.tsx(12,7): error TS2322: Type 'string' is not assignable to type 'number'.\n"
 
 
@@ -182,6 +185,9 @@ class Runners(unittest.TestCase):
         self.assertEqual(r["failing"], {"tests/test_a.py::CaseA::test_one", "tests/test_gone.py"})
         self.assertEqual((r["executed"], r["skipped"]), (45, 3))
         self.assertEqual(vs.parse_log(PYTEST_QUIET_PASS, ["pytest"], 0)["executed"], 1900)
+        r = vs.parse_log(PYTEST_SUBTESTS, ["pytest"], 1)
+        self.assertEqual((r["executed"], r["unreached"]), (137 + 2067 + 34 + 39, None))
+        self.assertIn("tests/test_motionmix_anchor_color.py", r["failing"])
 
     def test_ansi_colour_does_not_hide_a_result(self):
         self.assertEqual(vs.parse_log("\x1b[32m Test Files \x1b[39m 20 passed (20)\n\x1b[2m      Tests \x1b[22m 284 passed (284)\n",

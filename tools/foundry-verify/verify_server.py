@@ -302,7 +302,9 @@ def parse_tsc(text):
 def parse_pytest(text):
     """pytest: the closing "N failed, M passed in 1.2s" line, with a FAILED or ERROR line per failure in the
     short summary (-rfE, the default). A file that does not import is an ERROR named for the file."""
-    totals = [m.group(1) for m in re.finditer(r"^=* ?((?:\d+ [a-z]+(?:, )?)+) in [\d.]+s(?: \([\d:]+\))? ?=*$", text, re.M)]
+    # A count can be two words ("47 subtests passed" from pytest-subtests), which counts as neither passed nor failed.
+    totals = [m.group(1) for m in re.finditer(r"^=* ?((?:\d+ [a-z]+(?: [a-z]+)?(?:, )?)+) in [\d.]+s(?: \([\d:]+\))? ?=*$",
+                                              text, re.M)]
     if not totals:
         return None
     count = {}
