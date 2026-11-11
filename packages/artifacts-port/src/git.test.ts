@@ -1,10 +1,10 @@
-import { chmodSync, mkdtempSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdtempSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { GitAdapter, runGit } from "./git.js";
 import { GitTestKit } from "./testing.js";
-import { toPushEvent } from "./port.js";
+import { toPushEvent, UnsupportedContentError } from "./port.js";
 
 let root: string;
 let adapter: GitAdapter;
@@ -59,6 +59,20 @@ describe("GitAdapter", () => {
       expect(await repo.readFile(ref, "a.txt")).toBeNull();
     }
     expect((await repo.info()).lastPushAt).toMatch(/^\d{4}-/);
+  });
+
+  it("names a symlink and non-UTF-8 bytes with a typed error the gate turns into a reject", async () => {
+    const work = join(root, "w");
+    await kit.seedBase("base", { "a.txt": "hello" }, work);
+    symlinkSync("a.txt", join(work, "link"));
+    writeFileSync(join(work, "img.bin"), Buffer.from([0xff, 0xfe, 0x00]));
+    const sha = kit.commitAll(work, "unsupported", {});
+    const repo = await adapter.get("base");
+    await expect(repo.readFile(sha, "link")).rejects.toMatchObject({ name: "UnsupportedContentError", path: "link", why: "is a symlink" });
+    const bin = await repo.readFile(sha, "img.bin").catch((e) => e);
+    expect(bin).toBeInstanceOf(UnsupportedContentError);
+    expect(bin.message).toBe("img.bin is not UTF-8 text");
+    expect(await repo.readFile(sha, "a.txt")).toBe("hello");
   });
 
   it("does not resolve a branch lookup through a same-named tag", async () => {

@@ -1,11 +1,12 @@
 // decidePush — the gate's decision path. Pure over ArtifactsPort + gate-ts:
 // works identically against LocalGitAdapter (now) and CloudflareAdapter
 // (after Paid). No node imports here: this file ships in the Worker.
-import type {
-  ArtifactsPort,
-  CommitInfo,
-  PushEvent,
-  RepoHandle,
+import {
+  UnsupportedContentError,
+  type ArtifactsPort,
+  type CommitInfo,
+  type PushEvent,
+  type RepoHandle,
 } from "@foundry/artifacts-port";
 import {
   allowsPath,
@@ -24,7 +25,7 @@ import {
 
 import type { TaskTicket, TicketStore } from "@foundry/stores";
 import type { OverlapOracle } from "@foundry/lkg-client";
-import type { PlanCheck, PlanVerdict } from "@foundry/plan-check";
+import { usable, type PlanCheck, type PlanVerdict } from "@foundry/plan-check";
 
 export interface PlanCheckOpts {
   check: PlanCheck;
@@ -144,6 +145,34 @@ function unionFiles(commits: CommitInfo[]): Set<string> | null {
   return out;
 }
 
+/** The first path the proposal leaves as a symlink or submodule, judged by the newest fork-side commit that
+ * touches each path (first-parent diffs, newest first, so that commit decides what the path is at the head). */
+function firstUnsupported(commits: CommitInfo[]): { path: string; why: string } | null {
+  const seen = new Set<string>();
+  for (const c of commits) {
+    for (const f of c.files ?? []) {
+      if (seen.has(f)) continue;
+      seen.add(f);
+      const kind = c.unsupported?.[f];
+      if (kind) return { path: f, why: kind.startsWith("mode ") ? `has ${kind}` : `is a ${kind}` };
+    }
+  }
+  return null;
+}
+
+/** A proposal the text transport cannot carry is refused, not retried: the same push fails the same way
+ * every time. Until 2026-11-03 these surfaced as `infra_failure` and the queue retried them until it
+ * dropped the push (gate parity P15, P16). */
+function unsupportedReject(u: { path: string; why: string }): Decision {
+  return {
+    verdict: "reject",
+    reason: {
+      reason: "invalid_args",
+      message: `unsupported content: ${u.path} ${u.why}; the gate lands regular and executable UTF-8 text files up to 8 MiB`,
+    },
+  };
+}
+
 export async function decidePush(
   port: ArtifactsPort,
   tickets: TicketStore,
@@ -232,7 +261,10 @@ export async function decidePush(
           verdict: "reject",
           reason: {
             reason: "invalid_args",
-            message: `branch ${push.ref} is not in fork history at ${push.after.slice(0, 8)}`,
+            // Usually a newer push moved the branch; that push is its own event and is decided on its own.
+            message: refHead
+              ? `${push.ref} moved past ${push.after.slice(0, 8)} (now ${refHead.slice(0, 8)}); the newer push is decided on its own`
+              : `${push.ref} does not exist on the fork`,
           },
         };
       }
@@ -260,12 +292,7 @@ export async function decidePush(
     if (planCheck && chains.length > 0) {
       planAdvisory = await planCheck.check.check(chains);
       if (planCheck.enforce && planAdvisory.checked && !planAdvisory.ok) {
-        const bad = planAdvisory.results
-          .filter(
-            (r) =>
-              !r.found || (r.missing?.length ?? 0) > 0 || r.typechecks === false,
-          )
-          .map((r) => r.name);
+        const bad = planAdvisory.results.filter((r) => !usable(r)).map((r) => r.name);
         return {
           verdict: "reject",
           reason: {
@@ -303,14 +330,23 @@ export async function decidePush(
         reason: { reason: "path_not_allowed", path: badPath },
       };
     }
-    if(forkPaths.size>2000||[...forkPaths].some(p=>p.length>1024))return {verdict:'conflict',ticket,files:['admission-path-budget'],planAdvisory};
+    // The port's tree diff already gives up past 5,000 paths (unknown files, a conflict above). A lower
+    // cap here sent a 2,100-file import to the resolver that the deployed gate merges (gate parity P19).
+    if(forkPaths.size>5000||[...forkPaths].some(p=>p.length>1024))return {verdict:'conflict',ticket,files:['admission-path-budget'],planAdvisory};
+    const link = firstUnsupported(forkOnly);
+    if (link) return unsupportedReject(link);
     const overlapping = [...forkPaths].filter((p) => basePaths.has(p));
     const realConflicts: string[] = [];
-    for (const p of overlapping) {
-      if (baseHead === null) continue;
-      const a = await fork.readFile(push.after, p);
-      const b = await base.readFile(baseHead, p);
-      if (a !== b) realConflicts.push(p);
+    try {
+      for (const p of overlapping) {
+        if (baseHead === null) continue;
+        const a = await fork.readFile(push.after, p);
+        const b = await base.readFile(baseHead, p);
+        if (a !== b) realConflicts.push(p);
+      }
+    } catch (e) {
+      if (e instanceof UnsupportedContentError) return unsupportedReject(e);
+      throw e;
     }
     if (realConflicts.length > 0) {
       return {
@@ -345,16 +381,18 @@ export async function decidePush(
     // 3. Clean: collect fork-side file contents for the merger.
     // Paths absent on the fork side are deletions the merger must apply.
     const files: Record<string, string> = Object.create(null);
-    let admittedBytes=0;
     const deletedFiles: string[] = [];
-    for (const p of forkPaths) {
-      const content = await fork.readFile(push.after, p);
-      if (content !== null) {
-        admittedBytes+=new TextEncoder().encode(content).byteLength;
-        if(admittedBytes>8*1048576)throw new Error('admission text-byte budget');
-        files[p]=content;
+    try {
+      for (const p of forkPaths) {
+        const content = await fork.readFile(push.after, p);
+        // No total-size cap: the port refuses a file over 8 MiB, and a cap thrown here was an error the queue
+        // retried until it dropped the push, where the deployed gate merges it (gate parity P20).
+        if (content !== null) files[p] = content;
+        else deletedFiles.push(p);
       }
-      else deletedFiles.push(p);
+    } catch (e) {
+      if (e instanceof UnsupportedContentError) return unsupportedReject(e);
+      throw e;
     }
     return {
       verdict: "merge",

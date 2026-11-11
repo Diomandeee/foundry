@@ -10,7 +10,7 @@ import {
   verdictTriples,
 } from "@foundry/lkg-client";
 import { PactServerPlanCheck } from "@foundry/plan-check";
-import { HttpVerifier } from "@foundry/verify";
+import { HttpVerifier, verifyTimeoutMs } from "@foundry/verify";
 import { IsomorphicMerger } from "./merge.js";
 import { handlePush, type PipelineDeps } from "./pipeline.js";
 import { D1DecisionStore, D1TicketStore } from "@foundry/stores";
@@ -29,16 +29,29 @@ function depsFromEnv(env: Env): PipelineDeps {
   if (env.LKG_URL) {
     deps.overlap = new KgOverlapOracle(new KGClient(env.LKG_URL, env.LKG_TOKEN));
   }
-  // PACT chain check, previously constructible only in tests. Advisory
-  // unless a deployment opts into enforcement out-of-band.
+  // PACT chain check over the ticket's declared chains. PACT_SERVICE is a Workers VPC binding: pact-server
+  // runs on a private fleet host (Mac5's tailnet address), reached through the foundry-verify tunnel. Advisory
+  // unless PACT_ENFORCE is "1"; an unreachable server is "not checked" and never blocks.
   if (env.PACT_URL) {
-    deps.planCheck = new PactServerPlanCheck(env.PACT_URL);
+    const pact = env.PACT_SERVICE;
+    deps.planCheck = new PactServerPlanCheck(
+      env.PACT_URL,
+      pact ? { fetcher: (url: string, init: RequestInit) => pact.fetch(url, init) } : {},
+    );
+    deps.planCheckEnforce = env.PACT_ENFORCE === "1";
   }
   // Required checks. Unset means the stub, which records "nothing was
   // checked". It blocks only when VERIFY_REQUIRE_CHECKED is explicitly selected. A
   // deployment without a verifier behaves exactly as it did before.
   if (env.VERIFY_URL) {
-    deps.verifier = new HttpVerifier(env.VERIFY_URL);
+    // VERIFY_SERVICE is a Workers VPC binding: the verifier runs on a private fleet host
+    // with no public address, reached through a Cloudflare Tunnel. Without it, VERIFY_URL
+    // is fetched directly.
+    const service = env.VERIFY_SERVICE;
+    deps.verifier = new HttpVerifier(env.VERIFY_URL, {
+      timeoutMs: verifyTimeoutMs(env.VERIFY_TIMEOUT_MS),
+      ...(service ? { fetcher: (url: string, init: RequestInit) => service.fetch(url, init) } : {}),
+    });
     deps.verifyEnforce = env.VERIFY_ENFORCE === "1";
   }
   deps.verifyRequireChecked = env.VERIFY_REQUIRE_CHECKED === "1";

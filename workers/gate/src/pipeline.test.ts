@@ -11,7 +11,7 @@ import { newScopeToken } from "@foundry/gate-ts";
 import { InMemoryTicketStore } from "@foundry/stores";
 import { StaleBaseError, type MergeRequest } from "@foundry/artifacts-port";
 import type { Merger } from "@foundry/artifacts-port";
-import type { VerifyRequest, Verifier, VerifyVerdict } from "@foundry/verify";
+import { HttpVerifier, type VerifyRequest, type Verifier, type VerifyVerdict } from "@foundry/verify";
 import { handlePush, type PipelineDeps } from "./pipeline.js";
 import { MemoryDecisionStore } from "@foundry/stores";
 
@@ -398,6 +398,25 @@ describe("required verification", () => {
     // read as the change having failed its checks.
     expect(res.record.verdict).toBe("error");
     expect(res.record.reason?.reason).toBe("infra_failure");
+  });
+
+  it("retries, never merges, when a guarding verifier answers 503 {retry: true}", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    // The verifier is up and guards this base but could not judge the change yet (a busy
+    // build worker). Even without requireChecked, that must not read as "not checked".
+    deps.verifier = new HttpVerifier("http://verify.internal/token", {
+      fetcher: async () =>
+        new Response(JSON.stringify({ retry: true, error: "worker busy" }), { status: 503 }),
+    });
+    deps.verifyEnforce = true;
+    let merged = false;
+    const real = deps.merger;
+    deps.merger = { merge: async (r: MergeRequest) => ((merged = true), real.merge(r)) };
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    if (!res.handled) return expect.unreachable("expected a decision");
+    expect(res.record.verdict).toBe("error");
+    expect(merged).toBe(false);
   });
 
   it("runs no checks when no verifier is configured, exactly as before", async () => {

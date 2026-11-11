@@ -6,6 +6,8 @@ import {
   StubVerifier,
   summarize,
   truncateOutput,
+  VerifierBusy,
+  verifyTimeoutMs,
   type VerifyRequest,
 } from "./index.js";
 
@@ -150,5 +152,54 @@ describe("summarize", () => {
 describe("truncateOutput", () => {
   it("leaves short output alone", () => {
     expect(truncateOutput("ok")).toBe("ok");
+  });
+});
+
+describe("verifyTimeoutMs", () => {
+  it("keeps the 120 s default when unset or unparseable", () => {
+    expect(verifyTimeoutMs(undefined)).toBe(120_000);
+    expect(verifyTimeoutMs("")).toBe(120_000);
+    expect(verifyTimeoutMs("soon")).toBe(120_000);
+    expect(verifyTimeoutMs("-5")).toBe(120_000);
+  });
+  it("takes a build-sized wait", () => {
+    expect(verifyTimeoutMs("600000")).toBe(600_000);
+  });
+  it("caps at the queue consumer's wall-time budget", () => {
+    expect(verifyTimeoutMs("3600000")).toBe(840_000);
+  });
+});
+
+describe("HttpVerifier fetcher", () => {
+  it("sends through the given fetcher instead of the global fetch", async () => {
+    const calls: string[] = [];
+    const global = vi.fn();
+    vi.stubGlobal("fetch", global);
+    const v = new HttpVerifier("http://verify.internal/tok", {
+      fetcher: async (url) => {
+        calls.push(url);
+        return new Response(JSON.stringify({ runs: [{ name: "t", ok: true }] }), { status: 200 });
+      },
+    });
+    const out = await v.run(req);
+    expect(calls).toEqual(["http://verify.internal/tok/api/verify"]);
+    expect(global).not.toHaveBeenCalled();
+    expect(out).toMatchObject({ checked: true, ok: true });
+    vi.unstubAllGlobals();
+  });
+});
+
+describe("HttpVerifier retry", () => {
+  const reply = (status: number, body: unknown) =>
+    new HttpVerifier("http://v/t", {
+      fetcher: async () => new Response(JSON.stringify(body), { status }),
+    });
+
+  it("throws VerifierBusy on 503 {retry: true}, so the gate retries instead of merging", async () => {
+    await expect(reply(503, { retry: true, error: "worker busy" }).run(req)).rejects.toBeInstanceOf(VerifierBusy);
+  });
+
+  it("keeps a plain 503 an outage: not checked, never blocking", async () => {
+    await expect(reply(503, { error: "down" }).run(req)).resolves.toMatchObject({ checked: false, ok: true });
   });
 });
