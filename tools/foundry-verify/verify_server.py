@@ -251,6 +251,11 @@ def parse_xcodebuild(text):
            for m in re.finditer(r"Test Case '-\[(\w+)\.(\w+) (\w+)\]' failed", text)}
     for m in re.finditer(r"Executed (\d+) tests?, with (?:(\d+) tests? skipped and )?\d+ failures?", text):
         executed, skipped = int(m.group(1)), int(m.group(2) or 0)
+    # Swift Testing runs inside the same xcodebuild test and reports apart from XCTest, whose count can be 0
+    # (Serenity's iOS tests are all @Test: "Executed 0 tests", then "Test run with 237 tests in 55 suites passed").
+    swift_testing = [int(n) for n in re.findall(r"Test run with (\d+) tests? in \d+ suites? (?:passed|failed)", text)]
+    if swift_testing:
+        executed = (executed or 0) + sum(swift_testing)
     failing, in_block = set(), False
     for line in text.splitlines():
         if line.startswith("Failing tests:"):
@@ -262,6 +267,7 @@ def parse_xcodebuild(text):
                 failing.add(m.group(1))
             elif line.strip():
                 in_block = False
+    failing |= {name.strip() for name in re.findall(r"^\S+ Test (?!run with )(.+?) failed after ", text, re.M)}
     build_failed = "** BUILD FAILED **" in text or (executed is None and "** TEST FAILED **" in text)
     if executed is None and "** TEST SUCCEEDED **" not in text:
         build_failed = True

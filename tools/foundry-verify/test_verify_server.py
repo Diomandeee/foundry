@@ -143,6 +143,16 @@ PYTEST_SUBTESTS = ("ERROR tests/test_motionmix_anchor_color.py - NameError: name
 TSC_FAIL = "src/app/page.tsx(12,7): error TS2322: Type 'string' is not assignable to type 'number'.\n"
 
 
+# Serenity iOS on Mac5, 11-10: every test is Swift Testing, so XCTest reports none.
+XCODE_SWIFT_TESTING_PASS = ("\t Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.004) seconds\n"
+                            "\u2714 Test run with 237 tests in 55 suites passed after 0.523 seconds.\n"
+                            "** TEST SUCCEEDED **\n")
+XCODE_SWIFT_TESTING_FAIL = ("\t Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.004) seconds\n"
+                            "\u2718 Test \"Every moving world has its loop\" failed after 0.002 seconds with 1 issue.\n"
+                            "\u2718 Test run with 237 tests in 55 suites failed after 0.523 seconds with 1 issue.\n"
+                            "** TEST FAILED **\n")
+
+
 class Runners(unittest.TestCase):
     """The parsers for runners other than xcodebuild, and how a check's several results become one."""
 
@@ -188,6 +198,13 @@ class Runners(unittest.TestCase):
         r = vs.parse_log(PYTEST_SUBTESTS, ["pytest"], 1)
         self.assertEqual((r["executed"], r["unreached"]), (137 + 2067 + 34 + 39, None))
         self.assertIn("tests/test_motionmix_anchor_color.py", r["failing"])
+
+    def test_xcodebuild_counts_swift_testing_beside_xctest(self):
+        r = vs.parse_log(XCODE_SWIFT_TESTING_PASS)
+        self.assertEqual((r["executed"], r["unreached"], r["build_failed"], r["failing"]), (237, None, False, set()))
+        r = vs.parse_log(XCODE_SWIFT_TESTING_FAIL)
+        self.assertEqual((r["executed"], r["unreached"], r["build_failed"]), (237, None, False))
+        self.assertEqual(r["failing"], {'"Every moving world has its loop"'})
 
     def test_ansi_colour_does_not_hide_a_result(self):
         self.assertEqual(vs.parse_log("\x1b[32m Test Files \x1b[39m 20 passed (20)\n\x1b[2m      Tests \x1b[22m 284 passed (284)\n",
