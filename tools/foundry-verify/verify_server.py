@@ -18,8 +18,12 @@ This server answers that call:
      merged tree ("../MotionMix/x": {"base": "motionmix", "path": "x"}): that base's main is fetched and
      `path` exported from it, so the app is checked against what its sibling has merged, never against a
      working tree another lane is editing. The linked shas key main's cached baseline with main's own.
-  5. Pass when no test fails that does not also fail on base main. Main's failures are measured once per
-     main sha (cached), and only when the candidate has failures, so a red main never blocks the fix for it.
+  5. Pass when no test fails that does not also fail on base main. Main's failures are kept per tree, and only
+     looked at when the candidate has failures, so a red main never blocks the fix for it. A change that passes
+     is kept as the result of the tree it made: once the gate merges it, that is main, and the next change is
+     compared with it instead of a second run of main's tests. A check a change does not touch (docs, another
+     part of a monorepo) keeps main's result on the new tree. Main is run only when no such result exists.
+     Bases are verified side by side, one verification per base; simulator jobs take turns across bases.
      A real compile failure main shares passes for the same reason. A run that never got as far as the code
      (no such simulator, unresolved packages, a test runner that never started, zero tests) says nothing
      about the change, on either side, so it is unjudged and never cached.
@@ -73,7 +77,19 @@ FETCH = os.path.join(HOME, ".config", "foundry", "bin", "foundry-fetch")
 FABRIC = os.path.join(HOME, "fleet", "bin", "fabric")
 ROOT = os.path.join(HOME, ".fleet", "verify")
 DEFAULT_DEADLINE_S = 780  # under the gate's VERIFY_TIMEOUT_MS (840 s), itself under the 15 min queue wall
-RUN_LOCK = threading.Lock()
+SIM_LOCK = threading.Lock()     # one simulator job on the worker at a time, whichever base asks
+_BASE_LOCKS, _BASE_LOCKS_GUARD = {}, threading.Lock()
+
+
+def base_lock(base):
+    """One verification per base at a time (they share its tree); different bases do not wait on each other."""
+    with _BASE_LOCKS_GUARD:
+        return _BASE_LOCKS.setdefault(base, threading.Lock())
+
+
+def busy():
+    with _BASE_LOCKS_GUARD:
+        return sorted(b for b, l in _BASE_LOCKS.items() if l.locked())
 
 
 class Unjudged(Exception):
@@ -421,6 +437,7 @@ def parse_log(text, kinds=("xcodebuild",), exit_code=None):
 
 FORCE_AFTER_S = 180  # a busy worker gets this long to make room; then the gate's check runs anyway
 DISK_FLOOR = re.compile(r": disk: \d+ GB < \d+ GB")   # fabric's refusal when the worker's disk is under its floor
+MEMORY_FLOOR = re.compile(r": memory: ")               # fabric's refusal when the worker has no memory to give
 WAIT = threading.local()   # per verification. .since: when its request arrived; .forced: it already forced a job
 
 
@@ -440,6 +457,23 @@ def run_job(repo, recipe, name, deadline):
     for rel, src in (recipe.get("links") or {}).items():
         cmd += ["--link", f"{rel}={os.path.expanduser(src)}"]
     tail = ["--", *recipe["command"]]
+    sims = recipe.get("need", "sims") == "sims"
+    if sims and not SIM_LOCK.acquire(timeout=max(0, deadline - 60 - time.time())):
+        raise Unjudged("waited past the deadline for another base's simulator job")
+    try:
+        jid, row = _start_and_wait(cmd, tail, name, deadline)
+    finally:
+        if sims:
+            SIM_LOCK.release()
+    text = subprocess.run([FABRIC, "job", "log", jid, "--lines", "200000"], capture_output=True, text=True).stdout
+    exit_code = int(row[3]) if len(row) > 3 and re.fullmatch(r"-?\d+", row[3]) else None
+    res = parse_log(text, parse_kinds(recipe), exit_code)
+    res["job"] = jid
+    return res
+
+
+def _start_and_wait(cmd, tail, name, deadline):
+    """Start the job on the worker, waiting out a busy one, and wait for it to end: (job id, its `job ls` row)."""
     waited_since = getattr(WAIT, "since", None) or time.time()
     while True:
         forced = getattr(WAIT, "forced", False) or time.time() - waited_since >= FORCE_AFTER_S
@@ -451,8 +485,9 @@ def run_job(repo, recipe, name, deadline):
             WAIT.forced = forced
             break
         said = r.stderr + r.stdout
-        busy = re.search(r"load:|memory|no host has room|use --force", said)
-        if not busy or force or time.time() + 60 > deadline:
+        busy_worker = re.search(r"load:|memory|no host has room|use --force", said)
+        memory = MEMORY_FLOOR.search(said)   # --force never skips it: only waiting for the room can help
+        if not busy_worker or (force and not memory) or time.time() + 60 > deadline:
             raise Unjudged(f"worker did not start the job: {(r.stderr or r.stdout).strip()[-200:]}")
         log("worker-busy", name=name, detail=(r.stderr or r.stdout).strip()[-120:])
         if DISK_FLOOR.search(said):
@@ -468,14 +503,9 @@ def run_job(repo, recipe, name, deadline):
         ls = subprocess.run([FABRIC, "job", "ls"], capture_output=True, text=True).stdout
         row = next((l.split() for l in ls.splitlines() if l.startswith(jid)), None)
         if row and row[2] in ("done", "failed"):
-            break
+            return jid, row
         if row and row[2] in ("lost", "stopped"):
             raise Unjudged(f"{jid} {row[2]}")
-    text = subprocess.run([FABRIC, "job", "log", jid, "--lines", "200000"], capture_output=True, text=True).stdout
-    exit_code = int(row[3]) if len(row) > 3 and re.fullmatch(r"-?\d+", row[3]) else None
-    res = parse_log(text, parse_kinds(recipe), exit_code)
-    res["job"] = jid
-    return res
 
 
 def reached(res, what):
@@ -521,10 +551,51 @@ def resolve_links(repo, recipe, work):
     return {**recipe, "links": links}, pinned
 
 
+def result_path(cache_dir, tree, pinned=None, slug=""):
+    """Where one check's result for one tree (and these linked shas) is kept. The key is the tree, not the
+    commit: the merge the gate makes of a change this server passed has exactly the tree that was tested."""
+    key = "t" + tree[:16] + "".join(f"-{b}{sha[:12]}" for b, sha in sorted((pinned or {}).items()))
+    return os.path.join(cache_dir, f"baseline-{slug + '-' if slug else ''}{key}.json")
+
+
+def remember(cache_dir, tree, res, pinned=None, slug="", flaky=frozenset()):
+    """Keep a passed candidate's result as the result of the tree it ran on. When the gate merges it, base main
+    is that tree, and the next change is compared with this instead of a second run of main's tests. A test
+    that failed and then passed on the rerun is not kept as failing: the next change gets its own rerun."""
+    tmp = result_path(cache_dir, tree, pinned, slug) + ".part"
+    with open(tmp, "w") as f:
+        json.dump({**res, "failing": sorted(set(res["failing"]) - set(flaky)), "from": "candidate"}, f)
+    os.replace(tmp, tmp[:-5])
+
+
+RESULT_FILE = re.compile(r"baseline-(?:(.*?)-)?t([0-9a-f]{16})(.*)\.json")
+KEEP_RESULTS_S = 14 * 86400
+
+
+def carry(cache_dir, main_tree, tree, tested=()):
+    """A check this change does not touch has the same result on the new tree as on main's: copy it across,
+    so a docs landing (or one that only touches another part of a monorepo) does not make the next change
+    measure main again. `tested` are the slugs this verification runs itself. Old results are dropped here."""
+    if not os.path.isdir(cache_dir):
+        return
+    now = time.time()
+    for n in os.listdir(cache_dir):
+        m = RESULT_FILE.fullmatch(n)
+        path = os.path.join(cache_dir, n)
+        if not m:
+            continue
+        if now - os.path.getmtime(path) > KEEP_RESULTS_S:
+            os.remove(path)
+        elif m.group(2) == main_tree[:16] and tree[:16] != main_tree[:16] and (m.group(1) or "") not in tested:
+            new = os.path.join(cache_dir, n.replace("t" + main_tree[:16], "t" + tree[:16], 1))
+            shutil.copyfile(path, new + ".part")
+            os.replace(new + ".part", new)
+
+
 def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None, slug=""):
-    """Main's own failures at this sha (and at these linked shas), measured once per check."""
-    key = main_sha[:12] + "".join(f"-{b}{sha[:12]}" for b, sha in sorted((pinned or {}).items()))
-    path = os.path.join(cache_dir, f"baseline-{slug + '-' if slug else ''}{key}.json")
+    """Main's own failures for this tree (and these linked shas), measured once per check, or taken from the
+    passed candidate whose merge made this tree."""
+    path = result_path(cache_dir, git(repo, "rev-parse", main_sha + "^{tree}").strip(), pinned, slug)
     try:
         with open(path) as f:
             d = json.load(f)
@@ -534,8 +605,10 @@ def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None, slu
     git(repo, "checkout", "-q", "-f", "--detach", main_sha)
     git(repo, "clean", "-q", "-ffd")
     res = reached(run_job(repo, recipe, f"verify-{base}-main", deadline), "base main")
-    with open(path, "w") as f:
+    tmp = path + ".part"
+    with open(tmp, "w") as f:
         json.dump({**res, "failing": sorted(res["failing"])}, f)
+    os.replace(tmp, path)
     return res
 
 
@@ -659,9 +732,9 @@ def verify(req, cfg=None, now=None):
                            capture_output=True, text=True)
         if r.returncode:
             raise Unjudged("git init: " + r.stderr.strip()[-160:])
-    with RUN_LOCK:
+    with base_lock(base):
         if time.time() > deadline:
-            raise Unjudged("waited past the deadline for an earlier verification")
+            raise Unjudged("waited past the deadline for an earlier verification of this base")
         for remote, refspec in ((base, "+refs/heads/main:refs/verify/main"),
                                 (repo_name, f"+refs/heads/{branch}:refs/verify/head")):
             r = subprocess.run([FETCH, remote, "-q", refspec], cwd=repo, capture_output=True, text=True)
@@ -675,11 +748,14 @@ def verify(req, cfg=None, now=None):
         except (Unjudged, ValueError):
             return {"runs": []}
         paths = build_tree(repo, "refs/verify/main", head)
+        tree = git(repo, "write-tree").strip()   # the index is main plus the change: what a merge would make
+        main_tree = git(repo, "rev-parse", "refs/verify/main^{tree}").strip()
         recipe = repointed(repo, head, recipe, paths)
         skip = recipe.get("skip") or []
         checks = checks_of(recipe)
         code = [p for p in paths if not any(fnmatch.fnmatch(p, g) for g in skip)]
         if paths and not code:
+            carry(work, main_tree, tree)
             log("skip", base=base, repo=repo_name, head=head, paths=paths[:20])
             return {"runs": [{"name": run_name(recipe if recipe.get("name") else checks[0], "skipped: docs only"),
                               "ok": True,
@@ -687,8 +763,10 @@ def verify(req, cfg=None, now=None):
         due = [c for c in checks if any(covers(c, p) for p in code)] if code else checks
         uncovered = [p for p in code if not any(covers(c, p) for c in checks)]
         if not due:
+            carry(work, main_tree, tree)
             log("uncovered", base=base, repo=repo_name, head=head, paths=uncovered[:20])
             return {"runs": []}
+        carry(work, main_tree, tree, {slug_of(c["name"]) if "checks" in recipe else "" for c in due})
         copied, unmatched = ensure_assets(repo, "refs/verify/main", bcfg.get("sources", []))
         runs, on_main = [], False
         for check in due:
@@ -710,6 +788,8 @@ def verify(req, cfg=None, now=None):
                 on_main = False
                 flaky = rerun(repo, check, tag, cand, new, deadline)
             ok, summary = judge(cand, base_res, flaky)
+            if ok and not cand.get("unreached"):
+                remember(work, tree, cand, pinned, slug, flaky)
             if unmatched:
                 summary += f"; {len(unmatched)} asset(s) not as main declares"
             log("verdict", base=base, repo=repo_name, head=head, main=main_sha, links=pinned, ok=ok, summary=summary,
@@ -737,7 +817,7 @@ def make_handler(token):
 
         def do_GET(self):
             if self._authorized("health"):
-                return self._send(200, {"ok": True, "busy": RUN_LOCK.locked()})
+                return self._send(200, {"ok": True, "busy": bool(busy()), "verifying": busy()})
             self._send(404, {})
 
         def do_POST(self):

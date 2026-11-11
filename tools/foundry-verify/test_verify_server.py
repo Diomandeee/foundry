@@ -478,6 +478,76 @@ class EndToEnd(unittest.TestCase):
             return {**next(it), "job": f"job-{len(self.jobs)}"}
         vs.run_job = run_job
 
+    RED = {"executed": 5, "failing": {"A.t()"}, "build_failed": False}
+
+    def land(self, branch):
+        """What the gate does with a passed change: base main becomes a merge whose tree is the tested tree."""
+        sh(self.origin, "git", "checkout", "-q", "main")
+        sh(self.origin, "git", "merge", "-q", "--no-ff", "--no-edit", branch)
+
+    def next_change(self, files, task="app-code-1"):
+        sh(self.origin, "git", "checkout", "-q", "-B", "next", "main")
+        head = commit(self.origin, files, "next")
+        sh(self.origin, "git", "checkout", "-q", "main")
+        return {"repo": f"{task}--claude-x", "headSha": head, "baseBranch": "next"}
+
+    def test_a_passed_change_is_the_next_mains_result_so_main_is_not_run_again(self):
+        self.stub_jobs(self.RED, self.RED, self.RED)
+        code = {"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}
+        self.assertTrue(vs.verify(code, self.cfg)["runs"][0]["ok"])            # the change, then main: two jobs
+        self.land("fork")
+        out = vs.verify(self.next_change({"app.swift": "3\n"}), self.cfg)      # one job: main is the tree just passed
+        self.assertEqual([j[0] for j in self.jobs], ["verify-app", "verify-app-main", "verify-app"])
+        self.assertIn("1 failing as on main", out["runs"][0]["output"])
+
+    def test_a_new_failure_is_still_refused_against_a_remembered_result(self):
+        self.stub_jobs(self.RED, self.RED, {"executed": 5, "failing": {"A.t()", "B.t()"}, "build_failed": False})
+        vs.verify({"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}, self.cfg)
+        self.land("fork")
+        out = vs.verify(self.next_change({"app.swift": "3\n"}), self.cfg)
+        self.assertFalse(out["runs"][0]["ok"])
+        self.assertIn("1 new failing: B.t()", out["runs"][0]["output"])
+        self.assertEqual([j[0] for j in self.jobs], ["verify-app", "verify-app-main", "verify-app"])
+
+    def test_a_refused_change_is_not_remembered(self):
+        self.stub_jobs({"executed": 5, "failing": {"A.t()"}, "build_failed": False},
+                       {"executed": 5, "failing": set(), "build_failed": False},
+                       {"executed": 5, "failing": {"A.t()"}, "build_failed": False})
+        out = vs.verify({"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}, self.cfg)
+        self.assertFalse(out["runs"][0]["ok"])
+        kept = [n for n in os.listdir(os.path.join(self.tmp, "verify", "app")) if n.startswith("baseline-")]
+        self.assertEqual(kept, [f"baseline-t{sh(self.origin, 'git', 'rev-parse', 'main^{tree}')[:16]}.json"])
+
+    def test_a_flaky_failure_is_not_remembered_as_failing(self):
+        flaky = {"executed": 5, "failing": {"A.t()", "F.t()"}, "build_failed": False, "ids": {"F.t()": "T/F/t"}}
+        self.stub_jobs(flaky, self.RED, {"executed": 1, "failing": set(), "build_failed": False})
+        code = {"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}
+        self.assertTrue(vs.verify(code, self.cfg)["runs"][0]["ok"])
+        tree = sh(self.origin, "git", "rev-parse", self.code_head + "^{tree}")[:16]
+        with open(os.path.join(self.tmp, "verify", "app", f"baseline-t{tree}.json")) as f:
+            self.assertEqual(json.load(f)["failing"], ["A.t()"])
+
+    def test_a_docs_landing_carries_mains_result_to_the_next_main(self):
+        self.stub_jobs(self.RED, self.RED, self.RED)
+        vs.verify({"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}, self.cfg)
+        self.land("fork")
+        docs = self.next_change({"README.md": "r3\n"}, task="app-docs-1")
+        self.assertIn("skipped", vs.verify(docs, self.cfg)["runs"][0]["output"])
+        self.land("next")
+        vs.verify(self.next_change({"app.swift": "4\n"}), self.cfg)
+        self.assertEqual([j[0] for j in self.jobs], ["verify-app", "verify-app-main", "verify-app"])
+
+    def test_results_older_than_two_weeks_are_dropped(self):
+        work = os.path.join(self.tmp, "verify", "app")
+        os.makedirs(work)
+        old = os.path.join(work, "baseline-t" + "0" * 16 + ".json")
+        with open(old, "w") as f:
+            f.write("{}")
+        os.utime(old, (time.time() - 15 * 86400,) * 2)
+        self.stub_jobs({"executed": 5, "failing": set(), "build_failed": False})
+        vs.verify({"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}, self.cfg)
+        self.assertFalse(os.path.exists(old))
+
     def test_docs_only_change_is_a_labelled_skip(self):
         self.stub_jobs()
         out = vs.verify({"repo": "app-docs-1--claude-x", "headSha": self.docs_head, "baseBranch": "docs"}, self.cfg)
@@ -622,7 +692,8 @@ class EndToEnd(unittest.TestCase):
         self.assertFalse(os.path.exists(os.path.join(os.path.dirname(links["../Sib/lib"]), "other")))
         self.assertIn(sib_sha[:12], links["../Sib/lib"])
         cached = [n for n in os.listdir(os.path.join(self.tmp, "verify", "app")) if n.startswith("baseline-")]
-        self.assertEqual(cached, [f"baseline-{sh(self.origin, 'git', 'rev-parse', 'main')[:12]}-sib{sib_sha[:12]}.json"])
+        main_tree = sh(self.origin, "git", "rev-parse", "main^{tree}")[:16]
+        self.assertEqual(cached, [f"baseline-t{main_tree}-sib{sib_sha[:12]}.json"])
 
     def test_a_malformed_base_link_is_unjudged(self):
         with self.assertRaises(vs.Unjudged):
@@ -714,8 +785,10 @@ class EndToEnd(unittest.TestCase):
         red = {"executed": 7, "failing": {"x"}, "build_failed": False}
         self.stub_checks(red, red, red, red)
         vs.verify(self.mono({"web/a.ts": "2\n", "tools/t.py": "2\n"}), self.cfg)
-        main = sh(self.origin, "git", "rev-parse", "main")[:12]
-        self.assertEqual(sorted(self.baselines()), [f"baseline-tools-unittest-{main}.json", f"baseline-web-vitest-{main}.json"])
+        main = "t" + sh(self.origin, "git", "rev-parse", "main^{tree}")[:16]
+        of_main = sorted(n for n in self.baselines() if main in n)
+        self.assertEqual(of_main, [f"baseline-tools-unittest-{main}.json", f"baseline-web-vitest-{main}.json"])
+        self.assertEqual(len(self.baselines()), 4)   # and both, as passed, for the tree the change makes
 
     def test_a_malformed_checks_list_is_unjudged(self):
         for bad in ([], [{"name": "a"}], [{"name": "a", "command": ["x"]}, {"name": "A!", "command": ["y"]}], "x"):
@@ -777,6 +850,59 @@ class BusyWorker(unittest.TestCase):
         self.fake_floor("mac5: load: 5.4/core (use --force to run anyway; memory is never skipped)")
         vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
         self.assertEqual(self.runs(), [True])
+
+    def test_simulator_jobs_take_turns_and_other_jobs_do_not_wait_for_them(self):
+        flag = os.path.join(self.tmp, "first-may-end")
+        started, lock = [], threading.Lock()
+        real_start = vs._start_and_wait
+
+        def start(cmd, tail, name, deadline):
+            with lock:
+                started.append(name)
+            while name == "sim-1" and not os.path.exists(flag):
+                time.sleep(0.01)
+            return "job-" + name, ["job-" + name, "mac5", "done", "0"]
+        vs._start_and_wait, saved_sleep, vs.time.sleep = start, vs.time.sleep, self.saved[3]
+        self.fake('[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\nexit 0')
+        try:
+            run = lambda name, need: threading.Thread(
+                target=vs.run_job, args=(self.tmp, {"command": ["true"], "need": need}, name, time.time() + 600))
+            first, second, light = run("sim-1", "sims"), run("sim-2", "sims"), run("py-1", "heavy_jobs")
+            first.start()
+            while "sim-1" not in started:
+                time.sleep(0.01)
+            second.start()
+            light.start()
+            light.join(5)
+            self.assertFalse(light.is_alive())                 # the Python job did not wait for the simulator
+            self.assertEqual(sorted(started), ["py-1", "sim-1"])  # the second simulator job has not started
+            open(flag, "w").close()
+            first.join(5)
+            second.join(5)
+            self.assertEqual(started, ["sim-1", "py-1", "sim-2"])
+        finally:
+            open(flag, "w").close()
+            vs._start_and_wait, vs.time.sleep = real_start, saved_sleep
+
+    def test_each_base_has_its_own_lock(self):
+        self.assertIs(vs.base_lock("a"), vs.base_lock("a"))
+        self.assertIsNot(vs.base_lock("a"), vs.base_lock("b"))
+        with vs.base_lock("a"):
+            self.assertEqual(vs.busy(), ["a"])
+            self.assertTrue(vs.base_lock("b").acquire(blocking=False))
+            vs.base_lock("b").release()
+
+    def test_a_memory_refusal_is_waited_on_even_after_the_force_time(self):
+        vs.WAIT.since = time.time() - 500     # long past the force time: every start is forced
+        count = os.path.join(self.tmp, "n")
+        self.fake('[ "$2" = run ] && { echo x >> %s; [ $(wc -l < %s) -lt 3 ] && '
+                  '{ echo "mac5: memory: 8%% free < 15%% (use --force to run anyway; memory is never skipped)" >&2; exit 1; }; '
+                  'echo "started job-v-1 on mac5"; exit 0; }\n'
+                  '[ "$2" = ls ] && echo "job-v-1 mac5 done 0 t cmd"\n'
+                  '[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\n'
+                  'exit 0' % (count, count))
+        res = vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
+        self.assertEqual((res["executed"], self.runs()), (3, [True, True, True]))
 
     def test_the_next_verification_waits_again(self):
         vs.WAIT.forced = True
