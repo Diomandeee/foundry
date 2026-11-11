@@ -420,13 +420,20 @@ def parse_log(text, kinds=("xcodebuild",), exit_code=None):
 
 
 FORCE_AFTER_S = 180  # a busy worker gets this long to make room; then the gate's check runs anyway
+DISK_FLOOR = re.compile(r": disk: \d+ GB < \d+ GB")   # fabric's refusal when the worker's disk is under its floor
+WAIT = threading.local()                               # .forced: this verification has already had to force a job
 
 
 def run_job(repo, recipe, name, deadline):
     """Run the recipe on its worker; return the parsed result. Raises Unjudged on outage or deadline.
 
     A worker over its placement floors (other lanes' builds) is waited on, then overridden with --force:
-    the recipe has its own simulator and DerivedData, so running beside other jobs is slow, not wrong."""
+    the recipe has its own simulator and DerivedData, so running beside other jobs is slow, not wrong.
+
+    One verification waits once. It runs several jobs (each check, then main for comparison, then a rerun), and
+    a worker that was over its floors for the first is over them for the next: paying FORCE_AFTER_S again per
+    job put a two-job MotionMix check past its deadline on 11-10, so every landing was refused while Mac5 had
+    14 GB free. A disk floor is forced at once: waiting frees no disk."""
     cmd = [FABRIC, "job", "run", "--host", recipe.get("host", "auto"), "--need", recipe.get("need", "sims"),
            "--name", name, "--by", "foundry-verify", "--sync", repo]
     for rel, src in (recipe.get("links") or {}).items():
@@ -434,16 +441,22 @@ def run_job(repo, recipe, name, deadline):
     tail = ["--", *recipe["command"]]
     waited_since = time.time()
     while True:
-        force = ["--force"] if time.time() - waited_since >= FORCE_AFTER_S else []
+        forced = getattr(WAIT, "forced", False) or time.time() - waited_since >= FORCE_AFTER_S
+        force = ["--force"] if forced else []
         r = subprocess.run(cmd + force + tail, capture_output=True, text=True,
                            timeout=max(30, deadline - time.time()))
         m = re.search(r"started (job-\S+) on (\S+)", r.stdout)
         if m:
+            WAIT.forced = forced
             break
-        busy = re.search(r"load:|memory|no host has room|use --force", r.stderr + r.stdout)
+        said = r.stderr + r.stdout
+        busy = re.search(r"load:|memory|no host has room|use --force", said)
         if not busy or force or time.time() + 60 > deadline:
             raise Unjudged(f"worker did not start the job: {(r.stderr or r.stdout).strip()[-200:]}")
         log("worker-busy", name=name, detail=(r.stderr or r.stdout).strip()[-120:])
+        if DISK_FLOOR.search(said):
+            WAIT.forced = True
+            continue
         time.sleep(20)
     jid = m.group(1)
     while True:
@@ -628,6 +641,7 @@ def verify(req, cfg=None, now=None):
     """The whole check for one gate request. Returns the response body {"runs": [...]}."""
     cfg = cfg or load_config()
     started = now or time.time()
+    WAIT.forced = False
     repo_name, head = str(req.get("repo", "")), str(req.get("headSha", ""))
     branch = str(req.get("baseBranch") or "main")
     base = base_of(repo_name)

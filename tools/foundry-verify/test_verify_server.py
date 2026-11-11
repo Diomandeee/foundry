@@ -740,6 +740,43 @@ class BusyWorker(unittest.TestCase):
 
     def tearDown(self):
         vs.FABRIC, vs.FORCE_AFTER_S, vs.ROOT, vs.time.sleep = self.saved
+        vs.WAIT.forced = False
+
+    def runs(self):
+        return ["--force" in l for l in open(self.calls).read().splitlines() if l.startswith("job run")]
+
+    def fake_floor(self, refusal):
+        """A worker that refuses every unforced start with `refusal`, and runs a forced one."""
+        self.fake('case "$*" in *--force*) [ "$2" = run ] && { echo "started job-v-1 on mac5"; exit 0; } ;; esac\n'
+                  '[ "$2" = run ] && { echo "%s" >&2; exit 1; }\n'
+                  '[ "$2" = ls ] && echo "job-v-1 mac5 done 0 t cmd"\n'
+                  '[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\n'
+                  'exit 0' % refusal)
+
+    def test_one_verification_waits_once_however_many_jobs_it_runs(self):
+        vs.WAIT.forced = False
+        self.fake_floor("mac5: load: 9/core (use --force to run anyway)")
+        for _ in range(3):       # the check, then main for comparison, then a rerun
+            vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
+        self.assertEqual(self.runs(), [False, True, True, True])
+
+    def test_a_disk_floor_is_forced_without_waiting(self):
+        vs.WAIT.forced = False
+        vs.FORCE_AFTER_S = 3600   # only the disk rule can force inside this test
+        slept = []
+        vs.time.sleep = slept.append
+        self.fake_floor("mac5: disk: 14 GB < 15 GB (use --force to run anyway; memory is never skipped)")
+        res = vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
+        self.assertEqual((res["executed"], self.runs()), (3, [False, True]))
+        self.assertNotIn(20, slept)
+
+    def test_the_next_verification_waits_again(self):
+        vs.WAIT.forced = True
+        try:
+            vs.verify({"repo": "unlisted-1--claude-x", "headSha": "0" * 40}, {"bases": {}})
+        except vs.Unjudged:
+            pass                 # no task file here: all that matters is that the wait started over
+        self.assertFalse(vs.WAIT.forced)
 
     def fake(self, body):
         with open(self.fabric, "w") as f:
