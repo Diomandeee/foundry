@@ -132,6 +132,14 @@ The staging gate now builds and tests a merge before it lands, for any base that
   - A real recipe run gave 363 tests, 0 failing, in 3.5 minutes cold.
   - A first canary that broke a test merged anyway: Mac5 was too loaded to start the job, and "not checked" did not block. It was reverted within 2 minutes, which is why the wait, force and retry rules above exist.
   - Canary 2 (a commit adding one `XCTFail`) was refused: decision 592, `verification_failed`. The verifier's summary read "363 tests, 1 new failing: ToneHouseHubProbeTests.testServerErrorIsUnreachable()", after waiting out a busy Mac5 for the baseline. 6 minutes from push to refusal. Main did not move.
+- **Recipes for other runners and for monorepos (2026-11-10).** Until then the verifier read xcodebuild logs only, so only the two Xcode bases could opt in.
+  - `parse` names what reads a check's log. `"xcodebuild"` is the default and keeps a check to itself. Otherwise it is a list of `unittest`, `pytest`, `swift` (swift test), `vitest`, `xcbuild` (xcodebuild build, nothing to run), `tsc` and `exit` (a step judged by its exit status alone). Failures are the union, named by the runner's own ids, so "failing as on main" works the same way for every runner.
+  - Every runner named must leave a result in the log unless one that ran already failed. No result, zero tests, or a command that failed with no runner saying what failed is unjudged, not a pass and not a refusal.
+  - A command that cannot set itself up (npm ci, a venv, a download) exits 75. That is unjudged too: an install that fails must never read as "does not build".
+  - `checks` is a list of checks, each with a `name`, a `command` and optionally `when` globs; a check runs when a changed path that is not docs matches one. Host, need, links and parse at the top are defaults. A change no check covers gets `{"runs": []}`, "nothing checked", and the paths go to `verify.log` as `uncovered`.
+  - A new failure outside xcodebuild is rerun by running the whole check again; it is flaky only if the rerun ran at least as many tests and it passed there.
+  - The gate's receipt keeps a run's name and `ok` and nothing else, so the name now ends with what happened: `[537 tests]`, `[builds, no tests]`, `[skipped: docs only]`, `[does not build]`, `[not built, nor is base main]`. Before this a docs skip and a 537-test run wrote the same receipt.
+  - A recipe on a base's main does nothing until the base is listed in `~/.config/foundry/verify.json`. Listing it guards the base: from then on a merge there waits for Mac5 and fails closed when the verifier cannot judge.
 - **To stop guarding a base in an emergency,** remove it from `~/.config/foundry/verify.json`. The verifier then answers "nothing checked" and the gate merges as before. To turn the whole check off, `wrangler secret delete VERIFY_URL --env staging` in the gate checkout.
 
 ## Lessons from the first day (2026-10-22/23)

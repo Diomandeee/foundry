@@ -104,6 +104,144 @@ class Parse(unittest.TestCase):
         self.assertEqual(vs.judge({**r, "job": "job-x"}, None), (True, "3 tests (3 skipped), 0 failing (job-x)"))
 
 
+# Cut from Mac5 job logs of 2026-11-10 (fleet, AirDeck, serenity-soother-studio at their gated mains).
+UNITTEST_FAIL = ("======================================================================\n"
+                 "FAIL: test_doctrine (test_triage.Classify.test_doctrine)\n"
+                 "----------------------------------------------------------------------\n"
+                 "AssertionError: Lists differ: ['copies', 'sessionstart'] != []\n\n"
+                 "----------------------------------------------------------------------\n"
+                 "Ran 131 tests in 13.096s\n\nFAILED (failures=1)\n")
+UNITTEST_OLD_PYTHON = ("ERROR: test_x (test_mod.Case)\nFAIL: test_y (test_mod.Case)\n"
+                       "ERROR: test_gone (unittest.loader._FailedTest)\n"
+                       "Ran 9 tests in 0.2s\n\nFAILED (failures=1, errors=2, skipped=3)\n")
+UNITTEST_PASS = "Ran 14 tests in 0.208s\n\nOK\n"
+SWIFT_FAIL = ("Test Case '-[AirDeckKitTests.TakeShelfTests testTheTracklistIsWhatWentOnAirInOrder]' passed (0.000 seconds).\n"
+              "Test Case '-[AirDeckKitTests.LinkFollowTests testFollows]' failed (2.001 seconds).\n"
+              "Test Suite 'WaveShapeTests' passed at 2026-11-10 19:43:40.085.\n"
+              "\t Executed 3 tests, with 0 failures (0 unexpected) in 0.012 (0.012) seconds\n"
+              "Test Suite 'AirDeckKitTests.xctest' failed at 2026-11-10 19:43:40.085.\n"
+              "\t Executed 278 tests, with 6 tests skipped and 5 failures (0 unexpected) in 146.709 (146.729) seconds\n"
+              "Test Suite 'All tests' failed at 2026-11-10 19:43:40.085.\n"
+              "\t Executed 278 tests, with 6 tests skipped and 5 failures (0 unexpected) in 146.709 (146.731) seconds\n"
+              "\u25c7 Test run started.\n\u2714 Test run with 0 tests in 0 suites passed after 0.001 seconds.\n")
+SWIFT_COMPILE_FAIL = ("/x/Sources/AirDeckKit/Deck.swift:12:9: error: cannot find 'x' in scope\n"
+                      "error: fatalError\n")
+VITEST_PASS = (" \u2713 tests/export.test.ts (15 tests) 39ms\n\n Test Files  20 passed (20)\n"
+               "      Tests  284 passed (284)\n   Start at  19:44:57\n")
+VITEST_FAIL = (" \u2713 src/__tests__/site.test.tsx (13 tests) 326ms\n\n"
+               " FAIL  src/__tests__/heroPrints.test.ts > hero prints > ships scene art for every hero print\n"
+               "AssertionError: scene 1: expected false to be true // Object.is equality\n"
+               " FAIL  src/__tests__/broken.test.ts [ src/__tests__/broken.test.ts ]\n\n"
+               " Test Files  2 failed | 7 passed (9)\n      Tests  1 failed | 67 passed | 2 skipped (70)\n")
+PYTEST_FAIL = ("FAILED tests/test_a.py::CaseA::test_one - AssertionError: 1 != 2\n"
+               "ERROR tests/test_gone.py - ModuleNotFoundError: No module named 'cv2'\n"
+               "===== 1 failed, 40 passed, 3 skipped, 1 error in 12.34s =====\n")
+PYTEST_QUIET_PASS = "1870 passed, 30 skipped in 80.05s (0:01:20)\n"
+TSC_FAIL = "src/app/page.tsx(12,7): error TS2322: Type 'string' is not assignable to type 'number'.\n"
+
+
+class Runners(unittest.TestCase):
+    """The parsers for runners other than xcodebuild, and how a check's several results become one."""
+
+    def test_unittest_names_the_failure_by_module_class_method(self):
+        r = vs.parse_log(UNITTEST_FAIL, ["unittest"], 1)
+        self.assertEqual((r["executed"], r["failing"], r["unreached"]),
+                         (131, {"test_triage.Classify.test_doctrine"}, None))
+
+    def test_unittest_ids_match_across_python_versions_and_an_import_failure_has_a_name(self):
+        r = vs.parse_unittest(UNITTEST_OLD_PYTHON)
+        self.assertEqual(r["failing"], {"test_mod.Case.test_x", "test_mod.Case.test_y",
+                                        "unittest.loader._FailedTest.test_gone"})
+        self.assertEqual((r["executed"], r["skipped"]), (9, 3))
+
+    def test_several_unittest_runs_in_one_command_add_up(self):
+        self.assertEqual(vs.parse_log(UNITTEST_PASS + UNITTEST_PASS, ["unittest"], 0)["executed"], 28)
+
+    def test_swift_test_counts_all_tests_once_and_names_xctest_failures(self):
+        r = vs.parse_log(SWIFT_FAIL, ["swift"], 1)
+        self.assertEqual((r["executed"], r["skipped"], r["failing"], r["build_failed"]),
+                         (278, 6, {"AirDeckKitTests.LinkFollowTests.testFollows"}, False))
+
+    def test_a_package_that_does_not_compile_is_a_build_failure(self):
+        r = vs.parse_log(SWIFT_COMPILE_FAIL, ["swift"], 1)
+        self.assertEqual((r["build_failed"], r["unreached"]), (True, None))
+
+    def test_vitest_names_failures_and_a_file_that_did_not_load(self):
+        r = vs.parse_log(VITEST_FAIL, ["vitest"], 1)
+        self.assertEqual(r["failing"], {"src/__tests__/heroPrints.test.ts > hero prints > ships scene art for every hero print",
+                                        "src/__tests__/broken.test.ts"})
+        self.assertEqual((r["executed"], r["skipped"]), (70, 2))
+        self.assertEqual(vs.parse_log(VITEST_PASS, ["vitest"], 0)["executed"], 284)
+
+    def test_vitest_failures_the_log_does_not_name_still_fail(self):
+        r = vs.parse_vitest(" Test Files  1 failed | 7 passed (8)\n      Tests  1 failed | 67 passed (68)\n")
+        self.assertTrue(r["failing"])
+
+    def test_pytest_names_failures_and_files_that_do_not_import(self):
+        r = vs.parse_log(PYTEST_FAIL, ["pytest"], 1)
+        self.assertEqual(r["failing"], {"tests/test_a.py::CaseA::test_one", "tests/test_gone.py"})
+        self.assertEqual((r["executed"], r["skipped"]), (45, 3))
+        self.assertEqual(vs.parse_log(PYTEST_QUIET_PASS, ["pytest"], 0)["executed"], 1900)
+
+    def test_ansi_colour_does_not_hide_a_result(self):
+        self.assertEqual(vs.parse_log("\x1b[32m Test Files \x1b[39m 20 passed (20)\n\x1b[2m      Tests \x1b[22m 284 passed (284)\n",
+                                      ["vitest"], 0)["executed"], 284)
+
+    def test_a_type_error_is_a_failure_named_for_its_file(self):
+        r = vs.parse_log(VITEST_PASS + TSC_FAIL, ["tsc", "vitest"], 2)
+        self.assertEqual((r["failing"], r["unreached"]), ({"tsc src/app/page.tsx"}, None))
+
+    def test_tsc_says_nothing_when_clean_and_is_not_missed(self):
+        self.assertIsNone(vs.parse_log(VITEST_PASS, ["tsc", "vitest"], 0)["unreached"])
+
+    def test_a_named_runner_that_left_nothing_is_unreached(self):
+        # npm ci died before vitest: nothing here says anything about the change
+        self.assertIn("vitest", vs.parse_log(UNITTEST_PASS, ["unittest", "vitest"], 1)["unreached"])
+        self.assertTrue(vs.parse_log("npm error network\n", ["vitest"], 1)["unreached"])
+        self.assertTrue(vs.parse_log("", ["unittest"], None)["unreached"])
+
+    def test_a_runner_missing_because_an_earlier_one_failed_is_judged_on_what_ran(self):
+        r = vs.parse_log(UNITTEST_FAIL, ["unittest", "vitest"], 1)
+        self.assertEqual((r["unreached"], r["failing"]), (None, {"test_triage.Classify.test_doctrine"}))
+
+    def test_zero_tests_is_unreached(self):
+        self.assertEqual(vs.parse_log("Ran 0 tests in 0.000s\n\nNO TESTS RAN\n", ["unittest"], 5)["unreached"], "zero tests ran")
+
+    def test_a_failed_command_no_runner_explains_is_unreached(self):
+        # the tests passed and something after them did not: not a pass, and not the change's fault either
+        self.assertIn("exited 1", vs.parse_log(UNITTEST_PASS, ["unittest"], 1)["unreached"])
+
+    def test_exit_judges_a_step_with_nothing_to_parse(self):
+        ok = vs.parse_log("", ["tsc", "exit"], 0)
+        self.assertEqual((ok["build_failed"], ok["unreached"], ok["executed"]), (False, None, 0))
+        self.assertEqual(vs.judge({**ok, "job": "job-x"}, None), (True, "builds, no tests, 0 failing (job-x)"))
+        bad = vs.parse_log("something broke\n", ["tsc", "exit"], 2)
+        self.assertEqual((bad["build_failed"], bad["unreached"]), (True, None))
+        named = vs.parse_log(TSC_FAIL, ["tsc", "exit"], 2)
+        self.assertEqual((named["build_failed"], named["failing"]), (False, {"tsc src/app/page.tsx"}))
+        self.assertTrue(vs.parse_log("", ["exit"], None)["unreached"])
+
+    def test_exit_75_is_a_setup_failure_and_never_a_verdict(self):
+        for kinds in (["exit"], ["tsc", "exit"], ["vitest"], ["unittest", "swift"]):
+            self.assertIn("set itself up", vs.parse_log(VITEST_FAIL, kinds, 75)["unreached"], kinds)
+
+    def test_xcodebuild_build_with_no_tests(self):
+        ok = vs.parse_log("CompileSwift ...\n** BUILD SUCCEEDED **\n", ["xcbuild"], 0)
+        self.assertEqual((ok["build_failed"], ok["unreached"]), (False, None))
+        bad = vs.parse_log("error: cannot find 'x' in scope\n** BUILD FAILED **\n", ["xcbuild"], 65)
+        self.assertEqual((bad["build_failed"], bad["unreached"]), (True, None))
+        self.assertTrue(vs.parse_log("xcodebuild: error: no such scheme\n", ["xcbuild"], 70)["unreached"])
+
+    def test_the_default_is_xcodebuild_exactly_as_before(self):
+        self.assertEqual(vs.parse_kinds({}), ["xcodebuild"])
+        self.assertEqual(vs.parse_log(XCODE_FAIL), vs.parse_xcodebuild(XCODE_FAIL))
+
+    def test_xcodebuild_shares_a_check_with_nothing_and_unknown_parsers_are_refused(self):
+        for bad in (["xcodebuild", "unittest"], ["nose"], "nose"):
+            with self.assertRaises(vs.Unjudged):
+                vs.parse_kinds({"parse": bad})
+
+
 class Judge(unittest.TestCase):
     def res(self, failing=(), build_failed=False):
         return {"executed": 10, "failing": set(failing), "build_failed": build_failed, "job": "job-x"}
@@ -322,12 +460,15 @@ class EndToEnd(unittest.TestCase):
         out = vs.verify({"repo": "app-docs-1--claude-x", "headSha": self.docs_head, "baseBranch": "docs"}, self.cfg)
         self.assertTrue(out["runs"][0]["ok"])
         self.assertIn("skipped", out["runs"][0]["output"])
+        # the gate's receipt keeps the name alone: a docs skip must not read there as a test run
+        self.assertEqual(out["runs"][0]["name"], "xcodebuild test (mac5) [skipped: docs only]")
         self.assertEqual(self.jobs, [])
 
     def test_code_change_runs_on_the_overlaid_tree(self):
         self.stub_jobs({"executed": 5, "failing": set(), "build_failed": False})
         out = vs.verify({"repo": "app-code-1--claude-x", "headSha": self.code_head, "baseBranch": "fork"}, self.cfg)
         self.assertEqual(out["runs"][0]["ok"], True)
+        self.assertEqual(out["runs"][0]["name"], "xcodebuild test (mac5) [5 tests]")
         self.assertEqual(self.jobs, [("verify-app", "2\n")])
 
     def test_new_failure_refused_after_measuring_main(self):
@@ -394,7 +535,7 @@ class EndToEnd(unittest.TestCase):
     def test_compile_failure_main_shares_passes_end_to_end(self):
         self.stub_jobs(self.parsed(XCODE_TEST_COMPILE_FAIL), self.parsed(XCODE_TEST_COMPILE_FAIL))
         out = vs.verify(self.req(), self.cfg)
-        self.assertEqual(out["runs"][0], {"name": "xcodebuild test (mac5)", "ok": True,
+        self.assertEqual(out["runs"][0], {"name": "xcodebuild test (mac5) [not built, nor is base main]", "ok": True,
                                           "output": "does not build, and neither does base main"})
 
     def test_compile_failure_on_a_green_main_is_refused(self):
@@ -463,6 +604,100 @@ class EndToEnd(unittest.TestCase):
     def test_a_malformed_base_link_is_unjudged(self):
         with self.assertRaises(vs.Unjudged):
             vs.resolve_links(self.origin, {"links": {"../x": {"base": "sib", "path": "../etc"}}}, self.tmp)
+
+    # ---- a recipe with several checks ----
+
+    MONO = {"name": "mono checks", "host": "mac5", "need": "heavy_jobs", "skip": ["*.md"], "checks": [
+        {"name": "web vitest", "when": ["web/*"], "parse": ["vitest"], "command": ["web"]},
+        {"name": "ios xcodebuild test", "when": ["ios/*"], "need": "sims", "command": ["ios"]},
+        {"name": "tools unittest", "when": ["tools/*", "web/shared/*"], "parse": ["unittest"], "command": ["tools"]}]}
+
+    def mono(self, files):
+        """Main carrying the MONO recipe, and a fork that changes `files`; the request for it."""
+        sh(self.origin, "git", "checkout", "-q", "main")
+        commit(self.origin, {".foundry/verify.json": json.dumps(self.MONO), "web/a.ts": "1\n", "ios/A.swift": "1\n",
+                             "tools/t.py": "1\n", "web/shared/s.ts": "1\n", "other/x.txt": "1\n"}, "mono")
+        sh(self.origin, "git", "checkout", "-q", "-B", "mono-fork", "main")
+        head = commit(self.origin, files, "change")
+        sh(self.origin, "git", "checkout", "-q", "main")
+        return {"repo": "app-code-1--claude-x", "headSha": head, "baseBranch": "mono-fork"}
+
+    def stub_checks(self, *results):
+        it, self.seen = iter(results), []
+
+        def run_job(repo, recipe, name, deadline):
+            self.seen.append((name, recipe["command"][0], recipe.get("need"), recipe.get("host"),
+                              open(os.path.join(repo, "web/a.ts")).read()))
+            return {**next(it), "job": f"job-{len(self.seen)}"}
+        vs.run_job = run_job
+
+    GREEN = {"executed": 7, "failing": set(), "build_failed": False}
+
+    def test_only_the_checks_a_change_touches_run(self):
+        self.stub_checks(self.GREEN)
+        out = vs.verify(self.mono({"web/a.ts": "2\n"}), self.cfg)
+        self.assertEqual([(n, c) for n, c, *_ in self.seen], [("verify-app-web-vitest", "web")])
+        self.assertEqual(out["runs"], [{"name": "web vitest [7 tests]", "ok": True, "output": "7 tests, 0 failing (job-1)"}])
+
+    def test_a_check_inherits_host_and_need_and_may_set_its_own(self):
+        self.stub_checks(self.GREEN, self.GREEN)
+        vs.verify(self.mono({"web/a.ts": "2\n", "ios/A.swift": "2\n"}), self.cfg)
+        self.assertEqual([(c, need, host) for _, c, need, host, _ in self.seen],
+                         [("web", "heavy_jobs", "mac5"), ("ios", "sims", "mac5")])
+
+    def test_a_path_two_checks_cover_runs_both_and_each_gets_a_run(self):
+        self.stub_checks(self.GREEN, self.GREEN)
+        out = vs.verify(self.mono({"web/shared/s.ts": "2\n"}), self.cfg)
+        self.assertEqual([r["name"] for r in out["runs"]], ["web vitest [7 tests]", "tools unittest [7 tests]"])
+
+    def test_a_change_no_check_covers_is_nothing_checked_not_a_pass(self):
+        self.stub_checks()
+        self.assertEqual(vs.verify(self.mono({"other/x.txt": "2\n"}), self.cfg), {"runs": []})
+        self.assertEqual(self.seen, [])
+
+    def test_docs_are_not_what_makes_a_check_due(self):
+        self.stub_checks(self.GREEN)
+        out = vs.verify(self.mono({"ios/README.md": "r\n", "web/a.ts": "2\n"}), self.cfg)
+        self.assertEqual([r["name"] for r in out["runs"]], ["web vitest [7 tests]"])
+
+    def test_a_docs_only_change_to_a_monorepo_is_one_labelled_skip(self):
+        self.stub_checks()
+        out = vs.verify(self.mono({"ios/README.md": "r\n"}), self.cfg)
+        self.assertEqual([r["name"] for r in out["runs"]], ["mono checks [skipped: docs only]"])
+
+    def test_one_failing_check_refuses_and_the_next_runs_on_the_candidate_again(self):
+        red = {"executed": 7, "failing": {"web/a.test.ts > breaks"}, "build_failed": False}
+        # web: candidate red, main green, rerun red again. Then ios, which must see the fork's tree, not main's.
+        self.stub_checks(red, self.GREEN, red, self.GREEN)
+        out = vs.verify(self.mono({"web/a.ts": "2\n", "ios/A.swift": "2\n"}), self.cfg)
+        self.assertEqual([r["ok"] for r in out["runs"]], [False, True])
+        self.assertEqual([(n, tree) for n, _, _, _, tree in self.seen],
+                         [("verify-app-web-vitest", "2\n"), ("verify-app-web-vitest-main", "1\n"),
+                          ("verify-app-web-vitest-rerun", "2\n"), ("verify-app-ios-xcodebuild-test", "2\n")])
+
+    def test_a_failure_that_passes_when_the_check_runs_again_is_flaky(self):
+        red = {"executed": 7, "failing": {"web/a.test.ts > flickers"}, "build_failed": False}
+        self.stub_checks(red, self.GREEN, self.GREEN)
+        out = vs.verify(self.mono({"web/a.ts": "2\n"}), self.cfg)
+        self.assertTrue(out["runs"][0]["ok"])
+        self.assertIn("1 flaky", out["runs"][0]["output"])
+
+    def test_a_whole_rerun_that_ran_less_proves_nothing(self):
+        red = {"executed": 7, "failing": {"web/a.test.ts > breaks"}, "build_failed": False}
+        self.stub_checks(red, self.GREEN, {"executed": 2, "failing": set(), "build_failed": False})
+        self.assertFalse(vs.verify(self.mono({"web/a.ts": "2\n"}), self.cfg)["runs"][0]["ok"])
+
+    def test_each_check_keeps_its_own_baseline(self):
+        red = {"executed": 7, "failing": {"x"}, "build_failed": False}
+        self.stub_checks(red, red, red, red)
+        vs.verify(self.mono({"web/a.ts": "2\n", "tools/t.py": "2\n"}), self.cfg)
+        main = sh(self.origin, "git", "rev-parse", "main")[:12]
+        self.assertEqual(sorted(self.baselines()), [f"baseline-tools-unittest-{main}.json", f"baseline-web-vitest-{main}.json"])
+
+    def test_a_malformed_checks_list_is_unjudged(self):
+        for bad in ([], [{"name": "a"}], [{"name": "a", "command": ["x"]}, {"name": "A!", "command": ["y"]}], "x"):
+            with self.assertRaises(vs.Unjudged):
+                vs.checks_of({"checks": bad})
 
     def test_base_without_a_recipe_checks_nothing(self):
         self.stub_jobs()

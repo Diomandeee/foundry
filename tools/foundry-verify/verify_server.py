@@ -24,8 +24,19 @@ This server answers that call:
      (no such simulator, unresolved packages, a test runner that never started, zero tests) says nothing
      about the change, on either side, so it is unjudged and never cached.
 
+A recipe is one check, or several under "checks": each has its own name, command and, optionally, `when`
+globs (it runs only when a changed path matches one), and inherits host, need, links and parse from the top.
+A monorepo names a check per part, so a change to the web app does not wait on the iOS build. Changed paths
+no check covers are logged as uncovered; when no check applies at all the answer is {"runs": []}, "nothing
+checked". `parse` names what reads the log: "xcodebuild" (the default, alone in its check) or a list of
+"unittest", "pytest", "swift", "vitest", "xcbuild", "tsc", "exit" for a command that runs those. Every runner
+named must leave a result in the log, unless one that did run already failed. "exit" judges a step with
+nothing to parse by its exit status. A command that cannot set itself up (npm ci, a venv) exits 75, which
+is unjudged, never "does not build".
+
 A change confined to the recipe's `skip` globs (docs) is reported as a passing "skipped" check, with that
-word in its output. A guarded base never merges unjudged: anything that keeps the server from judging
+word in its output. The gate's receipt keeps only a run's name, so the name carries what happened:
+"<check> [537 tests]", "<check> [skipped: docs only]". A guarded base never merges unjudged: anything that keeps the server from judging
 (fetch failure, worker outage, deadline, a run that never reached the code, a crash) is a 503 with {"retry": true}, which the gate turns into
 an `error` row and a queue retry. Only a verifier that cannot be reached at all reads as "not checked".
 A busy worker is waited on for FORCE_AFTER_S, then the job runs with --force.
@@ -258,6 +269,148 @@ def parse_xcodebuild(text):
             "unreached": unreached(text, executed), "ids": {k: v for k, v in ids.items() if k in failing}}
 
 
+# ---- runners other than xcodebuild ----
+# Each returns None when its runner left no result in the log, else {"executed", "skipped", "failing",
+# "build_failed"}. Failing names are the runner's own ids, the same on base main as on the candidate.
+
+ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
+
+
+def parse_unittest(text):
+    """python -m unittest: "Ran N tests", then OK or FAILED, with a FAIL:/ERROR: header per failure.
+    A module that does not import is an ERROR on unittest.loader._FailedTest, so it has a name too."""
+    ran = re.findall(r"^Ran (\d+) tests? in ", text, re.M)
+    if not ran:
+        return None
+    failing = set()
+    for method, where in re.findall(r"^(?:FAIL|ERROR): (\S+) \(([\w.]+)\)", text, re.M):
+        # 3.11+ prints module.Class.method in the brackets, older Pythons module.Class
+        failing.add(where if where.endswith("." + method) else f"{where}.{method}")
+    skipped = sum(int(n) for n in re.findall(r"^(?:OK|FAILED) \((?:[^)]*, )?skipped=(\d+)", text, re.M))
+    return {"executed": sum(map(int, ran)), "skipped": skipped, "failing": failing, "build_failed": False}
+
+
+def parse_tsc(text):
+    """tsc --noEmit says nothing when the types hold, so it is never required to be in the log. Each file with
+    an error is a failure named for the file: a type error base main already has does not block."""
+    files = set(re.findall(r"^(\S+?)\(\d+,\d+\): error TS\d+", text, re.M))
+    if not files:
+        return None
+    return {"executed": 0, "skipped": 0, "failing": {f"tsc {f}" for f in files}, "build_failed": False}
+
+
+def parse_pytest(text):
+    """pytest: the closing "N failed, M passed in 1.2s" line, with a FAILED or ERROR line per failure in the
+    short summary (-rfE, the default). A file that does not import is an ERROR named for the file."""
+    totals = [m.group(1) for m in re.finditer(r"^=* ?((?:\d+ [a-z]+(?:, )?)+) in [\d.]+s(?: \([\d:]+\))? ?=*$", text, re.M)]
+    if not totals:
+        return None
+    count = {}
+    for line in totals:
+        for n, word in re.findall(r"(\d+) ([a-z]+)", line):
+            count[word] = count.get(word, 0) + int(n)
+    failing = set(re.findall(r"^(?:FAILED|ERROR) (\S+\.py(?:::\S+)?)", text, re.M))
+    ran = sum(count.get(w, 0) for w in ("passed", "failed", "skipped", "xfailed", "xpassed", "error", "errors"))
+    return {"executed": ran, "skipped": count.get("skipped", 0), "failing": failing, "build_failed": False}
+
+
+def parse_swift(text):
+    """swift test: XCTest's "Test Case '-[Module.Class method]' failed" and its closing "Executed N tests" under
+    'All tests', and Swift Testing's "Test run with N tests". A package that does not compile prints the
+    compiler's "file.swift:1:2: error:" and never gets to either."""
+    xct = re.findall(r"^Test Suite 'All tests' (?:passed|failed) at .*\n\s*Executed (\d+) tests?, with "
+                     r"(?:(\d+) tests? skipped and )?\d+ failures?", text, re.M)
+    swt = re.findall(r"Test run with (\d+) tests? in \d+ suites? (?:passed|failed)", text)
+    compile_failed = bool(re.search(r"^\S+\.(?:swift|c|cpp|h|m|mm):\d+:\d+: error: ", text, re.M)) and not xct
+    if not xct and not swt and not compile_failed:
+        return None
+    failing = {f"{mod}.{cls}.{name}" for mod, cls, name in
+               re.findall(r"^Test Case '-\[(\w+)\.(\w+) (\w+)\]' failed", text, re.M)}
+    failing |= {name.strip() for name in re.findall(r"^\S+ Test (?!run with )(.+?) failed after ", text, re.M)}
+    return {"executed": sum(int(n) for n, _ in xct) + sum(map(int, swt)),
+            "skipped": sum(int(k or 0) for _, k in xct), "failing": failing, "build_failed": compile_failed}
+
+
+def parse_vitest(text):
+    """vitest run: "Tests  1 failed | 67 passed (68)", with a " FAIL  file > suite > test" line per failure.
+    A file that does not load is " FAIL  file [ file ]" and is named for the file."""
+    totals = re.findall(r"^\s*Tests\s+(.+?) \((\d+)\)\s*$", text, re.M)
+    files = re.findall(r"^\s*Test Files\s+(.+?) \((\d+)\)\s*$", text, re.M)
+    if not totals and not files:
+        return None
+    failing = {re.sub(r"\s*\[ .* \]$", "", name) for name in re.findall(r"^\s*FAIL\s+(\S.*?)\s*$", text, re.M)}
+    if not failing and any("failed" in part for part, _ in totals + files):
+        failing.add("vitest: failures the log does not name")
+    skipped = sum(int(n) for part, _ in totals for n in re.findall(r"(\d+) (?:skipped|todo)", part))
+    return {"executed": sum(int(n) for _, n in totals), "skipped": skipped, "failing": failing, "build_failed": False}
+
+
+def parse_xcbuild(text):
+    """xcodebuild build or build-for-testing, for a target with nothing the gate can run: it builds or it
+    does not. `built` lets a check with no tests count as reached."""
+    ok = "** BUILD SUCCEEDED **" in text or "** TEST BUILD SUCCEEDED **" in text
+    bad = "** BUILD FAILED **" in text or "** TEST BUILD FAILED **" in text
+    if not ok and not bad:
+        return None
+    return {"executed": 0, "skipped": 0, "failing": set(), "build_failed": bad, "built": not bad}
+
+
+PARSERS = {"unittest": parse_unittest, "pytest": parse_pytest, "swift": parse_swift, "vitest": parse_vitest,
+           "xcbuild": parse_xcbuild, "tsc": parse_tsc}
+SILENT_WHEN_CLEAN = {"tsc"}
+# "exit" is for a step with nothing to parse (a type check, a compile): exit 0 is "builds", anything else
+# "does not build", unless a parser named the failure. It needs the job's exit status, so it is not in PARSERS.
+SETUP_FAILED = 75  # EX_TEMPFAIL: the command could not set itself up (npm ci, a venv, a download). Unjudged.
+
+
+def parse_kinds(recipe):
+    """The parsers a check names: ["xcodebuild"] by default. xcodebuild keeps a check to itself (its log
+    shares "Executed N tests" with swift test, and its unreached rules are its own)."""
+    kinds = recipe.get("parse") or "xcodebuild"
+    kinds = [kinds] if isinstance(kinds, str) else list(kinds)
+    unknown = [k for k in kinds if k not in ("xcodebuild", "exit") and k not in PARSERS]
+    if unknown or not kinds or ("xcodebuild" in kinds and len(kinds) > 1):
+        raise Unjudged(f"recipe: parse wants \"xcodebuild\" or a list of {sorted([*PARSERS, 'exit'])}, got {kinds!r}")
+    return kinds
+
+
+def parse_log(text, kinds=("xcodebuild",), exit_code=None):
+    """One result for a job log read by the parsers its check names.
+
+    Failures are the union and tests the sum. The run is unreached, so unjudged, when no runner left a result,
+    when a named runner is missing and nothing that ran explains why, when zero tests ran, or when the command
+    failed and no runner said what failed: none of those says anything about the change."""
+    if list(kinds) == ["xcodebuild"]:
+        return parse_xcodebuild(text)
+    text = ANSI.sub("", text)
+    found = {k: PARSERS[k](text) for k in kinds if k != "exit"}
+    present = [r for r in found.values() if r]
+    failing = set().union(*(r["failing"] for r in present)) if present else set()
+    build_failed = any(r["build_failed"] for r in present)
+    built = any(r.get("built") for r in present)
+    if "exit" in kinds and exit_code is not None:
+        build_failed = build_failed or (exit_code != 0 and not failing)
+        built = built or exit_code == 0
+    executed = sum(r["executed"] for r in present)
+    explained = bool(failing) or build_failed
+    missing = [k for k in found if not found[k] and k not in SILENT_WHEN_CLEAN]
+    unreached = None
+    if exit_code == SETUP_FAILED:
+        unreached = f"the command could not set itself up (exit {SETUP_FAILED})"
+    elif "exit" in kinds and exit_code is None:
+        unreached = "the job's exit status is unknown"
+    elif not present and not built and not explained:
+        unreached = "no test runner left a result in the log"
+    elif missing and not explained:
+        unreached = f"{', '.join(missing)} left no result in the log"
+    elif not executed and not explained and not built:
+        unreached = "zero tests ran"
+    elif exit_code not in (None, 0) and not explained:
+        unreached = f"the command exited {exit_code} and no runner reported a failure"
+    return {"executed": executed if present or built else None, "skipped": sum(r["skipped"] for r in present),
+            "failing": failing, "build_failed": build_failed, "unreached": unreached, "ids": {}}
+
+
 FORCE_AFTER_S = 180  # a busy worker gets this long to make room; then the gate's check runs anyway
 
 
@@ -297,7 +450,8 @@ def run_job(repo, recipe, name, deadline):
         if row and row[2] in ("lost", "stopped"):
             raise Unjudged(f"{jid} {row[2]}")
     text = subprocess.run([FABRIC, "job", "log", jid, "--lines", "200000"], capture_output=True, text=True).stdout
-    res = parse_xcodebuild(text)
+    exit_code = int(row[3]) if len(row) > 3 and re.fullmatch(r"-?\d+", row[3]) else None
+    res = parse_log(text, parse_kinds(recipe), exit_code)
     res["job"] = jid
     return res
 
@@ -345,10 +499,10 @@ def resolve_links(repo, recipe, work):
     return {**recipe, "links": links}, pinned
 
 
-def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None):
-    """Main's own failures at this sha (and at these linked shas), measured once."""
+def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None, slug=""):
+    """Main's own failures at this sha (and at these linked shas), measured once per check."""
     key = main_sha[:12] + "".join(f"-{b}{sha[:12]}" for b, sha in sorted((pinned or {}).items()))
-    path = os.path.join(cache_dir, f"baseline-{key}.json")
+    path = os.path.join(cache_dir, f"baseline-{slug + '-' if slug else ''}{key}.json")
     try:
         with open(path) as f:
             d = json.load(f)
@@ -366,7 +520,14 @@ def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None):
 def rerun(repo, recipe, base, cand, new, deadline):
     """The new failures that pass when run again on their own: flaky, not the change's doing.
 
-    A test counts only if the rerun executed it; one the rerun could not name or select stays a failure."""
+    A test counts only if the rerun executed it; one the rerun could not name or select stays a failure.
+    Only xcodebuild can be told which tests to run; any other check is run again whole, and a rerun that
+    did not get as far as the first run proves nothing."""
+    if parse_kinds(recipe) != ["xcodebuild"]:
+        res = run_job(repo, recipe, f"verify-{base}-rerun", deadline)
+        if res.get("unreached") or res["build_failed"] or (res["executed"] or 0) < (cand["executed"] or 0):
+            return set()
+        return set(new) - res["failing"]
     ids = {t: cand.get("ids", {}).get(t) for t in new}
     ids = {t: i for t, i in ids.items() if i}
     cmd = list(recipe["command"])
@@ -398,6 +559,44 @@ def repointed(repo, head, recipe, paths):
     return proposed if same else recipe
 
 
+def checks_of(recipe):
+    """The recipe's checks, each a whole recipe of its own. One with no "checks" is its own single check;
+    otherwise the top-level host, need, links and parse are each check's defaults."""
+    if "checks" not in recipe:
+        return [recipe]
+    shared = {k: recipe[k] for k in ("host", "need", "links", "parse") if k in recipe}
+    checks = recipe["checks"]
+    if not isinstance(checks, list) or not checks or not all(
+            isinstance(c, dict) and isinstance(c.get("name"), str) and c["name"] and isinstance(c.get("command"), list)
+            for c in checks):
+        raise Unjudged("recipe: checks wants a list, each with a name and a command")
+    if len({slug_of(c["name"]) for c in checks}) != len(checks):
+        raise Unjudged("recipe: checks want distinct names")
+    return [{**shared, **c} for c in checks]
+
+
+def slug_of(name):
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")[:28] or "check"
+
+
+def covers(check, path):
+    when = check.get("when")
+    return not when or any(fnmatch.fnmatch(path, g) for g in when)
+
+
+def run_name(check, what):
+    """The run's name as the gate's receipt keeps it (200 characters at most, and nothing else of the run)."""
+    return f"{str(check.get('name', 'build+test'))[:150]} [{what}]"
+
+
+def outcome(cand, base_res):
+    if cand["build_failed"]:
+        return "not built, nor is base main" if base_res is not None and base_res["build_failed"] else "does not build"
+    if not cand["executed"]:
+        return "builds, no tests"
+    return f"{cand['executed']} tests" + (f", {cand['skipped']} skipped" if cand.get("skipped") else "")
+
+
 def judge(cand, base_res, flaky=frozenset()):
     """(ok, summary). New failures are what the change adds over main, less the ones a rerun passed.
     Both results have reached the code: reached() turns a run that did not into Unjudged before this."""
@@ -407,6 +606,8 @@ def judge(cand, base_res, flaky=frozenset()):
         return False, "does not build (" + cand["job"] + ")"
     new = sorted(cand["failing"] - (base_res["failing"] if base_res else set()) - set(flaky))
     tested = f"{cand['executed']} tests" + (f" ({cand['skipped']} skipped)" if cand.get("skipped") else "")
+    if not cand["executed"] and not cand["failing"]:
+        tested = "builds, no tests"
     if flaky:
         tested += f", {len(flaky)} flaky (failed, then passed on rerun): " + ", ".join(sorted(flaky))
     if not new:
@@ -451,28 +652,48 @@ def verify(req, cfg=None, now=None):
         except (Unjudged, ValueError):
             return {"runs": []}
         paths = build_tree(repo, "refs/verify/main", head)
+        recipe = repointed(repo, head, recipe, paths)
         skip = recipe.get("skip") or []
-        if paths and all(any(fnmatch.fnmatch(p, g) for g in skip) for p in paths):
+        checks = checks_of(recipe)
+        code = [p for p in paths if not any(fnmatch.fnmatch(p, g) for g in skip)]
+        if paths and not code:
             log("skip", base=base, repo=repo_name, head=head, paths=paths[:20])
-            return {"runs": [{"name": recipe.get("name", "build+test"), "ok": True,
+            return {"runs": [{"name": run_name(recipe if recipe.get("name") else checks[0], "skipped: docs only"),
+                              "ok": True,
                               "output": f"skipped: {len(paths)} path(s), all docs ({', '.join(paths[:3])})"}]}
+        due = [c for c in checks if any(covers(c, p) for p in code)] if code else checks
+        uncovered = [p for p in code if not any(covers(c, p) for c in checks)]
+        if not due:
+            log("uncovered", base=base, repo=repo_name, head=head, paths=uncovered[:20])
+            return {"runs": []}
         copied, unmatched = ensure_assets(repo, "refs/verify/main", bcfg.get("sources", []))
-        recipe, pinned = resolve_links(repo, repointed(repo, head, recipe, paths), work)
-        cand = reached(run_job(repo, recipe, f"verify-{base}", deadline), "the candidate")
-        base_res = None
-        if cand["build_failed"] or cand["failing"]:
-            base_res = baseline(repo, base, main_sha, recipe, deadline, work, pinned)
-        flaky = set()
-        new = cand["failing"] - (base_res["failing"] if base_res else set())
-        if new and not cand["build_failed"]:
-            build_tree(repo, "refs/verify/main", head)  # the baseline may have left main checked out
-            flaky = rerun(repo, recipe, base, cand, new, deadline)
-        ok, summary = judge(cand, base_res, flaky)
-        if unmatched:
-            summary += f"; {len(unmatched)} asset(s) not as main declares"
-        log("verdict", base=base, repo=repo_name, head=head, main=main_sha, links=pinned, ok=ok, summary=summary,
-            secs=int(time.time() - started), assets_copied=copied, assets_unmatched=unmatched[:20])
-        return {"runs": [{"name": recipe.get("name", "build+test"), "ok": ok, "output": summary}]}
+        runs, on_main = [], False
+        for check in due:
+            slug = slug_of(check["name"]) if "checks" in recipe else ""
+            tag = f"{base}-{slug}" if slug else base
+            if on_main:  # the last check's baseline or rerun left another tree checked out
+                build_tree(repo, "refs/verify/main", head)
+                on_main = False
+            check, pinned = resolve_links(repo, check, work)
+            cand = reached(run_job(repo, check, f"verify-{tag}", deadline), "the candidate")
+            base_res = None
+            if cand["build_failed"] or cand["failing"]:
+                base_res = baseline(repo, tag, main_sha, check, deadline, work, pinned, slug)
+                on_main = True
+            flaky = set()
+            new = cand["failing"] - (base_res["failing"] if base_res else set())
+            if new and not cand["build_failed"]:
+                build_tree(repo, "refs/verify/main", head)  # the baseline may have left main checked out
+                on_main = False
+                flaky = rerun(repo, check, tag, cand, new, deadline)
+            ok, summary = judge(cand, base_res, flaky)
+            if unmatched:
+                summary += f"; {len(unmatched)} asset(s) not as main declares"
+            log("verdict", base=base, repo=repo_name, head=head, main=main_sha, links=pinned, ok=ok, summary=summary,
+                secs=int(time.time() - started), assets_copied=copied, assets_unmatched=unmatched[:20],
+                **({"check": check["name"], "uncovered": uncovered[:20]} if slug else {}))
+            runs.append({"name": run_name(check, outcome(cand, base_res)), "ok": ok, "output": summary})
+        return {"runs": runs}
 
 
 # ---- HTTP ----
