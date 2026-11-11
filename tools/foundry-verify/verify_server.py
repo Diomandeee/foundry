@@ -421,7 +421,7 @@ def parse_log(text, kinds=("xcodebuild",), exit_code=None):
 
 FORCE_AFTER_S = 180  # a busy worker gets this long to make room; then the gate's check runs anyway
 DISK_FLOOR = re.compile(r": disk: \d+ GB < \d+ GB")   # fabric's refusal when the worker's disk is under its floor
-WAIT = threading.local()                               # .forced: this verification has already had to force a job
+WAIT = threading.local()   # per verification. .since: when its request arrived; .forced: it already forced a job
 
 
 def run_job(repo, recipe, name, deadline):
@@ -433,13 +433,14 @@ def run_job(repo, recipe, name, deadline):
     One verification waits once. It runs several jobs (each check, then main for comparison, then a rerun), and
     a worker that was over its floors for the first is over them for the next: paying FORCE_AFTER_S again per
     job put a two-job MotionMix check past its deadline on 11-10, so every landing was refused while Mac5 had
-    14 GB free. A disk floor is forced at once: waiting frees no disk."""
+    14 GB free. The wait is counted from the request's arrival, so time queued behind another base's check is
+    not waited a second time. A disk floor is forced at once: waiting frees no disk."""
     cmd = [FABRIC, "job", "run", "--host", recipe.get("host", "auto"), "--need", recipe.get("need", "sims"),
            "--name", name, "--by", "foundry-verify", "--sync", repo]
     for rel, src in (recipe.get("links") or {}).items():
         cmd += ["--link", f"{rel}={os.path.expanduser(src)}"]
     tail = ["--", *recipe["command"]]
-    waited_since = time.time()
+    waited_since = getattr(WAIT, "since", None) or time.time()
     while True:
         forced = getattr(WAIT, "forced", False) or time.time() - waited_since >= FORCE_AFTER_S
         force = ["--force"] if forced else []
@@ -641,7 +642,7 @@ def verify(req, cfg=None, now=None):
     """The whole check for one gate request. Returns the response body {"runs": [...]}."""
     cfg = cfg or load_config()
     started = now or time.time()
-    WAIT.forced = False
+    WAIT.forced, WAIT.since = False, started
     repo_name, head = str(req.get("repo", "")), str(req.get("headSha", ""))
     branch = str(req.get("baseBranch") or "main")
     base = base_of(repo_name)

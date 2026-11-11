@@ -734,13 +734,14 @@ class BusyWorker(unittest.TestCase):
         self.saved = (vs.FABRIC, vs.FORCE_AFTER_S, vs.ROOT, vs.time.sleep)
         self.tmp = tempfile.mkdtemp()
         vs.ROOT, vs.FORCE_AFTER_S = self.tmp, 0.005  # the first attempt runs inside it, the second past it
+        vs.WAIT.forced, vs.WAIT.since = False, None   # an earlier test's verification is not this one's
         vs.time.sleep = lambda s: None
         self.calls = os.path.join(self.tmp, "calls")
         self.fabric = os.path.join(self.tmp, "fabric")
 
     def tearDown(self):
         vs.FABRIC, vs.FORCE_AFTER_S, vs.ROOT, vs.time.sleep = self.saved
-        vs.WAIT.forced = False
+        vs.WAIT.forced, vs.WAIT.since = False, None
 
     def runs(self):
         return ["--force" in l for l in open(self.calls).read().splitlines() if l.startswith("job run")]
@@ -770,6 +771,13 @@ class BusyWorker(unittest.TestCase):
         self.assertEqual((res["executed"], self.runs()), (3, [False, True]))
         self.assertNotIn(20, slept)
 
+    def test_time_queued_behind_another_check_is_not_waited_again(self):
+        vs.WAIT.forced, vs.FORCE_AFTER_S = False, 180
+        vs.WAIT.since = time.time() - 200     # this request arrived 200 s ago and has only now got the lock
+        self.fake_floor("mac5: load: 5.4/core (use --force to run anyway; memory is never skipped)")
+        vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
+        self.assertEqual(self.runs(), [True])
+
     def test_the_next_verification_waits_again(self):
         vs.WAIT.forced = True
         try:
@@ -777,6 +785,7 @@ class BusyWorker(unittest.TestCase):
         except vs.Unjudged:
             pass                 # no task file here: all that matters is that the wait started over
         self.assertFalse(vs.WAIT.forced)
+        self.assertGreater(vs.WAIT.since, time.time() - 5)
 
     def fake(self, body):
         with open(self.fabric, "w") as f:
