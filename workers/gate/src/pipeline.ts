@@ -41,11 +41,24 @@ export type PipelineResult =
   | { handled: true; record: DecisionRecord }
   | { handled: false };
 
+/**
+ * When a queue message was sent, in ms, or undefined when it does not say.
+ * Cloudflare Queues gives every message a `timestamp` Date ("when the message
+ * was sent"); anything else is treated as no information, so no wait is credited.
+ */
+export function sentAt(msg: { timestamp?: unknown } | null | undefined): number | undefined {
+  const t = msg?.timestamp;
+  const ms = t instanceof Date ? t.getTime() : typeof t === "number" ? t : NaN;
+  return Number.isFinite(ms) ? ms : undefined;
+}
+
 export async function handlePush(
   deps: PipelineDeps,
   namespace: string,
   rawBody: Parameters<typeof toPushEvent>[1],
   now: number = Date.now(),
+  /** When the gate received this push; see decide.ts creditQueueWait. */
+  receivedAt: number = now,
 ): Promise<PipelineResult> {
   const push: PushEvent | null = toPushEvent(namespace, rawBody);
   if (!push) return { handled: false };
@@ -73,6 +86,7 @@ export async function handlePush(
       deps.planCheck
         ? { check: deps.planCheck, enforce: deps.planCheckEnforce }
         : undefined,
+      receivedAt,
     );
 
     if (decision.verdict === "merge") {

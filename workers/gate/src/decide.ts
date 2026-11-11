@@ -173,6 +173,36 @@ function unsupportedReject(u: { path: string; why: string }): Decision {
   };
 }
 
+/**
+ * How long a push may wait in the gate's own queue before that wait starts to
+ * count against its freshness. Longer than the worst honest wait (a few
+ * verifications of up to 14 minutes ahead of it), short enough that a backlog
+ * left by an outage still ages out.
+ */
+export const QUEUE_WAIT_CREDIT_MS = 30 * 60_000;
+
+/**
+ * The proposal time the freshness rule should see: the head commit's time,
+ * moved later by the time the push spent waiting for the gate (capped).
+ *
+ * The rule asks whether the agent proposed against a recent snapshot. The
+ * agent's own delay, commit to push, is all of that and still counts in full.
+ * Time spent queued behind another push's verification is the gate's delay:
+ * counted, it refused every push that arrived while a check of four minutes
+ * or more was running (decision 1467, 2026-11-11: 671 s old, never verified).
+ * A commit dated in the future is returned as is, so the kernel still refuses it.
+ */
+export function creditQueueWait(
+  proposedAt: number,
+  receivedAt: number,
+  now: number,
+): number {
+  const age = now - proposedAt;
+  if (!(age > 0)) return proposedAt;
+  const waited = Math.min(Math.max(0, now - receivedAt), QUEUE_WAIT_CREDIT_MS);
+  return proposedAt + Math.min(waited, age);
+}
+
 export async function decidePush(
   port: ArtifactsPort,
   tickets: TicketStore,
@@ -180,6 +210,8 @@ export async function decidePush(
   now: number = Date.now(),
   overlap?: OverlapOracle,
   planCheck?: PlanCheckOpts,
+  /** When the gate received the push (its queue message's send time). Defaults to `now`: no wait to credit. */
+  receivedAt: number = now,
 ): Promise<Decision> {
   // 0. The fork must belong to a known task.
   const ticket = await tickets.getTicketByFork(push.repo);
@@ -277,10 +309,13 @@ export async function decidePush(
     ledger.addProposal(SnapshotId.fromShortHex(push.after).toHex());
     const call = toProposedCall(ticket, push, baseHead, baseHist.length);
     // Freshness is measured from the proposal's own commit time, not the
-    // decision time: a push that sat in a queue ages out for real.
+    // decision time. The wait in the gate's own queue is taken out of it, up to
+    // QUEUE_WAIT_CREDIT_MS: past that, a push that sat in a queue ages out for real.
     const headCommit = forkHist.find((c) => c.sha === push.after);
     const proposedAt = headCommit ? Date.parse(headCommit.date) : NaN;
-    call.proposed_at = Number.isNaN(proposedAt) ? now : proposedAt;
+    call.proposed_at = Number.isNaN(proposedAt)
+      ? now
+      : creditQueueWait(proposedAt, receivedAt, now);
     const gate = checkAdmissibility(mergeSyscall(), call, state, ledger, now);
     if (!gate.ok) return { verdict: "reject", reason: gate.reason };
 

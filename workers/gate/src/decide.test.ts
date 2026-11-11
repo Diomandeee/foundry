@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { GitAdapter, GitTestKit } from "@foundry/artifacts-port/node";
 import { newScopeToken } from "@foundry/gate-ts";
-import { decidePush } from "./decide.js";
+import { QUEUE_WAIT_CREDIT_MS, creditQueueWait, decidePush } from "./decide.js";
 import {
   InMemoryTicketStore,
   type TicketStore,
@@ -554,5 +554,58 @@ describe("decidePush branch resolution", () => {
     expect(
       res.reason.reason === "invalid_args" ? res.reason.message : "",
     ).toMatch(/fork point|does not exist on the fork/);
+  });
+});
+
+describe("freshness and the gate's own queue", () => {
+  const MIN = 60_000;
+
+  async function pushed(): Promise<{ push: Parameters<typeof decidePush>[2]; committedAt: number }> {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    return {
+      push: { namespace: "test", repo: "task-1", ref: "refs/heads/main", before: baseSha, after },
+      committedAt: Date.now(),
+    };
+  }
+
+  it("refuses a push decided ten minutes after its commit when nothing says it waited", async () => {
+    const { push, committedAt } = await pushed();
+    const d = await decidePush(port, tickets, push, committedAt + 10 * MIN);
+    expect(d.verdict).toBe("reject");
+    if (d.verdict === "reject") expect(d.reason.reason).toBe("snapshot_too_stale");
+  });
+
+  it("merges a push that spent those ten minutes waiting behind another push's verification", async () => {
+    // decision 1467, 2026-11-11: pushed within seconds of its commit, decided 671 s later
+    const { push, committedAt } = await pushed();
+    const d = await decidePush(port, tickets, push, committedAt + 10 * MIN, undefined, undefined, committedAt + 5_000);
+    expect(d.verdict).toBe("merge");
+  });
+
+  it("still refuses a commit that was ten minutes old when it reached the gate", async () => {
+    const { push, committedAt } = await pushed();
+    const now = committedAt + 10 * MIN;
+    const d = await decidePush(port, tickets, push, now, undefined, undefined, now - 1_000);
+    expect(d.verdict).toBe("reject");
+    if (d.verdict === "reject") expect(d.reason.reason).toBe("snapshot_too_stale");
+  });
+
+  it("lets a push age out once it has waited past the credit", async () => {
+    const { push, committedAt } = await pushed();
+    const now = committedAt + QUEUE_WAIT_CREDIT_MS + 10 * MIN;
+    const d = await decidePush(port, tickets, push, now, undefined, undefined, committedAt + 5_000);
+    expect(d.verdict).toBe("reject");
+    if (d.verdict === "reject") expect(d.reason.reason).toBe("snapshot_too_stale");
+  });
+
+  it("credits the wait and nothing else", () => {
+    const t = 1_800_000_000_000;
+    expect(creditQueueWait(t, t + 5_000, t + 10 * MIN)).toBe(t + 10 * MIN - 5_000); // age seen: the 5 s before it arrived
+    expect(creditQueueWait(t, t + 10 * MIN, t + 10 * MIN)).toBe(t); // no wait, no credit
+    expect(creditQueueWait(t, t + 5_000, t + 50 * MIN)).toBe(t + QUEUE_WAIT_CREDIT_MS); // capped
+    expect(creditQueueWait(t, t - 60_000, t + MIN)).toBe(t + MIN); // a sender's clock behind ours: never a negative age
+    expect(creditQueueWait(t + MIN, t, t)).toBe(t + MIN); // a commit dated in the future is left for the kernel to refuse
+    expect(creditQueueWait(t, t + 20 * MIN, t + 10 * MIN)).toBe(t); // a receipt time in the future credits nothing
   });
 });

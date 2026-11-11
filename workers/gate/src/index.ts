@@ -12,7 +12,7 @@ import {
 import { PactServerPlanCheck } from "@foundry/plan-check";
 import { HttpVerifier, verifyTimeoutMs } from "@foundry/verify";
 import { IsomorphicMerger } from "./merge.js";
-import { handlePush, type PipelineDeps } from "./pipeline.js";
+import { handlePush, sentAt, type PipelineDeps } from "./pipeline.js";
 import { D1DecisionStore, D1TicketStore } from "@foundry/stores";
 
 // Env comes from ./env.d.ts (bindings mirror wrangler.toml; committed so
@@ -68,7 +68,10 @@ export default {
     const deps = depsFromEnv(env);
     for (const msg of batch.messages) {
       try {
-        const res = await handlePush(deps, env.ARTIFACTS_NS, msg.body);
+        // Messages are handled in turn, so this one may have waited for the
+        // verification of the ones before it: tell the decision when it arrived.
+        const now = Date.now();
+        const res = await handlePush(deps, env.ARTIFACTS_NS, msg.body, now, sentAt(msg) ?? now);
         console.log(
           "foundry/gate",
           msg.body?.type,
