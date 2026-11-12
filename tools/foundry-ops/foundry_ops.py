@@ -98,8 +98,13 @@ def sh(cmd, cwd=None, check=True, quiet=False):
 class Cloudflare:
     def __init__(self, env):
         self.env = ENVS[env]
-        self.token = json.loads(sh(["npx", "wrangler", "auth", "token", "--json"], cwd=ROOT))["token"]
+        self.token = self._fresh_token()
         self.account = self._account()
+
+    @staticmethod
+    def _fresh_token():
+        # wrangler's OAuth access token lives one hour and `wrangler auth token` refreshes it when it is near expiry.
+        return json.loads(sh(["npx", "wrangler", "auth", "token", "--json"], cwd=ROOT))["token"]
 
     def _account(self):
         d = self.call("GET", "/accounts?per_page=50")
@@ -108,14 +113,26 @@ class Cloudflare:
             raise SystemExit(f"expected one Cloudflare account, got {len(accounts)}")
         return accounts[0]["id"]
 
-    def call(self, method, path, body=None):
+    def _request(self, method, path, body):
         req = urllib.request.Request(API + path, method=method, data=None if body is None else json.dumps(body).encode(),
                                      headers={"Authorization": f"Bearer {self.token}", "content-type": "application/json"})
-        try:
-            with urllib.request.urlopen(req, timeout=60) as r:
-                return json.load(r)
-        except urllib.error.HTTPError as e:
-            raise SystemExit(f"{method} {path.split('?')[0]}: HTTP {e.code} {e.read()[:300]!r}")
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return json.load(r)
+
+    def call(self, method, path, body=None):
+        """One API call. A 401 or 403 is first taken as the token having expired: `land` holds one Cloudflare client
+        while it waits on the gate, and a wait behind a busy verifier outlives the one-hour OAuth token (2026-11-12:
+        two Serenity landings died reading their verdict with D1 "account is not valid or is not authorized" while
+        the same query from a new process worked). So the token is refreshed and the call made once more; a second
+        refusal is real and stops the run."""
+        for attempt in (1, 2):
+            try:
+                return self._request(method, path, body)
+            except urllib.error.HTTPError as e:
+                if e.code in (401, 403) and attempt == 1:
+                    self.token = self._fresh_token()
+                    continue
+                raise SystemExit(f"{method} {path.split('?')[0]}: HTTP {e.code} {e.read()[:300]!r}")
 
     def repos(self):
         out, cursor, ns = [], None, urllib.parse.quote(self.env["namespace"])

@@ -388,6 +388,45 @@ class WaitDecisionTest(unittest.TestCase):
             fo.time.time = real
 
 
+class CloudflareTokenTest(unittest.TestCase):
+    """2026-11-12: a landing waiting behind a busy verifier outlived the one-hour OAuth token and died on a D1 403."""
+
+    def client(self, codes):
+        cf = fo.Cloudflare.__new__(fo.Cloudflare)
+        cf.token, cf.refreshed, cf.seen = "old", 0, []
+        seq = iter(codes)
+
+        def request(method, path, body):
+            cf.seen.append(cf.token)
+            code = next(seq)
+            if code != 200:
+                raise fo.urllib.error.HTTPError(path, code, "no", {}, None)
+            return {"ok": True}
+
+        def fresh():
+            cf.refreshed += 1
+            return "new"
+        cf._request, cf._fresh_token = request, fresh
+        return cf
+
+    def test_an_expired_token_is_refreshed_and_the_call_retried(self):
+        cf = self.client([403, 200])
+        self.assertEqual(cf.call("POST", "/d1"), {"ok": True})
+        self.assertEqual((cf.refreshed, cf.seen), (1, ["old", "new"]))
+
+    def test_a_second_refusal_stops_the_run(self):
+        cf = self.client([401, 403])
+        with self.assertRaises(SystemExit):
+            cf.call("GET", "/accounts")
+        self.assertEqual(cf.refreshed, 1)
+
+    def test_other_errors_are_not_retried(self):
+        cf = self.client([500])
+        with self.assertRaises(SystemExit):
+            cf.call("GET", "/accounts")
+        self.assertEqual(cf.refreshed, 0)
+
+
 class PushUntilDecidedTest(unittest.TestCase):
     """2026-11-03: land stopped waiting for its first push 8 s before the gate merged it (decision 638), then
     pushed the same change again as a new event (643) and reported no-decision for a change that had landed."""
