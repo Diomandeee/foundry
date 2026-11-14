@@ -35,7 +35,9 @@ ARTIFACTS_NS = "foundry-staging"
 # The verifier (VERIFY_URL, a secret) builds and tests on a fleet worker, which takes minutes.
 VERIFY_TIMEOUT_MS = "840000"
 # A check that ran and failed refuses the merge (verification_failed). An unreachable verifier
-# is "not checked" and never blocks: VERIFY_REQUIRE_CHECKED stays unset.
+# (timeout, tunnel down, any non-2xx) is an `error` row and a queue retry, never a merge
+# (packages/verify HttpVerifier, since 2026-11-14). A verifier that answers {"runs": []} for a
+# base it does not guard is "not checked" and merges: VERIFY_REQUIRE_CHECKED stays unset.
 VERIFY_ENFORCE = "1"
 # An unknown or non-composing declared chain refuses the merge (invalid_args, "pact: unusable chains"). PACT unreachable
 # is "not checked" and never blocks.

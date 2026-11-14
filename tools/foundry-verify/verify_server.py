@@ -42,7 +42,9 @@ A change confined to the recipe's `skip` globs (docs) is reported as a passing "
 word in its output. The gate's receipt keeps only a run's name, so the name carries what happened:
 "<check> [537 tests]", "<check> [skipped: docs only]". A guarded base never merges unjudged: anything that keeps the server from judging
 (fetch failure, worker outage, deadline, a run that never reached the code, a crash) is a 503 with {"retry": true}, which the gate turns into
-an `error` row and a queue retry. Only a verifier that cannot be reached at all reads as "not checked".
+an `error` row and a queue retry. A verifier that cannot be reached at all (tunnel down, gate timeout) is
+the same `error` and retry on the gate's side (packages/verify HttpVerifier, since 2026-11-14); before that
+it read as "not checked" and merged.
 A busy worker is waited on for FORCE_AFTER_S, then the job runs with --force.
 
 Mac1 only orchestrates: the build runs on the worker named in the recipe. One run at a time; queued

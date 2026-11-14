@@ -108,10 +108,21 @@ export function verifyTimeoutMs(raw: string | undefined): number {
  *     { repo, baseBranch, files, headSha }
  *     -> { runs: [{ name, ok, output? }] }
  *
- * A non-2xx response or a transport failure is an outage (`checked: false`),
- * never a failed check: a verifier that is down has not judged the change.
- * The exception is a 503 carrying {"retry": true}: the verifier is up and guards
- * this base, so it throws VerifierBusy and the gate retries instead of merging.
+ * Only an answer decides. A 2xx with runs is the verdict; a 2xx with no runs is the
+ * verifier saying no check applies (a base it does not guard, a docs-only change), which
+ * is "not checked" and merges as before.
+ *
+ * Anything else throws VerifierBusy, so the gate records `error` and the queue retries:
+ * a 503 {"retry": true} (up, guards the base, could not judge yet), any other non-2xx,
+ * a timeout, a transport failure, or a body that is not the contract. A verifier that
+ * could not be reached has not said whether the base is guarded, so it is never read as
+ * "nothing to check". Until 2026-11-14 an outage read as "not checked" and merged: Mac1's
+ * verify tunnel dropped for two minutes at 14:36Z and three changes on guarded bases
+ * (decisions 2363, 2364, 2368) merged with no test run.
+ *
+ * A failed check is never inferred from an outage either: VerifierBusy is an infrastructure
+ * error, not a refusal. A deployment with no verifier at all (VERIFY_URL unset) uses the
+ * StubVerifier and is unchanged.
  */
 export class HttpVerifier implements Verifier {
   constructor(
@@ -138,15 +149,13 @@ export class HttpVerifier implements Verifier {
         }
       }
       if (!res.ok) {
-        return {
-          checked: false,
-          ok: true,
-          runs: [],
-          error: `verify ${res.status}`,
-        };
+        throw new VerifierBusy(`verifier unavailable: verify ${res.status}`);
       }
-      const body = (await res.json()) as { runs?: CheckRun[] };
-      const runs: CheckRun[] = (Array.isArray(body.runs) ? body.runs : []).map(
+      const body = (await res.json().catch(() => null)) as { runs?: CheckRun[] } | null;
+      if (!body || !Array.isArray(body.runs)) {
+        throw new VerifierBusy("verifier unavailable: answer without runs");
+      }
+      const runs: CheckRun[] = body.runs.map(
         (r) => ({
           name: String(r.name),
           ok: r.ok === true,
@@ -162,12 +171,7 @@ export class HttpVerifier implements Verifier {
       return { checked: true, ok: runs.every((r) => r.ok), runs };
     } catch (e) {
       if (e instanceof VerifierBusy) throw e;
-      return {
-        checked: false,
-        ok: true,
-        runs: [],
-        error: e instanceof Error ? e.message : String(e),
-      };
+      throw new VerifierBusy(`verifier unavailable: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 }
