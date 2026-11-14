@@ -998,6 +998,15 @@ class LateJobs(unittest.TestCase):
         with open(self.state, "w") as f:
             f.write(state)
 
+    def test_a_job_past_the_newest_twenty_is_still_found(self):
+        """11-14 decision 2520: other lanes started 20 jobs while an adopted one ran, `job ls` stopped listing it,
+        and its end was never seen. The row is read from a long list."""
+        with open(self.fabric, "w") as f:
+            f.write('#!/bin/sh\n[ "$2" = ls ] && [ "$3" = --last ] && [ "$4" -ge 100 ] && echo "job-old mac5 failed 65 t cmd"\n'
+                    'exit 0\n')
+        self.assertEqual(vs.job_row("job-old"), ["job-old", "mac5", "failed", "65", "t", "cmd"])
+        self.assertIsNone(vs.job_row("job-other"))
+
     def count(self, verb):
         return sum(1 for l in open(self.calls).read().splitlines() if l.startswith("job " + verb))
 

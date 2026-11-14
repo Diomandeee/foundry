@@ -478,8 +478,13 @@ def job_fingerprint(repo, recipe, name):
     return hashlib.sha256(json.dumps([name, r.stdout.strip(), recipe], sort_keys=True, default=str).encode()).hexdigest()
 
 
+JOB_LS_LAST = 500  # `fabric job ls` prints only the newest 20 by default
+
+
 def job_row(jid):
-    ls = subprocess.run([FABRIC, "job", "ls"], capture_output=True, text=True).stdout
+    """The job's `fabric job ls` row, or None. Read from the newest JOB_LS_LAST: on 11-14 the default 20 lost an
+    adopted job within 10 min while other lanes started theirs, so its end was never seen and its result never taken."""
+    ls = subprocess.run([FABRIC, "job", "ls", "--last", str(JOB_LS_LAST)], capture_output=True, text=True).stdout
     return next((l.split() for l in ls.splitlines() if l.startswith(jid)), None)
 
 
