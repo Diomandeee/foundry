@@ -175,11 +175,17 @@ function unsupportedReject(u: { path: string; why: string }): Decision {
 
 /**
  * How long a push may wait in the gate's own queue before that wait starts to
- * count against its freshness. Longer than the worst honest wait (a few
- * verifications of up to 14 minutes ahead of it), short enough that a backlog
- * left by an outage still ages out.
+ * count against its freshness. Longer than the worst honest wait, short enough
+ * that a backlog left by an outage still ages out.
+ *
+ * The honest wait includes the verifier's own retries of one push: since
+ * 2026-11-14 a check that runs past one request's window (780 s) keeps running
+ * for up to 30 min more and a retry takes its result, so one push may span
+ * about 43 min of retries, plus checks queued ahead of it. At 30 min the gate
+ * refused such a push as stale on the retry meant to collect it (decision 2520,
+ * 797 s over).
  */
-export const QUEUE_WAIT_CREDIT_MS = 30 * 60_000;
+export const QUEUE_WAIT_CREDIT_MS = 60 * 60_000;
 
 /**
  * The proposal time the freshness rule should see: the head commit's time,

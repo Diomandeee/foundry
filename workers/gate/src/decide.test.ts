@@ -591,6 +591,16 @@ describe("freshness and the gate's own queue", () => {
     if (d.verdict === "reject") expect(d.reason.reason).toBe("snapshot_too_stale");
   });
 
+  it("admits the retry that collects a check run late (decision 2520: 33 min of retries)", async () => {
+    // The verifier keeps a check that overran its 780 s window running for up to 30 min more; the retry that takes
+    // its result can come about 45 min after the push arrived. Before 11-14 the 30 min credit refused it as stale.
+    expect(QUEUE_WAIT_CREDIT_MS).toBeGreaterThanOrEqual(780_000 + 30 * MIN);
+    const { push, committedAt } = await pushed();
+    const now = committedAt + 45 * MIN;
+    const d = await decidePush(port, tickets, push, now, undefined, undefined, committedAt + 5_000);
+    expect(d.verdict).toBe("merge");
+  });
+
   it("lets a push age out once it has waited past the credit", async () => {
     const { push, committedAt } = await pushed();
     const now = committedAt + QUEUE_WAIT_CREDIT_MS + 10 * MIN;
@@ -603,7 +613,7 @@ describe("freshness and the gate's own queue", () => {
     const t = 1_800_000_000_000;
     expect(creditQueueWait(t, t + 5_000, t + 10 * MIN)).toBe(t + 10 * MIN - 5_000); // age seen: the 5 s before it arrived
     expect(creditQueueWait(t, t + 10 * MIN, t + 10 * MIN)).toBe(t); // no wait, no credit
-    expect(creditQueueWait(t, t + 5_000, t + 50 * MIN)).toBe(t + QUEUE_WAIT_CREDIT_MS); // capped
+    expect(creditQueueWait(t, t + 5_000, t + QUEUE_WAIT_CREDIT_MS + 20 * MIN)).toBe(t + QUEUE_WAIT_CREDIT_MS); // capped
     expect(creditQueueWait(t, t - 60_000, t + MIN)).toBe(t + MIN); // a sender's clock behind ours: never a negative age
     expect(creditQueueWait(t + MIN, t, t)).toBe(t + MIN); // a commit dated in the future is left for the kernel to refuse
     expect(creditQueueWait(t, t + 20 * MIN, t + 10 * MIN)).toBe(t); // a receipt time in the future credits nothing
