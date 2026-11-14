@@ -562,6 +562,10 @@ describe("freshness and the gate's own queue", () => {
 
   async function pushed(): Promise<{ push: Parameters<typeof decidePush>[2]; committedAt: number }> {
     const { baseSha } = await setup();
+    // Real tickets live 4 h (orchestrator tasks.ts); the fixture's 1 h default would expire inside the waits below.
+    const ticket = await tickets.getTicketByFork("task-1");
+    ticket!.scope.expires_at = Date.now() + 4 * 3_600_000;
+    await tickets.saveTicket(ticket!);
     const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
     return {
       push: { namespace: "test", repo: "task-1", ref: "refs/heads/main", before: baseSha, after },
