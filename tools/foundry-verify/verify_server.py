@@ -80,6 +80,15 @@ FABRIC = os.path.join(HOME, "fleet", "bin", "fabric")
 ROOT = os.path.join(HOME, ".fleet", "verify")
 DEFAULT_DEADLINE_S = 780  # under the gate's VERIFY_TIMEOUT_MS (840 s), itself under the 15 min queue wall
 SIM_LOCK = threading.Lock()     # one simulator job on the worker at a time, whichever base asks
+# A job still running at its request's deadline is not stopped (2026-11-14: on a Mac5 loaded by renders a check
+# and its main baseline took longer than one 780 s window, every retry stopped its job and started over, and no
+# simulator landing could finish). It keeps running, keeps the simulator, and the gate's retry of the same check
+# (same name, tree, recipe) takes its result instead of starting a new job. LATE_MORE_S bounds how long past the
+# deadline it may run; an unclaimed result is dropped after LATE_KEEP_S.
+LATE_MORE_S = 30 * 60
+LATE_KEEP_S = 60 * 60
+LATE = {}
+LATE_LOCK = threading.Lock()
 _BASE_LOCKS, _BASE_LOCKS_GUARD = {}, threading.Lock()
 
 
@@ -443,6 +452,95 @@ MEMORY_FLOOR = re.compile(r": memory: ")               # fabric's refusal when t
 WAIT = threading.local()   # per verification. .since: when its request arrived; .forced: it already forced a job
 
 
+class PastDeadline(Unjudged):
+    """_start_and_wait's job is still running at the deadline. run_job adopts it (or stops it)."""
+    def __init__(self, jid):
+        super().__init__(f"{jid} ran past the deadline")
+        self.jid = jid
+
+
+class Late:
+    """A job adopted past its request's deadline: its row once it ends, or why it never gave one."""
+    def __init__(self, jid, sims):
+        self.jid, self.sims, self.t = jid, sims, time.time()
+        self.done, self.row, self.error, self.ended = threading.Event(), None, None, None
+
+
+def job_fingerprint(repo, recipe, name):
+    """What makes a retry the same check: the job's name, the tree it would sync (the index build_tree or the
+    baseline checkout left) and the recipe. None when the tree cannot be read: such a job is stopped as before."""
+    r = subprocess.run(["git", "-C", repo, "write-tree"], capture_output=True, text=True)
+    if r.returncode:
+        return None
+    return hashlib.sha256(json.dumps([name, r.stdout.strip(), recipe], sort_keys=True, default=str).encode()).hexdigest()
+
+
+def job_row(jid):
+    ls = subprocess.run([FABRIC, "job", "ls"], capture_output=True, text=True).stdout
+    return next((l.split() for l in ls.splitlines() if l.startswith(jid)), None)
+
+
+def watch_late(key, late):
+    """Wait out an adopted job, then free the simulator. Stops it LATE_MORE_S after adoption."""
+    try:
+        while True:
+            if time.time() - late.t > LATE_MORE_S:
+                subprocess.run([FABRIC, "job", "stop", late.jid], capture_output=True)
+                late.error = f"{late.jid} still running {LATE_MORE_S // 60} min past its deadline; stopped"
+                break
+            time.sleep(10)
+            row = job_row(late.jid)
+            if row and row[2] in ("done", "failed"):
+                late.row = row
+                break
+            if row and row[2] in ("lost", "stopped"):
+                late.error = f"{late.jid} {row[2]}"
+                break
+    except Exception as e:  # noqa: BLE001  the simulator must be freed whatever happens here
+        late.error = f"{late.jid}: watching it failed: {e}"
+    finally:
+        late.ended = time.time()
+        if late.sims:
+            SIM_LOCK.release()
+        late.done.set()
+        log("late-ended", job=late.jid, ok=late.error is None, error=late.error)
+
+
+def adopt(key, jid, sims):
+    """Keep a job running past its request's deadline for a retry to collect. False when it has no key."""
+    if key is None:
+        return False
+    late = Late(jid, sims)
+    with LATE_LOCK:
+        now = time.time()
+        for k in [k for k, v in LATE.items() if v.ended and now - v.ended > LATE_KEEP_S]:
+            del LATE[k]
+        LATE[key] = late
+    threading.Thread(target=watch_late, args=(key, late), daemon=True, name=f"late-{jid}").start()
+    log("late-adopted", job=jid)
+    return True
+
+
+def claim_late(key, deadline):
+    """An earlier attempt's job for this same check: (job id, row) once it ended, None when there is none.
+    Still running at this request's deadline is Unjudged again, and the job keeps going for the next retry."""
+    if key is None:
+        return None
+    with LATE_LOCK:
+        late = LATE.get(key)
+    if late is None:
+        return None
+    if not late.done.wait(timeout=max(0.0, deadline - 30 - time.time())):
+        raise Unjudged(f"{late.jid} from an earlier attempt is still running; a later retry takes its result")
+    with LATE_LOCK:
+        if LATE.get(key) is late:
+            del LATE[key]
+    if late.error:
+        raise Unjudged(late.error)
+    log("late-claimed", job=late.jid)
+    return late.jid, late.row
+
+
 def run_job(repo, recipe, name, deadline):
     """Run the recipe on its worker; return the parsed result. Raises Unjudged on outage or deadline.
 
@@ -460,13 +558,26 @@ def run_job(repo, recipe, name, deadline):
         cmd += ["--link", f"{rel}={os.path.expanduser(src)}"]
     tail = ["--", *recipe["command"]]
     sims = recipe.get("need", "sims") == "sims"
-    if sims and not SIM_LOCK.acquire(timeout=max(0, deadline - 60 - time.time())):
-        raise Unjudged("waited past the deadline for another base's simulator job")
-    try:
-        jid, row = _start_and_wait(cmd, tail, name, deadline)
-    finally:
-        if sims:
-            SIM_LOCK.release()
+    key = job_fingerprint(repo, recipe, name)
+    claimed = claim_late(key, deadline)
+    if claimed:
+        jid, row = claimed
+    else:
+        if sims and not SIM_LOCK.acquire(timeout=max(0, deadline - 60 - time.time())):
+            raise Unjudged("waited past the deadline for another base's simulator job")
+        adopted = False
+        try:
+            jid, row = _start_and_wait(cmd, tail, name, deadline)
+        except PastDeadline as e:
+            adopted = adopt(key, e.jid, sims)     # the simulator is now the watcher's to free
+            if not adopted:
+                subprocess.run([FABRIC, "job", "stop", e.jid], capture_output=True)
+                raise Unjudged(f"{e.jid} ran past the deadline; stopped") from None
+            raise Unjudged(f"{e.jid} ran past the deadline; it keeps running and the retry of this check "
+                           "takes its result") from None
+        finally:
+            if sims and not adopted:
+                SIM_LOCK.release()
     text = subprocess.run([FABRIC, "job", "log", jid, "--lines", "200000"], capture_output=True, text=True).stdout
     exit_code = int(row[3]) if len(row) > 3 and re.fullmatch(r"-?\d+", row[3]) else None
     res = parse_log(text, parse_kinds(recipe), exit_code)
@@ -499,11 +610,9 @@ def _start_and_wait(cmd, tail, name, deadline):
     jid = m.group(1)
     while True:
         if time.time() > deadline:
-            subprocess.run([FABRIC, "job", "stop", jid], capture_output=True)
-            raise Unjudged(f"{jid} ran past the deadline; stopped")
+            raise PastDeadline(jid)       # run_job keeps it for the retry, or stops it
         time.sleep(10)
-        ls = subprocess.run([FABRIC, "job", "ls"], capture_output=True, text=True).stdout
-        row = next((l.split() for l in ls.splitlines() if l.startswith(jid)), None)
+        row = job_row(jid)
         if row and row[2] in ("done", "failed"):
             return jid, row
         if row and row[2] in ("lost", "stopped"):

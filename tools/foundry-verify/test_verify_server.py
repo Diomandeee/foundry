@@ -941,5 +941,116 @@ class BusyWorker(unittest.TestCase):
             vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
 
 
+class LateJobs(unittest.TestCase):
+    """A job still running at its request's deadline keeps running, keeps the simulator, and the gate's retry of
+    the same check takes its result (2026-11-14: Mac5 under renders, every retry stopped its job and restarted)."""
+
+    def setUp(self):
+        self.saved = (vs.FABRIC, vs.ROOT, vs.time.sleep, vs.LATE_MORE_S)
+        self.tmp = tempfile.mkdtemp()
+        vs.ROOT = self.tmp
+        vs.WAIT.forced, vs.WAIT.since = False, None
+        real_sleep = self.saved[2]
+        vs.time.sleep = lambda s: real_sleep(0.005)
+        vs.LATE.clear()
+        self.calls = os.path.join(self.tmp, "calls")
+        self.state = os.path.join(self.tmp, "state")
+        self.set_state("running")
+        self.fabric = os.path.join(self.tmp, "fabric")
+        with open(self.fabric, "w") as f:
+            f.write('#!/bin/sh\necho "$*" >> %s\n'
+                    '[ "$2" = run ] && { echo "started job-v-1 on mac5"; exit 0; }\n'
+                    '[ "$2" = ls ] && { echo "job-v-1 mac5 $(cat %s) 0 t cmd"; exit 0; }\n'
+                    '[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\n'
+                    'exit 0\n' % (self.calls, self.state))
+        os.chmod(self.fabric, 0o755)
+        vs.FABRIC = self.fabric
+        self.repo = os.path.join(self.tmp, "repo")
+        os.makedirs(self.repo)
+        sh(self.repo, "git", "init", "-q")
+        commit(self.repo, {"a.txt": "a\n"}, "one")
+
+    def tearDown(self):
+        self.set_state("done")
+        for late in list(vs.LATE.values()):
+            late.done.wait(5)
+        vs.LATE.clear()
+        vs.FABRIC, vs.ROOT, vs.time.sleep, vs.LATE_MORE_S = self.saved
+        vs.WAIT.forced, vs.WAIT.since = False, None
+
+    def set_state(self, state):
+        with open(self.state, "w") as f:
+            f.write(state)
+
+    def count(self, verb):
+        return sum(1 for l in open(self.calls).read().splitlines() if l.startswith("job " + verb))
+
+    def run_sim(self, repo, deadline):
+        return vs.run_job(repo, {"command": ["true"], "need": "sims"}, "verify-x", deadline)
+
+    def test_a_job_past_its_deadline_keeps_running_and_the_retry_takes_its_result(self):
+        with self.assertRaises(vs.Unjudged) as e:
+            self.run_sim(self.repo, time.time() - 1)
+        self.assertIn("keeps running", str(e.exception))
+        self.assertEqual(self.count("stop"), 0)
+        self.assertFalse(vs.SIM_LOCK.acquire(blocking=False), "the late job keeps the simulator")
+        self.set_state("done")
+        res = self.run_sim(self.repo, time.time() + 60)
+        self.assertEqual((res["job"], res["executed"]), ("job-v-1", 3))
+        self.assertEqual(self.count("run"), 1, "the retry started no second job")
+        self.assertTrue(vs.SIM_LOCK.acquire(blocking=False), "freed once the job ended")
+        vs.SIM_LOCK.release()
+        self.assertEqual(vs.LATE, {})
+
+    def test_a_retry_before_it_ends_is_unjudged_again_and_the_job_goes_on(self):
+        with self.assertRaises(vs.Unjudged):
+            self.run_sim(self.repo, time.time() - 1)
+        with self.assertRaises(vs.Unjudged) as e:
+            self.run_sim(self.repo, time.time() + 30.2)
+        self.assertIn("still running", str(e.exception))
+        self.assertEqual((self.count("run"), self.count("stop")), (1, 0))
+        self.set_state("done")
+        self.assertEqual(self.run_sim(self.repo, time.time() + 60)["job"], "job-v-1")
+        self.assertEqual(self.count("run"), 1)
+
+    def test_a_job_that_ends_stopped_or_lost_is_unjudged_for_the_retry(self):
+        with self.assertRaises(vs.Unjudged):
+            self.run_sim(self.repo, time.time() - 1)
+        self.set_state("lost")
+        with self.assertRaises(vs.Unjudged) as e:
+            self.run_sim(self.repo, time.time() + 60)
+        self.assertIn("lost", str(e.exception))
+        self.assertTrue(vs.SIM_LOCK.acquire(blocking=False))
+        vs.SIM_LOCK.release()
+
+    def test_a_late_job_is_stopped_after_its_extra_time(self):
+        vs.LATE_MORE_S = 0
+        with self.assertRaises(vs.Unjudged):
+            self.run_sim(self.repo, time.time() - 1)
+        with self.assertRaises(vs.Unjudged) as e:
+            self.run_sim(self.repo, time.time() + 60)
+        self.assertIn("stopped", str(e.exception))
+        self.assertEqual(self.count("stop"), 1)
+        self.assertTrue(vs.SIM_LOCK.acquire(blocking=False))
+        vs.SIM_LOCK.release()
+
+    def test_without_a_readable_tree_the_job_is_stopped_as_before(self):
+        with self.assertRaises(vs.Unjudged) as e:
+            self.run_sim(self.tmp, time.time() - 1)
+        self.assertIn("stopped", str(e.exception))
+        self.assertEqual(self.count("stop"), 1)
+        self.assertTrue(vs.SIM_LOCK.acquire(blocking=False))
+        vs.SIM_LOCK.release()
+
+    def test_the_same_check_is_name_tree_and_recipe(self):
+        one = vs.job_fingerprint(self.repo, {"command": ["true"]}, "verify-x")
+        self.assertEqual(one, vs.job_fingerprint(self.repo, {"command": ["true"]}, "verify-x"))
+        self.assertNotEqual(one, vs.job_fingerprint(self.repo, {"command": ["true"]}, "verify-x-main"))
+        self.assertNotEqual(one, vs.job_fingerprint(self.repo, {"command": ["false"]}, "verify-x"))
+        commit(self.repo, {"b.txt": "b\n"}, "two")
+        self.assertNotEqual(one, vs.job_fingerprint(self.repo, {"command": ["true"]}, "verify-x"))
+        self.assertIsNone(vs.job_fingerprint(self.tmp, {"command": ["true"]}, "verify-x"))
+
+
 if __name__ == "__main__":
     unittest.main()
