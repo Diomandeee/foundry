@@ -449,6 +449,9 @@ def parse_log(text, kinds=("xcodebuild",), exit_code=None):
 FORCE_AFTER_S = 180  # a busy worker gets this long to make room; then the gate's check runs anyway
 DISK_FLOOR = re.compile(r": disk: \d+ GB < \d+ GB")   # fabric's refusal when the worker's disk is under its floor
 MEMORY_FLOOR = re.compile(r": memory: ")               # fabric's refusal when the worker has no memory to give
+# The worker's performing flag (`fabric stage up`): Mohamed is playing on it. Never forced: on 2026-11-14 three
+# verifies forced onto Mac5 while he danced took load past 900 and silenced his deck three times.
+PERFORMING = re.compile(r"file:\.fleet/performing")
 WAIT = threading.local()   # per verification. .since: when its request arrived; .forced: it already forced a job
 
 
@@ -588,8 +591,12 @@ def run_job(repo, recipe, name, deadline):
 def _start_and_wait(cmd, tail, name, deadline):
     """Start the job on the worker, waiting out a busy one, and wait for it to end: (job id, its `job ls` row)."""
     waited_since = getattr(WAIT, "since", None) or time.time()
+    # fabric's --force skips the performing flag too, so a start is forced only after an unforced one was refused
+    # for a reason other than the flag. That costs one quick refusal per job, never a second wait.
+    refused, performing = False, False
     while True:
-        forced = getattr(WAIT, "forced", False) or time.time() - waited_since >= FORCE_AFTER_S
+        forced = refused and not performing and (getattr(WAIT, "forced", False)
+                                                 or time.time() - waited_since >= FORCE_AFTER_S)
         force = ["--force"] if forced else []
         r = subprocess.run(cmd + force + tail, capture_output=True, text=True,
                            timeout=max(30, deadline - time.time()))
@@ -598,14 +605,20 @@ def _start_and_wait(cmd, tail, name, deadline):
             WAIT.forced = forced
             break
         said = r.stderr + r.stdout
-        busy_worker = re.search(r"load:|memory|no host has room|use --force", said)
+        refused, performing = True, bool(PERFORMING.search(said))
+        busy_worker = performing or re.search(r"load:|memory|no host has room|use --force", said)
         memory = MEMORY_FLOOR.search(said)   # --force never skips it: only waiting for the room can help
-        if not busy_worker or (force and not memory) or time.time() + 60 > deadline:
+        if performing and time.time() + 60 > deadline:
+            raise Unjudged("the worker is performing (Mohamed is playing on it): the gate's tests wait for the set "
+                           "to end, then the retry runs them")
+        if not busy_worker or (force and not memory and not performing) or time.time() + 60 > deadline:
             raise Unjudged(f"worker did not start the job: {(r.stderr or r.stdout).strip()[-200:]}")
         log("worker-busy", name=name, detail=(r.stderr or r.stdout).strip()[-120:])
         if DISK_FLOOR.search(said):
             WAIT.forced = True
             continue
+        if not performing and (getattr(WAIT, "forced", False) or time.time() - waited_since >= FORCE_AFTER_S):
+            continue                      # the next try is forced: nothing to wait for
         time.sleep(20)
     jid = m.group(1)
     while True:

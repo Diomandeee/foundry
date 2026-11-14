@@ -832,7 +832,8 @@ class BusyWorker(unittest.TestCase):
         self.fake_floor("mac5: load: 9/core (use --force to run anyway)")
         for _ in range(3):       # the check, then main for comparison, then a rerun
             vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
-        self.assertEqual(self.runs(), [False, True, True, True])
+        # each job asks once unforced (a forced start would skip a performing flag), then forces at once
+        self.assertEqual(self.runs(), [False, True, False, True, False, True])
 
     def test_a_disk_floor_is_forced_without_waiting(self):
         vs.WAIT.forced = False
@@ -848,8 +849,11 @@ class BusyWorker(unittest.TestCase):
         vs.WAIT.forced, vs.FORCE_AFTER_S = False, 180
         vs.WAIT.since = time.time() - 200     # this request arrived 200 s ago and has only now got the lock
         self.fake_floor("mac5: load: 5.4/core (use --force to run anyway; memory is never skipped)")
+        slept = []
+        vs.time.sleep = slept.append
         vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
-        self.assertEqual(self.runs(), [True])
+        self.assertEqual(self.runs(), [False, True])     # one unforced ask, then forced with no wait
+        self.assertNotIn(20, slept)
 
     def test_simulator_jobs_take_turns_and_other_jobs_do_not_wait_for_them(self):
         flag = os.path.join(self.tmp, "first-may-end")
@@ -902,7 +906,7 @@ class BusyWorker(unittest.TestCase):
                   '[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\n'
                   'exit 0' % (count, count))
         res = vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
-        self.assertEqual((res["executed"], self.runs()), (3, [True, True, True]))
+        self.assertEqual((res["executed"], self.runs()), (3, [False, True, True]))
 
     def test_the_next_verification_waits_again(self):
         vs.WAIT.forced = True
@@ -934,6 +938,18 @@ class BusyWorker(unittest.TestCase):
         self.assertEqual((res["job"], res["executed"]), ("job-v-1", 3))
         runs = [l for l in open(self.calls).read().splitlines() if l.startswith("job run")]
         self.assertEqual(["--force" in l for l in runs], [False, True])
+
+    def test_a_performing_worker_is_never_forced(self):
+        vs.WAIT.since = time.time() - 500     # long past the force time: any other refusal would be forced
+        self.fake('[ "$2" = run ] && { echo "no host for --host mac5: busy: file:.fleet/performing running '
+                  '(stage, held 7.5 h)" >&2; exit 1; }\n'
+                  '[ "$2" = ls ] && echo "job-v-1 mac5 done 0 t cmd"\n'
+                  'exit 0')
+        with self.assertRaises(vs.Unjudged) as e:
+            vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 60.3)
+        self.assertIn("performing", str(e.exception))
+        self.assertTrue(self.runs())
+        self.assertFalse(any(self.runs()), "a start was forced past the performing flag")
 
     def test_other_start_failure_is_unjudged(self):
         self.fake('echo "sync to mac5 failed: no route" >&2; exit 1')
