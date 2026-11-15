@@ -86,6 +86,12 @@ Nothing is cached and nothing is judged.
 iPhone Duo needs iOS 27, which Mac4 does not have, so its gate devices are iPhone 17e. Mac4's simulators were made
 with `fabric job run --host mac4 --need sims` (job-verify-gate-sims-1115-085500).
 
+Probes on gate main, 2026-11-15, Mac4: MotionMixApp ff05ffa0, 135 tests, 0 failing, the same count as Mac5's last
+verdicts (job-probe-motionmixapp-1115-090601, cold build plus the simulator's first boot; Mac4 load peaked at 116).
+AirDeck app dfa78a40 builds (job-probe-airdeck-airdeck-app-buil-1115-091532). Serenity's iOS check is not probed
+on Mac4: it needs about 3 GB (a 1.5 GB tree, 1.5 GB DerivedData) and Mac4 had 16 GB against its 15 GB floor, so
+its recipe keeps Mac5 alone until the storage lane makes room.
+
 Order: MotionMixApp and AirDeck's app build list Mac4 first, so a check leaves Mac5's deck alone when Mac4 is
 free. Serenity's iOS check lists Mac5 first: its tree is 1.5 GB and Mac4's disk is the tighter one.
 
