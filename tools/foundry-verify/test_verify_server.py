@@ -1067,6 +1067,55 @@ class LateJobs(unittest.TestCase):
         self.assertTrue(vs.SIM_LOCK.acquire(blocking=False))
         vs.SIM_LOCK.release()
 
+    def ssh_stub(self):
+        self.ssh_calls = os.path.join(self.tmp, "ssh")
+        stub = os.path.join(self.tmp, "ssh-stub")
+        with open(stub, "w") as f:
+            f.write('#!/bin/sh\necho "$*" >> %s\n' % self.ssh_calls)
+        os.chmod(stub, 0o755)
+        saved = vs.SSH
+        vs.SSH = stub
+        self.addCleanup(setattr, vs, "SSH", saved)
+
+    SIM = "C1AB6BF6-049B-4C64-B707-73E33F42E371"
+
+    def run_on_sim(self, repo, deadline):
+        recipe = {"command": ["xcodebuild", "test", "-destination", f"platform=iOS Simulator,id={self.SIM}"],
+                  "need": "sims"}
+        return vs.run_job(repo, recipe, "verify-x", deadline)
+
+    def test_the_simulator_is_read_from_the_destination(self):
+        self.assertEqual(vs.sim_of({"command": ["xcodebuild", "-destination", f"platform=iOS Simulator,id={self.SIM}"]}),
+                         self.SIM)
+        self.assertIsNone(vs.sim_of({"command": ["xcodebuild", "-destination", "generic/platform=iOS Simulator"]}))
+        self.assertIsNone(vs.sim_of({"command": ["true"]}))
+
+    def test_a_stopped_late_job_ends_the_app_it_left_on_its_simulator(self):
+        """11-14 19:16: a stopped check left MotionMixApp running on C1AB6BF6, and the next check there hung."""
+        self.ssh_stub()
+        vs.LATE_MORE_S = 0
+        with self.assertRaises(vs.Unjudged):
+            self.run_on_sim(self.repo, time.time() - 1)
+        with self.assertRaises(vs.Unjudged):
+            self.run_on_sim(self.repo, time.time() + 60)
+        self.assertEqual(self.count("stop"), 1)
+        line = open(self.ssh_calls).read().strip()
+        self.assertIn("mac5", line.split())
+        self.assertIn(f"pkill -f 'CoreSimulator/Devices/{self.SIM}/data/Containers/Bundle/Application/'", line)
+
+    def test_a_stop_without_a_simulator_runs_no_ssh(self):
+        self.ssh_stub()
+        with self.assertRaises(vs.Unjudged):
+            self.run_sim(self.tmp, time.time() - 1)   # no readable tree: stopped at once, recipe has no simulator
+        self.assertEqual(self.count("stop"), 1)
+        self.assertFalse(os.path.exists(self.ssh_calls))
+
+    def test_an_unreadable_tree_on_a_simulator_still_clears_it(self):
+        self.ssh_stub()
+        with self.assertRaises(vs.Unjudged):
+            self.run_on_sim(self.tmp, time.time() - 1)
+        self.assertIn(self.SIM, open(self.ssh_calls).read())
+
     def test_the_same_check_is_name_tree_and_recipe(self):
         one = vs.job_fingerprint(self.repo, {"command": ["true"]}, "verify-x")
         self.assertEqual(one, vs.job_fingerprint(self.repo, {"command": ["true"]}, "verify-x"))

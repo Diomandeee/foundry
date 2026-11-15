@@ -462,10 +462,44 @@ class PastDeadline(Unjudged):
         self.jid = jid
 
 
+SSH = "ssh"
+SIM_ID = re.compile(r"\bid=([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})")
+
+
+def sim_of(recipe):
+    """The simulator a recipe tests on, from its `-destination ... id=<UDID>`, or None (a generic destination)."""
+    m = SIM_ID.search(" ".join(map(str, recipe.get("command") or [])))
+    return m.group(1) if m else None
+
+
+def stop_job(jid, sim=None):
+    """Stop a job, and when it tested on a simulator, end the app it left running there. `fabric job stop` ends the
+    job's processes, but the test host belongs to the simulator's own launchd and outlives xcodebuild: on 11-14 a
+    MotionMixApp host left by a job stopped at 19:16 sat on C1AB6BF6 at 0% CPU, the next check on that simulator
+    (serenity, 19:36) hung at its test stage for 30 min holding SIM_LOCK, and every simulator landing of every
+    base came back unjudged until the host was killed by hand. Only app hosts under that one simulator's
+    Containers/Bundle are ended; the simulator itself stays booted."""
+    subprocess.run([FABRIC, "job", "stop", jid], capture_output=True)
+    if not sim:
+        return
+    row = job_row(jid)
+    host = row[1] if row and len(row) > 1 else None
+    if not host or not re.fullmatch(r"[A-Za-z0-9._-]+", host):
+        log("sim-not-cleared", job=jid, sim=sim, error="no host for the job")
+        return
+    pattern = f"CoreSimulator/Devices/{sim}/data/Containers/Bundle/Application/"
+    try:
+        subprocess.run([SSH, "-o", "ConnectTimeout=10", "-o", "BatchMode=yes", host, f"pkill -f '{pattern}'; true"],
+                       capture_output=True, timeout=45)
+        log("sim-cleared", job=jid, host=host, sim=sim)
+    except subprocess.TimeoutExpired:
+        log("sim-not-cleared", job=jid, host=host, sim=sim, error="ssh timed out")
+
+
 class Late:
     """A job adopted past its request's deadline: its row once it ends, or why it never gave one."""
-    def __init__(self, jid, sims):
-        self.jid, self.sims, self.t = jid, sims, time.time()
+    def __init__(self, jid, sims, sim=None):
+        self.jid, self.sims, self.sim, self.t = jid, sims, sim, time.time()
         self.done, self.row, self.error, self.ended = threading.Event(), None, None, None
 
 
@@ -493,7 +527,7 @@ def watch_late(key, late):
     try:
         while True:
             if time.time() - late.t > LATE_MORE_S:
-                subprocess.run([FABRIC, "job", "stop", late.jid], capture_output=True)
+                stop_job(late.jid, late.sim)
                 late.error = f"{late.jid} still running {LATE_MORE_S // 60} min past its deadline; stopped"
                 break
             time.sleep(10)
@@ -514,11 +548,11 @@ def watch_late(key, late):
         log("late-ended", job=late.jid, ok=late.error is None, error=late.error)
 
 
-def adopt(key, jid, sims):
+def adopt(key, jid, sims, sim=None):
     """Keep a job running past its request's deadline for a retry to collect. False when it has no key."""
     if key is None:
         return False
-    late = Late(jid, sims)
+    late = Late(jid, sims, sim)
     with LATE_LOCK:
         now = time.time()
         for k in [k for k, v in LATE.items() if v.ended and now - v.ended > LATE_KEEP_S]:
@@ -577,9 +611,9 @@ def run_job(repo, recipe, name, deadline):
         try:
             jid, row = _start_and_wait(cmd, tail, name, deadline)
         except PastDeadline as e:
-            adopted = adopt(key, e.jid, sims)     # the simulator is now the watcher's to free
+            adopted = adopt(key, e.jid, sims, sim_of(recipe))     # the simulator is now the watcher's to free
             if not adopted:
-                subprocess.run([FABRIC, "job", "stop", e.jid], capture_output=True)
+                stop_job(e.jid, sim_of(recipe))
                 raise Unjudged(f"{e.jid} ran past the deadline; stopped") from None
             raise Unjudged(f"{e.jid} ran past the deadline; it keeps running and the retry of this check "
                            "takes its result") from None
