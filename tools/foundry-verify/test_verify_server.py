@@ -12,6 +12,7 @@ import time
 import unittest
 import urllib.error
 import urllib.request
+from unittest.mock import patch, Mock
 from http.server import ThreadingHTTPServer
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -801,20 +802,18 @@ class EndToEnd(unittest.TestCase):
 
 
 class BusyWorker(unittest.TestCase):
-    """A worker over its floors is waited on, then forced; any other start failure is unjudged."""
+    """All admission is unforced. Refusal retries stay within the original deadline."""
 
     def setUp(self):
-        self.saved = (vs.FABRIC, vs.FORCE_AFTER_S, vs.ROOT, vs.time.sleep)
+        self.saved = (vs.FABRIC, vs.PLACEMENT_RETRY_S, vs.ROOT, vs.time.sleep)
         self.tmp = tempfile.mkdtemp()
-        vs.ROOT, vs.FORCE_AFTER_S = self.tmp, 0.005  # the first attempt runs inside it, the second past it
-        vs.WAIT.forced, vs.WAIT.since = False, None   # an earlier test's verification is not this one's
+        vs.ROOT, vs.PLACEMENT_RETRY_S = self.tmp, 0.01
         vs.time.sleep = lambda s: None
         self.calls = os.path.join(self.tmp, "calls")
         self.fabric = os.path.join(self.tmp, "fabric")
 
     def tearDown(self):
-        vs.FABRIC, vs.FORCE_AFTER_S, vs.ROOT, vs.time.sleep = self.saved
-        vs.WAIT.forced, vs.WAIT.since = False, None
+        vs.FABRIC, vs.PLACEMENT_RETRY_S, vs.ROOT, vs.time.sleep = self.saved
 
     def runs(self):
         return ["--force" in l for l in open(self.calls).read().splitlines() if l.startswith("job run")]
@@ -827,33 +826,31 @@ class BusyWorker(unittest.TestCase):
                   '[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\n'
                   'exit 0' % refusal)
 
-    def test_one_verification_waits_once_however_many_jobs_it_runs(self):
-        vs.WAIT.forced = False
+    def test_every_job_honours_load_refusals(self):
         self.fake_floor("mac5: load: 9/core (use --force to run anyway)")
-        for _ in range(3):       # the check, then main for comparison, then a rerun
-            vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
-        # each job asks once unforced (a forced start would skip a performing flag), then forces at once
-        self.assertEqual(self.runs(), [False, True, False, True, False, True])
+        for _ in range(3):
+            with self.assertRaises(vs.Unjudged):
+                vs.run_job(self.tmp, {"host": "mac5", "command": ["true"]}, "verify-x", time.time() + 60.05)
+        self.assertGreaterEqual(len(self.runs()), 3)
+        self.assertFalse(any(self.runs()))
 
-    def test_a_disk_floor_is_forced_without_waiting(self):
-        vs.WAIT.forced = False
-        vs.FORCE_AFTER_S = 3600   # only the disk rule can force inside this test
+    def test_a_disk_floor_is_unjudged_without_forcing_or_waiting(self):
         slept = []
         vs.time.sleep = slept.append
         self.fake_floor("mac5: disk: 14 GB < 15 GB (use --force to run anyway; memory is never skipped)")
-        res = vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
-        self.assertEqual((res["executed"], self.runs()), (3, [False, True]))
-        self.assertNotIn(20, slept)
+        with self.assertRaisesRegex(vs.Unjudged, "disk"):
+            vs.run_job(self.tmp, {"host": "mac5", "command": ["true"]}, "verify-x", time.time() + 600)
+        self.assertEqual(self.runs(), [False])
+        self.assertEqual(slept, [])
 
-    def test_time_queued_behind_another_check_is_not_waited_again(self):
-        vs.WAIT.forced, vs.FORCE_AFTER_S = False, 180
-        vs.WAIT.since = time.time() - 200     # this request arrived 200 s ago and has only now got the lock
+    def test_an_expired_request_never_submits(self):
         self.fake_floor("mac5: load: 5.4/core (use --force to run anyway; memory is never skipped)")
         slept = []
         vs.time.sleep = slept.append
-        vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
-        self.assertEqual(self.runs(), [False, True])     # one unforced ask, then forced with no wait
-        self.assertNotIn(20, slept)
+        with self.assertRaisesRegex(vs.Unjudged, "deadline"):
+            vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() - 1)
+        self.assertFalse(os.path.exists(self.calls))
+        self.assertEqual(slept, [])
 
     def test_simulator_jobs_take_turns_and_other_jobs_do_not_wait_for_them(self):
         flag = os.path.join(self.tmp, "first-may-end")
@@ -870,7 +867,7 @@ class BusyWorker(unittest.TestCase):
         self.fake('[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\nexit 0')
         try:
             run = lambda name, need: threading.Thread(
-                target=vs.run_job, args=(self.tmp, {"command": ["true"], "need": need}, name, time.time() + 600))
+                target=vs.run_job, args=(self.tmp, {"host": "mac5", "command": ["true"], "need": need}, name, time.time() + 600))
             first, second, light = run("sim-1", "sims"), run("sim-2", "sims"), run("py-1", "heavy_jobs")
             first.start()
             while "sim-1" not in started:
@@ -896,8 +893,7 @@ class BusyWorker(unittest.TestCase):
             self.assertTrue(vs.base_lock("b").acquire(blocking=False))
             vs.base_lock("b").release()
 
-    def test_a_memory_refusal_is_waited_on_even_after_the_force_time(self):
-        vs.WAIT.since = time.time() - 500     # long past the force time: every start is forced
+    def test_a_memory_refusal_is_waited_on_without_force(self):
         count = os.path.join(self.tmp, "n")
         self.fake('[ "$2" = run ] && { echo x >> %s; [ $(wc -l < %s) -lt 3 ] && '
                   '{ echo "mac5: memory: 8%% free < 15%% (use --force to run anyway; memory is never skipped)" >&2; exit 1; }; '
@@ -906,16 +902,13 @@ class BusyWorker(unittest.TestCase):
                   '[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\n'
                   'exit 0' % (count, count))
         res = vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
-        self.assertEqual((res["executed"], self.runs()), (3, [False, True, True]))
+        self.assertEqual((res["executed"], self.runs()), (3, [False, False, False]))
 
-    def test_the_next_verification_waits_again(self):
-        vs.WAIT.forced = True
-        try:
-            vs.verify({"repo": "unlisted-1--claude-x", "headSha": "0" * 40}, {"bases": {}})
-        except vs.Unjudged:
-            pass                 # no task file here: all that matters is that the wait started over
-        self.assertFalse(vs.WAIT.forced)
-        self.assertGreater(vs.WAIT.since, time.time() - 5)
+    def test_a_rejected_placement_releases_its_lock(self):
+        self.fake_floor("mac5: disk: 14 GB < 15 GB")
+        with self.assertRaises(vs.Unjudged):
+            vs.run_job(self.tmp, {"host": "mac5", "command": ["true"]}, "verify-x", time.time() + 600)
+        self.assertFalse(vs.host_lock("mac5").locked())
 
     def fake(self, body):
         with open(self.fabric, "w") as f:
@@ -923,24 +916,16 @@ class BusyWorker(unittest.TestCase):
         os.chmod(self.fabric, 0o755)
         vs.FABRIC = self.fabric
 
-    def test_busy_then_forced(self):
-        self.fake('case "$*" in *--force*) [ "$1" = run ] && { echo "started job-v-1 on mac5"; exit 0; } ;; esac\n'
-                  '[ "$2" = run ] && { echo "mac5: load: 9/core (use --force to run anyway)" >&2; exit 1; }\n'
-                  '[ "$2" = ls ] && echo "job-v-1 mac5 done 0 t cmd"\n'
-                  '[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\n'
-                  'exit 0')
-        # fabric's subcommand is $1 = job; normalise the stub's checks to the second word
-        with open(self.fabric) as f:
-            body = f.read().replace('[ "$1" = run ]', '[ "$2" = run ]')
-        with open(self.fabric, "w") as f:
-            f.write(body)
-        res = vs.run_job(self.tmp, {"command": ["true"]}, "verify-x", time.time() + 600)
-        self.assertEqual((res["job"], res["executed"]), ("job-v-1", 3))
-        runs = [l for l in open(self.calls).read().splitlines() if l.startswith("job run")]
-        self.assertEqual(["--force" in l for l in runs], [False, True])
+    def test_busy_then_available_stays_unforced(self):
+        with patch.object(vs, "_start_and_wait", side_effect=[vs.WorkerRefused("busy", True),
+                ("job-v-1", ["job-v-1", "mac5", "done", "0"])]) as start:
+            self.fake('[ "$2" = log ] && printf "\\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\\n** TEST SUCCEEDED **\\n"\nexit 0')
+            res = vs.run_job(self.tmp, {"host": "mac5", "command": ["true"]}, "verify-x", time.time() + 600)
+        self.assertEqual(res["executed"], 3)
+        self.assertEqual(start.call_count, 2)
+        self.assertTrue(all("--force" not in c.args[0] for c in start.call_args_list))
 
     def test_a_performing_worker_is_never_forced(self):
-        vs.WAIT.since = time.time() - 500     # long past the force time: any other refusal would be forced
         self.fake('[ "$2" = run ] && { echo "no host for --host mac5: busy: file:.fleet/performing running '
                   '(stage, held 7.5 h)" >&2; exit 1; }\n'
                   '[ "$2" = ls ] && echo "job-v-1 mac5 done 0 t cmd"\n'
@@ -965,13 +950,13 @@ class LateJobs(unittest.TestCase):
         self.saved = (vs.FABRIC, vs.ROOT, vs.time.sleep, vs.LATE_MORE_S)
         self.tmp = tempfile.mkdtemp()
         vs.ROOT = self.tmp
-        vs.WAIT.forced, vs.WAIT.since = False, None
         real_sleep = self.saved[2]
         vs.time.sleep = lambda s: real_sleep(0.005)
         vs.LATE.clear()
         self.calls = os.path.join(self.tmp, "calls")
         self.state = os.path.join(self.tmp, "state")
         self.set_state("running")
+        self.ssh_stub()  # all stop paths, including generic builds, confirm the remote session is gone
         self.fabric = os.path.join(self.tmp, "fabric")
         with open(self.fabric, "w") as f:
             f.write('#!/bin/sh\necho "$*" >> %s\n'
@@ -992,7 +977,6 @@ class LateJobs(unittest.TestCase):
             late.done.wait(5)
         vs.LATE.clear()
         vs.FABRIC, vs.ROOT, vs.time.sleep, vs.LATE_MORE_S = self.saved
-        vs.WAIT.forced, vs.WAIT.since = False, None
 
     def set_state(self, state):
         with open(self.state, "w") as f:
@@ -1011,20 +995,29 @@ class LateJobs(unittest.TestCase):
         return sum(1 for l in open(self.calls).read().splitlines() if l.startswith("job " + verb))
 
     def run_sim(self, repo, deadline):
-        return vs.run_job(repo, {"command": ["true"], "need": "sims"}, "verify-x", deadline)
+        return self.run_recipe(repo, {"host": "mac5", "command": ["true"], "need": "sims"}, deadline)
+
+    def run_recipe(self, repo, recipe, deadline):
+        if deadline < time.time():
+            # Admission has time; the already launched job then exceeds its request deadline.
+            real_start = vs._start_and_wait
+            with patch.object(vs, "_start_and_wait", side_effect=lambda cmd, tail, name, end:
+                              real_start(cmd, tail, name, deadline)):
+                return vs.run_job(repo, recipe, "verify-x", time.time() + 61)
+        return vs.run_job(repo, recipe, "verify-x", deadline)
 
     def test_a_job_past_its_deadline_keeps_running_and_the_retry_takes_its_result(self):
         with self.assertRaises(vs.Unjudged) as e:
             self.run_sim(self.repo, time.time() - 1)
         self.assertIn("keeps running", str(e.exception))
         self.assertEqual(self.count("stop"), 0)
-        self.assertFalse(vs.SIM_LOCK.acquire(blocking=False), "the late job keeps the simulator")
+        self.assertFalse(vs.host_lock("mac5").acquire(blocking=False), "the late job keeps its host")
         self.set_state("done")
         res = self.run_sim(self.repo, time.time() + 60)
         self.assertEqual((res["job"], res["executed"]), ("job-v-1", 3))
         self.assertEqual(self.count("run"), 1, "the retry started no second job")
-        self.assertTrue(vs.SIM_LOCK.acquire(blocking=False), "freed once the job ended")
-        vs.SIM_LOCK.release()
+        self.assertTrue(vs.host_lock("mac5").acquire(blocking=False), "freed once the job ended")
+        vs.host_lock("mac5").release()
         self.assertEqual(vs.LATE, {})
 
     def test_a_retry_before_it_ends_is_unjudged_again_and_the_job_goes_on(self):
@@ -1045,8 +1038,8 @@ class LateJobs(unittest.TestCase):
         with self.assertRaises(vs.Unjudged) as e:
             self.run_sim(self.repo, time.time() + 60)
         self.assertIn("lost", str(e.exception))
-        self.assertTrue(vs.SIM_LOCK.acquire(blocking=False))
-        vs.SIM_LOCK.release()
+        self.assertTrue(vs.host_lock("mac5").acquire(blocking=False))
+        vs.host_lock("mac5").release()
 
     def test_a_late_job_is_stopped_after_its_extra_time(self):
         vs.LATE_MORE_S = 0
@@ -1056,16 +1049,16 @@ class LateJobs(unittest.TestCase):
             self.run_sim(self.repo, time.time() + 60)
         self.assertIn("stopped", str(e.exception))
         self.assertEqual(self.count("stop"), 1)
-        self.assertTrue(vs.SIM_LOCK.acquire(blocking=False))
-        vs.SIM_LOCK.release()
+        self.assertTrue(vs.host_lock("mac5").acquire(blocking=False))
+        vs.host_lock("mac5").release()
 
     def test_without_a_readable_tree_the_job_is_stopped_as_before(self):
         with self.assertRaises(vs.Unjudged) as e:
             self.run_sim(self.tmp, time.time() - 1)
         self.assertIn("stopped", str(e.exception))
         self.assertEqual(self.count("stop"), 1)
-        self.assertTrue(vs.SIM_LOCK.acquire(blocking=False))
-        vs.SIM_LOCK.release()
+        self.assertTrue(vs.host_lock("mac5").acquire(blocking=False))
+        vs.host_lock("mac5").release()
 
     def ssh_stub(self):
         self.ssh_calls = os.path.join(self.tmp, "ssh")
@@ -1077,12 +1070,12 @@ class LateJobs(unittest.TestCase):
         vs.SSH = stub
         self.addCleanup(setattr, vs, "SSH", saved)
 
-    SIM = "C1AB6BF6-049B-4C64-B707-73E33F42E371"
+    SIM = "11111111-1111-1111-1111-111111111111"
 
     def run_on_sim(self, repo, deadline):
         recipe = {"command": ["xcodebuild", "test", "-destination", f"platform=iOS Simulator,id={self.SIM}"],
-                  "need": "sims"}
-        return vs.run_job(repo, recipe, "verify-x", deadline)
+                  "need": "sims", "host": "mac5"}
+        return self.run_recipe(repo, recipe, deadline)
 
     def test_the_simulator_is_read_from_the_destination(self):
         self.assertEqual(vs.sim_of({"command": ["xcodebuild", "-destination", f"platform=iOS Simulator,id={self.SIM}"]}),
@@ -1101,14 +1094,15 @@ class LateJobs(unittest.TestCase):
         self.assertEqual(self.count("stop"), 1)
         line = open(self.ssh_calls).read().strip()
         self.assertIn("mac5", line.split())
-        self.assertIn(f"pkill -f 'CoreSimulator/Devices/{self.SIM}/data/Containers/Bundle/Application/'", line)
+        self.assertIn(f"pkill -f '[C]oreSimulator/Devices/{self.SIM}/data/Containers/Bundle/Application/'", line)
 
-    def test_a_stop_without_a_simulator_runs_no_ssh(self):
+    def test_a_stop_without_a_simulator_confirms_the_job_but_kills_no_app(self):
         self.ssh_stub()
         with self.assertRaises(vs.Unjudged):
             self.run_sim(self.tmp, time.time() - 1)   # no readable tree: stopped at once, recipe has no simulator
         self.assertEqual(self.count("stop"), 1)
-        self.assertFalse(os.path.exists(self.ssh_calls))
+        self.assertIn("tmux has-session", open(self.ssh_calls).read())
+        self.assertNotIn("pkill", open(self.ssh_calls).read())
 
     def test_an_unreadable_tree_on_a_simulator_still_clears_it(self):
         self.ssh_stub()
@@ -1124,6 +1118,338 @@ class LateJobs(unittest.TestCase):
         commit(self.repo, {"b.txt": "b\n"}, "two")
         self.assertNotEqual(one, vs.job_fingerprint(self.repo, {"command": ["true"]}, "verify-x"))
         self.assertIsNone(vs.job_fingerprint(self.tmp, {"command": ["true"]}, "verify-x"))
+
+
+class HostPlacements(unittest.TestCase):
+    """No real fabric or ssh call is possible in these scheduler/timeout regressions."""
+    A = "11111111-1111-1111-1111-111111111111"
+    B = "22222222-2222-2222-2222-222222222222"
+
+    def setUp(self):
+        self.recipe = {"need": "sims", "placements": [
+            {"host": "mac5", "simulator": self.A, "derived_data": "/Volumes/FoundryBuild/fleet-dd/a"},
+            {"host": "mac4", "simulator": self.B, "derived_data": "/Users/test/.fleet/dd/b"}],
+            "command": ["xcodebuild", "test", "-destination", "platform=iOS Simulator,id={simulator}",
+                        "-derivedDataPath", "{derived_data}"]}
+        for name, val in (("_HOST_LOCKS", {}), ("_QUARANTINE", {}), ("LATE", {})):
+            p = patch.object(vs, name, val)
+            p.start()
+            self.addCleanup(p.stop)
+        self.fingerprint = patch.object(vs, "job_fingerprint", return_value="logical-key").start()
+        self.addCleanup(patch.stopall)
+        patch.object(vs, "log").start()
+        self.process = patch.object(vs.subprocess, "run", return_value=subprocess.CompletedProcess([], 0,
+            "\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\n** TEST SUCCEEDED **\n", "")).start()
+
+    def check_recipe(self, recipe=None, name="verify-x", deadline=None):
+        return vs.run_job("/unused", recipe or self.recipe, name, deadline or time.time() + 300)
+
+    def finished(self, cmd, tail, name, deadline):
+        host = cmd[cmd.index("--host") + 1]
+        self.assertTrue(vs.host_lock(host).locked())
+        self.assertNotIn("--force", cmd)
+        return "job-" + name, ["job-" + name, host, "done", "0"]
+
+    def test_materializes_each_placement_without_mutating_the_recipe(self):
+        before = json.dumps(self.recipe)
+        a, b = vs.placements_of(self.recipe)
+        self.assertEqual((vs.sim_of(a), vs.sim_of(b)), (self.A, self.B))
+        self.assertEqual(b["command"][-1], "/Users/test/.fleet/dd/b")
+        self.assertEqual(json.dumps(self.recipe), before)
+
+    def test_shell_commands_substitute_only_explicit_tokens(self):
+        self.recipe["command"] = ["bash", "-c", "echo $PATH; xcodebuild -destination 'id={simulator}' -derivedDataPath {derived_data}"]
+        cmd = vs.placements_of(self.recipe)[1]["command"][-1]
+        self.assertIn("$PATH", cmd)
+        self.assertIn("id=" + self.B, cmd)
+        self.assertIn("/Users/test/.fleet/dd/b", cmd)
+
+    def test_generic_build_needs_no_device(self):
+        self.recipe["command"][3] = "generic/platform=iOS Simulator"
+        for p in self.recipe["placements"]:
+            p["simulator"] = None
+        self.assertIsNone(vs.sim_of(vs.placements_of(self.recipe)[0]))
+
+    def test_legacy_recipe_keeps_its_command(self):
+        recipe = {"host": "mac4", "command": ["true"]}
+        self.assertEqual(vs.placements_of(recipe), [recipe])
+
+    def test_auto_simulator_recipe_reserves_a_concrete_host(self):
+        choices = vs.placements_of({"command": ["true"]})
+        self.assertEqual([p["host"] for p in choices], ["mac5", "mac4"])
+
+    def test_invalid_placements_fail_before_any_submission(self):
+        invalid = [[], {}, [None], [{"host": "mac4"}]]
+        for field, value in (("host", "MAC4"), ("host", "mac1"), ("host", "auto"),
+                             ("simulator", "not-a-uuid"), ("simulator", None),
+                             ("derived_data", "relative"), ("derived_data", "/tmp/$(touch-bad)"),
+                             ("derived_data", "/tmp/a b"), ("derived_data", "/tmp/../bad")):
+            invalid.append([{**self.recipe["placements"][0], field: value}])
+        invalid.append([self.recipe["placements"][0]] * 2)
+        invalid.append([{**self.recipe["placements"][0], "command": ["true"]}])
+        for placements in invalid:
+            with self.subTest(placements=placements), self.assertRaises(vs.Unjudged):
+                self.check_recipe({**self.recipe, "placements": placements})
+        self.process.assert_not_called()
+
+    def test_invalid_commands_and_unused_placement_tokens_are_rejected(self):
+        for command in (None, [], [3], ["true"], ["echo", "id=" + self.A, "{derived_data}"]):
+            with self.subTest(command=command), self.assertRaises(vs.Unjudged):
+                vs.placements_of({**self.recipe, "command": command})
+        with self.assertRaises(vs.Unjudged):
+            vs.placements_of({"command": ["echo", "{derived_data}"]})
+        with self.assertRaises(vs.Unjudged):
+            vs.placements_of({**self.recipe, "need": "heavy_jobs"})
+
+    def test_checks_inherit_placements_but_an_explicit_host_opts_out(self):
+        recipe = {**self.recipe, "checks": [{"name": "a", "command": self.recipe["command"]},
+            {"name": "b", "host": "mac5", "need": "heavy_jobs", "command": ["true"]}]}
+        a, b = vs.checks_of(recipe)
+        self.assertEqual(a["placements"], self.recipe["placements"])
+        self.assertNotIn("placements", b)
+
+    def test_a_busy_reservation_is_skipped(self):
+        with vs.host_lock("mac5"), patch.object(vs, "_start_and_wait", side_effect=self.finished) as start:
+            self.assertEqual(self.check_recipe()["host"], "mac4")
+        self.assertEqual(start.call_count, 1)
+        self.assertFalse(vs.host_lock("mac4").locked())
+
+    def test_two_hosts_execute_at_the_same_time(self):
+        entered, finish = threading.Event(), threading.Event()
+        errors, results = [], []
+
+        def start(cmd, tail, name, deadline):
+            result = self.finished(cmd, tail, name, deadline)
+            if result[1][1] == "mac5":
+                entered.set()
+                if not finish.wait(3):
+                    raise AssertionError("second host did not run concurrently")
+            return result
+
+        def first():
+            try:
+                results.append(self.check_recipe(name="first"))
+            except Exception as e:
+                errors.append(e)
+
+        with patch.object(vs, "_start_and_wait", side_effect=start):
+            thread = threading.Thread(target=first)
+            thread.start()
+            try:
+                self.assertTrue(entered.wait(2))
+                self.assertEqual(self.check_recipe(name="second")["host"], "mac4")
+                self.assertTrue(vs.host_lock("mac5").locked())
+            finally:
+                finish.set()
+                thread.join(3)
+        self.assertFalse(thread.is_alive())
+        self.assertEqual(errors, [])
+        self.assertEqual(results[0]["host"], "mac5")
+
+    def test_refusals_try_the_other_host_without_waiting_or_forcing(self):
+        for reason in ("busy: file:.fleet/performing", "load: 20/core", "memory: 8%", "disk: 14 GB < 15 GB", "offline"):
+            with self.subTest(reason=reason):
+                def start(cmd, tail, name, deadline):
+                    if cmd[cmd.index("--host") + 1] == "mac5":
+                        raise vs.WorkerRefused(reason, "disk:" not in reason)
+                    self.assertFalse(vs.host_lock("mac5").locked())
+                    return self.finished(cmd, tail, name, deadline)
+                with patch.object(vs, "_start_and_wait", side_effect=start), patch.object(vs.time, "sleep") as sleep:
+                    self.assertEqual(self.check_recipe()["host"], "mac4")
+                sleep.assert_not_called()
+
+    def test_all_disk_refusals_are_unjudged_without_retry(self):
+        with patch.object(vs, "_start_and_wait", side_effect=vs.WorkerRefused("disk: 14 GB < 15 GB")) as start:
+            with self.assertRaisesRegex(vs.Unjudged, "no placement"):
+                self.check_recipe()
+        self.assertEqual(start.call_count, 2)
+        self.assertFalse(any(vs.host_lock(h).locked() for h in vs.SIM_HOSTS))
+
+    def test_all_locked_hosts_respect_the_deadline(self):
+        with vs.host_lock("mac5"), vs.host_lock("mac4"), patch.object(vs, "_start_and_wait") as start:
+            with self.assertRaisesRegex(vs.Unjudged, "deadline"):
+                self.check_recipe(deadline=time.time() + 60.02)
+        start.assert_not_called()
+
+    def test_success_fingerprints_the_logical_recipe_and_releases_its_host(self):
+        with patch.object(vs, "_start_and_wait", side_effect=self.finished):
+            self.check_recipe()
+        self.fingerprint.assert_called_once_with("/unused", self.recipe, "verify-x")
+        self.assertFalse(vs.host_lock("mac5").locked())
+
+    def test_timeout_without_receipt_quarantines_host_and_check(self):
+        self.process.side_effect = subprocess.TimeoutExpired(["fabric"], 1)
+        with self.assertRaisesRegex(vs.Unjudged, "timed out"):
+            self.check_recipe()
+        self.assertTrue(vs.host_lock("mac5").locked())
+        self.assertFalse(vs.host_lock("mac4").locked())
+        with self.assertRaisesRegex(vs.Unjudged, "reconciliation"):
+            self.check_recipe()
+        self.assertEqual(self.process.call_count, 1, "unknown launch must not be duplicated on Mac4")
+        self.assertEqual(vs.quarantined()[0]["host"], "mac5")
+
+    def test_timeout_with_a_bytes_receipt_adopts_the_known_job(self):
+        self.process.side_effect = subprocess.TimeoutExpired(["fabric"], 1, output=b"started job-late on mac5\n")
+        with patch.object(vs, "adopt", return_value=True) as adopt:
+            with self.assertRaisesRegex(vs.Unjudged, "keeps running"):
+                self.check_recipe()
+        adopt.assert_called_once_with("logical-key", "job-late", vs.host_lock("mac5"), "mac5", self.A)
+        self.assertTrue(vs.host_lock("mac5").locked())
+
+    def test_unknown_submission_does_not_block_other_checks_on_the_other_host(self):
+        self.process.side_effect = subprocess.TimeoutExpired(["fabric"], 1)
+        with self.assertRaises(vs.Unjudged):
+            self.check_recipe()
+        self.process.side_effect = None
+        self.fingerprint.return_value = "another-check"
+        with patch.object(vs, "_start_and_wait", side_effect=self.finished):
+            self.assertEqual(self.check_recipe(name="other")["host"], "mac4")
+
+    def test_adoption_retains_selected_host_and_simulator(self):
+        with vs.host_lock("mac5"), patch.object(vs, "_start_and_wait", side_effect=vs.PastDeadline("job-late")), \
+                patch.object(vs, "adopt", return_value=True) as adopt:
+            with self.assertRaises(vs.Unjudged):
+                self.check_recipe()
+        adopt.assert_called_once_with("logical-key", "job-late", vs.host_lock("mac4"), "mac4", self.B)
+        self.assertTrue(vs.host_lock("mac4").locked())
+
+    def test_claiming_a_late_job_does_not_reserve_or_submit_another_host(self):
+        with patch.object(vs, "claim_late", return_value=("job-old", ["job-old", "mac4", "done", "0"])), \
+                patch.object(vs, "_start_and_wait") as start:
+            self.assertEqual(self.check_recipe()["host"], "mac4")
+        start.assert_not_called()
+        self.assertEqual(vs._HOST_LOCKS, {})
+
+    def test_without_a_fingerprint_stop_uses_the_selected_host(self):
+        self.fingerprint.return_value = None
+        with vs.host_lock("mac5"), patch.object(vs, "_start_and_wait", side_effect=vs.PastDeadline("job-old")), \
+                patch.object(vs, "stop_job") as stop:
+            with self.assertRaisesRegex(vs.Unjudged, "stopped"):
+                self.check_recipe()
+        stop.assert_called_once_with("job-old", self.B, "mac4")
+        self.assertFalse(vs.host_lock("mac4").locked())
+
+    def test_failed_stop_retains_the_reservation(self):
+        self.fingerprint.return_value = None
+        with patch.object(vs, "_start_and_wait", side_effect=vs.PastDeadline("job-old")), \
+                patch.object(vs, "stop_job", side_effect=vs.Unjudged("ssh failed")):
+            with self.assertRaisesRegex(vs.Unjudged, "quarantined"):
+                self.check_recipe()
+        self.assertTrue(vs.host_lock("mac5").locked())
+
+    def late(self):
+        lock = vs.host_lock("mac4")
+        lock.acquire()
+        late = vs.Late("job-late", lock, "mac4", self.B)
+        return late
+
+    def test_late_completion_releases_only_its_host(self):
+        late = self.late()
+        with vs.host_lock("mac5"), patch.object(vs.time, "sleep"), \
+                patch.object(vs, "job_row", return_value=["job-late", "mac4", "done", "0"]):
+            vs.watch_late("logical-key", late)
+            self.assertTrue(vs.host_lock("mac5").locked())
+        self.assertFalse(vs.host_lock("mac4").locked())
+        self.assertTrue(late.done.is_set())
+
+    def test_late_cap_stops_recorded_host_when_ledger_row_is_missing(self):
+        late = self.late()
+        late.t -= vs.LATE_MORE_S + 1
+        with patch.object(vs, "stop_job") as stop, patch.object(vs, "job_row", return_value=None):
+            vs.watch_late("logical-key", late)
+        stop.assert_called_once_with("job-late", self.B, "mac4")
+        self.assertFalse(vs.host_lock("mac4").locked())
+
+    def test_late_cleanup_failure_quarantines_without_releasing(self):
+        late = self.late()
+        late.t -= vs.LATE_MORE_S + 1
+        with patch.object(vs, "stop_job", side_effect=vs.Unjudged("cleanup failed")):
+            vs.watch_late("logical-key", late)
+        self.assertTrue(vs.host_lock("mac4").locked())
+        self.assertTrue(late.done.is_set())
+        self.assertIn("cleanup failed", late.error)
+
+    def test_stopped_or_lost_late_jobs_clear_their_simulator_before_release(self):
+        for state in ("lost", "stopped"):
+            late = self.late()
+            with patch.object(vs.time, "sleep"), patch.object(vs, "job_row", return_value=["job-late", "mac4", state]), \
+                    patch.object(vs, "stop_job") as stop:
+                vs.watch_late("logical-key", late)
+            stop.assert_called_once_with("job-late", self.B, "mac4")
+            self.assertFalse(vs.host_lock("mac4").locked())
+
+    def test_stop_cleanup_uses_captured_host_even_without_a_ledger_row(self):
+        with patch.object(vs, "job_row", side_effect=AssertionError("should not need the ledger")):
+            vs.stop_job("job-old", self.B, "mac4")
+        ssh = self.process.call_args_list[-1].args[0]
+        self.assertIn("mac4", ssh)
+        self.assertNotIn("mac5", ssh)
+        self.assertIn(self.B, ssh[-1])
+
+    def test_cleanup_ssh_failure_is_unjudged(self):
+        self.process.side_effect = [subprocess.CompletedProcess([], 0), subprocess.CompletedProcess([], 255)]
+        with self.assertRaisesRegex(vs.Unjudged, "not confirmed"):
+            vs.stop_job("job-old", self.B, "mac4")
+
+    def test_cleanup_ssh_timeout_is_unjudged(self):
+        self.process.side_effect = [subprocess.CompletedProcess([], 0), subprocess.TimeoutExpired(["ssh"], 45)]
+        with self.assertRaisesRegex(vs.Unjudged, "cleanup timed out"):
+            vs.stop_job("job-old", self.B, "mac4")
+
+    def test_cleanup_pattern_cannot_kill_its_own_remote_shell(self):
+        import re
+        vs.stop_job("job-old", self.B, "mac4")
+        command = self.process.call_args_list[-1].args[0][-1]
+        pattern = re.search(r"pkill -f '([^']+)'", command).group(1)
+        self.assertIsNone(re.search(pattern, command))
+        self.assertIsNotNone(re.search(pattern, f"CoreSimulator/Devices/{self.B}/data/Containers/Bundle/Application/App"))
+        self.assertIn("pgrep", command, "cleanup must confirm exit before releasing the lock")
+
+    def test_watcher_start_failure_retains_ownership(self):
+        lock = vs.host_lock("mac4")
+        lock.acquire()
+        with patch.object(vs.threading.Thread, "start", side_effect=RuntimeError("thread limit")):
+            self.assertTrue(vs.adopt("logical-key", "job-late", lock, "mac4", self.B))
+        self.assertTrue(lock.locked())
+        self.assertIn("watcher", vs.LATE["logical-key"].error)
+        self.assertTrue(vs.LATE["logical-key"].done.is_set())
+
+    def test_job_row_requires_the_exact_job_id(self):
+        self.process.return_value = subprocess.CompletedProcess([], 0, "job-a-long mac4 done 0\njob-a mac5 running\n", "")
+        self.assertEqual(vs.job_row("job-a"), ["job-a", "mac5", "running"])
+
+    def test_bad_links_cannot_leak_a_host_reservation(self):
+        with self.assertRaises(TypeError):
+            self.check_recipe({**self.recipe, "links": {"../pkg": {"unresolved": True}}})
+        self.assertFalse(vs.host_lock("mac5").locked())
+
+    def test_generic_stop_also_requires_remote_confirmation(self):
+        self.process.side_effect = [subprocess.CompletedProcess([], 0), subprocess.CompletedProcess([], 255)]
+        with self.assertRaisesRegex(vs.Unjudged, "not confirmed"):
+            vs.stop_job("job-old", None, "mac4")
+
+    def test_adding_placements_cannot_rewrite_the_recipe_judging_the_proposal(self):
+        old = {"host": "mac5", "command": ["true"]}
+        with patch.object(vs, "git", return_value=json.dumps(self.recipe)):
+            self.assertEqual(vs.repointed("/unused", "head", old, [".foundry/verify.json"]), old)
+
+    def test_draft_recipes_validate_after_real_device_ids_are_supplied(self):
+        root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../docs/verify-per-host-drafts"))
+        for base in ("motionmixapp", "airdeck", "serenity-soother-studio"):
+            with self.subTest(base=base):
+                with open(os.path.join(root, base, ".foundry/verify.json")) as f:
+                    recipe = json.load(f)
+                sim_checks = [c for c in vs.checks_of(recipe) if c.get("need") == "sims"]
+                self.assertEqual(len(sim_checks), 1)
+                check = sim_checks[0]
+                if base != "airdeck":
+                    with self.assertRaises(vs.Unjudged):
+                        vs.placements_of(check)
+                    check["placements"][1]["simulator"] = self.B
+                placements = vs.placements_of(check)
+                self.assertEqual([p["host"] for p in placements], ["mac5", "mac4"])
+                self.assertNotIn("/Volumes/FoundryBuild", " ".join(placements[1]["command"]))
+                self.assertEqual(vs.parse_kinds(placements[0]), vs.parse_kinds(placements[1]))
 
 
 if __name__ == "__main__":

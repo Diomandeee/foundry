@@ -23,13 +23,13 @@ This server answers that call:
      is kept as the result of the tree it made: once the gate merges it, that is main, and the next change is
      compared with it instead of a second run of main's tests. A check a change does not touch (docs, another
      part of a monorepo) keeps main's result on the new tree. Main is run only when no such result exists.
-     Bases are verified side by side, one verification per base; simulator jobs take turns across bases.
+     Bases are verified side by side, one verification per base; simulator jobs take turns on each host.
      A real compile failure main shares passes for the same reason. A run that never got as far as the code
      (no such simulator, unresolved packages, a test runner that never started, zero tests) says nothing
      about the change, on either side, so it is unjudged and never cached.
 
 A recipe is one check, or several under "checks": each has its own name, command and, optionally, `when`
-globs (it runs only when a changed path matches one), and inherits host, need, links and parse from the top.
+globs (it runs only when a changed path matches one), and inherits host, placements, need, links and parse from the top.
 A monorepo names a check per part, so a change to the web app does not wait on the iOS build. Changed paths
 no check covers are logged as uncovered; when no check applies at all the answer is {"runs": []}, "nothing
 checked". `parse` names what reads the log: "xcodebuild" (the default, alone in its check) or a list of
@@ -45,10 +45,10 @@ word in its output. The gate's receipt keeps only a run's name, so the name carr
 an `error` row and a queue retry. A verifier that cannot be reached at all (tunnel down, gate timeout) is
 the same `error` and retry on the gate's side (packages/verify HttpVerifier, since 2026-11-14); before that
 it read as "not checked" and merged.
-A busy worker is waited on for FORCE_AFTER_S, then the job runs with --force.
+A busy worker is retried within the request deadline. Fabric refusals are never forced.
 
-Mac1 only orchestrates: the build runs on the worker named in the recipe. One run at a time; queued
-requests count against their own deadline.
+Mac1 only orchestrates: the build runs on a placement named in the recipe. One simulator run per host;
+queued requests count against their own deadline. See docs/verify-per-host-design.md for the recipe form.
 
   verify_server.py serve [--port 8803]
   verify_server.py check REPO HEAD_SHA        run one verification from the command line, print the result
@@ -79,7 +79,8 @@ FETCH = os.path.join(HOME, ".config", "foundry", "bin", "foundry-fetch")
 FABRIC = os.path.join(HOME, "fleet", "bin", "fabric")
 ROOT = os.path.join(HOME, ".fleet", "verify")
 DEFAULT_DEADLINE_S = 780  # under the gate's VERIFY_TIMEOUT_MS (840 s), itself under the 15 min queue wall
-SIM_LOCK = threading.Lock()     # one simulator job on the worker at a time, whichever base asks
+_HOST_LOCKS, _HOST_LOCKS_GUARD = {}, threading.Lock()
+_QUARANTINE, _QUARANTINE_GUARD = {}, threading.Lock()
 # A job still running at its request's deadline is not stopped (2026-11-14: on a Mac5 loaded by renders a check
 # and its main baseline took longer than one 780 s window, every retry stopped its job and started over, and no
 # simulator landing could finish). It keeps running, keeps the simulator, and the gate's retry of the same check
@@ -96,6 +97,24 @@ def base_lock(base):
     """One verification per base at a time (they share its tree); different bases do not wait on each other."""
     with _BASE_LOCKS_GUARD:
         return _BASE_LOCKS.setdefault(base, threading.Lock())
+
+
+def host_lock(host):
+    """Reserve the physical worker before fabric admission; late jobs retain this exact lock."""
+    with _HOST_LOCKS_GUARD:
+        return _HOST_LOCKS.setdefault(host, threading.Lock())
+
+
+def quarantine(key, host, reason, lock):
+    """An ambiguous launch/stop must not open a slot for another job. Reconcile before restarting."""
+    with _QUARANTINE_GUARD:
+        _QUARANTINE[key or f"unknown:{host}"] = {"host": host, "reason": str(reason), "lock": lock}
+    log("host-quarantined", host=host, error=str(reason))
+
+
+def quarantined():
+    with _QUARANTINE_GUARD:
+        return [{"host": q["host"], "reason": q["reason"]} for q in _QUARANTINE.values()]
 
 
 def busy():
@@ -446,20 +465,80 @@ def parse_log(text, kinds=("xcodebuild",), exit_code=None):
             "failing": failing, "build_failed": build_failed, "unreached": unreached, "ids": {}}
 
 
-FORCE_AFTER_S = 180  # a busy worker gets this long to make room; then the gate's check runs anyway
 DISK_FLOOR = re.compile(r": disk: \d+ GB < \d+ GB")   # fabric's refusal when the worker's disk is under its floor
-MEMORY_FLOOR = re.compile(r": memory: ")               # fabric's refusal when the worker has no memory to give
 # The worker's performing flag (`fabric stage up`): Mohamed is playing on it. Never forced: on 2026-11-14 three
 # verifies forced onto Mac5 while he danced took load past 900 and silenced his deck three times.
 PERFORMING = re.compile(r"file:\.fleet/performing")
-WAIT = threading.local()   # per verification. .since: when its request arrived; .forced: it already forced a job
+PLACEMENT_RETRY_S = 20
+SIM_HOSTS = ("mac5", "mac4")
+UUID = re.compile(r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}")
+
+
+class WorkerRefused(Unjudged):
+    def __init__(self, detail, retryable=False):
+        super().__init__(f"worker did not start the job: {detail}")
+        self.retryable = retryable
+
+
+class StartUnknown(Unjudged):
+    """Fabric timed out without a launch receipt; it may already have started a remote job."""
+
+
+class JobStopped(Unjudged):
+    def __init__(self, jid, state, host=None):
+        super().__init__(f"{jid} {state}")
+        self.jid, self.host = jid, host
+
+
+def placements_of(recipe):
+    """Validate and materialize the command for each host. Never mutate the fingerprint's logical recipe."""
+    command = recipe.get("command")
+    if not isinstance(command, list) or not command or not all(isinstance(s, str) for s in command):
+        raise Unjudged("recipe: command wants a nonempty list of strings")
+    sims = recipe.get("need", "sims") == "sims"
+    if "placements" not in recipe:
+        if any(t in s for s in command for t in ("{simulator}", "{derived_data}")):
+            raise Unjudged("recipe: placement tokens need placements")
+        host = recipe.get("host", "auto")
+        hosts = SIM_HOSTS if sims and host == "auto" else (host,)
+        if not isinstance(host, str) or (sims and any(h not in SIM_HOSTS for h in hosts)):
+            raise Unjudged("recipe: simulator host wants mac4, mac5 or auto")
+        return [{**recipe, "host": h} for h in hosts]
+    placements = recipe["placements"]
+    if not sims or not isinstance(placements, list) or not placements:
+        raise Unjudged("recipe: placements wants a nonempty list for a simulator check")
+    result, seen = [], set()
+    uses_sim = any("{simulator}" in s for s in command)
+    if not uses_sim and not any("generic/platform=iOS Simulator" in s for s in command):
+        raise Unjudged("recipe: a placement without a simulator must be a generic iOS Simulator build")
+    if not any("{derived_data}" in s for s in command):
+        raise Unjudged("recipe: placements command must use {derived_data}")
+    if sim_of(recipe):
+        raise Unjudged("recipe: placements command must not pin a simulator id; use {simulator}")
+    for p in placements:
+        if not isinstance(p, dict) or set(p) != {"host", "simulator", "derived_data"}:
+            raise Unjudged("recipe: each placement wants host, simulator and derived_data only")
+        host, sim, dd = p["host"], p["simulator"], p["derived_data"]
+        if not isinstance(host, str) or host not in SIM_HOSTS or host in seen:
+            raise Unjudged("recipe: placements want distinct canonical hosts mac4/mac5")
+        if (uses_sim and (not isinstance(sim, str) or not UUID.fullmatch(sim))) or (not uses_sim and sim is not None):
+            raise Unjudged("recipe: simulator wants a UUID used by {simulator}, or null for a generic build")
+        if (not isinstance(dd, str) or not re.fullmatch(r"/[A-Za-z0-9_./-]+", dd)
+                or ".." in dd.split("/") or dd == "/"):
+            raise Unjudged("recipe: derived_data wants an absolute shell-safe path without traversal")
+        seen.add(host)
+        concrete = [s.replace("{simulator}", sim or "").replace("{derived_data}", dd) for s in command]
+        if uses_sim and sim_of({"command": concrete}) != sim:
+            raise Unjudged("recipe: {simulator} must be used in the destination id")
+        result.append({**recipe, "host": host, "command": concrete})
+    return result
 
 
 class PastDeadline(Unjudged):
     """_start_and_wait's job is still running at the deadline. run_job adopts it (or stops it)."""
-    def __init__(self, jid):
+    def __init__(self, jid, host=None):
         super().__init__(f"{jid} ran past the deadline")
-        self.jid = jid
+        self.jid, self.host = jid, host
 
 
 SSH = "ssh"
@@ -472,34 +551,48 @@ def sim_of(recipe):
     return m.group(1) if m else None
 
 
-def stop_job(jid, sim=None):
+def stop_job(jid, sim=None, host=None):
     """Stop a job, and when it tested on a simulator, end the app it left running there. `fabric job stop` ends the
     job's processes, but the test host belongs to the simulator's own launchd and outlives xcodebuild: on 11-14 a
     MotionMixApp host left by a job stopped at 19:16 sat on C1AB6BF6 at 0% CPU, the next check on that simulator
-    (serenity, 19:36) hung at its test stage for 30 min holding SIM_LOCK, and every simulator landing of every
+    (serenity, 19:36) hung at its test stage for 30 min holding the simulator lock, and every simulator landing of every
     base came back unjudged until the host was killed by hand. Only app hosts under that one simulator's
     Containers/Bundle are ended; the simulator itself stays booted."""
-    subprocess.run([FABRIC, "job", "stop", jid], capture_output=True)
-    if not sim:
-        return
-    row = job_row(jid)
-    host = row[1] if row and len(row) > 1 else None
-    if not host or not re.fullmatch(r"[A-Za-z0-9._-]+", host):
-        log("sim-not-cleared", job=jid, sim=sim, error="no host for the job")
-        return
-    pattern = f"CoreSimulator/Devices/{sim}/data/Containers/Bundle/Application/"
+    r = subprocess.run([FABRIC, "job", "stop", jid], capture_output=True, timeout=45)
+    if r.returncode:
+        raise Unjudged(f"{jid}: fabric stop failed; reconcile before reusing the host")
+    if host is None:  # compatibility for callers without a captured placement
+        row = job_row(jid)
+        host = row[1] if row and len(row) > 1 else None
+    if (not host or not re.fullmatch(r"[A-Za-z0-9._-]+", host)
+            or (sim is not None and (host not in SIM_HOSTS or not UUID.fullmatch(sim)))
+            or not re.fullmatch(r"job-[a-zA-Z0-9_-]+", jid)):
+        raise Unjudged(f"{jid}: no valid host/simulator for cleanup")
+    # The bracket keeps the remote shell's own command line from matching pkill/pgrep.
     try:
-        subprocess.run([SSH, "-o", "ConnectTimeout=10", "-o", "BatchMode=yes", host, f"pkill -f '{pattern}'; true"],
-                       capture_output=True, timeout=45)
+        # fabric stop currently ignores ssh failure: verify the tmux session is gone on the recorded host.
+        command = (f"command -v tmux >/dev/null || exit 1; tmux has-session -t '{jid}' 2>/dev/null; "
+                   "rc=$?; test \"$rc\" -eq 1 || exit 1; ")
+        if sim:
+            pattern = f"[C]oreSimulator/Devices/{sim}/data/Containers/Bundle/Application/"
+            command += (f"pkill -f '{pattern}'; rc=$?; test \"$rc\" -le 1 || exit 1; "
+                        f"for attempt in 1 2 3 4 5; do pgrep -f '{pattern}' >/dev/null; rc=$?; "
+                        "test \"$rc\" -eq 1 && exit 0; test \"$rc\" -eq 0 || exit 1; sleep 1; done; exit 1")
+        else:
+            command += "exit 0"
+        r = subprocess.run([SSH, "-o", "ConnectTimeout=10", "-o", "BatchMode=yes", "-o", "ControlMaster=no",
+                            host, command], capture_output=True, timeout=45)
+        if r.returncode:
+            raise Unjudged(f"{jid}: stop/simulator cleanup not confirmed on {host}")
         log("sim-cleared", job=jid, host=host, sim=sim)
     except subprocess.TimeoutExpired:
-        log("sim-not-cleared", job=jid, host=host, sim=sim, error="ssh timed out")
+        raise Unjudged(f"{jid}: simulator cleanup timed out on {host}") from None
 
 
 class Late:
     """A job adopted past its request's deadline: its row once it ends, or why it never gave one."""
-    def __init__(self, jid, sims, sim=None):
-        self.jid, self.sims, self.sim, self.t = jid, sims, sim, time.time()
+    def __init__(self, jid, lock, host, sim=None):
+        self.jid, self.lock, self.host, self.sim, self.t = jid, lock, host, sim, time.time()
         self.done, self.row, self.error, self.ended = threading.Event(), None, None, None
 
 
@@ -518,48 +611,62 @@ JOB_LS_LAST = 500  # `fabric job ls` prints only the newest 20 by default
 def job_row(jid):
     """The job's `fabric job ls` row, or None. Read from the newest JOB_LS_LAST: on 11-14 the default 20 lost an
     adopted job within 10 min while other lanes started theirs, so its end was never seen and its result never taken."""
-    ls = subprocess.run([FABRIC, "job", "ls", "--last", str(JOB_LS_LAST)], capture_output=True, text=True).stdout
-    return next((l.split() for l in ls.splitlines() if l.startswith(jid)), None)
+    r = subprocess.run([FABRIC, "job", "ls", "--last", str(JOB_LS_LAST)],
+                       capture_output=True, text=True, timeout=45)
+    if r.returncode:
+        raise Unjudged(f"{jid}: fabric job ls failed")
+    return next((l.split() for l in r.stdout.splitlines() if l.split()[:1] == [jid] and len(l.split()) >= 3), None)
 
 
 def watch_late(key, late):
     """Wait out an adopted job, then free the simulator. Stops it LATE_MORE_S after adoption."""
+    release = True
     try:
         while True:
             if time.time() - late.t > LATE_MORE_S:
-                stop_job(late.jid, late.sim)
+                stop_job(late.jid, late.sim, late.host)
                 late.error = f"{late.jid} still running {LATE_MORE_S // 60} min past its deadline; stopped"
                 break
             time.sleep(10)
             row = job_row(late.jid)
+            if row and row[1] != late.host:
+                raise Unjudged(f"{late.jid}: ledger host differs from {late.host}")
             if row and row[2] in ("done", "failed"):
                 late.row = row
                 break
             if row and row[2] in ("lost", "stopped"):
+                stop_job(late.jid, late.sim, late.host)
                 late.error = f"{late.jid} {row[2]}"
                 break
-    except Exception as e:  # noqa: BLE001  the simulator must be freed whatever happens here
+    except Exception as e:  # an unknown job/cleanup state cannot free a reservation
         late.error = f"{late.jid}: watching it failed: {e}"
+        quarantine(key, late.host, late.error, late.lock)
+        release = False
     finally:
         late.ended = time.time()
-        if late.sims:
-            SIM_LOCK.release()
+        if late.lock and release:
+            late.lock.release()
         late.done.set()
         log("late-ended", job=late.jid, ok=late.error is None, error=late.error)
 
 
-def adopt(key, jid, sims, sim=None):
+def adopt(key, jid, lock, host, sim=None):
     """Keep a job running past its request's deadline for a retry to collect. False when it has no key."""
     if key is None:
         return False
-    late = Late(jid, sims, sim)
+    late = Late(jid, lock, host, sim)
     with LATE_LOCK:
         now = time.time()
         for k in [k for k, v in LATE.items() if v.ended and now - v.ended > LATE_KEEP_S]:
             del LATE[k]
         LATE[key] = late
-    threading.Thread(target=watch_late, args=(key, late), daemon=True, name=f"late-{jid}").start()
-    log("late-adopted", job=jid)
+    try:
+        threading.Thread(target=watch_late, args=(key, late), daemon=True, name=f"late-{jid}").start()
+    except RuntimeError as e:
+        late.error, late.ended = f"{jid}: watcher could not start: {e}", time.time()
+        quarantine(key, host, late.error, lock)
+        late.done.set()
+    log("late-adopted", job=jid, host=host, sim=sim)
     return True
 
 
@@ -584,91 +691,126 @@ def claim_late(key, deadline):
 
 
 def run_job(repo, recipe, name, deadline):
-    """Run the recipe on its worker; return the parsed result. Raises Unjudged on outage or deadline.
+    """Run on an available recipe placement, one simulator job per host. Never force a fabric refusal.
 
-    A worker over its placement floors (other lanes' builds) is waited on, then overridden with --force:
-    the recipe has its own simulator and DerivedData, so running beside other jobs is slow, not wrong.
-
-    One verification waits once. It runs several jobs (each check, then main for comparison, then a rerun), and
-    a worker that was over its floors for the first is over them for the next: paying FORCE_AFTER_S again per
-    job put a two-job MotionMix check past its deadline on 11-10, so every landing was refused while Mac5 had
-    14 GB free. The wait is counted from the request's arrival, so time queued behind another base's check is
-    not waited a second time. A disk floor is forced at once: waiting frees no disk."""
-    cmd = [FABRIC, "job", "run", "--host", recipe.get("host", "auto"), "--need", recipe.get("need", "sims"),
-           "--name", name, "--by", "foundry-verify", "--sync", repo]
-    for rel, src in (recipe.get("links") or {}).items():
-        cmd += ["--link", f"{rel}={os.path.expanduser(src)}"]
-    tail = ["--", *recipe["command"]]
+    Busy, performing, memory and load refusals allow another placement or a bounded retry. A disk-floor
+    refusal makes that placement unjudged immediately: waiting frees no disk. Time spent queued and
+    submitting counts against the original deadline. Unknown launch outcomes retain their reservation.
+    """
+    placements = placements_of(recipe)
     sims = recipe.get("need", "sims") == "sims"
     key = job_fingerprint(repo, recipe, name)
+    with _QUARANTINE_GUARD:
+        if key in _QUARANTINE:
+            raise Unjudged("job requires reconciliation: " + _QUARANTINE[key]["reason"])
     claimed = claim_late(key, deadline)
     if claimed:
         jid, row = claimed
     else:
-        if sims and not SIM_LOCK.acquire(timeout=max(0, deadline - 60 - time.time())):
-            raise Unjudged("waited past the deadline for another base's simulator job")
-        adopted = False
-        try:
-            jid, row = _start_and_wait(cmd, tail, name, deadline)
-        except PastDeadline as e:
-            adopted = adopt(key, e.jid, sims, sim_of(recipe))     # the simulator is now the watcher's to free
-            if not adopted:
-                stop_job(e.jid, sim_of(recipe))
-                raise Unjudged(f"{e.jid} ran past the deadline; stopped") from None
-            raise Unjudged(f"{e.jid} ran past the deadline; it keeps running and the retry of this check "
-                           "takes its result") from None
-        finally:
-            if sims and not adopted:
-                SIM_LOCK.release()
-    text = subprocess.run([FABRIC, "job", "log", jid, "--lines", "200000"], capture_output=True, text=True).stdout
+        jid, row = run_placements(repo, placements, name, deadline, key, sims)
+    try:
+        r = subprocess.run([FABRIC, "job", "log", jid, "--lines", "200000"],
+                           capture_output=True, text=True, timeout=45)
+    except subprocess.TimeoutExpired:
+        raise Unjudged(f"{jid}: reading the job log timed out") from None
+    if r.returncode:
+        raise Unjudged(f"{jid}: reading the job log failed")
     exit_code = int(row[3]) if len(row) > 3 and re.fullmatch(r"-?\d+", row[3]) else None
-    res = parse_log(text, parse_kinds(recipe), exit_code)
-    res["job"] = jid
+    res = parse_log(r.stdout, parse_kinds(recipe), exit_code)
+    res["job"], res["host"] = jid, row[1]
     return res
 
 
-def _start_and_wait(cmd, tail, name, deadline):
-    """Start the job on the worker, waiting out a busy one, and wait for it to end: (job id, its `job ls` row)."""
-    waited_since = getattr(WAIT, "since", None) or time.time()
-    # fabric's --force skips the performing flag too, so a start is forced only after an unforced one was refused
-    # for a reason other than the flag. That costs one quick refusal per job, never a second wait.
-    refused, performing = False, False
+def run_placements(repo, placements, name, deadline, key, sims):
+    """Reserve, submit, and hand off ownership on adoption. A refusal reserves no host while waiting."""
+    excluded, reasons = set(), {}
     while True:
-        forced = refused and not performing and (getattr(WAIT, "forced", False)
-                                                 or time.time() - waited_since >= FORCE_AFTER_S)
-        force = ["--force"] if forced else []
-        r = subprocess.run(cmd + force + tail, capture_output=True, text=True,
-                           timeout=max(30, deadline - time.time()))
-        m = re.search(r"started (job-\S+) on (\S+)", r.stdout)
-        if m:
-            WAIT.forced = forced
-            break
+        for placement in placements:
+            host = placement["host"]
+            if host in excluded:
+                continue
+            if time.time() >= deadline - 60:
+                raise Unjudged("placement deadline: " + "; ".join(reasons.values()))
+            sim = sim_of(placement)
+            cmd = [FABRIC, "job", "run", "--host", host, "--need", placement.get("need", "sims"),
+                   "--name", name, "--by", "foundry-verify", "--sync", repo]
+            for rel, src in (placement.get("links") or {}).items():
+                cmd += ["--link", f"{rel}={os.path.expanduser(src)}"]
+            lock = host_lock(host) if sims else None
+            if lock and not lock.acquire(blocking=False):
+                reasons[host] = f"{host}: another simulator job or quarantine holds the host"
+                continue
+            release = True
+            try:
+                return _start_and_wait(cmd, ["--", *placement["command"]], name, deadline)
+            except WorkerRefused as e:
+                reasons[host] = f"{host}: {e}"
+                if not e.retryable:
+                    excluded.add(host)
+                log("placement-refused", name=name, host=host, detail=str(e))
+            except StartUnknown as e:
+                release = False
+                quarantine(key, host, e, lock)
+                raise
+            except (PastDeadline, JobStopped) as e:
+                actual_host = e.host or host
+                if isinstance(e, PastDeadline) and adopt(key, e.jid, lock, actual_host, sim):
+                    release = False  # the watcher, not this request, now owns the lock
+                    raise Unjudged(f"{e.jid} ran past the deadline or lost observation; it keeps running and "
+                                   "the retry of this check takes its result") from None
+                try:
+                    stop_job(e.jid, sim, actual_host)
+                except Exception as stop_error:
+                    release = False
+                    quarantine(key, host, stop_error, lock)
+                    raise Unjudged(f"{e.jid}: stop not confirmed; host quarantined") from stop_error
+                raise Unjudged(f"{e}; stopped") from None
+            finally:
+                if lock and release:
+                    lock.release()
+        if len(excluded) == len(placements):
+            raise Unjudged("no placement started: " + "; ".join(reasons.values()))
+        left = deadline - 60 - time.time()
+        if left <= 0:
+            raise Unjudged("placement deadline: " + "; ".join(reasons.values()))
+        time.sleep(min(PLACEMENT_RETRY_S, left))
+
+
+def _start_and_wait(cmd, tail, name, deadline):
+    """One unforced submission. A definite refusal allows failover; an ambiguous start never does."""
+    host = cmd[cmd.index("--host") + 1]
+    try:
+        r = subprocess.run(cmd + tail, capture_output=True, text=True, timeout=max(1, deadline - time.time()))
+    except subprocess.TimeoutExpired as e:
+        out = e.stdout or ""
+        if isinstance(out, bytes):
+            out = out.decode(errors="replace")
+        m = re.search(r"started (job-\S+) on (\S+)", out)
+        if m and m.group(2) == host:
+            raise PastDeadline(m.group(1), host) from None
+        raise StartUnknown(f"fabric job run timed out on {host} without a start receipt; reconcile remote jobs") from None
+    m = re.search(r"started (job-\S+) on (\S+)", r.stdout)
+    if not m:
         said = r.stderr + r.stdout
-        refused, performing = True, bool(PERFORMING.search(said))
-        busy_worker = performing or re.search(r"load:|memory|no host has room|use --force", said)
-        memory = MEMORY_FLOOR.search(said)   # --force never skips it: only waiting for the room can help
-        if performing and time.time() + 60 > deadline:
-            raise Unjudged("the worker is performing (Mohamed is playing on it): the gate's tests wait for the set "
-                           "to end, then the retry runs them")
-        if not busy_worker or (force and not memory and not performing) or time.time() + 60 > deadline:
-            raise Unjudged(f"worker did not start the job: {(r.stderr or r.stdout).strip()[-200:]}")
-        log("worker-busy", name=name, detail=(r.stderr or r.stdout).strip()[-120:])
-        if DISK_FLOOR.search(said):
-            WAIT.forced = True
-            continue
-        if not performing and (getattr(WAIT, "forced", False) or time.time() - waited_since >= FORCE_AFTER_S):
-            continue                      # the next try is forced: nothing to wait for
-        time.sleep(20)
+        retryable = bool(PERFORMING.search(said) or re.search(r"load:|memory:|busy:|no host has room", said))
+        raise WorkerRefused(said.strip()[-200:], retryable and not DISK_FLOOR.search(said))
+    if host != "auto" and m.group(2) != host:
+        raise StartUnknown(f"fabric reported {m.group(1)} on {m.group(2)}, expected {host}; reconcile remote jobs")
     jid = m.group(1)
     while True:
         if time.time() > deadline:
-            raise PastDeadline(jid)       # run_job keeps it for the retry, or stops it
+            raise PastDeadline(jid, m.group(2))       # run_job keeps it for the retry, or stops it
         time.sleep(10)
-        row = job_row(jid)
+        try:
+            row = job_row(jid)
+            if row and row[1] != m.group(2):
+                raise Unjudged(f"{jid}: ledger host differs from start receipt")
+        except (subprocess.TimeoutExpired, OSError, Unjudged):
+            raise PastDeadline(jid, m.group(2)) from None  # retain ownership through an observation outage
         if row and row[2] in ("done", "failed"):
             return jid, row
         if row and row[2] in ("lost", "stopped"):
-            raise Unjudged(f"{jid} {row[2]}")
+            raise JobStopped(jid, row[2], m.group(2))
 
 
 def reached(res, what):
@@ -822,7 +964,7 @@ def checks_of(recipe):
     otherwise the top-level host, need, links and parse are each check's defaults."""
     if "checks" not in recipe:
         return [recipe]
-    shared = {k: recipe[k] for k in ("host", "need", "links", "parse") if k in recipe}
+    shared = {k: recipe[k] for k in ("host", "placements", "need", "links", "parse") if k in recipe}
     checks = recipe["checks"]
     if not isinstance(checks, list) or not checks or not all(
             isinstance(c, dict) and isinstance(c.get("name"), str) and c["name"] and isinstance(c.get("command"), list)
@@ -830,7 +972,7 @@ def checks_of(recipe):
         raise Unjudged("recipe: checks wants a list, each with a name and a command")
     if len({slug_of(c["name"]) for c in checks}) != len(checks):
         raise Unjudged("recipe: checks want distinct names")
-    return [{**shared, **c} for c in checks]
+    return [{**{k: v for k, v in shared.items() if k != "placements" or "host" not in c}, **c} for c in checks]
 
 
 def slug_of(name):
@@ -878,7 +1020,6 @@ def verify(req, cfg=None, now=None):
     """The whole check for one gate request. Returns the response body {"runs": [...]}."""
     cfg = cfg or load_config()
     started = now or time.time()
-    WAIT.forced, WAIT.since = False, started
     repo_name, head = str(req.get("repo", "")), str(req.get("headSha", ""))
     branch = str(req.get("baseBranch") or "main")
     base = base_of(repo_name)
@@ -956,6 +1097,7 @@ def verify(req, cfg=None, now=None):
             if unmatched:
                 summary += f"; {len(unmatched)} asset(s) not as main declares"
             log("verdict", base=base, repo=repo_name, head=head, main=main_sha, links=pinned, ok=ok, summary=summary,
+                host=cand.get("host"),
                 secs=int(time.time() - started), assets_copied=copied, assets_unmatched=unmatched[:20],
                 **({"check": check["name"], "uncovered": uncovered[:20]} if slug else {}))
             runs.append({"name": run_name(check, outcome(cand, base_res)), "ok": ok, "output": summary})
@@ -980,7 +1122,8 @@ def make_handler(token):
 
         def do_GET(self):
             if self._authorized("health"):
-                return self._send(200, {"ok": True, "busy": bool(busy()), "verifying": busy()})
+                return self._send(200, {"ok": True, "busy": bool(busy()), "verifying": busy(),
+                                        "quarantined": quarantined()})
             self._send(404, {})
 
         def do_POST(self):

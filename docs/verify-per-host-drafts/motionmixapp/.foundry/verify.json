@@ -1,0 +1,53 @@
+{
+  "format": "foundry.verify.v1",
+  "note": "DRAFT ONLY: prepare matching toolchains, create Mac4 gate devices, replace REQUIRES_* values, then validate and gate the change. The Foundry gate's verifier (one-foundry tools/foundry-verify) runs this on the tree a merge would produce, read from main so a proposal cannot change its own check. A merge is refused when it adds a failing test that main does not have.",
+  "name": "xcodebuild test",
+  "need": "sims",
+  "links": {
+    "../SharedServices": "~/Developer/SharedServices",
+    "../MotionMix/lume-wiring/mmix-render-core": {
+      "base": "motionmix",
+      "path": "lume-wiring/mmix-render-core"
+    },
+    "../AirDeck/Packages": {
+      "base": "airdeck",
+      "path": "Packages"
+    }
+  },
+  "command": [
+    "xcodebuild",
+    "test",
+    "-project",
+    "MotionMixApp.xcodeproj",
+    "-scheme",
+    "MotionMixApp",
+    "-destination",
+    "platform=iOS Simulator,id={simulator}",
+    "-derivedDataPath",
+    "{derived_data}",
+    "-skipMacroValidation",
+    "-collect-test-diagnostics",
+    "never",
+    "CODE_SIGN_IDENTITY=-",
+    "CODE_SIGN_STYLE=Manual",
+    "DEVELOPMENT_TEAM=",
+    "PROVISIONING_PROFILE_SPECIFIER="
+  ],
+  "skip": [
+    "*.md",
+    "docs/*",
+    "analysis/*"
+  ],
+  "placements": [
+    {
+      "host": "mac5",
+      "simulator": "C1AB6BF6-049B-4C64-B707-73E33F42E371",
+      "derived_data": "/Volumes/FoundryBuild/fleet-dd/motionmixapp-verify"
+    },
+    {
+      "host": "mac4",
+      "simulator": "REQUIRES_MAC4_MOTIONMIXAPP_UDID",
+      "derived_data": "/Users/mohameddiomande/.fleet/dd/motionmixapp-verify"
+    }
+  ]
+}

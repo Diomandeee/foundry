@@ -1,0 +1,57 @@
+{
+  "format": "foundry.verify.v1",
+  "note": "DRAFT ONLY: prepare matching toolchains, create Mac4 gate devices, replace REQUIRES_* values, then validate and gate the change. The Foundry gate's verifier (one-foundry tools/foundry-verify) runs these on the tree a merge would produce, read from main so a proposal cannot change its own check. Each check runs only when a changed path matches its `when`. The engine's tests need the saved crate's audio, which is on Drive (scripts/fetch-saved-crate.sh); it is kept on the T7 between runs, and a fetch that fails is exit 75: not judged, never a failed test. The app has no tests of its own, so its check is that it builds from project.yml for the simulator. tools/, e2e/ and UITests/ have no check: a change confined to them merges unchecked.",
+  "name": "airdeck checks",
+  "host": "mac5",
+  "need": "heavy_jobs",
+  "skip": [
+    "*.md"
+  ],
+  "checks": [
+    {
+      "name": "AirDeckKit swift test (mac5)",
+      "when": [
+        "Packages/AirDeckKit/*",
+        "App/SavedCrate/*",
+        "scripts/fetch-saved-crate.sh"
+      ],
+      "parse": [
+        "swift"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "export PATH=/opt/homebrew/bin:$PATH; C=/Volumes/FoundryBuild/fleet-dd/airdeck-verify/crate-$(shasum -a 256 scripts/fetch-saved-crate.sh | cut -c1-12); mkdir -p $C App/SavedCrate && rsync -a $C/ App/SavedCrate/ && bash scripts/fetch-saved-crate.sh >&2 && rsync -a --include='*/' --include='*.mp3' --exclude='*' App/SavedCrate/ $C/ || exit 75; cd Packages/AirDeckKit && swift test --scratch-path /Volumes/FoundryBuild/fleet-dd/airdeck-verify/kit"
+      ]
+    },
+    {
+      "name": "AirDeck app build",
+      "when": [
+        "App/*",
+        "Packages/*",
+        "project.yml"
+      ],
+      "need": "sims",
+      "parse": [
+        "xcbuild"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "export PATH=/opt/homebrew/bin:$PATH; xcodegen generate >&2 || exit 75; xcodebuild build -project AirDeck.xcodeproj -scheme AirDeck -destination 'generic/platform=iOS Simulator' -derivedDataPath {derived_data} -skipMacroValidation CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER="
+      ],
+      "placements": [
+        {
+          "host": "mac5",
+          "simulator": null,
+          "derived_data": "/Volumes/FoundryBuild/fleet-dd/airdeck-verify/app"
+        },
+        {
+          "host": "mac4",
+          "simulator": null,
+          "derived_data": "/Users/mohameddiomande/.fleet/dd/airdeck-verify/app"
+        }
+      ]
+    }
+  ]
+}
