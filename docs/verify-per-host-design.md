@@ -115,6 +115,14 @@ its recipe keeps Mac5 alone until the storage lane makes room.
 Order: MotionMixApp and AirDeck's app build list Mac4 first, so a check leaves Mac5's deck alone when Mac4 is
 free. When Serenity's iOS check gets its Mac4 placement it lists Mac5 first: its tree is 1.5 GB and Mac4's disk is the tighter one.
 
+## A fetch that does not answer
+
+Every fetch from foundry-staging (main, the change, a linked base) goes through `fetch()`, bounded at 240 s
+and at the request's deadline less 60 s. Past it the fetch's whole process group (foundry-fetch's bash, `npx
+wrangler`, node, git) gets TERM, so foundry-fetch's EXIT trap removes its token files, then KILL; the request
+is Unjudged and the base lock is freed for the gate's retry. On 11-15 Mac1 ran at load 700, the token step
+sat 23 min with no bound, and five bases' landings came back "verifier unavailable: timeout".
+
 ## What this does not cover
 
 - Process-local locks do not fence a second verifier process or a lane using the same simulator by hand.

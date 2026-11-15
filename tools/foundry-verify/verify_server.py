@@ -72,6 +72,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import threading
@@ -561,6 +562,38 @@ class PastDeadline(Unjudged):
 
 SSH = "ssh"
 SIM_ID = re.compile(r"\bid=([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})")
+
+
+FETCH_TIMEOUT_S = 240   # a fetch is seconds; the read token is issued by `npx wrangler`, which can stall on a loaded Mac1
+
+
+def fetch(repo, remote, refspec, deadline=None):
+    """Fetch refspec from a foundry-staging repo, bounded. foundry-fetch has no time limit of its own: on 11-15
+    (Mac1 at load 700) its `npx wrangler artifacts repos issue-token` sat 23 min, each stuck fetch held its base
+    lock, every landing on five bases came back "verifier unavailable: timeout", and /health stalled. Past the
+    bound the whole process group (bash, npx, node, git) is ended, so no orphan keeps running, and the request is
+    Unjudged for the gate to retry."""
+    limit = FETCH_TIMEOUT_S if deadline is None else max(1.0, min(FETCH_TIMEOUT_S, deadline - 60 - time.time()))
+    p = subprocess.Popen([FETCH, remote, "-q", refspec], cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         text=True, start_new_session=True)
+    try:
+        out, err = p.communicate(timeout=limit)
+    except subprocess.TimeoutExpired:
+        for sig, grace in ((signal.SIGTERM, 5), (signal.SIGKILL, 5)):   # TERM first: its EXIT trap removes the token
+            try:
+                os.killpg(p.pid, sig)
+            except ProcessLookupError:
+                break
+            try:
+                p.communicate(timeout=grace)
+                break
+            except subprocess.TimeoutExpired:
+                continue
+        log("fetch-timeout", remote=remote, secs=round(limit))
+        raise Unjudged(f"fetch {remote}: no answer in {round(limit)} s (read token or git fetch stalled); "
+                       "retry") from None
+    if p.returncode:
+        raise Unjudged(f"fetch {remote}: {(err or out).strip()[-160:]}")
 
 
 def sim_of(recipe):
@@ -1066,9 +1099,10 @@ def resolve_links(repo, recipe, work):
         if not re.fullmatch(r"[A-Za-z0-9._-]+", lbase) or not lpath or ".." in lpath.split("/"):
             raise Unjudged(f"link {rel}: wants {{base, path}}, got {src!r}")
         ref = f"refs/verify/link/{lbase}"
-        r = subprocess.run([FETCH, lbase, "-q", f"+refs/heads/main:{ref}"], cwd=repo, capture_output=True, text=True)
-        if r.returncode:
-            raise Unjudged(f"fetch link {lbase}: {(r.stderr or r.stdout).strip()[-160:]}")
+        try:
+            fetch(repo, lbase, f"+refs/heads/main:{ref}")
+        except Unjudged as e:
+            raise Unjudged(f"link {e}") from None
         sha = git(repo, "rev-parse", ref).strip()
         dest = os.path.join(work, "links", f"{lbase}-{sha[:12]}")
         if not os.path.isdir(os.path.join(dest, lpath)):
@@ -1275,9 +1309,7 @@ def verify(req, cfg=None, now=None):
             raise Unjudged("waited past the deadline for an earlier verification of this base")
         for remote, refspec in ((base, "+refs/heads/main:refs/verify/main"),
                                 (repo_name, f"+refs/heads/{branch}:refs/verify/head")):
-            r = subprocess.run([FETCH, remote, "-q", refspec], cwd=repo, capture_output=True, text=True)
-            if r.returncode:
-                raise Unjudged(f"fetch {remote}: {(r.stderr or r.stdout).strip()[-160:]}")
+            fetch(repo, remote, refspec, deadline)
         if git(repo, "rev-parse", "refs/verify/head").strip() != head:
             git(repo, "cat-file", "-e", head + "^{commit}")  # the fork moved on; the pushed sha must still be here
         main_sha = git(repo, "rev-parse", "refs/verify/main").strip()
@@ -1354,9 +1386,7 @@ def probe(base, recipe, host, only=None, cfg=None, deadline_s=DEFAULT_DEADLINE_S
         os.makedirs(work, exist_ok=True)
         subprocess.run(["git", "init", "-q", "--separate-git-dir", os.path.join(work, "git"), repo], check=True,
                        capture_output=True)
-    r = subprocess.run([FETCH, base, "-q", "+refs/heads/main:refs/verify/main"], cwd=repo, capture_output=True, text=True)
-    if r.returncode:
-        raise Unjudged(f"fetch {base}: {(r.stderr or r.stdout).strip()[-160:]}")
+    fetch(repo, base, "+refs/heads/main:refs/verify/main")
     main_sha = git(repo, "rev-parse", "refs/verify/main").strip()
     git(repo, "checkout", "-q", "-f", "--detach", main_sha)
     git(repo, "clean", "-q", "-ffd")

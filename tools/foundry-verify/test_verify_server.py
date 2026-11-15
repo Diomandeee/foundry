@@ -1791,5 +1791,60 @@ class HostPlacements(unittest.TestCase):
             self.assertEqual(vs.repointed("/unused", "head", old, [".foundry/verify.json"]), old)
 
 
+
+class BoundedFetch(unittest.TestCase):
+    """11-15 (Mac1 at load 700): foundry-fetch's `npx wrangler` token step sat 23 min, holding five base locks."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.addCleanup(vs.shutil.rmtree, self.tmp, True)
+        self.saved = (vs.FETCH, vs.FETCH_TIMEOUT_S)
+        self.addCleanup(lambda: (setattr(vs, "FETCH", self.saved[0]), setattr(vs, "FETCH_TIMEOUT_S", self.saved[1])))
+        patch.object(vs, "log").start()
+        self.addCleanup(patch.stopall)
+
+    def script(self, body):
+        path = os.path.join(self.tmp, "foundry-fetch")
+        with open(path, "w") as f:
+            f.write("#!/bin/bash\n" + body)
+        os.chmod(path, 0o755)
+        vs.FETCH = path
+
+    def gone(self, pid):
+        for _ in range(100):
+            try:
+                os.kill(pid, 0)
+            except ProcessLookupError:
+                return True
+            time.sleep(0.05)
+        return False
+
+    def test_a_stalled_fetch_is_unjudged_and_leaves_no_process(self):
+        d = self.tmp
+        self.script(f"trap 'touch {d}/cleaned' EXIT\n(sleep 60; touch {d}/late) & echo $! > {d}/child\nsleep 60\n")
+        vs.FETCH_TIMEOUT_S = 1
+        t0 = time.time()
+        with self.assertRaisesRegex(vs.Unjudged, "no answer in 1 s"):
+            vs.fetch(self.tmp, "base", "+refs/heads/main:refs/verify/main")
+        self.assertLess(time.time() - t0, 15)
+        self.assertTrue(self.gone(int(open(f"{d}/child").read())), "a grandchild outlived the fetch")
+        self.assertTrue(os.path.exists(f"{d}/cleaned"), "TERM first, so foundry-fetch removes its token files")
+        self.assertFalse(os.path.exists(f"{d}/late"))
+
+    def test_the_bound_never_runs_past_the_request_deadline(self):
+        self.script("sleep 60\n")
+        vs.FETCH_TIMEOUT_S = 240
+        t0 = time.time()
+        with self.assertRaisesRegex(vs.Unjudged, "no answer"):
+            vs.fetch(self.tmp, "base", "x", deadline=time.time() + 62)
+        self.assertLess(time.time() - t0, 15)
+
+    def test_a_failed_fetch_keeps_its_message_and_a_good_one_returns(self):
+        self.script("echo 'no token issued for base' >&2; exit 1\n")
+        with self.assertRaisesRegex(vs.Unjudged, "fetch base: no token issued for base"):
+            vs.fetch(self.tmp, "base", "x")
+        self.script("exit 0\n")
+        self.assertIsNone(vs.fetch(self.tmp, "base", "x"))
+
 if __name__ == "__main__":
     unittest.main()
