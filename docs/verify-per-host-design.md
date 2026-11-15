@@ -93,7 +93,7 @@ on Mac4: it needs about 3 GB (a 1.5 GB tree, 1.5 GB DerivedData) and Mac4 had 16
 its recipe keeps Mac5 alone until the storage lane makes room.
 
 Order: MotionMixApp and AirDeck's app build list Mac4 first, so a check leaves Mac5's deck alone when Mac4 is
-free. Serenity's iOS check lists Mac5 first: its tree is 1.5 GB and Mac4's disk is the tighter one.
+free. When Serenity's iOS check gets its Mac4 placement it lists Mac5 first: its tree is 1.5 GB and Mac4's disk is the tighter one.
 
 ## What this does not cover
 
