@@ -452,3 +452,69 @@ describe("required verification", () => {
     expect(res.record.verdict).toBe("merge");
   });
 });
+
+describe("handlePush: append-only logs", () => {
+  const LOG = "# Work log\n\n## one\n- a\n";
+
+  async function seeded(): Promise<{ baseSha: string }> {
+    const baseSha = await kit.seedBase("base", { "app.ts": "v1\n", "docs/LOG.md": LOG }, baseWork);
+    const base = await deps.port.get("base");
+    await base.fork("task-1");
+    base.dispose();
+    kit.cloneTo("task-1", forkWork);
+    const scope = newScopeToken();
+    scope.allowed_tools = ["foundry.merge"];
+    scope.can_mutate = true;
+    await deps.tickets.saveTicket({ taskId: "t1", baseRepo: "base", baseSha, forkRepo: "task-1", agentId: "agent-a", scope });
+    return { baseSha };
+  }
+
+  it("lands the base's log plus this landing's entry when another landing appended first", async () => {
+    const { baseSha } = await seeded();
+    kit.commitAll(baseWork, "other lane", { "docs/LOG.md": LOG + "\n## two (other lane)\n- b\n" });
+    const after = kit.commitAll(forkWork, "this lane", {
+      "app.ts": "v2\n",
+      "docs/LOG.md": LOG + "\n## three (this lane)\n- c\n",
+    });
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    expect(res.handled).toBe(true);
+    if (!res.handled) return;
+    expect(res.record.verdict).toBe("merge");
+    expect(res.record.files).toEqual(["app.ts", "docs/LOG.md"]);
+    const base = await deps.port.get("base");
+    expect(await base.readFile("main", "docs/LOG.md")).toBe(
+      LOG + "\n## two (other lane)\n- b\n\n## three (this lane)\n- c\n",
+    );
+    expect(await base.readFile("main", "app.ts")).toBe("v2\n");
+    const hist = await base.history("main", 1);
+    expect(hist[0].sha).toBe(res.record.merged_sha);
+    expect(hist[0].parents).toEqual([expect.any(String), after]);
+    base.dispose();
+  });
+
+  it("hands the merger the merged log while the verifier still sees the proposal", async () => {
+    const { baseSha } = await seeded();
+    kit.commitAll(baseWork, "other lane", { "docs/LOG.md": LOG + "\n## two\n" });
+    const after = kit.commitAll(forkWork, "this lane", { "docs/LOG.md": LOG + "\n## three\n" });
+    const seen: MergeRequest[] = [];
+    const verified: VerifyRequest[] = [];
+    deps.merger = { async merge(req) { seen.push(req); return "c".repeat(40); } };
+    deps.verifier = { async run(r) { verified.push(r); return { checked: false, ok: true, runs: [] }; } };
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    expect(res.handled && res.record.verdict).toBe("merge");
+    expect(verified[0].headSha).toBe(after);
+    expect(seen[0].files["docs/LOG.md"]).toBe(LOG + "\n## three\n");
+    expect(seen[0].appended).toEqual({ "docs/LOG.md": LOG + "\n## two\n\n## three\n" });
+  });
+
+  it("records a conflict and leaves the base alone for an edit above the end of the log", async () => {
+    const { baseSha } = await seeded();
+    kit.commitAll(baseWork, "other lane", { "docs/LOG.md": LOG + "\n## two\n" });
+    const after = kit.commitAll(forkWork, "rewrite", { "docs/LOG.md": LOG.replace("- a", "- A") + "\n## three\n" });
+    const before = kit.headOf("base");
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    expect(res.handled && res.record.verdict).toBe("conflict");
+    if (res.handled) expect(res.record.conflict_files).toEqual(["docs/LOG.md"]);
+    expect(kit.headOf("base")).toBe(before);
+  });
+});

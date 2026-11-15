@@ -370,4 +370,49 @@ describe("gate parity: what a lane's push gets back", () => {
     expect(o.verdict).toBe("merge");
     expect(o.landed).toBe("new commit, base tree == proposal tree");
   }, 120000);
+
+  // Serenity's docs/LOG.md, where every landing appends its entry: two attempts of serenity-site-pace-icon died
+  // as "conflict" on 2026-11-15 (decision 2966) only because another landing had appended first.
+  const LOG = "# Work log\n\n## one\n- a\n";
+  const logAt = (l: { base: string }, ref = "main") =>
+    git(root, `--git-dir=${l.base}.git`, "show", `${ref}:docs/LOG.md`) + "\n";
+
+  it("P21 another landing appended to docs/LOG.md first", async () => {
+    const l = await lane({ "app.txt": "v1\n", "docs/LOG.md": LOG });
+    l.baseCommit({ "docs/LOG.md": LOG + "\n## two (other lane)\n- b\n" });
+    const sha = l.commit({ "app.txt": "v2\n", "docs/LOG.md": LOG + "\n## three (this lane)\n- c\n" });
+    l.push();
+    const o = record("P21", await l.run(l.baseSha, sha));
+    expect(o.verdict).toBe("merge");
+    expect(o.landed).toBe("new commit, base tree != proposal tree");
+    expect(logAt(l)).toBe(LOG + "\n## two (other lane)\n- b\n\n## three (this lane)\n- c\n");
+    expect(git(root, `--git-dir=${l.base}.git`, "show", "main:app.txt")).toBe("v2");
+    expect(o.verify[0]?.files).toEqual(["app.txt", "docs/LOG.md"]);
+  });
+
+  it("P22 the same entry pushed again after it landed lands nothing twice", async () => {
+    const l = await lane({ "app.txt": "v1\n", "docs/LOG.md": LOG });
+    l.baseCommit({ "docs/LOG.md": LOG + "\n## two\n" });
+    const first = l.commit({ "app.txt": "v2\n", "docs/LOG.md": LOG + "\n## three\n" });
+    l.push();
+    expect((await l.run(l.baseSha, first)).verdict).toBe("merge");
+    const landed = l.head(l.base);
+    // foundry_ops land amends and pushes again when no verdict arrives in time.
+    const again = l.commit({}, { amend: true });
+    l.push("main", true);
+    const o = record("P22", await l.run(first, again));
+    expect(o.verdict).toBe("merge");
+    expect(l.head(l.base)).toBe(landed);
+    expect(logAt(l)).toBe(LOG + "\n## two\n\n## three\n");
+  });
+
+  it("P23 an edit above the end of docs/LOG.md is still a conflict", async () => {
+    const l = await lane({ "docs/LOG.md": LOG });
+    l.baseCommit({ "docs/LOG.md": LOG + "\n## two\n" });
+    const sha = l.commit({ "docs/LOG.md": LOG.replace("- a", "- A") + "\n## three\n" });
+    l.push();
+    const o = record("P23", await l.run(l.baseSha, sha));
+    expect(o.verdict).toBe("conflict");
+    expect(o.landed).toBe("base unchanged");
+  });
 });

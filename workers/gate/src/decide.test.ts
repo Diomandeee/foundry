@@ -623,3 +623,110 @@ describe("freshness and the gate's own queue", () => {
     expect(creditQueueWait(t, t + 20 * MIN, t + 10 * MIN)).toBe(t); // a receipt time in the future credits nothing
   });
 });
+
+describe("decidePush: append-only logs", () => {
+  const LOG = "# Work log\n\n## one\n- a\n";
+
+  async function seeded(files: Record<string, string> = {}) {
+    const baseSha = await kit.seedBase("base", { "app.ts": "v1\n", "docs/LOG.md": LOG, ...files }, baseWork);
+    const base = await port.get("base");
+    await base.fork("task-1");
+    base.dispose();
+    kit.cloneTo("task-1", forkWork);
+    const scope = newScopeToken();
+    scope.allowed_tools = ["foundry.merge"];
+    scope.can_mutate = true;
+    await tickets.saveTicket({ taskId: "t1", baseRepo: "base", baseSha, forkRepo: "task-1", agentId: "agent-a", scope });
+    const push = (after: string) => ({ namespace: "test", repo: "task-1", ref: "refs/heads/main", before: baseSha, after });
+    return { baseSha, push };
+  }
+
+  it("merges two landings that each appended to docs/LOG.md (decision 2966)", async () => {
+    const { push } = await seeded();
+    kit.commitAll(baseWork, "other lane", { "docs/LOG.md": LOG + "\n## two (other lane)\n- b\n" });
+    const after = kit.commitAll(forkWork, "this lane", {
+      "web/page.tsx": "x\n",
+      "docs/LOG.md": LOG + "\n## three (this lane)\n- c\n",
+    });
+    const d = await decidePush(port, tickets, push(after));
+    expect(d.verdict).toBe("merge");
+    if (d.verdict !== "merge") return;
+    expect(d.appended).toEqual({
+      "docs/LOG.md": LOG + "\n## two (other lane)\n- b\n\n## three (this lane)\n- c\n",
+    });
+    // `files` keeps the proposal's own text: that is what was verified, and what the merger binds to the proposal.
+    expect(d.files["docs/LOG.md"]).toBe(LOG + "\n## three (this lane)\n- c\n");
+    expect(d.files["web/page.tsx"]).toBe("x\n");
+  });
+
+  it("still conflicts on an edit above the end of the log", async () => {
+    const { push } = await seeded();
+    kit.commitAll(baseWork, "other lane", { "docs/LOG.md": LOG + "\n## two\n" });
+    const after = kit.commitAll(forkWork, "rewrite", { "docs/LOG.md": LOG.replace("- a", "- A") + "\n## three\n" });
+    const d = await decidePush(port, tickets, push(after));
+    expect(d.verdict).toBe("conflict");
+    if (d.verdict === "conflict") expect(d.files).toEqual(["docs/LOG.md"]);
+  });
+
+  it("still conflicts when the proposal deletes the log", async () => {
+    const { push } = await seeded();
+    kit.commitAll(baseWork, "other lane", { "docs/LOG.md": LOG + "\n## two\n" });
+    const after = kit.commitAll(forkWork, "drop log", { "app.ts": "v2\n" }, "agent", ["docs/LOG.md"]);
+    const d = await decidePush(port, tickets, push(after));
+    expect(d.verdict).toBe("conflict");
+    if (d.verdict === "conflict") expect(d.files).toEqual(["docs/LOG.md"]);
+  });
+
+  it("still conflicts when the base deleted the log", async () => {
+    const { push } = await seeded();
+    kit.commitAll(baseWork, "drop log", { "app.ts": "v2\n" }, "agent", ["docs/LOG.md"]);
+    const after = kit.commitAll(forkWork, "this lane", { "docs/LOG.md": LOG + "\n## three\n" });
+    const d = await decidePush(port, tickets, push(after));
+    expect(d.verdict).toBe("conflict");
+  });
+
+  it("keeps every other path strict, appends included", async () => {
+    const { push } = await seeded({ "NOTES.md": "n\n" });
+    kit.commitAll(baseWork, "other lane", { "NOTES.md": "n\nb\n", "docs/LOG.md": LOG + "\n## two\n" });
+    const after = kit.commitAll(forkWork, "this lane", { "NOTES.md": "n\nc\n", "docs/LOG.md": LOG + "\n## three\n" });
+    const d = await decidePush(port, tickets, push(after));
+    expect(d.verdict).toBe("conflict");
+    if (d.verdict === "conflict") expect(d.files).toEqual(["NOTES.md"]);
+  });
+
+  it("takes a base's own append-only paths from .foundry/gate.json at its head", async () => {
+    const { push } = await seeded({ "CHANGELOG.md": "# Changes\n" });
+    kit.commitAll(baseWork, "other lane", {
+      ".foundry/gate.json": '{"appendOnly": ["CHANGELOG.md"]}\n',
+      "CHANGELOG.md": "# Changes\n- b\n",
+    });
+    const after = kit.commitAll(forkWork, "this lane", { "CHANGELOG.md": "# Changes\n- c\n" });
+    const d = await decidePush(port, tickets, push(after));
+    expect(d.verdict).toBe("merge");
+    if (d.verdict === "merge") expect(d.appended).toEqual({ "CHANGELOG.md": "# Changes\n- b\n\n- c\n" });
+  });
+
+  it("treats docs/LOG.md strictly when the gate-wide list is empty and the base names none", async () => {
+    const { push } = await seeded();
+    kit.commitAll(baseWork, "other lane", { "docs/LOG.md": LOG + "\n## two\n" });
+    const after = kit.commitAll(forkWork, "this lane", { "docs/LOG.md": LOG + "\n## three\n" });
+    const d = await decidePush(port, tickets, push(after), Date.now(), undefined, undefined, Date.now(), []);
+    expect(d.verdict).toBe("conflict");
+  });
+
+  it("leaves append-only paths out of the cross-task overlap query", async () => {
+    const { push } = await seeded();
+    kit.commitAll(baseWork, "other lane", { "docs/LOG.md": LOG + "\n## two\n" });
+    const after = kit.commitAll(forkWork, "this lane", { "docs/LOG.md": LOG + "\n## three\n" });
+    const asked: string[][] = [];
+    const oracle = {
+      async findContenders(q: { paths: string[] }) {
+        asked.push(q.paths);
+        return q.paths;
+      },
+    };
+    const d = await decidePush(port, tickets, push(after), Date.now(), oracle as never);
+    expect(d.verdict).toBe("merge");
+    expect(asked).toEqual([]);
+  });
+});

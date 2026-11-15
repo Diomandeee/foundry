@@ -4,7 +4,7 @@
 // semantics. The Paid backend is cloudflare.ts. Never imported by Worker
 // runtime code — only by tests, the agent runner, and local harnesses.
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { createHash, randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
@@ -20,6 +20,7 @@ import {
   type MergeRequest,
   type RepoHandle,
 } from "./port.js";
+import { isAppendMergeOf } from "./append-log.js";
 
 function gitEnvironment(): NodeJS.ProcessEnv {
   // Hooks export GIT_DIR (usually "."); scrub git discovery vars so every
@@ -312,13 +313,19 @@ function gitEntries(dir:string,revision:string):Map<string,string>{
 function equalEntries(a:Map<string,string>,b:Map<string,string>):boolean{
   return a.size===b.size&&[...a].every(([p,e])=>b.get(p)===e);
 }
+function blobOid(content:string):string{
+  const bytes=Buffer.from(content,'utf8');
+  return createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
+}
 function overlayAdmission(base:Map<string,string>,fork:Map<string,string>,req:MergeRequest):Map<string,string>{
   const expected=new Map(base);
+  const appended=req.appended??{};
+  for(const p of Object.keys(appended))if(!Object.hasOwn(req.files,p))throw new Error('merge: appended path is not admitted');
   for(const [p,content] of Object.entries(req.files)){
-    const bytes=Buffer.from(content,'utf8'),oid=createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
-    const entry=`100644 blob ${oid}`;
+    const entry=`100644 blob ${blobOid(content)}`;
     if(fork.get(p)!==entry)throw new Error('merge: unsupported or changed proposal entry');
-    expected.set(p,entry);
+    // An append-only path both sides added to lands the merged text, bound to the proposal above.
+    expected.set(p,Object.hasOwn(appended,p)?`100644 blob ${blobOid(appended[p])}`:entry);
   }
   for(const p of req.deletedFiles){if(fork.has(p)||Object.hasOwn(req.files,p))throw new Error('merge: deletion not absent in proposal');expected.delete(p);}
   return expected;
@@ -420,6 +427,13 @@ export class GitMerger implements Merger {
     const forkTree=gitEntries(dir,forkHeadSha);
     const baseTree=gitEntries(dir,expectedBaseSha??EMPTY_TREE);
     const expectedTree=overlayAdmission(baseTree,forkTree,req);
+    // Each appended text must be the base head's file unchanged plus only a tail of the proposal's.
+    const appended=Object.entries(req.appended??{});
+    if(appended.length&&!expectedBaseSha)throw new Error('merge: appended paths need a base head');
+    for(const [p,text] of appended){
+      const baseText=execFileSync('git',['cat-file','blob',`${expectedBaseSha}:${p}`],{cwd:dir,encoding:'utf8',env:gitEnvironment(),stdio:['ignore','pipe','pipe'],maxBuffer:16*1048576});
+      if(!isAppendMergeOf(baseText,req.files[p],text))throw new Error(`merge: ${p} appended text is not the base head plus the proposal's tail`);
+    }
     // A replay may only reuse the current landed commit when its actual parent
     // shape, exact trailer and entire overlay tree prove this proposal landed.
     if(expectedBaseSha){
@@ -454,6 +468,22 @@ export class GitMerger implements Merger {
       const root=runGit(['-c',`user.name=${req.author}`,'-c','user.email=foundry@local','commit-tree',
         `${forkHeadSha}^{tree}`,'-p',forkHeadSha,'-m',`${req.message}\n\nFork-Head: ${forkHeadSha}`],dir);
       runGit(['update-ref','HEAD',root],dir);
+    }else if(appended.length){
+      // Both sides appended to these paths, which git's three-way merge reports as a conflict. Merge without
+      // committing, allow conflicts only on these paths, write the admitted text there, then commit.
+      const ident=['-c',`user.name=${req.author}`,'-c','user.email=foundry@local'];
+      try{runGit([...ident,'merge','--no-ff','--no-commit','--quiet',forkHeadSha],dir);}catch{/* conflicts are checked below */}
+      const unmerged=runGit(['diff','--name-only','--diff-filter=U','-z'],dir).split('\0').filter(Boolean);
+      const allowed=new Set(appended.map(([p])=>p));
+      if(!existsSync(path.join(dir,'.git','MERGE_HEAD'))||unmerged.some(p=>!allowed.has(p))){
+        spawnSync('git',['merge','--abort'],{cwd:dir,env:gitEnvironment()});
+        throw new Error(`merge: conflicts outside the appended paths: ${unmerged.filter(p=>!allowed.has(p)).join(', ')||'merge did not start'}`);
+      }
+      for(const [p,text] of appended){
+        writeFileSync(path.join(dir,p),text);
+        runGit(['add','--',p],dir);
+      }
+      runGit([...ident,'commit','--quiet','--no-verify','-m',`${req.message}\n\nFork-Head: ${forkHeadSha}`],dir);
     }else {
     runGit(
       [

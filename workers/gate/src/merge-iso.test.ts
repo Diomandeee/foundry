@@ -344,3 +344,45 @@ describe("admissionOverlay agrees with what commitForkFiles lands", () => {
       .rejects.toThrow(/unsupported or substituted/);
   });
 });
+
+// An append-only path both sides added to: the proposal's text is still what binds the admission to the
+// proposal, and the merged text (base head plus the proposal's tail) is what the overlay predicts and lands.
+describe("admissionOverlay with appended paths", () => {
+  async function blob(text: string) {
+    return (await git.hashBlob({ object: new TextEncoder().encode(text) })).oid;
+  }
+
+  it("predicts the merged text in the proposal's mode, and commitForkFiles lands exactly that", async () => {
+    const head = await git.resolveRef({ fs, dir, ref: "HEAD" });
+    const base = await completeTree(fs, dir, head);
+    const forkText = "v1\nfork entry\n";
+    const merged = "v1\nbase entry\n\nfork entry\n";
+    const proposal = new Map(base);
+    proposal.set("app.txt", `100644 blob ${await blob(forkText)}`);
+    const req = { files: { "app.txt": forkText }, deletedFiles: [], appended: { "app.txt": merged } };
+    const expected = await admissionOverlay(base, proposal, req);
+    expect(expected.get("app.txt")).toBe(`100644 blob ${await blob(merged)}`);
+    // merge() hands commitForkFiles the admitted text with the appended text in place of the proposal's.
+    const sha = await commitForkFiles(fs, dir, { ...req.files, ...req.appended }, "M", "foundry", "f".repeat(40));
+    expect(Object.fromEntries(await completeTree(fs, dir, sha))).toEqual(Object.fromEntries(expected));
+    expect(fs.readFileSync(join(dir, "app.txt"), "utf8")).toBe(merged);
+  });
+
+  it("still binds the path to the proposal's own blob", async () => {
+    const head = await git.resolveRef({ fs, dir, ref: "HEAD" });
+    const base = await completeTree(fs, dir, head);
+    const proposal = new Map(base);
+    proposal.set("app.txt", `100644 blob ${await blob("v1\nsomething else\n")}`);
+    await expect(admissionOverlay(base, proposal, {
+      files: { "app.txt": "v1\nfork entry\n" }, deletedFiles: [], appended: { "app.txt": "v1\nfork entry\n" },
+    })).rejects.toThrow(/substituted proposal entry/);
+  });
+
+  it("refuses an appended path the admission does not carry", async () => {
+    const head = await git.resolveRef({ fs, dir, ref: "HEAD" });
+    const base = await completeTree(fs, dir, head);
+    await expect(admissionOverlay(base, new Map(base), {
+      files: {}, deletedFiles: [], appended: { "app.txt": "v1\nx\n" },
+    })).rejects.toThrow(/appended path is not admitted/);
+  });
+});

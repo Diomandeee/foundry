@@ -2,7 +2,11 @@
 // works identically against LocalGitAdapter (now) and CloudflareAdapter
 // (after Paid). No node imports here: this file ships in the Worker.
 import {
+  BASE_GATE_CONFIG_PATH,
+  DEFAULT_APPEND_ONLY_PATHS,
   UnsupportedContentError,
+  baseAppendOnlyPaths,
+  mergeAppendOnly,
   type ArtifactsPort,
   type CommitInfo,
   type PushEvent,
@@ -39,6 +43,11 @@ export type Decision =
       ticket: TaskTicket;
       files: Record<string, string>;
       deletedFiles: string[];
+      /**
+       * Append-only paths both sides added to: path -> the text that lands (the base head's file plus the
+       * proposal's appended tail). `files` keeps the proposal's own text for them, which is what was verified.
+       */
+      appended: Record<string, string>;
       /** Base head this decision was made against (null = empty base). */
       baseHead: string | null;
       /** Exact base branch the admitted decision is destined for. */
@@ -218,6 +227,11 @@ export async function decidePush(
   planCheck?: PlanCheckOpts,
   /** When the gate received the push (its queue message's send time). Defaults to `now`: no wait to credit. */
   receivedAt: number = now,
+  /**
+   * Gate-wide append-only paths (GATE_APPEND_ONLY_PATHS). A base adds its own in BASE_GATE_CONFIG_PATH at
+   * its head. Two appends to one of these merge instead of conflicting (append-log.ts).
+   */
+  appendOnlyPaths: readonly string[] = DEFAULT_APPEND_ONLY_PATHS,
 ): Promise<Decision> {
   // 0. The fork must belong to a known task.
   const ticket = await tickets.getTicketByFork(push.repo);
@@ -378,12 +392,40 @@ export async function decidePush(
     if (link) return unsupportedReject(link);
     const overlapping = [...forkPaths].filter((p) => basePaths.has(p));
     const realConflicts: string[] = [];
+    const appended: Record<string, string> = Object.create(null);
+    // The base's own list is read once, and only when a decision needs it.
+    let appendOnly: Set<string> | null = null;
+    const appendOnlySet = async (): Promise<Set<string>> => {
+      if (appendOnly) return appendOnly;
+      let own: string[] = [];
+      if (baseHead !== null) {
+        try {
+          own = baseAppendOnlyPaths(await base!.readFile(baseHead, BASE_GATE_CONFIG_PATH));
+        } catch (e) {
+          // A config the text transport cannot carry names nothing; a transport failure stays an error.
+          if (!(e instanceof UnsupportedContentError)) throw e;
+        }
+      }
+      appendOnly = new Set([...appendOnlyPaths, ...own]);
+      return appendOnly;
+    };
     try {
       for (const p of overlapping) {
         if (baseHead === null) continue;
         const a = await fork.readFile(push.after, p);
         const b = await base.readFile(baseHead, p);
-        if (a !== b) realConflicts.push(p);
+        if (a === b) continue;
+        // Both sides appended to an append-only file: base head plus the proposal's tail, not a conflict.
+        // Needs the fork-point text; a path either side deleted, or both created, stays a conflict.
+        if (a !== null && b !== null && ticket.baseSha !== "" && (await appendOnlySet()).has(p)) {
+          const fp = await base.readFile(ticket.baseSha, p);
+          const merged = fp === null ? null : mergeAppendOnly(fp, b, a);
+          if (merged !== null) {
+            appended[p] = merged;
+            continue;
+          }
+        }
+        realConflicts.push(p);
       }
     } catch (e) {
       if (e instanceof UnsupportedContentError) return unsupportedReject(e);
@@ -401,12 +443,15 @@ export async function decidePush(
     // 2b. Cross-task overlap via the knowledge graph (best-effort).
     // Step 2 sees one fork vs base; the oracle sees every Foundry task.
     // Runs only when local diff is clean; unknown (null) keeps local-only.
-    if (overlap) {
+    // Append-only paths are left out: another task's append to one merges the same way when it lands.
+    const appendOnlyNow = overlap ? await appendOnlySet() : null;
+    const contended = appendOnlyNow ? [...forkPaths].filter((p) => !appendOnlyNow.has(p)) : [];
+    if (overlap && contended.length > 0) {
       const known = [...forkHist, ...baseHist].map((c) => c.sha);
       const contenders = await overlap.findContenders({
         baseRepo: ticket.baseRepo,
         taskId: ticket.taskId,
-        paths: [...forkPaths].sort(),
+        paths: contended.sort(),
         knownCommits: known,
       });
       if (contenders && contenders.length > 0) {
@@ -440,6 +485,7 @@ export async function decidePush(
       ticket,
       files,
       deletedFiles,
+      appended,
       baseHead,
       baseBranch: branch,
       planAdvisory,
