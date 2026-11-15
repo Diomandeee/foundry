@@ -24,6 +24,8 @@ This server answers that call:
      compared with it instead of a second run of main's tests. A check a change does not touch (docs, another
      part of a monorepo) keeps main's result on the new tree. Main is run only when no such result exists.
      Bases are verified side by side, one verification per base; simulator jobs take turns on each host.
+     A check with placements on two hosts keeps main's result per host and measures main (and any rerun) on
+     the host its candidate ran on: the hosts' Xcodes and runtimes differ, so results are never mixed.
      A real compile failure main shares passes for the same reason. A run that never got as far as the code
      (no such simulator, unresolved packages, a test runner that never started, zero tests) says nothing
      about the change, on either side, so it is unjudged and never cached.
@@ -48,10 +50,13 @@ it read as "not checked" and merged.
 A busy worker is retried within the request deadline. Fabric refusals are never forced.
 
 Mac1 only orchestrates: the build runs on a placement named in the recipe. One simulator run per host;
-queued requests count against their own deadline. See docs/verify-per-host-design.md for the recipe form.
+queued requests count against their own deadline. A submission that times out with no receipt holds its host
+until reconcile_unknown has read the ledger and the host's tmux and settled whether a job started.
+See docs/verify-per-host-design.md for the recipe form.
 
   verify_server.py serve [--port 8803]
   verify_server.py check REPO HEAD_SHA        run one verification from the command line, print the result
+  verify_server.py probe BASE RECIPE --host H  run RECIPE's simulator checks on BASE main on host H (prove a placement)
 
 Config ~/.config/foundry/verify.json:
   {"bases": {"motionmixapp": {"sources": ["~/Developer/MotionMixApp"]}}, "token_file": "~/.config/foundry/verify-token"}
@@ -59,6 +64,7 @@ The token is the first path segment of VERIFY_URL; every other path is a 404.
 """
 
 import argparse
+import calendar
 import fnmatch
 import hashlib
 import hmac
@@ -106,10 +112,13 @@ def host_lock(host):
 
 
 def quarantine(key, host, reason, lock):
-    """An ambiguous launch/stop must not open a slot for another job. Reconcile before restarting."""
+    """An ambiguous launch/stop must not open a slot for another job. Returns the key it is held under.
+    An unknown launch is reconciled by reconcile_unknown; any other quarantine lasts until a restart."""
+    key = key or f"unknown:{host}"
     with _QUARANTINE_GUARD:
-        _QUARANTINE[key or f"unknown:{host}"] = {"host": host, "reason": str(reason), "lock": lock}
+        _QUARANTINE[key] = {"host": host, "reason": str(reason), "lock": lock}
     log("host-quarantined", host=host, error=str(reason))
+    return key
 
 
 def quarantined():
@@ -481,7 +490,11 @@ class WorkerRefused(Unjudged):
 
 
 class StartUnknown(Unjudged):
-    """Fabric timed out without a launch receipt; it may already have started a remote job."""
+    """Fabric timed out without a launch receipt; it may already have started a remote job. `reconcilable`:
+    the ledger and the host's tmux can tell whether it did (False when fabric named a host it was not asked for)."""
+    def __init__(self, detail, reconcilable=True):
+        super().__init__(detail)
+        self.reconcilable = reconcilable
 
 
 class JobStopped(Unjudged):
@@ -596,13 +609,16 @@ class Late:
         self.done, self.row, self.error, self.ended = threading.Event(), None, None, None
 
 
-def job_fingerprint(repo, recipe, name):
+def job_fingerprint(repo, recipe, name, host=None):
     """What makes a retry the same check: the job's name, the tree it would sync (the index build_tree or the
-    baseline checkout left) and the recipe. None when the tree cannot be read: such a job is stopped as before."""
+    baseline checkout left) and the recipe, plus the host when the run is pinned to one (a baseline or rerun
+    measured for a candidate's host must not collect a job that ran on the other). None when the tree cannot be
+    read: such a job is stopped as before."""
     r = subprocess.run(["git", "-C", repo, "write-tree"], capture_output=True, text=True)
     if r.returncode:
         return None
-    return hashlib.sha256(json.dumps([name, r.stdout.strip(), recipe], sort_keys=True, default=str).encode()).hexdigest()
+    parts = [name, r.stdout.strip(), recipe] + ([host] if host else [])
+    return hashlib.sha256(json.dumps(parts, sort_keys=True, default=str).encode()).hexdigest()
 
 
 JOB_LS_LAST = 500  # `fabric job ls` prints only the newest 20 by default
@@ -690,16 +706,110 @@ def claim_late(key, deadline):
     return late.jid, late.row
 
 
-def run_job(repo, recipe, name, deadline):
+# ---- an unknown launch, reconciled ----
+# `fabric job run` timed out with no receipt (a slow first sync of a big tree to a host, a hung ssh). Killing it
+# leaves three possible states on the host: nothing started, a job in the ledger, or a tmux session fabric opened
+# but never recorded. The reconciler reads both and settles which, so one slow submission does not hold the host
+# (and that check) until the verifier restarts. Anything it cannot read keeps the quarantine.
+RECONCILE_SETTLE_S = 30
+RECONCILE_EVERY_S = 60
+RECONCILE_MAX_S = LATE_MORE_S
+STARTED_AT = re.compile(r"\b(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ)\b")
+
+
+def fabric_job_name(name):
+    """The name part of the job id `fabric job run --name` makes: job-<this>-MMDD-HHMMSS."""
+    return re.sub(r"[^a-z0-9-]", "-", name.lower())[:30]
+
+
+def reconcile_once(key, host, name, lock, sim, t0):
+    """Settle one unknown launch. Returns "adopted", "released" or None (could not tell: still quarantined)."""
+    pattern = re.compile(rf"job-{re.escape(fabric_job_name(name))}-\d{{4}}-\d{{6}}")
+    r = subprocess.run([FABRIC, "job", "ls", "--last", str(JOB_LS_LAST)], capture_output=True, text=True, timeout=45)
+    if r.returncode:
+        return None
+    for line in r.stdout.splitlines():
+        row, at = line.split(), STARTED_AT.search(line)
+        if len(row) < 3 or not pattern.fullmatch(row[0]) or row[1] != host or not at:
+            continue
+        if calendar.timegm(time.strptime(at.group(1), "%Y-%m-%dT%H:%M:%SZ")) < t0 - 5:
+            continue  # an earlier job of the same name
+        late = Late(row[0], lock, host, sim)
+        with LATE_LOCK:
+            LATE[key] = late
+        with _QUARANTINE_GUARD:
+            _QUARANTINE.pop(key, None)
+        threading.Thread(target=watch_late, args=(key, late), daemon=True, name=f"late-{row[0]}").start()
+        log("reconciled", host=host, job=row[0], outcome="adopted")
+        return "adopted"
+    ledger = {l.split()[0] for l in r.stdout.splitlines() if l.split()}
+    try:
+        r = subprocess.run([SSH, "-o", "ConnectTimeout=10", "-o", "BatchMode=yes", "-o", "ControlMaster=no", host,
+                            "tmux ls -F '#{session_name}' 2>/dev/null; true"], capture_output=True, text=True, timeout=45)
+    except subprocess.TimeoutExpired:
+        return None
+    if r.returncode:
+        return None
+    for jid in [s for s in r.stdout.split() if pattern.fullmatch(s) and s not in ledger]:
+        # fabric opened the session but died before it wrote the ledger row: no one else will ever stop it.
+        command = f"tmux kill-session -t '{jid}' 2>/dev/null; tmux has-session -t '{jid}' 2>/dev/null && exit 1; "
+        if sim:
+            pattern_app = f"[C]oreSimulator/Devices/{sim}/data/Containers/Bundle/Application/"
+            command += f"pkill -f '{pattern_app}'; sleep 2; pgrep -f '{pattern_app}' >/dev/null && exit 1; "
+        try:
+            k = subprocess.run([SSH, "-o", "ConnectTimeout=10", "-o", "BatchMode=yes", "-o", "ControlMaster=no",
+                                host, command + "exit 0"], capture_output=True, timeout=45)
+        except subprocess.TimeoutExpired:
+            return None
+        if k.returncode:
+            return None
+        log("reconciled-orphan", host=host, job=jid)
+    with _QUARANTINE_GUARD:
+        _QUARANTINE.pop(key, None)
+    if lock:
+        lock.release()
+    log("reconciled", host=host, outcome="released")
+    return "released"
+
+
+def reconcile_unknown(key, host, name, lock, sim, t0):
+    time.sleep(RECONCILE_SETTLE_S)  # a fabric process killed mid-ssh may still land its tmux session
+    start = time.time()
+    while True:
+        try:
+            if reconcile_once(key, host, name, lock, sim, t0):
+                return
+        except Exception as e:  # an unreadable state keeps the quarantine; try again
+            log("reconcile-error", host=host, error=repr(e)[:200])
+        if time.time() - start > RECONCILE_MAX_S:
+            log("reconcile-gave-up", host=host, key=key)
+            return
+        time.sleep(RECONCILE_EVERY_S)
+
+
+def start_reconcile(key, host, name, lock, sim, t0):
+    try:
+        threading.Thread(target=reconcile_unknown, args=(key, host, name, lock, sim, t0), daemon=True,
+                         name=f"reconcile-{host}").start()
+    except RuntimeError as e:
+        log("reconcile-error", host=host, error=repr(e)[:200])
+
+
+def run_job(repo, recipe, name, deadline, host=None):
     """Run on an available recipe placement, one simulator job per host. Never force a fabric refusal.
 
     Busy, performing, memory and load refusals allow another placement or a bounded retry. A disk-floor
     refusal makes that placement unjudged immediately: waiting frees no disk. Time spent queued and
     submitting counts against the original deadline. Unknown launch outcomes retain their reservation.
+    `host` pins the run to that one placement: main's baseline and a rerun are measured where the candidate ran.
     """
     placements = placements_of(recipe)
+    if host:
+        placements = [p for p in placements if p["host"] == host]
+        if not placements:
+            raise Unjudged(f"recipe: no placement on {host}, where the candidate ran")
     sims = recipe.get("need", "sims") == "sims"
-    key = job_fingerprint(repo, recipe, name)
+    key = job_fingerprint(repo, recipe, name, host)
     with _QUARANTINE_GUARD:
         if key in _QUARANTINE:
             raise Unjudged("job requires reconciliation: " + _QUARANTINE[key]["reason"])
@@ -740,7 +850,7 @@ def run_placements(repo, placements, name, deadline, key, sims):
             if lock and not lock.acquire(blocking=False):
                 reasons[host] = f"{host}: another simulator job or quarantine holds the host"
                 continue
-            release = True
+            release, t0 = True, time.time()
             try:
                 return _start_and_wait(cmd, ["--", *placement["command"]], name, deadline)
             except WorkerRefused as e:
@@ -750,7 +860,9 @@ def run_placements(repo, placements, name, deadline, key, sims):
                 log("placement-refused", name=name, host=host, detail=str(e))
             except StartUnknown as e:
                 release = False
-                quarantine(key, host, e, lock)
+                held = quarantine(key, host, e, lock)
+                if e.reconcilable:
+                    start_reconcile(held, host, name, lock, sim, t0)
                 raise
             except (PastDeadline, JobStopped) as e:
                 actual_host = e.host or host
@@ -795,7 +907,8 @@ def _start_and_wait(cmd, tail, name, deadline):
         retryable = bool(PERFORMING.search(said) or re.search(r"load:|memory:|busy:|no host has room", said))
         raise WorkerRefused(said.strip()[-200:], retryable and not DISK_FLOOR.search(said))
     if host != "auto" and m.group(2) != host:
-        raise StartUnknown(f"fabric reported {m.group(1)} on {m.group(2)}, expected {host}; reconcile remote jobs")
+        raise StartUnknown(f"fabric reported {m.group(1)} on {m.group(2)}, expected {host}; reconcile remote jobs",
+                           reconcilable=False)
     jid = m.group(1)
     while True:
         if time.time() > deadline:
@@ -856,18 +969,22 @@ def resolve_links(repo, recipe, work):
     return {**recipe, "links": links}, pinned
 
 
-def result_path(cache_dir, tree, pinned=None, slug=""):
+def result_path(cache_dir, tree, pinned=None, slug="", host=None):
     """Where one check's result for one tree (and these linked shas) is kept. The key is the tree, not the
-    commit: the merge the gate makes of a change this server passed has exactly the tree that was tested."""
+    commit: the merge the gate makes of a change this server passed has exactly the tree that was tested.
+    A check that may run on more than one host keeps one result per host (`host`): Mac4 and Mac5 carry different
+    Xcodes and simulator runtimes, so a test may fail on one alone, and comparing a candidate with main's result
+    from the other host would blame the change for the machine, or wave a real failure through."""
     key = "t" + tree[:16] + "".join(f"-{b}{sha[:12]}" for b, sha in sorted((pinned or {}).items()))
+    key += f"-@{host}" if host else ""
     return os.path.join(cache_dir, f"baseline-{slug + '-' if slug else ''}{key}.json")
 
 
-def remember(cache_dir, tree, res, pinned=None, slug="", flaky=frozenset()):
+def remember(cache_dir, tree, res, pinned=None, slug="", flaky=frozenset(), host=None):
     """Keep a passed candidate's result as the result of the tree it ran on. When the gate merges it, base main
     is that tree, and the next change is compared with this instead of a second run of main's tests. A test
     that failed and then passed on the rerun is not kept as failing: the next change gets its own rerun."""
-    tmp = result_path(cache_dir, tree, pinned, slug) + ".part"
+    tmp = result_path(cache_dir, tree, pinned, slug, host) + ".part"
     with open(tmp, "w") as f:
         json.dump({**res, "failing": sorted(set(res["failing"]) - set(flaky)), "from": "candidate"}, f)
     os.replace(tmp, tmp[:-5])
@@ -897,10 +1014,10 @@ def carry(cache_dir, main_tree, tree, tested=()):
             os.replace(new + ".part", new)
 
 
-def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None, slug=""):
+def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None, slug="", host=None):
     """Main's own failures for this tree (and these linked shas), measured once per check, or taken from the
-    passed candidate whose merge made this tree."""
-    path = result_path(cache_dir, git(repo, "rev-parse", main_sha + "^{tree}").strip(), pinned, slug)
+    passed candidate whose merge made this tree. With `host`, measured on that host and kept for it alone."""
+    path = result_path(cache_dir, git(repo, "rev-parse", main_sha + "^{tree}").strip(), pinned, slug, host)
     try:
         with open(path) as f:
             d = json.load(f)
@@ -909,7 +1026,7 @@ def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None, slu
         pass
     git(repo, "checkout", "-q", "-f", "--detach", main_sha)
     git(repo, "clean", "-q", "-ffd")
-    res = reached(run_job(repo, recipe, f"verify-{base}-main", deadline), "base main")
+    res = reached(run_job(repo, recipe, f"verify-{base}-main", deadline, host=host), "base main")
     tmp = path + ".part"
     with open(tmp, "w") as f:
         json.dump({**res, "failing": sorted(res["failing"])}, f)
@@ -917,14 +1034,14 @@ def baseline(repo, base, main_sha, recipe, deadline, cache_dir, pinned=None, slu
     return res
 
 
-def rerun(repo, recipe, base, cand, new, deadline):
+def rerun(repo, recipe, base, cand, new, deadline, host=None):
     """The new failures that pass when run again on their own: flaky, not the change's doing.
 
     A test counts only if the rerun executed it; one the rerun could not name or select stays a failure.
     Only xcodebuild can be told which tests to run; any other check is run again whole, and a rerun that
     did not get as far as the first run proves nothing."""
     if parse_kinds(recipe) != ["xcodebuild"]:
-        res = run_job(repo, recipe, f"verify-{base}-rerun", deadline)
+        res = run_job(repo, recipe, f"verify-{base}-rerun", deadline, host=host)
         if res.get("unreached") or res["build_failed"] or (res["executed"] or 0) < (cand["executed"] or 0):
             return set()
         return set(new) - res["failing"]
@@ -935,7 +1052,7 @@ def rerun(repo, recipe, base, cand, new, deadline):
         return set()
     at = cmd.index("test") + 1
     cmd[at:at] = [f"-only-testing:{i}" for i in sorted(ids.values())]
-    res = run_job(repo, {**recipe, "command": cmd}, f"verify-{base}-rerun", deadline)
+    res = run_job(repo, {**recipe, "command": cmd}, f"verify-{base}-rerun", deadline, host=host)
     if res["build_failed"] or (res["executed"] or 0) < len(ids):
         return set()
     return set(ids) - res["failing"]
@@ -1081,19 +1198,21 @@ def verify(req, cfg=None, now=None):
                 on_main = False
             check, pinned = resolve_links(repo, check, work)
             cand = reached(run_job(repo, check, f"verify-{tag}", deadline), "the candidate")
+            # A check with more than one placement is compared per host: main's result where the candidate ran.
+            per_host = cand.get("host") if len(placements_of(check)) > 1 else None
             base_res = None
             if cand["build_failed"] or cand["failing"]:
-                base_res = baseline(repo, tag, main_sha, check, deadline, work, pinned, slug)
+                base_res = baseline(repo, tag, main_sha, check, deadline, work, pinned, slug, per_host)
                 on_main = True
             flaky = set()
             new = cand["failing"] - (base_res["failing"] if base_res else set())
             if new and not cand["build_failed"]:
                 build_tree(repo, "refs/verify/main", head)  # the baseline may have left main checked out
                 on_main = False
-                flaky = rerun(repo, check, tag, cand, new, deadline)
+                flaky = rerun(repo, check, tag, cand, new, deadline, per_host)
             ok, summary = judge(cand, base_res, flaky)
             if ok and not cand.get("unreached"):
-                remember(work, tree, cand, pinned, slug, flaky)
+                remember(work, tree, cand, pinned, slug, flaky, per_host)
             if unmatched:
                 summary += f"; {len(unmatched)} asset(s) not as main declares"
             log("verdict", base=base, repo=repo_name, head=head, main=main_sha, links=pinned, ok=ok, summary=summary,
@@ -1102,6 +1221,45 @@ def verify(req, cfg=None, now=None):
                 **({"check": check["name"], "uncovered": uncovered[:20]} if slug else {}))
             runs.append({"name": run_name(check, outcome(cand, base_res)), "ok": ok, "output": summary})
         return {"runs": runs}
+
+
+def probe(base, recipe, host, only=None, cfg=None, deadline_s=DEFAULT_DEADLINE_S * 3):
+    """Run a recipe's simulator checks on base main, pinned to one host, and return what each found. For proving a
+    new placement before its recipe lands: nothing is cached, no verdict is made, and the tree is the probe's own
+    (ROOT/probe-<base>), never the one the live server is verifying in. A check that runs nowhere near `host`
+    (no placement there) is reported, not run."""
+    cfg = cfg or load_config()
+    if base not in cfg.get("bases", {}):
+        raise Unjudged(f"{base}: not a base in {CONFIG}")
+    work = os.path.join(ROOT, f"probe-{base}")
+    repo = os.path.join(work, "tree")
+    if not os.path.exists(os.path.join(repo, ".git")):
+        os.makedirs(work, exist_ok=True)
+        subprocess.run(["git", "init", "-q", "--separate-git-dir", os.path.join(work, "git"), repo], check=True,
+                       capture_output=True)
+    r = subprocess.run([FETCH, base, "-q", "+refs/heads/main:refs/verify/main"], cwd=repo, capture_output=True, text=True)
+    if r.returncode:
+        raise Unjudged(f"fetch {base}: {(r.stderr or r.stdout).strip()[-160:]}")
+    main_sha = git(repo, "rev-parse", "refs/verify/main").strip()
+    git(repo, "checkout", "-q", "-f", "--detach", main_sha)
+    git(repo, "clean", "-q", "-ffd")
+    copied, unmatched = ensure_assets(repo, "refs/verify/main", cfg["bases"][base].get("sources", []))
+    out = []
+    for check in checks_of(recipe):
+        name = check.get("name", "build+test")
+        if (only and name != only) or check.get("need", "sims") != "sims":
+            continue
+        if host not in [p["host"] for p in placements_of(check)]:
+            out.append({"check": name, "host": host, "skipped": "no placement on this host"})
+            continue
+        check, pinned = resolve_links(repo, check, work)
+        slug = slug_of(name) if "checks" in recipe else ""
+        res = run_job(repo, check, f"probe-{base}-{slug}".rstrip("-"), time.time() + deadline_s, host=host)
+        out.append({"check": name, "host": res.get("host"), "job": res["job"], "main": main_sha, "links": pinned,
+                    "executed": res["executed"], "skipped": res.get("skipped"), "failing": sorted(res["failing"]),
+                    "build_failed": res["build_failed"], "unreached": res.get("unreached"),
+                    "assets": {"copied": copied, "unmatched": unmatched[:20]}})
+    return out
 
 
 # ---- HTTP ----
@@ -1167,7 +1325,20 @@ def main():
     c.add_argument("repo")
     c.add_argument("head")
     c.add_argument("--branch", default="main")
+    pr = sub.add_parser("probe")
+    pr.add_argument("base")
+    pr.add_argument("recipe", help="a .foundry/verify.json to run (the proposed recipe, before it lands)")
+    pr.add_argument("--host", required=True, choices=SIM_HOSTS)
+    pr.add_argument("--check", help="only the check with this name")
     a = ap.parse_args()
+    if a.cmd == "probe":
+        with open(a.recipe) as f:
+            recipe = json.load(f)
+        try:
+            print(json.dumps(probe(a.base, recipe, a.host, a.check), indent=1))
+        except Unjudged as e:
+            sys.exit(f"not run: {e}")
+        return
     if a.cmd == "check":
         try:
             print(json.dumps(verify({"repo": a.repo, "headSha": a.head, "baseBranch": a.branch}), indent=1))

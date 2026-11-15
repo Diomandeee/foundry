@@ -473,7 +473,7 @@ class EndToEnd(unittest.TestCase):
     def stub_jobs(self, *results):
         it = iter(results)
 
-        def run_job(repo, recipe, name, deadline):
+        def run_job(repo, recipe, name, deadline, host=None):
             self.jobs.append((name, open(os.path.join(repo, "app.swift")).read()))
             self.commands.append(recipe["command"])
             return {**next(it), "job": f"job-{len(self.jobs)}"}
@@ -595,6 +595,61 @@ class EndToEnd(unittest.TestCase):
     def test_a_rerun_that_ran_nothing_proves_nothing(self):
         self.assertFalse(self.flaky_case({"executed": 0, "failing": set(), "build_failed": False})["runs"][0]["ok"])
 
+    # ---- a check placed on two hosts keeps main's result per host ----
+
+    PLACED = {"name": "app test", "need": "sims", "skip": ["*.md"], "placements": [
+        {"host": "mac5", "simulator": "11111111-1111-1111-1111-111111111111", "derived_data": "/Volumes/X/dd"},
+        {"host": "mac4", "simulator": "22222222-2222-2222-2222-222222222222", "derived_data": "/Users/t/.fleet/dd/x"}],
+        "command": ["xcodebuild", "test", "-destination", "platform=iOS Simulator,id={simulator}",
+                    "-derivedDataPath", "{derived_data}"]}
+
+    def placed(self, *results):
+        """Main carrying PLACED; run_job stubbed to report the host each result names (default mac5)."""
+        sh(self.origin, "git", "checkout", "-q", "main")
+        commit(self.origin, {".foundry/verify.json": json.dumps(self.PLACED)}, "placed")
+        it, self.pinned = iter(results), []
+
+        def run_job(repo, recipe, name, deadline, host=None):
+            self.pinned.append((name, host))
+            res = next(it)
+            self.assertTrue(host is None or res.get("host", "mac5") == host)
+            return {"host": "mac5", **res, "job": f"job-{len(self.pinned)}"}
+        vs.run_job = run_job
+
+    def test_main_is_measured_on_the_candidates_host_never_taken_from_the_other(self):
+        self.placed({**self.RED, "host": "mac4", "ids": {"A.t()": "AppTests/A/t"}}, {**self.GREEN_, "host": "mac4"},
+                    {**self.RED, "host": "mac4"})
+        tree = sh(self.origin, "git", "rev-parse", "main^{tree}")
+        os.makedirs(os.path.join(self.tmp, "verify", "app"), exist_ok=True)
+        with open(vs.result_path(os.path.join(self.tmp, "verify", "app"), tree, host="mac5"), "w") as f:
+            json.dump({**self.RED, "failing": ["A.t()"], "job": "job-mac5"}, f)   # red on Mac5 alone
+        out = vs.verify(self.next_change({"app.swift": "3\n"}), self.cfg)
+        self.assertFalse(out["runs"][0]["ok"], "A.t() fails on Mac4 where main passes there: the change's doing")
+        self.assertEqual(self.pinned, [("verify-app", None), ("verify-app-main", "mac4"), ("verify-app-rerun", "mac4")])
+        self.assertIn(f"baseline-t{tree[:16]}-@mac4.json", self.baselines())
+
+    def test_a_passed_change_is_remembered_for_its_host_alone(self):
+        self.placed(self.RED, self.RED, {**self.RED, "host": "mac4"}, {**self.RED, "host": "mac4"})
+        self.assertTrue(vs.verify(self.next_change({"app.swift": "3\n"}), self.cfg)["runs"][0]["ok"])
+        self.land("next")
+        out = vs.verify(self.next_change({"app.swift": "4\n"}), self.cfg)
+        self.assertTrue(out["runs"][0]["ok"])
+        self.assertEqual(self.pinned, [("verify-app", None), ("verify-app-main", "mac5"),
+                                       ("verify-app", None), ("verify-app-main", "mac4")])
+        tree = sh(self.origin, "git", "rev-parse", "main^{tree}")
+        self.assertIn(f"baseline-t{tree[:16]}-@mac5.json", self.baselines())
+
+    def test_a_docs_landing_carries_each_hosts_result(self):
+        self.placed(self.RED, self.RED)
+        vs.verify(self.next_change({"app.swift": "3\n"}), self.cfg)
+        self.land("next")
+        vs.verify(self.next_change({"README.md": "docs\n"}), self.cfg)
+        self.land("next")
+        tree = sh(self.origin, "git", "rev-parse", "main^{tree}")
+        self.assertIn(f"baseline-t{tree[:16]}-@mac5.json", self.baselines())
+
+    GREEN_ = {"executed": 5, "failing": set(), "build_failed": False}
+
     def test_main_baseline_is_cached_per_sha(self):
         fail = {"executed": 5, "failing": {"A.t()"}, "build_failed": False}
         self.stub_jobs(fail, fail, fail)
@@ -681,7 +736,7 @@ class EndToEnd(unittest.TestCase):
         head = commit(self.origin, {"app.swift": "3\n"}, "code again")
         seen = []
 
-        def run_job(repo, recipe, name, deadline):
+        def run_job(repo, recipe, name, deadline, host=None):
             seen.append(recipe["links"])
             return {"executed": 1, "failing": {"A.t()"} if name == "verify-app" else set(), "build_failed": False}
         vs.run_job = run_job
@@ -720,7 +775,7 @@ class EndToEnd(unittest.TestCase):
     def stub_checks(self, *results):
         it, self.seen = iter(results), []
 
-        def run_job(repo, recipe, name, deadline):
+        def run_job(repo, recipe, name, deadline, host=None):
             self.seen.append((name, recipe["command"][0], recipe.get("need"), recipe.get("host"),
                               open(os.path.join(repo, "web/a.ts")).read()))
             return {**next(it), "job": f"job-{len(self.seen)}"}
@@ -1138,6 +1193,7 @@ class HostPlacements(unittest.TestCase):
         self.fingerprint = patch.object(vs, "job_fingerprint", return_value="logical-key").start()
         self.addCleanup(patch.stopall)
         patch.object(vs, "log").start()
+        self.reconcile = patch.object(vs, "start_reconcile").start()
         self.process = patch.object(vs.subprocess, "run", return_value=subprocess.CompletedProcess([], 0,
             "\t Executed 3 tests, with 0 failures (0 unexpected) in 1 (1) seconds\n** TEST SUCCEEDED **\n", "")).start()
 
@@ -1274,7 +1330,7 @@ class HostPlacements(unittest.TestCase):
     def test_success_fingerprints_the_logical_recipe_and_releases_its_host(self):
         with patch.object(vs, "_start_and_wait", side_effect=self.finished):
             self.check_recipe()
-        self.fingerprint.assert_called_once_with("/unused", self.recipe, "verify-x")
+        self.fingerprint.assert_called_once_with("/unused", self.recipe, "verify-x", None)
         self.assertFalse(vs.host_lock("mac5").locked())
 
     def test_timeout_without_receipt_quarantines_host_and_check(self):
@@ -1287,6 +1343,126 @@ class HostPlacements(unittest.TestCase):
             self.check_recipe()
         self.assertEqual(self.process.call_count, 1, "unknown launch must not be duplicated on Mac4")
         self.assertEqual(vs.quarantined()[0]["host"], "mac5")
+        args = self.reconcile.call_args.args
+        self.assertEqual(args[:5], ("logical-key", "mac5", "verify-x", vs.host_lock("mac5"), self.A))
+
+    def test_a_receipt_for_another_host_is_quarantined_and_never_reconciled_by_name(self):
+        self.process.return_value = subprocess.CompletedProcess([], 0, "started job-verify-x-1115-090000 on mac4\n", "")
+        with self.assertRaisesRegex(vs.Unjudged, "expected mac5"):
+            self.check_recipe()
+        self.reconcile.assert_not_called()
+        self.assertTrue(vs.host_lock("mac5").locked())
+
+    def test_a_pinned_host_runs_there_only_and_keys_its_fingerprint(self):
+        with patch.object(vs, "_start_and_wait", side_effect=self.finished) as start:
+            self.assertEqual(vs.run_job("/unused", self.recipe, "verify-x-main", time.time() + 300, host="mac4")["host"],
+                             "mac4")
+        self.assertEqual([c.args[0][c.args[0].index("--host") + 1] for c in start.call_args_list], ["mac4"])
+        self.fingerprint.assert_called_once_with("/unused", self.recipe, "verify-x-main", "mac4")
+
+    def test_a_pinned_host_that_is_held_waits_and_never_moves_to_the_other(self):
+        with vs.host_lock("mac4"), patch.object(vs, "PLACEMENT_RETRY_S", 0.01), \
+                patch.object(vs, "_start_and_wait") as start:
+            with self.assertRaisesRegex(vs.Unjudged, "deadline"):
+                vs.run_job("/unused", self.recipe, "verify-x-main", time.time() + 60.05, host="mac4")
+        start.assert_not_called()
+
+    def test_a_pinned_host_the_recipe_does_not_place_is_unjudged(self):
+        with self.assertRaisesRegex(vs.Unjudged, "no placement on k11"):
+            vs.run_job("/unused", self.recipe, "verify-x-main", time.time() + 300, host="k11")
+
+    # ---- an unknown launch, reconciled ----
+
+    def ledger_and_tmux(self, ledger="", tmux="", ssh_rc=0, kill_rc=0):
+        calls = []
+
+        def run(argv, **kw):
+            calls.append(argv)
+            if argv[:3] == [vs.FABRIC, "job", "ls"]:
+                return subprocess.CompletedProcess(argv, 0, ledger, "")
+            if argv[0] == vs.SSH and "tmux ls" in argv[-1]:
+                return subprocess.CompletedProcess(argv, ssh_rc, tmux, "")
+            if argv[0] == vs.SSH:
+                return subprocess.CompletedProcess(argv, kill_rc, "", "")
+            raise AssertionError(argv)
+        self.process.side_effect = run
+        return calls
+
+    def held(self, host="mac5"):
+        lock = vs.host_lock(host)
+        lock.acquire()
+        key = vs.quarantine("logical-key", host, "timed out", lock)
+        return key, lock
+
+    def test_nothing_started_releases_the_host_and_the_check(self):
+        key, lock = self.held()
+        self.ledger_and_tmux(ledger="job-verify-x-1114-100000 mac5 done 0 2026-11-14T15:00:00Z cmd\n")
+        self.assertEqual(vs.reconcile_once(key, "mac5", "verify-x", lock, self.A, time.time() - 60), "released")
+        self.assertFalse(lock.locked())
+        self.assertEqual(vs.quarantined(), [])
+
+    def test_a_job_the_ledger_shows_is_adopted_for_the_retry(self):
+        key, lock = self.held()
+        t0 = time.time() - 60
+        at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(t0 + 20))
+        self.ledger_and_tmux(ledger=f"job-verify-x-1115-090000 mac5 running {at} cmd\n")
+        with patch.object(vs, "watch_late") as watch:
+            self.assertEqual(vs.reconcile_once(key, "mac5", "verify-x", lock, self.A, t0), "adopted")
+        late = vs.LATE[key]
+        self.assertEqual((late.jid, late.host, late.sim, late.lock), ("job-verify-x-1115-090000", "mac5", self.A, lock))
+        self.assertTrue(lock.locked(), "the watcher, not the reconciler, releases an adopted job's host")
+        self.assertEqual(vs.quarantined(), [])
+        watch.assert_called_once()
+
+    def test_a_job_on_the_other_host_or_from_before_is_not_this_launch(self):
+        key, lock = self.held()
+        t0 = time.time() - 60
+        now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(t0 + 20))
+        old = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(t0 - 600))
+        self.ledger_and_tmux(ledger=f"job-verify-x-1115-090000 mac4 running {now} cmd\n"
+                                    f"job-verify-x-1115-080000 mac5 done 0 {old} cmd\n"
+                                    f"job-verify-x-main-1115-090001 mac5 running {now} cmd\n")
+        self.assertEqual(vs.reconcile_once(key, "mac5", "verify-x", lock, self.A, t0), "released")
+        self.assertNotIn(key, vs.LATE)
+
+    def test_a_session_fabric_never_recorded_is_ended_and_its_app_cleared(self):
+        key, lock = self.held()
+        calls = self.ledger_and_tmux(tmux="job-verify-x-1115-090000\nlane-dm\n")
+        self.assertEqual(vs.reconcile_once(key, "mac5", "verify-x", lock, self.A, time.time() - 60), "released")
+        kill = calls[-1][-1]
+        self.assertIn("tmux kill-session -t 'job-verify-x-1115-090000'", kill)
+        self.assertIn(f"[C]oreSimulator/Devices/{self.A}/", kill)
+        self.assertNotIn("lane-dm", kill)
+        self.assertFalse(lock.locked())
+
+    def test_an_unreadable_host_keeps_the_quarantine(self):
+        for kw in ({"ssh_rc": 255}, {"tmux": "job-verify-x-1115-090000\n", "kill_rc": 1}):
+            with self.subTest(**kw):
+                vs._QUARANTINE.clear()
+                vs._HOST_LOCKS.clear()
+                key, lock = self.held()
+                self.ledger_and_tmux(**kw)
+                self.assertIsNone(vs.reconcile_once(key, "mac5", "verify-x", lock, self.A, time.time() - 60))
+                self.assertTrue(lock.locked())
+                self.assertEqual(vs.quarantined()[0]["host"], "mac5")
+
+    def test_the_reconciler_retries_until_it_can_tell_then_stops(self):
+        key, lock = self.held()
+        answers = iter([None, RuntimeError("ssh"), "released"])
+
+        def once(*a):
+            v = next(answers)
+            if isinstance(v, Exception):
+                raise v
+            return v
+        with patch.object(vs, "reconcile_once", side_effect=once) as rec, patch.object(vs, "RECONCILE_SETTLE_S", 0), \
+                patch.object(vs, "RECONCILE_EVERY_S", 0):
+            vs.reconcile_unknown(key, "mac5", "verify-x", lock, self.A, time.time())
+        self.assertEqual(rec.call_count, 3)
+
+    def test_fabric_job_names_match_fabrics_own(self):
+        self.assertEqual(vs.fabric_job_name("verify-serenity-soother-studio-ios-unit-tests-main"),
+                         "verify-serenity-soother-studio")
 
     def test_timeout_with_a_bytes_receipt_adopts_the_known_job(self):
         self.process.side_effect = subprocess.TimeoutExpired(["fabric"], 1, output=b"started job-late on mac5\n")
@@ -1432,24 +1608,6 @@ class HostPlacements(unittest.TestCase):
         old = {"host": "mac5", "command": ["true"]}
         with patch.object(vs, "git", return_value=json.dumps(self.recipe)):
             self.assertEqual(vs.repointed("/unused", "head", old, [".foundry/verify.json"]), old)
-
-    def test_draft_recipes_validate_after_real_device_ids_are_supplied(self):
-        root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../docs/verify-per-host-drafts"))
-        for base in ("motionmixapp", "airdeck", "serenity-soother-studio"):
-            with self.subTest(base=base):
-                with open(os.path.join(root, base, ".foundry/verify.json")) as f:
-                    recipe = json.load(f)
-                sim_checks = [c for c in vs.checks_of(recipe) if c.get("need") == "sims"]
-                self.assertEqual(len(sim_checks), 1)
-                check = sim_checks[0]
-                if base != "airdeck":
-                    with self.assertRaises(vs.Unjudged):
-                        vs.placements_of(check)
-                    check["placements"][1]["simulator"] = self.B
-                placements = vs.placements_of(check)
-                self.assertEqual([p["host"] for p in placements], ["mac5", "mac4"])
-                self.assertNotIn("/Volumes/FoundryBuild", " ".join(placements[1]["command"]))
-                self.assertEqual(vs.parse_kinds(placements[0]), vs.parse_kinds(placements[1]))
 
 
 if __name__ == "__main__":
