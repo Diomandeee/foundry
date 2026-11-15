@@ -1,7 +1,7 @@
 // Gate worker: consumes Artifacts repo events, runs decide→merge→record.
 // Production deps: CloudflareAdapter + D1 stores + IsomorphicMerger/memfs.
 import { memfs } from "memfs";
-import { cloudflarePort } from "@foundry/artifacts-port";
+import { appendOnlyPathsFrom, cloudflarePort } from "@foundry/artifacts-port";
 import {
   isVerdictRecord,
   KGClient,
@@ -55,6 +55,9 @@ function depsFromEnv(env: Env): PipelineDeps {
     deps.verifyEnforce = env.VERIFY_ENFORCE === "1";
   }
   deps.verifyRequireChecked = env.VERIFY_REQUIRE_CHECKED === "1";
+  // Paths where two landings that each append merge instead of conflicting. Unset: docs/LOG.md. A base
+  // adds its own in .foundry/gate.json ({"appendOnly": [...]}) at its head.
+  deps.appendOnlyPaths = appendOnlyPathsFrom(env.GATE_APPEND_ONLY_PATHS);
   if (env.DEBUG === "1") deps.debug = true;
   return deps;
 }

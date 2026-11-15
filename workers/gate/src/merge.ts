@@ -6,6 +6,7 @@ import git from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 import {
   StaleBaseError,
+  isAppendMergeOf,
   type MergeRequest,
   type Merger,
 } from "@foundry/artifacts-port";
@@ -41,8 +42,10 @@ function mergePath(path:string):void{
     path.split('/').some(p=>!p||p==='.'||p==='..'||p.toLowerCase()==='.git'))throw new Error('merge: unsafe path');
 }
 /** The tree a merge must land: base plus the admitted change. Exported for tests. */
-export async function admissionOverlay(base:Map<string,string>,proposal:Map<string,string>,req:Pick<MergeRequest,'files'|'deletedFiles'>):Promise<Map<string,string>>{
+export async function admissionOverlay(base:Map<string,string>,proposal:Map<string,string>,req:Pick<MergeRequest,'files'|'deletedFiles'|'appended'>):Promise<Map<string,string>>{
   const expected=new Map(base);
+  const appended=req.appended??{};
+  for(const path of Object.keys(appended))if(!Object.hasOwn(req.files,path))throw new Error('merge: appended path is not admitted');
   // Deletions first, as the merger applies them, so a file -> directory change (or back) is admissible.
   for(const path of req.deletedFiles){mergePath(path);if(proposal.has(path)||Object.hasOwn(req.files,path))throw new Error('merge: deletion not absent');expected.delete(path);}
   for(const [path,content] of Object.entries(req.files)){
@@ -53,7 +56,11 @@ export async function admissionOverlay(base:Map<string,string>,proposal:Map<stri
     const entry=proposal.get(path);
     if(entry!==`100644 blob ${oid}`&&entry!==`100755 blob ${oid}`)throw new Error('merge: unsupported or substituted proposal entry');
     const old=expected.get(path);if(old&&!/^100(644|755) blob /.test(old))throw new Error('merge: unsupported destination entry');
-    expected.set(path,entry);
+    // An append-only path both sides added to lands the merged text, in the proposal's mode.
+    if(Object.hasOwn(appended,path)){
+      const merged=await git.hashBlob({object:new TextEncoder().encode(appended[path])});
+      expected.set(path,`${entry.slice(0,6)} blob ${merged.oid}`);
+    }else expected.set(path,entry);
   }
   // A path is a file or a directory, never both.
   for(const path of expected.keys()){const parts=path.split('/');for(let i=1;i<parts.length;i++)if(expected.has(parts.slice(0,i).join('/')))throw new Error('merge: destination ancestor is not directory');}
@@ -95,6 +102,14 @@ export class IsomorphicMerger implements Merger {
     const proposal=await completeTree(fs,proposalDir,proposalHead);
     const base=await completeTree(fs,dir,req.expectedBaseSha);
     const expected=await admissionOverlay(base,proposal,req);
+    // Each appended text must be the base head's file unchanged plus only a tail of the proposal's.
+    const appended=Object.entries(req.appended??{});
+    if(appended.length&&!req.expectedBaseSha)throw new Error('merge: appended paths need a base head');
+    for(const [path,text] of appended){
+      const {blob}=await git.readBlob({fs,dir,oid:req.expectedBaseSha!,filepath:path});
+      if(!isAppendMergeOf(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(blob),req.files[path],text))
+        throw new Error(`merge: ${path} appended text is not the base head plus the proposal's tail`);
+    }
     // The base already holds exactly base + change: a lane re-pushed a change that merged under an
     // earlier sha (foundry_ops land amends and pushes again when no verdict arrives in time). Nothing
     // to land, and the base head is truthfully where the change is; erroring here retried forever (643).
@@ -122,10 +137,11 @@ export class IsomorphicMerger implements Merger {
     const modes = await proposalModes(this.fs, proposalDir, proposalHead, req.files);
     let sha: string;
     try {
+      // The admitted text, with each appended path's merged text in place of the proposal's.
       sha = await commitForkFiles(
         this.fs,
         workDir,
-        req.files,
+        { ...req.files, ...req.appended },
         req.message,
         req.author,
         req.forkHeadSha,

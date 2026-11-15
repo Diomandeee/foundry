@@ -33,6 +33,8 @@ export interface PipelineDeps {
   verifyEnforce?: boolean;
   /** Independent owner-selected fail-closed requirement; default preserves legacy policy. */
   verifyRequireChecked?:boolean;
+  /** Gate-wide append-only paths (GATE_APPEND_ONLY_PATHS); unset means DEFAULT_APPEND_ONLY_PATHS. */
+  appendOnlyPaths?: readonly string[];
   /** When true, pipeline-error reasons carry the stack (DEBUG=1). */
   debug?: boolean;
 }
@@ -87,6 +89,7 @@ export async function handlePush(
         ? { check: deps.planCheck, enforce: deps.planCheckEnforce }
         : undefined,
       receivedAt,
+      deps.appendOnlyPaths,
     );
 
     if (decision.verdict === "merge") {
@@ -146,6 +149,7 @@ export async function handlePush(
           forkHeadSha: push.after,
           files: decision.files,
           deletedFiles: decision.deletedFiles,
+          appended: decision.appended,
           message: `Merge ${push.repo}@${push.after.slice(0, 8)}`,
           author: "foundry",
           expectedBaseSha: decision.baseHead ?? undefined,

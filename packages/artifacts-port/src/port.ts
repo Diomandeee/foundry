@@ -77,6 +77,13 @@ export interface MergeRequest {
   files: Record<string, string>;
   /** Fork-side deletions the merger must apply (true merges handle natively). */
   deletedFiles: string[];
+  /**
+   * Append-only paths both sides added to (append-log.ts): path -> the text to land, the base head's file
+   * plus the proposal's appended tail. `files` still carries the proposal's own text for these paths, which
+   * the merger binds to the proposal as usual; it then lands this text instead, once it has checked that
+   * the text is the base head's file followed only by a tail of the proposal's.
+   */
+  appended?: Record<string, string>;
   message: string;
   author: string;
   /** Base head the decision was made against; merger must refuse if moved. */

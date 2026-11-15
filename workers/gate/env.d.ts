@@ -26,5 +26,10 @@ interface Env {
   VERIFY_TIMEOUT_MS?: string;
   /** Workers VPC binding to a private verifier; VERIFY_URL is then fetched through it. */
   VERIFY_SERVICE?: Fetcher;
+  /**
+   * Comma or newline separated append-only paths, where two appends merge instead of conflicting.
+   * Unset: docs/LOG.md. Empty: none gate-wide (a base's .foundry/gate.json still counts).
+   */
+  GATE_APPEND_ONLY_PATHS?: string;
   DEBUG?: string;
 }
