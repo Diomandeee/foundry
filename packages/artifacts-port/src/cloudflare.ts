@@ -2,13 +2,14 @@
 // Written against the Workers-binding docs; INTEGRATION-TESTED ONLY AFTER
 // the Paid plan lands (spike). Logic must not depend on binding-specific
 // behavior beyond this file.
-import type {
-  ArtifactsPort,
-  CommitInfo,
-  CreatedRepo,
-  CreateOpts,
-  ForkResult,
-  RepoHandle,
+import {
+  UnsupportedContentError,
+  type ArtifactsPort,
+  type CommitInfo,
+  type CreatedRepo,
+  type CreateOpts,
+  type ForkResult,
+  type RepoHandle,
 } from "./port.js";
 
 type Binding = any; // narrowed by worker-configuration.d.ts at deploy time
@@ -20,8 +21,16 @@ type RepoBinding = any;
  * uncertainty, never a truncated complete diff. */
 const DIFF_ENTRY_BUDGET = 20000;
 const DIFF_PATH_BUDGET = 5000;
-async function diffTrees(binding:RepoBinding, mine:string|null, theirs:string|null):Promise<string[]> {
-  const out:string[]=[];let visited=0;
+/** What a non-tree entry is when it is not a regular or executable file; null when it is one. Modes may come
+ * as octal text or as a number. */
+function unsupportedKind(e:{type:string,mode:unknown}):string|null{
+  const mode=typeof e.mode==='number'?e.mode.toString(8):String(e.mode);
+  if(e.type==='symlink'||mode==='120000')return 'symlink';
+  if(e.type==='gitlink'||e.type==='commit'||mode==='160000')return 'submodule';
+  return mode==='100644'||mode==='100755'?null:`mode ${mode}`;
+}
+async function diffTrees(binding:RepoBinding, mine:string|null, theirs:string|null):Promise<{paths:string[],unsupported:Record<string,string>}> {
+  const out:string[]=[];const unsupported:Record<string,string>=Object.create(null);let visited=0;
   async function read(hash:string|null):Promise<Map<string,{hash:string,type:string,mode:unknown}>>{
     const m=new Map<string,{hash:string,type:string,mode:unknown}>();
     if(hash===null)return m;
@@ -48,12 +57,14 @@ async function diffTrees(binding:RepoBinding, mine:string|null, theirs:string|nu
       if(ta!==null||tb!==null)await walk(ta,tb,path,depth+1);
       // A non-tree entry on either side is a changed file path (added, removed, edited, or tree<->file).
       if((ea&&ea.type!=='tree')||(eb&&eb.type!=='tree'))add(path);
+      const kind=ea&&ea.type!=='tree'?unsupportedKind(ea):null;
+      if(kind)unsupported[path]=kind;
     }
   }
   await walk(mine,theirs,'',0);
-  return out.sort();
+  return {paths:out.sort(),unsupported};
 }
-async function diffFiles(binding:RepoBinding,c:any):Promise<string[]>{
+async function diffFiles(binding:RepoBinding,c:any):Promise<{paths:string[],unsupported:Record<string,string>}>{
   if(!Array.isArray(c.parents))throw new Error('artifacts: parent metadata');
   let parentTree:string|null=null;
   if(c.parents.length){
@@ -82,8 +93,11 @@ function toHandle(
     async readFile(ref: string, filePath: string) {
       const blob=await binding.readFile({ref,path:filePath});
       if(blob===null)return null; // Documented positive absence; exceptions propagate.
-      if(!blob||blob.size>8*1048576)throw new Error('artifacts: file unavailable or oversized');
-      return new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(await blob.arrayBuffer());
+      if(!blob)throw new Error('artifacts: file unavailable');
+      if(blob.size>8*1048576)throw new UnsupportedContentError(filePath,`is ${(blob.size/1048576).toFixed(1)} MiB, over the 8 MiB cap`);
+      const bytes=await blob.arrayBuffer();
+      try{return new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);}
+      catch{throw new UnsupportedContentError(filePath,'is not UTF-8 text');}
     },
     async history(ref: string, limit = 50): Promise<CommitInfo[]> {
       // Real binding: log(), not history(). Commit metadata carries no file
@@ -108,7 +122,9 @@ function toHandle(
         };
         if (out.length < FILES_CAP && sha) {
           try {
-            info.files = await diffFiles(binding, c);
+            const d = await diffFiles(binding, c);
+            info.files = d.paths;
+            if (Object.keys(d.unsupported).length) info.unsupported = d.unsupported;
           } catch {
             info.files = undefined;
           }

@@ -130,6 +130,8 @@ describe("createTask", () => {
     expect(res.baseRepo).toBe("fresh");
     expect(res.planCheck).toMatchObject({ checked: true, ok: true });
     expect(await port.list()).toEqual(["fresh", "t3--a"]);
+    // The ticket carries the chains, so the gate can check them again at merge time.
+    expect((await tickets.getTicketByFork("t3--a"))?.chains).toEqual(["chain:genesis"]);
   });
 
   it("rejects unusable chains when enforced, before forking", async () => {

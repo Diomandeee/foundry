@@ -10,6 +10,7 @@ import { tmpdir } from "node:os";
 import * as path from "node:path";
 import {
   StaleBaseError,
+  UnsupportedContentError,
   type ArtifactsPort,
   type CommitInfo,
   type CreatedRepo,
@@ -148,10 +149,15 @@ export class GitRepoHandle implements RepoHandle {
     if (commit === null) return null;
     const entries=execFileSync('git',['--literal-pathspecs',`--git-dir=${this.dir}`,'ls-tree','-z',commit,'--',filePath],{encoding:'utf8',stdio:['ignore','pipe','pipe']});
     if(entries==='')return null;
+    const link=/^(120000|160000) (?:blob|commit) [a-f0-9]{40}\t([^\0]+)\0$/.exec(entries);
+    if(link&&link[2]===filePath)throw new UnsupportedContentError(filePath,link[1]==='120000'?'is a symlink':'is a submodule');
     const match=/^([0-7]{6}) blob ([a-f0-9]{40})\t([^\0]+)\0$/.exec(entries);
     if(!match||match[3]!==filePath||match[1]!=='100644')throw new Error('artifacts: text transport supports regular nonexecutable blobs only');
+    const size=Number(execFileSync('git',[`--git-dir=${this.dir}`,'cat-file','-s',match[2]],{encoding:'utf8'}).trim());
+    if(size>8*1048576)throw new UnsupportedContentError(filePath,`is ${(size/1048576).toFixed(1)} MiB, over the 8 MiB cap`);
     const bytes=execFileSync('git',[`--git-dir=${this.dir}`,'cat-file','blob',match[2]],{stdio:['ignore','pipe','pipe'],maxBuffer:8*1048576});
-    return new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);
+    try{return new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);}
+    catch{throw new UnsupportedContentError(filePath,'is not UTF-8 text');}
   }
 
   async history(ref: string, limit = 50): Promise<CommitInfo[]> {

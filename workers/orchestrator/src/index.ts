@@ -27,8 +27,13 @@ app.post("/tasks", async (c) => {
   }
   const body = await c.req.json().catch(() => null);
   try {
+    // PACT_SERVICE routes the check to the private pact-server (Workers VPC, like the gate's verifier).
+    const pact = c.env.PACT_SERVICE;
     const planCheck = c.env.PACT_URL
-      ? new PactServerPlanCheck(c.env.PACT_URL)
+      ? new PactServerPlanCheck(
+          c.env.PACT_URL,
+          pact ? { fetcher: (url: string, init: RequestInit) => pact.fetch(url, init) } : {},
+        )
       : new StubPlanCheck();
     const result = await createTask(
       cloudflarePort(c.env),

@@ -11,8 +11,8 @@ import { newScopeToken } from "@foundry/gate-ts";
 import { InMemoryTicketStore } from "@foundry/stores";
 import { StaleBaseError, type MergeRequest } from "@foundry/artifacts-port";
 import type { Merger } from "@foundry/artifacts-port";
-import type { VerifyRequest, Verifier, VerifyVerdict } from "@foundry/verify";
-import { handlePush, type PipelineDeps } from "./pipeline.js";
+import { HttpVerifier, type VerifyRequest, type Verifier, type VerifyVerdict } from "@foundry/verify";
+import { handlePush, sentAt, type PipelineDeps } from "./pipeline.js";
 import { MemoryDecisionStore } from "@foundry/stores";
 
 let root: string;
@@ -68,6 +68,31 @@ function pushBody(repo: string, before: string, after: string) {
 }
 
 describe("handlePush pipeline", () => {
+  it("does not count the time a push waited in the gate's queue against it", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const committedAt = Date.now();
+    const late = committedAt + 10 * 60_000;
+    const waited = await handlePush(deps, "test", pushBody("task-1", baseSha, after), late, committedAt + 5_000);
+    expect(waited.handled && waited.record.verdict).toBe("merge");
+  });
+
+  it("refuses the same push as stale when nothing says it waited", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after), Date.now() + 10 * 60_000);
+    expect(res.handled && res.record.verdict).toBe("reject");
+  });
+
+  it("reads a queue message's send time, and nothing from a message without one", () => {
+    expect(sentAt({ timestamp: new Date(1_800_000_000_000) })).toBe(1_800_000_000_000);
+    expect(sentAt({ timestamp: 1_800_000_000_000 })).toBe(1_800_000_000_000);
+    expect(sentAt({ timestamp: "yesterday" })).toBeUndefined();
+    expect(sentAt({ timestamp: new Date(NaN) })).toBeUndefined();
+    expect(sentAt({})).toBeUndefined();
+    expect(sentAt(undefined)).toBeUndefined();
+  });
+
   it("merges clean pushes and lands files on base", async () => {
     const { baseSha } = await setup();
     const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
@@ -398,6 +423,25 @@ describe("required verification", () => {
     // read as the change having failed its checks.
     expect(res.record.verdict).toBe("error");
     expect(res.record.reason?.reason).toBe("infra_failure");
+  });
+
+  it("retries, never merges, when a guarding verifier answers 503 {retry: true}", async () => {
+    const { baseSha } = await setup();
+    const after = kit.commitAll(forkWork, "feat", { "feat.ts": "new\n" });
+    // The verifier is up and guards this base but could not judge the change yet (a busy
+    // build worker). Even without requireChecked, that must not read as "not checked".
+    deps.verifier = new HttpVerifier("http://verify.internal/token", {
+      fetcher: async () =>
+        new Response(JSON.stringify({ retry: true, error: "worker busy" }), { status: 503 }),
+    });
+    deps.verifyEnforce = true;
+    let merged = false;
+    const real = deps.merger;
+    deps.merger = { merge: async (r: MergeRequest) => ((merged = true), real.merge(r)) };
+    const res = await handlePush(deps, "test", pushBody("task-1", baseSha, after));
+    if (!res.handled) return expect.unreachable("expected a decision");
+    expect(res.record.verdict).toBe("error");
+    expect(merged).toBe(false);
   });
 
   it("runs no checks when no verifier is configured, exactly as before", async () => {

@@ -11,6 +11,11 @@ export interface CommitInfo {
   parents: string[];
   /** Changed paths, when the backend tracks them (fake: always). */
   files?: string[];
+  /**
+   * Changed paths this commit leaves as something other than a regular or executable file, with what they
+   * are ("symlink", "submodule"). Admission carries file contents as text, so it cannot land these.
+   */
+  unsupported?: Record<string, string>;
 }
 
 export interface RepoMeta {
@@ -82,6 +87,18 @@ export interface MergeRequest {
    * ancestry cannot be proven against it.
    */
   forkPointSha?: string;
+}
+
+/**
+ * A file the text transport cannot carry: bytes that are not UTF-8, or over the size cap. A property of the
+ * proposal, so retrying cannot change it; the gate refuses the push and names the path.
+ */
+export class UnsupportedContentError extends Error {
+  /** `why` completes the sentence "<path> ...", e.g. "is not UTF-8 text". */
+  constructor(readonly path: string, readonly why: string) {
+    super(`${path} ${why}`);
+    this.name = "UnsupportedContentError";
+  }
 }
 
 /** Base head moved between decide and merge; the decision is stale. */

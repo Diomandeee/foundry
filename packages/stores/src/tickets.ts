@@ -36,7 +36,17 @@ type TicketRow = {
   fork_repo: string;
   agent_id: string;
   scope_json: string;
+  chains_json?: string | null;
 };
+
+function reviveChains(json: string | null | undefined): string[] | undefined {
+  if (!json) return undefined;
+  const v = JSON.parse(json) as unknown;
+  if (!Array.isArray(v) || !v.every((c) => typeof c === "string")) {
+    throw new Error(`invalid chains_json: ${json}`);
+  }
+  return v.length > 0 ? v : undefined;
+}
 
 export function serializeScope(scope: ScopeToken): string {
   return JSON.stringify({
@@ -88,19 +98,26 @@ export class D1TicketStore implements TicketStore {
       forkRepo: row.fork_repo,
       agentId: row.agent_id,
       scope: reviveScope(row.scope_json),
+      ...(reviveChains(row.chains_json) ? { chains: reviveChains(row.chains_json) } : {}),
     };
   }
 
   async saveTicket(ticket: TaskTicket): Promise<void> {
+    // chains_json is written only when the task declared chains: a ledger that has not had the
+    // tickets.chains_json migration still takes every task without them (schema.sql).
+    const chains = ticket.chains && ticket.chains.length > 0 ? JSON.stringify(ticket.chains) : null;
+    const cols = chains ? ", chains_json" : "";
+    const vals = chains ? ", ?" : "";
+    const upd = chains ? ", chains_json = excluded.chains_json" : "";
     await this.db
       .prepare(
         `INSERT INTO tickets
-         (task_id, base_repo, base_sha, fork_repo, agent_id, scope_json)
-         VALUES (?, ?, ?, ?, ?, ?)
+         (task_id, base_repo, base_sha, fork_repo, agent_id, scope_json${cols})
+         VALUES (?, ?, ?, ?, ?, ?${vals})
          ON CONFLICT (fork_repo) DO UPDATE SET
            task_id = excluded.task_id, base_repo = excluded.base_repo,
            base_sha = excluded.base_sha, agent_id = excluded.agent_id,
-           scope_json = excluded.scope_json`,
+           scope_json = excluded.scope_json${upd}`,
       )
       .bind(
         ticket.taskId,
@@ -109,6 +126,7 @@ export class D1TicketStore implements TicketStore {
         ticket.forkRepo,
         ticket.agentId,
         serializeScope(ticket.scope),
+        ...(chains ? [chains] : []),
       )
       .run();
   }

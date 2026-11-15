@@ -1,11 +1,12 @@
 // decidePush — the gate's decision path. Pure over ArtifactsPort + gate-ts:
 // works identically against LocalGitAdapter (now) and CloudflareAdapter
 // (after Paid). No node imports here: this file ships in the Worker.
-import type {
-  ArtifactsPort,
-  CommitInfo,
-  PushEvent,
-  RepoHandle,
+import {
+  UnsupportedContentError,
+  type ArtifactsPort,
+  type CommitInfo,
+  type PushEvent,
+  type RepoHandle,
 } from "@foundry/artifacts-port";
 import {
   allowsPath,
@@ -24,7 +25,7 @@ import {
 
 import type { TaskTicket, TicketStore } from "@foundry/stores";
 import type { OverlapOracle } from "@foundry/lkg-client";
-import type { PlanCheck, PlanVerdict } from "@foundry/plan-check";
+import { usable, type PlanCheck, type PlanVerdict } from "@foundry/plan-check";
 
 export interface PlanCheckOpts {
   check: PlanCheck;
@@ -144,6 +145,70 @@ function unionFiles(commits: CommitInfo[]): Set<string> | null {
   return out;
 }
 
+/** The first path the proposal leaves as a symlink or submodule, judged by the newest fork-side commit that
+ * touches each path (first-parent diffs, newest first, so that commit decides what the path is at the head). */
+function firstUnsupported(commits: CommitInfo[]): { path: string; why: string } | null {
+  const seen = new Set<string>();
+  for (const c of commits) {
+    for (const f of c.files ?? []) {
+      if (seen.has(f)) continue;
+      seen.add(f);
+      const kind = c.unsupported?.[f];
+      if (kind) return { path: f, why: kind.startsWith("mode ") ? `has ${kind}` : `is a ${kind}` };
+    }
+  }
+  return null;
+}
+
+/** A proposal the text transport cannot carry is refused, not retried: the same push fails the same way
+ * every time. Until 2026-11-03 these surfaced as `infra_failure` and the queue retried them until it
+ * dropped the push (gate parity P15, P16). */
+function unsupportedReject(u: { path: string; why: string }): Decision {
+  return {
+    verdict: "reject",
+    reason: {
+      reason: "invalid_args",
+      message: `unsupported content: ${u.path} ${u.why}; the gate lands regular and executable UTF-8 text files up to 8 MiB`,
+    },
+  };
+}
+
+/**
+ * How long a push may wait in the gate's own queue before that wait starts to
+ * count against its freshness. Longer than the worst honest wait, short enough
+ * that a backlog left by an outage still ages out.
+ *
+ * The honest wait includes the verifier's own retries of one push: since
+ * 2026-11-14 a check that runs past one request's window (780 s) keeps running
+ * for up to 30 min more and a retry takes its result, so one push may span
+ * about 43 min of retries, plus checks queued ahead of it. At 30 min the gate
+ * refused such a push as stale on the retry meant to collect it (decision 2520,
+ * 797 s over).
+ */
+export const QUEUE_WAIT_CREDIT_MS = 60 * 60_000;
+
+/**
+ * The proposal time the freshness rule should see: the head commit's time,
+ * moved later by the time the push spent waiting for the gate (capped).
+ *
+ * The rule asks whether the agent proposed against a recent snapshot. The
+ * agent's own delay, commit to push, is all of that and still counts in full.
+ * Time spent queued behind another push's verification is the gate's delay:
+ * counted, it refused every push that arrived while a check of four minutes
+ * or more was running (decision 1467, 2026-11-11: 671 s old, never verified).
+ * A commit dated in the future is returned as is, so the kernel still refuses it.
+ */
+export function creditQueueWait(
+  proposedAt: number,
+  receivedAt: number,
+  now: number,
+): number {
+  const age = now - proposedAt;
+  if (!(age > 0)) return proposedAt;
+  const waited = Math.min(Math.max(0, now - receivedAt), QUEUE_WAIT_CREDIT_MS);
+  return proposedAt + Math.min(waited, age);
+}
+
 export async function decidePush(
   port: ArtifactsPort,
   tickets: TicketStore,
@@ -151,6 +216,8 @@ export async function decidePush(
   now: number = Date.now(),
   overlap?: OverlapOracle,
   planCheck?: PlanCheckOpts,
+  /** When the gate received the push (its queue message's send time). Defaults to `now`: no wait to credit. */
+  receivedAt: number = now,
 ): Promise<Decision> {
   // 0. The fork must belong to a known task.
   const ticket = await tickets.getTicketByFork(push.repo);
@@ -232,7 +299,10 @@ export async function decidePush(
           verdict: "reject",
           reason: {
             reason: "invalid_args",
-            message: `branch ${push.ref} is not in fork history at ${push.after.slice(0, 8)}`,
+            // Usually a newer push moved the branch; that push is its own event and is decided on its own.
+            message: refHead
+              ? `${push.ref} moved past ${push.after.slice(0, 8)} (now ${refHead.slice(0, 8)}); the newer push is decided on its own`
+              : `${push.ref} does not exist on the fork`,
           },
         };
       }
@@ -245,10 +315,13 @@ export async function decidePush(
     ledger.addProposal(SnapshotId.fromShortHex(push.after).toHex());
     const call = toProposedCall(ticket, push, baseHead, baseHist.length);
     // Freshness is measured from the proposal's own commit time, not the
-    // decision time: a push that sat in a queue ages out for real.
+    // decision time. The wait in the gate's own queue is taken out of it, up to
+    // QUEUE_WAIT_CREDIT_MS: past that, a push that sat in a queue ages out for real.
     const headCommit = forkHist.find((c) => c.sha === push.after);
     const proposedAt = headCommit ? Date.parse(headCommit.date) : NaN;
-    call.proposed_at = Number.isNaN(proposedAt) ? now : proposedAt;
+    call.proposed_at = Number.isNaN(proposedAt)
+      ? now
+      : creditQueueWait(proposedAt, receivedAt, now);
     const gate = checkAdmissibility(mergeSyscall(), call, state, ledger, now);
     if (!gate.ok) return { verdict: "reject", reason: gate.reason };
 
@@ -260,12 +333,7 @@ export async function decidePush(
     if (planCheck && chains.length > 0) {
       planAdvisory = await planCheck.check.check(chains);
       if (planCheck.enforce && planAdvisory.checked && !planAdvisory.ok) {
-        const bad = planAdvisory.results
-          .filter(
-            (r) =>
-              !r.found || (r.missing?.length ?? 0) > 0 || r.typechecks === false,
-          )
-          .map((r) => r.name);
+        const bad = planAdvisory.results.filter((r) => !usable(r)).map((r) => r.name);
         return {
           verdict: "reject",
           reason: {
@@ -303,14 +371,23 @@ export async function decidePush(
         reason: { reason: "path_not_allowed", path: badPath },
       };
     }
-    if(forkPaths.size>2000||[...forkPaths].some(p=>p.length>1024))return {verdict:'conflict',ticket,files:['admission-path-budget'],planAdvisory};
+    // The port's tree diff already gives up past 5,000 paths (unknown files, a conflict above). A lower
+    // cap here sent a 2,100-file import to the resolver that the deployed gate merges (gate parity P19).
+    if(forkPaths.size>5000||[...forkPaths].some(p=>p.length>1024))return {verdict:'conflict',ticket,files:['admission-path-budget'],planAdvisory};
+    const link = firstUnsupported(forkOnly);
+    if (link) return unsupportedReject(link);
     const overlapping = [...forkPaths].filter((p) => basePaths.has(p));
     const realConflicts: string[] = [];
-    for (const p of overlapping) {
-      if (baseHead === null) continue;
-      const a = await fork.readFile(push.after, p);
-      const b = await base.readFile(baseHead, p);
-      if (a !== b) realConflicts.push(p);
+    try {
+      for (const p of overlapping) {
+        if (baseHead === null) continue;
+        const a = await fork.readFile(push.after, p);
+        const b = await base.readFile(baseHead, p);
+        if (a !== b) realConflicts.push(p);
+      }
+    } catch (e) {
+      if (e instanceof UnsupportedContentError) return unsupportedReject(e);
+      throw e;
     }
     if (realConflicts.length > 0) {
       return {
@@ -345,16 +422,18 @@ export async function decidePush(
     // 3. Clean: collect fork-side file contents for the merger.
     // Paths absent on the fork side are deletions the merger must apply.
     const files: Record<string, string> = Object.create(null);
-    let admittedBytes=0;
     const deletedFiles: string[] = [];
-    for (const p of forkPaths) {
-      const content = await fork.readFile(push.after, p);
-      if (content !== null) {
-        admittedBytes+=new TextEncoder().encode(content).byteLength;
-        if(admittedBytes>8*1048576)throw new Error('admission text-byte budget');
-        files[p]=content;
+    try {
+      for (const p of forkPaths) {
+        const content = await fork.readFile(push.after, p);
+        // No total-size cap: the port refuses a file over 8 MiB, and a cap thrown here was an error the queue
+        // retried until it dropped the push, where the deployed gate merges it (gate parity P20).
+        if (content !== null) files[p] = content;
+        else deletedFiles.push(p);
       }
-      else deletedFiles.push(p);
+    } catch (e) {
+      if (e instanceof UnsupportedContentError) return unsupportedReject(e);
+      throw e;
     }
     return {
       verdict: "merge",

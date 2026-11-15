@@ -6,6 +6,8 @@ import {
   StubVerifier,
   summarize,
   truncateOutput,
+  VerifierBusy,
+  verifyTimeoutMs,
   type VerifyRequest,
 } from "./index.js";
 
@@ -89,22 +91,34 @@ describe("HttpVerifier", () => {
     if (v.checked) expect(v.runs[1].output).toBe("2 failed");
   });
 
-  it("treats a non-2xx response as an outage, not a failure", async () => {
+  // An outage is neither a verdict nor "nothing to check": it throws, the gate records
+  // `error` and retries, and the change never merges unjudged (decisions 2363/2364/2368).
+  it("throws on a non-2xx response instead of merging unchecked", async () => {
     stubFetch(() => json({ error: "boom" }, 502));
-    const v = await new HttpVerifier("https://verify.invalid").run(req);
-    expect(v.checked).toBe(false);
-    expect(v.ok).toBe(true);
-    expect(v.error).toBe("verify 502");
-    expect(blocksMerge(v, true)).toBe(false);
+    await expect(new HttpVerifier("https://verify.invalid").run(req)).rejects.toThrow(
+      new VerifierBusy("verifier unavailable: verify 502"),
+    );
   });
 
-  it("treats a transport failure as an outage", async () => {
+  it("throws on a transport failure instead of merging unchecked", async () => {
     stubFetch(() => {
       throw new Error("connect ECONNREFUSED");
     });
-    const v = await new HttpVerifier("https://verify.invalid").run(req);
-    expect(v.checked).toBe(false);
-    expect(v.ok).toBe(true);
+    await expect(new HttpVerifier("https://verify.invalid").run(req)).rejects.toBeInstanceOf(VerifierBusy);
+  });
+
+  it("throws when the verifier does not answer in time (the tunnel drop of 2026-11-14)", async () => {
+    stubFetch(() => {
+      throw new DOMException("The operation was aborted due to timeout", "TimeoutError");
+    });
+    await expect(new HttpVerifier("https://verify.invalid").run(req)).rejects.toThrow(/verifier unavailable/);
+  });
+
+  it("throws on a 2xx that is not the contract", async () => {
+    stubFetch(() => new Response("<html>tunnel error</html>", { status: 200 }));
+    await expect(new HttpVerifier("https://verify.invalid").run(req)).rejects.toBeInstanceOf(VerifierBusy);
+    stubFetch(() => json({ ok: true }));
+    await expect(new HttpVerifier("https://verify.invalid").run(req)).rejects.toBeInstanceOf(VerifierBusy);
   });
 
   it("does not read 'no checks ran' as 'everything passed'", async () => {
@@ -150,5 +164,60 @@ describe("summarize", () => {
 describe("truncateOutput", () => {
   it("leaves short output alone", () => {
     expect(truncateOutput("ok")).toBe("ok");
+  });
+});
+
+describe("verifyTimeoutMs", () => {
+  it("keeps the 120 s default when unset or unparseable", () => {
+    expect(verifyTimeoutMs(undefined)).toBe(120_000);
+    expect(verifyTimeoutMs("")).toBe(120_000);
+    expect(verifyTimeoutMs("soon")).toBe(120_000);
+    expect(verifyTimeoutMs("-5")).toBe(120_000);
+  });
+  it("takes a build-sized wait", () => {
+    expect(verifyTimeoutMs("600000")).toBe(600_000);
+  });
+  it("caps at the queue consumer's wall-time budget", () => {
+    expect(verifyTimeoutMs("3600000")).toBe(840_000);
+  });
+});
+
+describe("HttpVerifier fetcher", () => {
+  it("sends through the given fetcher instead of the global fetch", async () => {
+    const calls: string[] = [];
+    const global = vi.fn();
+    vi.stubGlobal("fetch", global);
+    const v = new HttpVerifier("http://verify.internal/tok", {
+      fetcher: async (url) => {
+        calls.push(url);
+        return new Response(JSON.stringify({ runs: [{ name: "t", ok: true }] }), { status: 200 });
+      },
+    });
+    const out = await v.run(req);
+    expect(calls).toEqual(["http://verify.internal/tok/api/verify"]);
+    expect(global).not.toHaveBeenCalled();
+    expect(out).toMatchObject({ checked: true, ok: true });
+    vi.unstubAllGlobals();
+  });
+});
+
+describe("HttpVerifier retry", () => {
+  const reply = (status: number, body: unknown) =>
+    new HttpVerifier("http://v/t", {
+      fetcher: async () => new Response(JSON.stringify(body), { status }),
+    });
+
+  it("throws VerifierBusy on 503 {retry: true}, so the gate retries instead of merging", async () => {
+    await expect(reply(503, { retry: true, error: "worker busy" }).run(req)).rejects.toBeInstanceOf(VerifierBusy);
+  });
+
+  it("retries a plain 503 too: a verifier that is down has not said the base is unguarded", async () => {
+    await expect(reply(503, { error: "down" }).run(req)).rejects.toBeInstanceOf(VerifierBusy);
+  });
+
+  it("still merges a base the verifier says it does not guard ({runs: []})", async () => {
+    const v = await reply(200, { runs: [] }).run(req);
+    expect(v).toMatchObject({ checked: false, ok: true, error: "no checks ran" });
+    expect(blocksMerge(v, true)).toBe(false);
   });
 });

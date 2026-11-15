@@ -2,7 +2,10 @@
 // Pure interface + stub (advisory pass) + PACT-server client.
 // Server contract: POST /api/check-chains {chains: string[]} ->
 // {results: [{name, found, present?, missing?, typechecks?, word?}]}.
-// A chain is usable when found, fully present, and typechecking.
+// A chain is usable when it is found and typechecks. `present`/`missing`
+// count the four canonical stages (fan-out, execute, select, repeat); a
+// pipeline lacks some by design (PACT finding 0009: a chain rooted at
+// Subject cannot close), so they describe the chain and never block.
 // Outages fail open (checked=false, ok=true); only negative verdicts
 // can block, and only when the caller enforces.
 export interface ChainCheckResult {
@@ -36,6 +39,13 @@ export class StubPlanCheck implements PlanCheck {
 
 export interface PactServerOpts {
   timeoutMs?: number;
+  /** Route the request, e.g. through a Workers VPC binding to a private host. Defaults to fetch. */
+  fetcher?: (url: string, init: RequestInit) => Promise<Response>;
+}
+
+/** Found and typechecking. Missing canonical stages are reported, not refused. */
+export function usable(r: ChainCheckResult | undefined): boolean {
+  return !!r && r.found && r.typechecks !== false;
 }
 
 export class PactServerPlanCheck implements PlanCheck {
@@ -47,7 +57,8 @@ export class PactServerPlanCheck implements PlanCheck {
   async check(chains: string[]): Promise<PlanVerdict> {
     if (chains.length === 0) return { checked: true, ok: true, results: [] };
     try {
-      const res = await fetch(`${this.baseUrl}/api/check-chains`, {
+      const send = this.opts.fetcher ?? ((url: string, init: RequestInit) => fetch(url, init));
+      const res = await send(`${this.baseUrl}/api/check-chains`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ chains }),
@@ -59,13 +70,7 @@ export class PactServerPlanCheck implements PlanCheck {
       const body = (await res.json()) as { results?: ChainCheckResult[] };
       const results = Array.isArray(body.results) ? body.results : [];
       const byName = new Map(results.map((r) => [r.name, r]));
-      const usable = (name: string): boolean => {
-        const r = byName.get(name);
-        return (
-          !!r && r.found && (r.missing?.length ?? 0) === 0 && r.typechecks !== false
-        );
-      };
-      return { checked: true, ok: chains.every(usable), results };
+      return { checked: true, ok: chains.every((name) => usable(byName.get(name))), results };
     } catch (e) {
       return {
         checked: false,
