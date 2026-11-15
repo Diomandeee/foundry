@@ -644,7 +644,14 @@ def watch_late(key, late):
                 late.error = f"{late.jid} still running {LATE_MORE_S // 60} min past its deadline; stopped"
                 break
             time.sleep(10)
-            row = job_row(late.jid)
+            try:
+                row = job_row(late.jid)
+            except (subprocess.TimeoutExpired, OSError, Unjudged) as e:
+                # A slow or failing `fabric job ls` says nothing about the job: look again. LATE_MORE_S still
+                # bounds the wait, and only a stop or cleanup that fails quarantines (11-15 11:46: one 45 s ls
+                # timeout quarantined a fleet check whose job had finished, exit 0, until a restart).
+                log("late-unobserved", job=late.jid, error=str(e)[:200])
+                continue
             if row and row[1] != late.host:
                 raise Unjudged(f"{late.jid}: ledger host differs from {late.host}")
             if row and row[2] in ("done", "failed"):
@@ -916,10 +923,10 @@ def _start_and_wait(cmd, tail, name, deadline):
         time.sleep(10)
         try:
             row = job_row(jid)
-            if row and row[1] != m.group(2):
-                raise Unjudged(f"{jid}: ledger host differs from start receipt")
         except (subprocess.TimeoutExpired, OSError, Unjudged):
-            raise PastDeadline(jid, m.group(2)) from None  # retain ownership through an observation outage
+            continue  # an observation outage: look again; the deadline above still ends the wait (and adopts)
+        if row and row[1] != m.group(2):
+            raise PastDeadline(jid, m.group(2))  # the ledger disagrees with the receipt: keep ownership, adopt
         if row and row[2] in ("done", "failed"):
             return jid, row
         if row and row[2] in ("lost", "stopped"):

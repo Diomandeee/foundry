@@ -1460,6 +1460,51 @@ class HostPlacements(unittest.TestCase):
             vs.reconcile_unknown(key, "mac5", "verify-x", lock, self.A, time.time())
         self.assertEqual(rec.call_count, 3)
 
+    def test_a_slow_ledger_read_never_quarantines_a_late_job(self):
+        lock = vs.host_lock("mac5")
+        lock.acquire()
+        late = vs.Late("job-late", lock, "mac5", self.A)
+        reads = iter([subprocess.TimeoutExpired(["fabric"], 45), vs.Unjudged("fabric job ls failed"),
+                      ["job-late", "mac5", "done", "0"]])
+
+        def row(jid):
+            v = next(reads)
+            if isinstance(v, Exception):
+                raise v
+            return v
+        with patch.object(vs, "job_row", side_effect=row), patch.object(vs.time, "sleep"):
+            vs.watch_late("logical-key", late)
+        self.assertEqual((late.row, late.error), (["job-late", "mac5", "done", "0"], None))
+        self.assertFalse(lock.locked())
+        self.assertEqual(vs.quarantined(), [])
+
+    def test_a_ledger_that_stays_unreadable_ends_in_a_stop_not_a_quarantine(self):
+        lock = vs.host_lock("mac5")
+        lock.acquire()
+        late = vs.Late("job-late", lock, "mac5", self.A)
+        late.t -= vs.LATE_MORE_S - 15
+        with patch.object(vs, "job_row", side_effect=subprocess.TimeoutExpired(["fabric"], 45)), \
+                patch.object(vs.time, "sleep", side_effect=lambda s: setattr(late, "t", late.t - 10)), \
+                patch.object(vs, "stop_job") as stop:
+            vs.watch_late("logical-key", late)
+        stop.assert_called_once_with("job-late", self.A, "mac5")
+        self.assertIn("stopped", late.error)
+        self.assertFalse(lock.locked())
+        self.assertEqual(vs.quarantined(), [])
+
+    def test_a_slow_ledger_read_while_waiting_keeps_waiting(self):
+        reads = iter([subprocess.TimeoutExpired(["fabric"], 45), ["job-x", "mac5", "done", "0"]])
+
+        def row(jid):
+            v = next(reads)
+            if isinstance(v, Exception):
+                raise v
+            return v
+        self.process.return_value = subprocess.CompletedProcess([], 0, "started job-x on mac5\n", "")
+        with patch.object(vs, "job_row", side_effect=row), patch.object(vs.time, "sleep"):
+            self.assertEqual(vs._start_and_wait(["fabric", "job", "run", "--host", "mac5"], ["--", "x"], "verify-x",
+                                                time.time() + 300), ("job-x", ["job-x", "mac5", "done", "0"]))
+
     def test_fabric_job_names_match_fabrics_own(self):
         self.assertEqual(vs.fabric_job_name("verify-serenity-soother-studio-ios-unit-tests-main"),
                          "verify-serenity-soother-studio")
