@@ -64,8 +64,28 @@ job. The host stays locked and the check quarantined, and `reconcile_unknown` se
 - nothing: the host is freed;
 - the ledger or the host cannot be read: still quarantined, tried again.
 
-A failed stop or cleanup, and a receipt naming a host other than the one asked for, have no such receipt and
-stay quarantined until a restart; `/health` lists them.
+A receipt naming a host other than the one asked for is never reconciled and stays quarantined until a
+restart; `/health` lists it.
+
+## A stop that could not be confirmed
+
+`stop_job` never stops a job that already exited. It reads the ledger first: done or failed is a no-op, and
+the row is the result (a late job at its cap keeps it, so the retry takes it). `fabric job stop` would mark a
+finished job stopped over its done. When `fabric job stop` fails or times out, the job is read back from the
+ledger (done or failed: a no-op), and then from the host itself: a tmux session that is gone is a job that is
+not running, and its simulator's app hosts are ended as before.
+
+When neither can be read (the host cannot be reached), the host stays held, quarantined, and `settle_stop`
+reads it back on its own thread, after 30 s, then doubling to every 10 min, for up to 6 h:
+
+- the ledger shows it done or failed: the host is freed, and the row is kept for the retry of the same check;
+- lost, stopped, still running or not in the ledger: stopped again if needed, and freed once the host
+  confirms the session gone;
+- the ledger names another host, or nothing can be read: still held.
+
+On 11-15 13:50 job-verify-motionmixapp-1115-131409 had ended with exit 0, the ledger was unreadable for the
+whole late window, the stop at its cap timed out after 45 s, and Mac4 was quarantined for every lane until a
+restart. With this change it is a no-op once the ledger is readable, and the host is freed then.
 
 ## Proving a placement
 
@@ -102,4 +122,4 @@ free. When Serenity's iOS check gets its Mac4 placement it lists Mac5 first: its
   ESTABLISHED connection on :8803.
 - No fairness beyond trying every free placement; sustained load on both hosts can still use up a deadline.
 
-Lean: `lean-proofs/VerifyHosts.lean` (sections 1-3).
+Lean: `lean-proofs/VerifyHosts.lean` (sections 1-4).

@@ -500,7 +500,12 @@ class StartUnknown(Unjudged):
 class JobStopped(Unjudged):
     def __init__(self, jid, state, host=None):
         super().__init__(f"{jid} {state}")
-        self.jid, self.host = jid, host
+        self.jid, self.host, self.state = jid, host, state
+
+
+class StopUnconfirmed(Unjudged):
+    """A stop whose result the verifier could not read: the host may still run the job or hold its simulator.
+    The host stays held, and settle_stop reads the job back until it can tell (never until a restart)."""
 
 
 def placements_of(recipe):
@@ -564,18 +569,56 @@ def sim_of(recipe):
     return m.group(1) if m else None
 
 
-def stop_job(jid, sim=None, host=None):
-    """Stop a job, and when it tested on a simulator, end the app it left running there. `fabric job stop` ends the
-    job's processes, but the test host belongs to the simulator's own launchd and outlives xcodebuild: on 11-14 a
-    MotionMixApp host left by a job stopped at 19:16 sat on C1AB6BF6 at 0% CPU, the next check on that simulator
-    (serenity, 19:36) hung at its test stage for 30 min holding the simulator lock, and every simulator landing of every
-    base came back unjudged until the host was killed by hand. Only app hosts under that one simulator's
-    Containers/Bundle are ended; the simulator itself stays booted."""
-    r = subprocess.run([FABRIC, "job", "stop", jid], capture_output=True, timeout=45)
-    if r.returncode:
-        raise Unjudged(f"{jid}: fabric stop failed; reconcile before reusing the host")
+SETTLED = ("done", "failed")    # the job's own command exited: nothing to stop, its result is in its log
+ENDED = SETTLED + ("lost", "stopped")
+
+
+def readable_row(jid):
+    """job_row, or None when the ledger cannot be read now: a slow `fabric job ls` says nothing about the job."""
+    try:
+        return job_row(jid)
+    except (subprocess.TimeoutExpired, OSError, Unjudged):
+        return None
+
+
+def stop_job(jid, sim=None, host=None, state=None):
+    """Stop a job, and when it tested on a simulator, end the app it left running there. Returns the job's row
+    when it turned out to have exited by itself (done or failed): then nothing is stopped, and its result stands.
+    `state` is the ledger state the caller just read (a settled one is then a no-op returning None: the caller
+    holds the row); without one the ledger is read first.
+
+    A job that already exited is never stopped: `fabric job stop` would mark it stopped over its done, and a slow
+    ssh to its host would turn a finished job into a held host (11-15 13:50: job-verify-motionmixapp-1115-131409
+    had ended with exit 0, its stop timed out after 45 s, and Mac4 was quarantined for every lane until a
+    restart). A stop that fabric cannot confirm is read back from the ledger, then from the host itself: a tmux
+    session that is gone is a job that is not running, whatever fabric said.
+
+    `fabric job stop` ends the job's processes, but the test host belongs to the simulator's own launchd and
+    outlives xcodebuild: on 11-14 a MotionMixApp host left by a job stopped at 19:16 sat on C1AB6BF6 at 0% CPU, the
+    next check on that simulator (serenity, 19:36) hung at its test stage for 30 min holding the simulator lock,
+    and every simulator landing of every base came back unjudged until the host was killed by hand. Only app hosts
+    under that one simulator's Containers/Bundle are ended; the simulator itself stays booted."""
+    row = None
+    if state is None:
+        row = readable_row(jid)
+        state = row[2] if row and (host is None or row[1] == host) else None
+    if state in SETTLED:
+        log("stop-skipped", job=jid, state=state)
+        return row
+    if state not in ("lost", "stopped"):
+        try:
+            stopped = subprocess.run([FABRIC, "job", "stop", jid], capture_output=True, timeout=45).returncode == 0
+        except subprocess.TimeoutExpired:
+            stopped = False
+        if not stopped:
+            back = readable_row(jid)
+            if back and back[2] in SETTLED and (host is None or back[1] == host):
+                log("stop-skipped", job=jid, state=back[2], why="fabric stop not confirmed; the job had exited")
+                return back
+            log("stop-unconfirmed", job=jid, host=host, ledger=back[2] if back else None)
+            row = back or row   # the host's own tmux below says whether it still runs
     if host is None:  # compatibility for callers without a captured placement
-        row = job_row(jid)
+        row = row or readable_row(jid)
         host = row[1] if row and len(row) > 1 else None
     if (not host or not re.fullmatch(r"[A-Za-z0-9._-]+", host)
             or (sim is not None and (host not in SIM_HOSTS or not UUID.fullmatch(sim)))
@@ -583,7 +626,7 @@ def stop_job(jid, sim=None, host=None):
         raise Unjudged(f"{jid}: no valid host/simulator for cleanup")
     # The bracket keeps the remote shell's own command line from matching pkill/pgrep.
     try:
-        # fabric stop currently ignores ssh failure: verify the tmux session is gone on the recorded host.
+        # fabric stop ignores ssh failure: verify the tmux session is gone on the recorded host.
         command = (f"command -v tmux >/dev/null || exit 1; tmux has-session -t '{jid}' 2>/dev/null; "
                    "rc=$?; test \"$rc\" -eq 1 || exit 1; ")
         if sim:
@@ -596,10 +639,64 @@ def stop_job(jid, sim=None, host=None):
         r = subprocess.run([SSH, "-o", "ConnectTimeout=10", "-o", "BatchMode=yes", "-o", "ControlMaster=no",
                             host, command], capture_output=True, timeout=45)
         if r.returncode:
-            raise Unjudged(f"{jid}: stop/simulator cleanup not confirmed on {host}")
+            raise StopUnconfirmed(f"{jid}: stop/simulator cleanup not confirmed on {host}")
         log("sim-cleared", job=jid, host=host, sim=sim)
     except subprocess.TimeoutExpired:
-        raise Unjudged(f"{jid}: simulator cleanup timed out on {host}") from None
+        raise StopUnconfirmed(f"{jid}: simulator cleanup timed out on {host}") from None
+    return None
+
+
+# ---- a stop that could not be confirmed, settled ----
+# The host stays held (a job may still run on it or hold its simulator) and the job is read back: from the ledger,
+# then from the host's tmux. Once it is known to have ended the host is freed, and a job that exited by itself
+# leaves its row for the retry of the same check. Waits double from 30 s to 10 min, for up to STOP_SETTLE_MAX_S.
+STOP_SETTLE_MAX_S = 6 * 60 * 60
+
+
+def settle_stop(key, host, jid, lock, sim, logical=True):
+    start, wait = time.time(), RECONCILE_SETTLE_S
+    while True:
+        time.sleep(wait)
+        try:
+            row = job_row(jid)
+            if row and row[1] != host:
+                log("reconcile-gave-up", host=host, job=jid, why=f"the ledger runs it on {row[1]}")
+                return
+            if row and row[2] in SETTLED:
+                settled = row    # it exited by itself: nothing to stop, nothing left on the host
+            else:
+                settled = stop_job(jid, sim, host, row[2] if row and row[2] in ENDED else "running")
+        except Exception as e:  # still unreadable: the host stays held, look again
+            log("reconcile-error", host=host, job=jid, error=repr(e)[:200])
+        else:
+            if settled and logical:
+                late = Late(jid, None, host, sim)
+                late.row, late.ended = settled, time.time()
+                late.done.set()
+                with LATE_LOCK:
+                    LATE[key] = late   # the retry of this check takes the result instead of running it again
+            with _QUARANTINE_GUARD:
+                _QUARANTINE.pop(key, None)
+            if lock:
+                lock.release()
+            log("reconciled", host=host, job=jid, outcome="stop-settled",
+                state=row[2] if row else "not in the ledger, gone from the host")
+            return
+        if time.time() - start > STOP_SETTLE_MAX_S:
+            log("reconcile-gave-up", host=host, key=key, job=jid)
+            return
+        wait = min(wait * 2, 600)
+
+
+def hold_unconfirmed_stop(key, host, jid, lock, sim, reason):
+    """Quarantine the host for a stop that could not be confirmed, and start reading it back."""
+    held = quarantine(key, host, reason, lock)
+    try:
+        threading.Thread(target=settle_stop, args=(held, host, jid, lock, sim, key is not None), daemon=True,
+                         name=f"settle-{jid}").start()
+    except RuntimeError as e:
+        log("reconcile-error", host=host, job=jid, error=repr(e)[:200])
+    return held
 
 
 class Late:
@@ -640,8 +737,11 @@ def watch_late(key, late):
     try:
         while True:
             if time.time() - late.t > LATE_MORE_S:
-                stop_job(late.jid, late.sim, late.host)
-                late.error = f"{late.jid} still running {LATE_MORE_S // 60} min past its deadline; stopped"
+                settled = stop_job(late.jid, late.sim, late.host)
+                if settled:   # it had exited by itself while the ledger could not be read: its result stands
+                    late.row = settled
+                else:
+                    late.error = f"{late.jid} still running {LATE_MORE_S // 60} min past its deadline; stopped"
                 break
             time.sleep(10)
             try:
@@ -658,9 +758,13 @@ def watch_late(key, late):
                 late.row = row
                 break
             if row and row[2] in ("lost", "stopped"):
-                stop_job(late.jid, late.sim, late.host)
+                stop_job(late.jid, late.sim, late.host, row[2])
                 late.error = f"{late.jid} {row[2]}"
                 break
+    except StopUnconfirmed as e:  # held, and read back until it can be told; not until a restart
+        late.error = f"{late.jid}: watching it failed: {e}"
+        hold_unconfirmed_stop(key, late.host, late.jid, late.lock, late.sim, late.error)
+        release = False
     except Exception as e:  # an unknown job/cleanup state cannot free a reservation
         late.error = f"{late.jid}: watching it failed: {e}"
         quarantine(key, late.host, late.error, late.lock)
@@ -878,11 +982,17 @@ def run_placements(repo, placements, name, deadline, key, sims):
                     raise Unjudged(f"{e.jid} ran past the deadline or lost observation; it keeps running and "
                                    "the retry of this check takes its result") from None
                 try:
-                    stop_job(e.jid, sim, actual_host)
+                    settled = stop_job(e.jid, sim, actual_host, getattr(e, "state", None))
+                except StopUnconfirmed as stop_error:
+                    release = False
+                    hold_unconfirmed_stop(key, host, e.jid, lock, sim, stop_error)
+                    raise Unjudged(f"{e.jid}: stop not confirmed; host held until it is read back") from stop_error
                 except Exception as stop_error:
                     release = False
                     quarantine(key, host, stop_error, lock)
                     raise Unjudged(f"{e.jid}: stop not confirmed; host quarantined") from stop_error
+                if settled:
+                    raise Unjudged(f"{e.jid} ended by itself past the deadline; nothing stopped") from None
                 raise Unjudged(f"{e}; stopped") from None
             finally:
                 if lock and release:

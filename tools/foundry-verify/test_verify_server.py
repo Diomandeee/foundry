@@ -1485,7 +1485,7 @@ class HostPlacements(unittest.TestCase):
         late.t -= vs.LATE_MORE_S - 15
         with patch.object(vs, "job_row", side_effect=subprocess.TimeoutExpired(["fabric"], 45)), \
                 patch.object(vs.time, "sleep", side_effect=lambda s: setattr(late, "t", late.t - 10)), \
-                patch.object(vs, "stop_job") as stop:
+                patch.object(vs, "stop_job", return_value=None) as stop:
             vs.watch_late("logical-key", late)
         stop.assert_called_once_with("job-late", self.A, "mac5")
         self.assertIn("stopped", late.error)
@@ -1544,10 +1544,10 @@ class HostPlacements(unittest.TestCase):
     def test_without_a_fingerprint_stop_uses_the_selected_host(self):
         self.fingerprint.return_value = None
         with vs.host_lock("mac5"), patch.object(vs, "_start_and_wait", side_effect=vs.PastDeadline("job-old")), \
-                patch.object(vs, "stop_job") as stop:
+                patch.object(vs, "stop_job", return_value=None) as stop:
             with self.assertRaisesRegex(vs.Unjudged, "stopped"):
                 self.check_recipe()
-        stop.assert_called_once_with("job-old", self.B, "mac4")
+        stop.assert_called_once_with("job-old", self.B, "mac4", None)
         self.assertFalse(vs.host_lock("mac4").locked())
 
     def test_failed_stop_retains_the_reservation(self):
@@ -1576,7 +1576,7 @@ class HostPlacements(unittest.TestCase):
     def test_late_cap_stops_recorded_host_when_ledger_row_is_missing(self):
         late = self.late()
         late.t -= vs.LATE_MORE_S + 1
-        with patch.object(vs, "stop_job") as stop, patch.object(vs, "job_row", return_value=None):
+        with patch.object(vs, "stop_job", return_value=None) as stop, patch.object(vs, "job_row", return_value=None):
             vs.watch_late("logical-key", late)
         stop.assert_called_once_with("job-late", self.B, "mac4")
         self.assertFalse(vs.host_lock("mac4").locked())
@@ -1594,14 +1594,14 @@ class HostPlacements(unittest.TestCase):
         for state in ("lost", "stopped"):
             late = self.late()
             with patch.object(vs.time, "sleep"), patch.object(vs, "job_row", return_value=["job-late", "mac4", state]), \
-                    patch.object(vs, "stop_job") as stop:
+                    patch.object(vs, "stop_job", return_value=None) as stop:
                 vs.watch_late("logical-key", late)
-            stop.assert_called_once_with("job-late", self.B, "mac4")
+            stop.assert_called_once_with("job-late", self.B, "mac4", state)
             self.assertFalse(vs.host_lock("mac4").locked())
 
     def test_stop_cleanup_uses_captured_host_even_without_a_ledger_row(self):
         with patch.object(vs, "job_row", side_effect=AssertionError("should not need the ledger")):
-            vs.stop_job("job-old", self.B, "mac4")
+            vs.stop_job("job-old", self.B, "mac4", "running")
         ssh = self.process.call_args_list[-1].args[0]
         self.assertIn("mac4", ssh)
         self.assertNotIn("mac5", ssh)
@@ -1610,16 +1610,16 @@ class HostPlacements(unittest.TestCase):
     def test_cleanup_ssh_failure_is_unjudged(self):
         self.process.side_effect = [subprocess.CompletedProcess([], 0), subprocess.CompletedProcess([], 255)]
         with self.assertRaisesRegex(vs.Unjudged, "not confirmed"):
-            vs.stop_job("job-old", self.B, "mac4")
+            vs.stop_job("job-old", self.B, "mac4", "running")
 
     def test_cleanup_ssh_timeout_is_unjudged(self):
         self.process.side_effect = [subprocess.CompletedProcess([], 0), subprocess.TimeoutExpired(["ssh"], 45)]
         with self.assertRaisesRegex(vs.Unjudged, "cleanup timed out"):
-            vs.stop_job("job-old", self.B, "mac4")
+            vs.stop_job("job-old", self.B, "mac4", "running")
 
     def test_cleanup_pattern_cannot_kill_its_own_remote_shell(self):
         import re
-        vs.stop_job("job-old", self.B, "mac4")
+        vs.stop_job("job-old", self.B, "mac4", "running")
         command = self.process.call_args_list[-1].args[0][-1]
         pattern = re.search(r"pkill -f '([^']+)'", command).group(1)
         self.assertIsNone(re.search(pattern, command))
@@ -1647,7 +1647,143 @@ class HostPlacements(unittest.TestCase):
     def test_generic_stop_also_requires_remote_confirmation(self):
         self.process.side_effect = [subprocess.CompletedProcess([], 0), subprocess.CompletedProcess([], 255)]
         with self.assertRaisesRegex(vs.Unjudged, "not confirmed"):
-            vs.stop_job("job-old", None, "mac4")
+            vs.stop_job("job-old", None, "mac4", "running")
+
+    # ---- 11-15 13:50: a finished job's stop timed out and Mac4 was held for every lane until a restart ----
+    DONE = ["job-old", "mac4", "done", "0"]
+
+    def called(self, mock):
+        for _ in range(200):   # the settle loop starts on its own thread
+            if mock.called:
+                return mock
+            time.sleep(0.005)
+        return mock
+
+    def reads(self, *answers):
+        it = iter(answers)
+
+        def row(jid):
+            v = next(it)
+            if isinstance(v, Exception):
+                raise v
+            return v
+        return patch.object(vs, "job_row", side_effect=row)
+
+    def test_a_stop_of_a_job_that_already_exited_is_a_no_op(self):
+        for state in ("done", "failed"):
+            self.process.reset_mock()
+            with self.reads(["job-old", "mac4", state, "0"]):
+                self.assertEqual(vs.stop_job("job-old", self.B, "mac4"), ["job-old", "mac4", state, "0"])
+            self.process.assert_not_called()   # no fabric stop (it would mark the job stopped), no ssh
+            self.assertIsNone(vs.stop_job("job-old", self.B, "mac4", state))
+            self.process.assert_not_called()
+
+    def test_a_stop_that_times_out_on_a_finished_job_is_read_back_not_held(self):
+        self.process.side_effect = subprocess.TimeoutExpired(["fabric", "job", "stop"], 45)
+        with self.reads(subprocess.TimeoutExpired(["fabric"], 45), self.DONE):
+            self.assertEqual(vs.stop_job("job-old", self.B, "mac4"), self.DONE)
+        self.assertEqual(self.process.call_count, 1)   # the stop; no cleanup ssh for a job that exited
+
+    def test_an_unconfirmed_stop_asks_the_host_itself(self):
+        self.process.side_effect = [subprocess.TimeoutExpired(["fabric", "job", "stop"], 45),
+                                    subprocess.CompletedProcess([], 0)]
+        with self.reads(None, subprocess.TimeoutExpired(["fabric"], 45)):
+            self.assertIsNone(vs.stop_job("job-old", self.B, "mac4"))
+        ssh = self.process.call_args_list[-1].args[0]
+        self.assertIn("mac4", ssh)
+        self.assertIn("tmux has-session -t 'job-old'", ssh[-1])
+
+    def test_an_unconfirmed_stop_on_an_unreachable_host_is_StopUnconfirmed(self):
+        self.process.side_effect = [subprocess.CompletedProcess([], 1), subprocess.TimeoutExpired(["ssh"], 45)]
+        with self.reads(["job-old", "mac4", "running"], ["job-old", "mac4", "running"]):
+            with self.assertRaises(vs.StopUnconfirmed):
+                vs.stop_job("job-old", self.B, "mac4")
+
+    def test_a_ledger_row_for_another_host_is_not_taken_as_settled(self):
+        self.process.side_effect = [subprocess.CompletedProcess([], 0), subprocess.CompletedProcess([], 0)]
+        with self.reads(["job-old", "mac5", "done", "0"]):
+            self.assertIsNone(vs.stop_job("job-old", self.B, "mac4"))
+        self.assertEqual(self.process.call_count, 2)   # stopped and confirmed on mac4, the host it was placed on
+
+    def test_a_late_job_that_exited_while_unobserved_keeps_its_result_at_the_cap(self):
+        late = self.late()
+        late.t -= vs.LATE_MORE_S + 1
+        with self.reads(self.DONE):
+            vs.watch_late("logical-key", late)
+        self.assertEqual((late.row, late.error), (self.DONE, None))
+        self.assertFalse(vs.host_lock("mac4").locked())
+        self.assertEqual(vs.quarantined(), [])
+        self.process.assert_not_called()
+
+    def test_the_1350_incident_holds_the_host_only_until_the_job_is_read_back(self):
+        """Ledger unreadable for the whole late window, the stop times out, the host cannot be reached: the host is
+        held, then freed by the settle loop once the ledger shows the job done, and the retry takes its result."""
+        late = self.late()
+        late.t -= vs.LATE_MORE_S + 1
+        slow = subprocess.TimeoutExpired(["fabric", "job", "ls"], 45)
+        self.process.side_effect = [subprocess.TimeoutExpired(["fabric", "job", "stop"], 45),
+                                    subprocess.TimeoutExpired(["ssh"], 45)]
+        with self.reads(slow, slow), patch.object(vs, "settle_stop") as settle:
+            vs.watch_late("logical-key", late)
+            self.called(settle)   # inside the patch: the real loop must never start here
+        self.assertTrue(vs.host_lock("mac4").locked())
+        self.assertEqual(vs.quarantined()[0]["host"], "mac4")
+        settle.assert_called_once_with("logical-key", "mac4", "job-late", late.lock, self.B, True)
+        self.process.side_effect = None
+        self.process.reset_mock()
+        with self.reads(slow, ["job-late", "mac4", "done", "0"]), patch.object(vs.time, "sleep"):
+            vs.settle_stop("logical-key", "mac4", "job-late", late.lock, self.B)
+        self.process.assert_not_called()
+        self.assertFalse(vs.host_lock("mac4").locked())
+        self.assertEqual(vs.quarantined(), [])
+        self.assertEqual(vs.claim_late("logical-key", time.time() + 300), ("job-late", ["job-late", "mac4", "done", "0"]))
+
+    def test_settling_a_running_job_stops_it_and_confirms_on_the_host(self):
+        key, lock = "logical-key", vs.host_lock("mac4")
+        lock.acquire()
+        vs.quarantine(key, "mac4", "stop not confirmed", lock)
+        self.process.side_effect = [subprocess.CompletedProcess([], 255), subprocess.CompletedProcess([], 0),
+                                    subprocess.CompletedProcess([], 0)]
+        with self.reads(["job-late", "mac4", "running"], None, ["job-late", "mac4", "running"]), \
+                patch.object(vs.time, "sleep"):
+            vs.settle_stop(key, "mac4", "job-late", lock, self.B)
+        self.assertFalse(lock.locked())
+        self.assertEqual(vs.quarantined(), [])
+        self.assertNotIn(key, vs.LATE)   # stopped by the verifier: no result for a retry
+        self.assertIn("tmux has-session", self.process.call_args_list[-1].args[0][-1])
+
+    def test_settling_never_frees_a_host_the_ledger_disagrees_with(self):
+        key, lock = "logical-key", vs.host_lock("mac4")
+        lock.acquire()
+        vs.quarantine(key, "mac4", "stop not confirmed", lock)
+        with self.reads(["job-late", "mac5", "done", "0"]), patch.object(vs.time, "sleep"):
+            vs.settle_stop(key, "mac4", "job-late", lock, self.B)
+        self.assertTrue(lock.locked())
+        self.assertEqual(vs.quarantined()[0]["host"], "mac4")
+
+    def test_settling_keeps_the_host_while_it_cannot_tell_and_gives_up_bounded(self):
+        key, lock = "logical-key", vs.host_lock("mac4")
+        lock.acquire()
+        vs.quarantine(key, "mac4", "stop not confirmed", lock)
+        clock = [time.time()]
+        with patch.object(vs, "job_row", side_effect=subprocess.TimeoutExpired(["fabric"], 45)), \
+                patch.object(vs.time, "sleep", side_effect=lambda s: clock.__setitem__(0, clock[0] + s)), \
+                patch.object(vs.time, "time", side_effect=lambda: clock[0]):
+            vs.settle_stop(key, "mac4", "job-late", lock, self.B)
+        self.assertTrue(lock.locked())
+        self.assertGreater(clock[0], time.time() + vs.STOP_SETTLE_MAX_S - 1)
+
+    def test_a_failed_stop_after_the_deadline_is_settled_not_held_for_good(self):
+        self.fingerprint.return_value = None
+        with patch.object(vs, "_start_and_wait", side_effect=vs.PastDeadline("job-old")), \
+                patch.object(vs, "stop_job", side_effect=vs.StopUnconfirmed("ssh timed out")), \
+                patch.object(vs, "settle_stop") as settle:
+            with self.assertRaisesRegex(vs.Unjudged, "read back"):
+                self.check_recipe()
+            self.called(settle)
+        self.assertTrue(vs.host_lock("mac5").locked())
+        settle.assert_called_once_with("unknown:mac5", "mac5", "job-old", vs.host_lock("mac5"), self.A,
+                                                    False)
 
     def test_adding_placements_cannot_rewrite_the_recipe_judging_the_proposal(self):
         old = {"host": "mac5", "command": ["true"]}
